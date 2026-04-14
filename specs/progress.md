@@ -140,6 +140,45 @@
 
 ## 交接筆記區
 
+### 本次進度交接（2026-04-14 session 3）
+
+**已完成**：
+- `preview/landing.html` 佈局重構與功能實裝：
+  - **Select 實裝**：兩個 `<button>` 改為真正的 `<select>` 元素（desktop sidebar + mobile panel），各有 3 個假字選項
+  - **Accordion 實裝**：系統操作中有 `down.svg` 的項目（主項目二、三、五）改為真正展開/收起 accordion，圖示旋轉 180° 回饋；主項目一、四、六 維持 `right.svg` 連結
+  - **客服 / 檔案**：維持靜態顯示（確認不做 accordion）
+  - **Layout 結構重構**：
+    - `rootWrap` 改為 `flex flex-col gap-3 p-3`（移除 `absolute` 定位 aside，12px 邊距自然由 flex 提供）
+    - `aside` 改為 flow 中的 flex item（`hidden md:flex w-[240px]`），不再 absolute
+    - `bodyArea`（`flex flex-col md:flex-row gap-3`）讓 aside 與 main 間有 12px gap
+    - `desktopTopRow`（`hidden md:flex items-center`）內 `sidebarCompact`（左）+ `topWrap ml-auto`（右），實現收折後自然 flex-between
+    - Mobile topbar 改為 `flex justify-between`（logo 左、menu 按鈕右）
+  - **Sidebar 收折 bug 修正**：
+    - 舊版 `expand()` 直接 `remove('hidden')` 導致 mobile 寬度下 sidebar 殘留
+    - 改為 `@media (min-width:768px) { #sidebar.md-collapsed { display: none !important } }`
+    - JS 只操作 `md-collapsed` class，`hidden` 永遠保留（保護 mobile 隱藏）
+  - **Mobile panel** 補齊客服 / 檔案區塊
+
+**進行中**：
+- landing.html 視覺細節持續對齊 Figma
+
+**下一步應做**：
+1. 瀏覽器測試 desktop sidebar collapse/expand 行為
+2. 確認 mobile AI 浮動按鈕是否在 desktop 也需顯示（目前 `md:hidden`）
+3. chartjs-diverging / chartjs-doughnut component spec md 補齊
+4. 確認 Color/Surface/Secondary (#F9E616)、Color/Surface/Accent (#42EBE9) 語意
+
+**重要決定**：
+- Compact bar（收折後頂部列）不顯示 select，只保留 logo / elaon999 / 登出 / 切換 / 展開按鈕
+- Sidebar 的 mobile/desktop 可見性分離：`hidden` 管 mobile，`md-collapsed` 管 desktop 收折
+
+**未解問題**：
+- `Color/Surface/Secondary`（#F9E616）、`Color/Surface/Accent`（#42EBE9）語意未確認
+- `Spacing/18`、`Spacing/76` 用途未說明
+- desktop 版 floatIcons/ai 是否也應顯示
+
+---
+
 ### 本次進度交接（2026-04-14 session 2）
 
 **已完成**：

@@ -21,31 +21,16 @@
       }
 
       /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #d9d9d9;
-        border-radius: 3px;
-      }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #d9d9d9; border-radius: 3px; }
 
       /* Nav sub-item selected state */
-      .sub-item-selected {
-        background: #f7d275;
-      }
+      .sub-item-selected { background: #f7d275; }
 
       /* Mobile horizontal scroll */
-      .scroll-x {
-        overflow-x: auto;
-        scrollbar-width: thin;
-      }
-      .scroll-x::-webkit-scrollbar {
-        height: 4px;
-      }
+      .scroll-x { overflow-x: auto; scrollbar-width: thin; }
+      .scroll-x::-webkit-scrollbar { height: 4px; }
 
       /* Section card */
       .section-card {
@@ -55,60 +40,42 @@
         padding: 12px;
       }
 
-      /* Sidebar collapsed → top bar */
-      #sidebar.collapsed {
-        width: 240px !important;
-        height: auto !important;
-        top: 0 !important;
-        left: 0 !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        padding: 12px 12px !important;
-        overflow: hidden !important;
-        border-radius: 0 !important;
-        border: none !important;
-        background: #fff !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-      }
-      #sidebar.collapsed + #contentWrap main {
-        margin-left: 0 !important;
-      }
-      #sidebar.collapsed + #contentWrap #topWrap {
-        margin-left: 240px !important;
-      }
-      #sidebar.collapsed #sidebarCompact {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 12px !important;
-        width: 100% !important;
-        flex-wrap: nowrap !important;
-      }
-      #sidebar.collapsed #sidebarCompact > span {
-        display: none !important;
-      }
-      #sidebar.collapsed #sidebarCompact > .ml-auto {
-        margin-left: 0 !important;
-      }
-      #sidebar.collapsed #sidebarFull {
-        display: none !important;
-      }
-
       /* Sidebar select */
       .sidebar-select {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        -webkit-appearance: none;
+        appearance: none;
+        display: block;
+        width: 100%;
         border: 1px solid #d1d1d1;
         border-radius: 6px;
-        padding: 6px 12px;
+        padding: 6px 32px 6px 12px;
         font-size: 12px;
         color: #454545;
         cursor: pointer;
-        width: 100%;
-        gap: 4px;
+        background-color: #fff;
+        background-image: url('./assets/icons/down.svg');
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 16px 16px;
+        font-family: 'Noto Sans TC', sans-serif;
+      }
+      .sidebar-select:focus {
+        outline: none;
+        border-color: #2178CF;
+      }
+
+      /* Desktop sidebar collapsed state — only hides at md+ so mobile hidden stays intact */
+      @media (min-width: 768px) {
+        #sidebar.md-collapsed { display: none !important; }
+      }
+
+      /* Accordion icon rotation */
+      .accordion-icon {
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
+      }
+      .accordion-icon.open {
+        transform: rotate(180deg);
       }
 
       /* Mobile sidebar overlay */
@@ -169,45 +136,67 @@
     </style>
   </head>
   <body>
-    <!-- ── Root wrapper ─────────────────────────────────────────────── -->
-    <div
-      id="rootWrap"
-      class="relative min-h-screen max-w-[1440px] mx-auto p-3"
-    >
-      <!-- ════════════════════════════════════
-       SIDEBAR（desktop only）
-  ════════════════════════════════════ -->
-      <aside
-        id="sidebar"
-        class="hidden md:block absolute left-0 top-0 w-[240px] h-screen bg-white border border-[#E1E1E0] rounded-lg p-3 z-10 transition-all duration-300"
-      >
-        <!-- ── Compact bar（收折狀態：logo / 使用者名稱 / 登出 / 切換 / Folder）── -->
-        <div id="sidebarCompact" class="hidden items-center gap-3 w-full">
-          <img
-            src="./assets/icons/logo.svg"
-            class="h-8 w-auto object-contain shrink-0"
-          />
-          <span class="text-xs text-[#454545] shrink-0">elaon999</span>
-          <img
-            src="./assets/icons/logout.svg"
-            class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100 shrink-0"
-          />
-          <img
-            src="./assets/icons/switch.svg"
-            class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100 shrink-0"
-          />
-          <div class="ml-auto shrink-0">
-            <img
-              id="expandBtn"
-              src="./assets/icons/folder.svg"
-              class="w-6 h-5 cursor-pointer opacity-60 hover:opacity-100"
-              title="展開選單"
-            />
-          </div>
-        </div>
+    <!-- ════════════════════════════════════
+         ROOT WRAP — flex-col, p-3 gives 12px from all edges
+    ════════════════════════════════════ -->
+    <div id="rootWrap" class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto p-3">
 
-        <!-- ── Full content（展開狀態）── -->
-        <div id="sidebarFull" class="flex flex-col">
+      <!-- ── Mobile top bar (flex justify-between, hidden on desktop) ── -->
+      <div class="flex items-center justify-between md:hidden">
+        <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        <button
+          id="mobileMenuBtn"
+          class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="w-6 h-5" alt="選單" />
+        </button>
+      </div>
+
+      <!-- ── Desktop top row (hidden on mobile)
+           flex items-center: sidebarCompact on left (when collapsed), topWrap ml-auto on right
+      ── -->
+      <div id="desktopTopRow" class="hidden md:flex items-center">
+        <!-- Compact sidebar content: visible only when sidebar is collapsed -->
+        <div id="sidebarCompact" class="hidden items-center gap-3">
+          <img src="./assets/icons/logo.svg" class="h-8 w-auto object-contain shrink-0" />
+          <span class="text-xs text-[#454545] shrink-0">elaon999</span>
+          <img src="./assets/icons/logout.svg" class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100 shrink-0" />
+          <img src="./assets/icons/switch.svg" class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100 shrink-0" />
+          <img
+            id="expandBtn"
+            src="./assets/icons/folder.svg"
+            class="w-5 h-5 cursor-pointer opacity-60 hover:opacity-100 shrink-0"
+            title="展開選單"
+          />
+        </div>
+        <!-- Toolbar icons — ml-auto pushes to right in both expanded & collapsed states -->
+        <div id="topWrap" class="flex items-center gap-11 ml-auto">
+          <div class="relative">
+            <img src="./assets/icons/bulletin.svg" class="w-6 h-6" />
+            <span class="absolute -top-1.5 -right-2 bg-[#EF6F25] text-white text-[10px] rounded-full px-1 py-0.5 leading-none">99</span>
+          </div>
+          <div class="relative">
+            <img src="./assets/icons/message.svg" class="w-6 h-6" />
+            <span class="absolute -top-1.5 -right-1 bg-[#EF6F25] text-white text-[10px] rounded-full px-1 py-0.5 leading-none">3</span>
+          </div>
+          <img src="./assets/icons/person-md.svg" class="w-6 h-6" />
+          <img src="./assets/icons/system.svg" class="w-6 h-6" />
+        </div>
+      </div>
+
+      <!-- ── Body area: aside (left, desktop only) + main (right, always) ── -->
+      <!-- flex-col on mobile, flex-row on desktop; gap-3 = 12px between aside and main -->
+      <div id="bodyArea" class="flex flex-col md:flex-row gap-3 flex-1 min-w-0">
+
+        <!-- ════════════════════════════════════
+             ASIDE — in flow, 240px, hidden on mobile
+             p-3 gives inner 12px padding
+        ════════════════════════════════════ -->
+        <aside
+          id="sidebar"
+          class="hidden md:flex w-[240px] shrink-0 flex-col bg-white border border-[#E1E1E0] rounded-lg p-3 self-start"
+        >
           <!-- Folder / collapse toggle -->
           <div class="flex justify-end mb-3">
             <img
@@ -220,176 +209,122 @@
 
           <!-- Logo -->
           <div class="mb-3">
-            <img
-              src="./assets/icons/logo.svg"
-              class="w-full h-auto max-h-[116px] object-contain"
-            />
+            <img src="./assets/icons/logo.svg" class="w-full h-auto max-h-[116px] object-contain" />
           </div>
 
-          <!-- Account row: 127×24px，text x:0，icons frame x:63，icon gap 12px -->
+          <!-- Account row -->
           <div class="flex items-center justify-between mb-3">
             <span class="text-xs text-[#454545]">elaon999</span>
             <div class="flex gap-3">
-              <img
-                src="./assets/icons/logout.svg"
-                class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
-              />
-              <img
-                src="./assets/icons/switch.svg"
-                class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
-              />
+              <img src="./assets/icons/logout.svg" class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100" />
+              <img src="./assets/icons/switch.svg" class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100" />
             </div>
           </div>
 
           <!-- Selects -->
           <div class="flex flex-col gap-3 mb-4">
-            <button class="sidebar-select">
-              <span class="truncate">188 ｜ 總部</span>
-              <img src="./assets/icons/down.svg" class="w-4 h-4 shrink-0" />
-            </button>
-            <button class="sidebar-select">
-              <span class="truncate text-left">199 地球村美日語太平洋旅店</span>
-              <img src="./assets/icons/down.svg" class="w-4 h-4 shrink-0" />
-            </button>
+            <select class="sidebar-select">
+              <option>188 ｜ 總部</option>
+              <option>189 ｜ 台北館</option>
+              <option>190 ｜ 高雄館</option>
+            </select>
+            <select class="sidebar-select">
+              <option>199 地球村美日語太平洋旅店</option>
+              <option>200 大安旅館</option>
+              <option>201 台南福灣</option>
+            </select>
           </div>
 
           <!-- 系統操作 -->
           <div class="mb-4">
-            <div
-              class="flex items-center gap-2 mb-2 text-[13px] font-semibold text-[#454545]"
-            >
+            <div class="flex items-center gap-2 mb-2 text-[13px] font-semibold text-[#454545]">
               <img src="./assets/icons/operation-system.svg" class="w-6 h-6" />
               <span>系統操作</span>
             </div>
-            <!-- Nav items -->
             <div class="flex flex-col gap-1 pl-1">
-              <!-- collapsed item -->
-              <div
-                class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-              >
+              <!-- 主項目一：連結 -->
+              <div class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded">
                 <span>主項目 一</span>
-                <img
-                  src="./assets/icons/right.svg"
-                  class="w-4 h-4 opacity-60"
-                />
+                <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
               </div>
-              <!-- expanded item -->
+              <!-- 主項目二：accordion 預設展開 -->
               <div>
                 <div
-                  class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
+                  data-accordion-target="desk-acc-2"
                 >
                   <span>主項目 二</span>
-                  <img
-                    src="./assets/icons/down.svg"
-                    class="w-4 h-4 opacity-60"
-                  />
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon open" />
                 </div>
-                <div class="flex flex-col gap-0.5 pl-4 mt-0.5">
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded sub-item-selected"
-                  >
-                    子項目 一
-                  </div>
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    子項目 二
-                  </div>
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    子項目 三
-                  </div>
+                <div id="desk-acc-2" class="flex flex-col gap-0.5 pl-4 mt-0.5">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded sub-item-selected">訂單管理</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">房型設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">價格日曆</div>
                 </div>
               </div>
-              <div
-                class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-              >
-                <span>主項目 三</span>
-                <img
-                  src="./assets/icons/right.svg"
-                  class="w-4 h-4 opacity-60"
-                />
+              <!-- 主項目三：accordion 預設收起 -->
+              <div>
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
+                  data-accordion-target="desk-acc-3"
+                >
+                  <span>主項目 三</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-3" class="hidden flex flex-col gap-0.5 pl-4 mt-0.5">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">報表總覽</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">營收報表</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">住房統計</div>
+                </div>
               </div>
-              <div
-                class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-              >
+              <!-- 主項目四：連結 -->
+              <div class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded">
                 <span>主項目 四</span>
-                <img
-                  src="./assets/icons/right.svg"
-                  class="w-4 h-4 opacity-60"
-                />
+                <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
               </div>
-              <div
-                class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-              >
-                <span>主項目 五</span>
-                <img
-                  src="./assets/icons/right.svg"
-                  class="w-4 h-4 opacity-60"
-                />
+              <!-- 主項目五：accordion 預設收起 -->
+              <div>
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
+                  data-accordion-target="desk-acc-5"
+                >
+                  <span>主項目 五</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-5" class="hidden flex flex-col gap-0.5 pl-4 mt-0.5">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">帳號管理</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">權限設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">稽核紀錄</div>
+                </div>
               </div>
-              <div
-                class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-              >
+              <!-- 主項目六：連結 -->
+              <div class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded">
                 <span>主項目 六</span>
-                <img
-                  src="./assets/icons/right.svg"
-                  class="w-4 h-4 opacity-60"
-                />
+                <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
               </div>
             </div>
           </div>
 
           <!-- 客服 -->
           <div class="mb-4 border-t border-[#E1E1E0] pt-3">
-            <div
-              class="flex items-center gap-2 mb-2 text-[20px] font-semibold text-[#454545]"
-            >
+            <div class="flex items-center gap-2 mb-2">
               <img src="./assets/icons/service.svg" class="w-6 h-6" />
-              <span>客服</span>
-              <span class="text-xs font-normal text-[#454545] ml-auto"
-                >平日 09:00~18:00</span
-              >
+              <span class="text-[13px] font-semibold text-[#454545]">客服</span>
+              <span class="text-xs font-normal text-[#454545] ml-auto">平日 09:00~18:00</span>
             </div>
-            <!-- state=show: QR 置中在上，聯絡資訊在下 -->
-            <div
-              class="border border-[#D1D1D1] rounded-lg p-3 flex flex-col gap-2"
-            >
-              <!-- QR code (LINE) 置中 -->
+            <div class="border border-[#D1D1D1] rounded-lg p-3 flex flex-col gap-2">
               <div class="flex justify-center">
-                <img
-                  src="./assets/images/service_line.png"
-                  class="w-[120px] h-[120px] object-contain"
-                  alt="LINE 客服 QR Code"
-                />
+                <img src="./assets/images/service_line.png" class="w-[120px] h-[120px] object-contain" alt="LINE 客服 QR Code" />
               </div>
-              <!-- 聯絡列 -->
-              <div class="flex flex-col gap-2 text-base text-[#454545]">
-                <div class="flex">
-                  <span class="w-[80px] shrink-0">電話</span
-                  ><span>02-2826-3881</span>
-                </div>
-                <div class="flex">
-                  <span class="w-[80px] shrink-0">傳真</span
-                  ><span>02-2821-8289</span>
-                </div>
-                <div class="flex">
-                  <span class="w-[80px] shrink-0">北客服</span
-                  ><span>#13 紅樹林</span>
-                </div>
-                <div class="flex">
-                  <span class="w-[80px] shrink-0">西客服</span
-                  ><span>#12 Jimmy</span>
-                </div>
-                <div class="flex">
-                  <span class="w-[80px] shrink-0">東客服</span
-                  ><span>#22 Luka</span>
-                </div>
+              <div class="flex flex-col gap-2 text-sm text-[#454545]">
+                <div class="flex"><span class="w-[68px] shrink-0">電話</span><span>02-2826-3881</span></div>
+                <div class="flex"><span class="w-[68px] shrink-0">傳真</span><span>02-2821-8289</span></div>
+                <div class="flex"><span class="w-[68px] shrink-0">北客服</span><span>#13 紅樹林</span></div>
+                <div class="flex"><span class="w-[68px] shrink-0">西客服</span><span>#12 Jimmy</span></div>
+                <div class="flex"><span class="w-[68px] shrink-0">東客服</span><span>#22 Luka</span></div>
               </div>
-              <!-- Email -->
               <div class="flex items-center gap-1.5 text-xs text-[#454545]">
-                <img src="./assets/icons/email.svg" class="w-6 h-6 shrink-0" />
+                <img src="./assets/icons/email.svg" class="w-5 h-5 shrink-0" />
                 <span class="truncate">service@bbnet.gmail.com</span>
               </div>
             </div>
@@ -397,141 +332,63 @@
 
           <!-- 檔案 -->
           <div class="border-t border-[#E1E1E0] pt-3">
-            <div
-              class="flex items-center gap-2 mb-2 text-[20px] font-semibold text-[#454545]"
-            >
+            <div class="flex items-center gap-2 mb-2">
               <img src="./assets/icons/download.svg" class="w-6 h-6" />
-              <span>檔案</span>
+              <span class="text-[13px] font-semibold text-[#454545]">檔案</span>
             </div>
-            <div
-              class="border border-[#D1D1D1] rounded-lg p-3 flex flex-col gap-3"
-            >
-              <!-- 教育訓練手冊 -->
+            <div class="border border-[#D1D1D1] rounded-lg p-3 flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex flex-col gap-0.5">
-                  <span class="text-base text-[#454545]">教育訓練手冊</span>
-                  <span class="text-xs text-[#454545]">2018-09-06</span>
+                  <span class="text-sm text-[#454545]">教育訓練手冊</span>
+                  <span class="text-xs text-[#888]">2018-09-06</span>
                 </div>
-                <img
-                  src="./assets/icons/download.svg"
-                  class="w-6 h-6 cursor-pointer shrink-0"
-                />
+                <img src="./assets/icons/download.svg" class="w-5 h-5 cursor-pointer shrink-0" />
               </div>
-              <!-- 套件 -->
               <div class="flex items-center justify-between">
                 <div class="flex flex-col gap-0.5">
-                  <span class="text-base text-[#454545]">套件</span>
-                  <span class="text-xs text-[#454545]">1.0.13</span>
+                  <span class="text-sm text-[#454545]">套件</span>
+                  <span class="text-xs text-[#888]">1.0.13</span>
                 </div>
-                <img
-                  src="./assets/icons/download.svg"
-                  class="w-6 h-6 cursor-pointer shrink-0"
-                />
+                <img src="./assets/icons/download.svg" class="w-5 h-5 cursor-pointer shrink-0" />
               </div>
             </div>
           </div>
-        </div>
-        <!-- /#sidebarFull -->
-      </aside>
+        </aside>
+        <!-- /#sidebar -->
 
-      <div id="contentWrap" class="flex flex-col gap-6">
-        <!-- Mobile top bar with logo and menu -->
-        <div class="flex items-center gap-3 md:hidden">
-          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
-          <button
-            id="mobileMenuBtn"
-            class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
-            aria-label="開啟選單"
-          >
-            <img src="./assets/icons/folder.svg" class="w-6 h-5" alt="選單" />
-          </button>
-        </div>
-        <!-- Desktop toolbar -->
-        <div
-          id="topWrap"
-          class="hidden md:flex items-center justify-end gap-11"
-        >
-          <!-- bulletin with badge -->
-          <div class="relative">
-            <img src="./assets/icons/bulletin.svg" class="w-6 h-6" />
-            <span
-              class="absolute -top-1.5 -right-2 bg-[#EF6F25] text-white text-[10px] rounded-full px-1 py-0.5 leading-none"
-              >99</span
-            >
-          </div>
-          <!-- message -->
-          <div class="relative">
-            <img src="./assets/icons/message.svg" class="w-6 h-6" />
-            <span
-              class="absolute -top-1.5 -right-1 bg-[#EF6F25] text-white text-[10px] rounded-full px-1 py-0.5 leading-none"
-              >3</span
-            >
-          </div>
-          <!-- person -->
-          <img src="./assets/icons/person-md.svg" class="w-6 h-6" />
-          <!-- system -->
-          <img src="./assets/icons/system.svg" class="w-6 h-6" />
-        </div>
-        <!-- end topWrap -->
-        <main class="ml-[240px] min-w-0 flex flex-col gap-6">
+        <!-- ════════════════════════════════════
+             MAIN CONTENT — flex-1, always visible
+        ════════════════════════════════════ -->
+        <main class="flex-1 flex flex-col gap-6 min-w-0 w-full">
+
           <!-- ── Row 1: Order status + System notifications ── -->
           <div class="flex flex-col md:flex-row gap-6">
             <!-- Order status -->
             <div class="section-card flex-1 md:flex-none md:w-[556px]">
-              <!-- Title -->
               <div class="flex items-center gap-2 mb-3">
                 <img src="./assets/icons/order-info.svg" class="w-6 h-6" />
-                <span class="text-[20px] font-semibold text-[#454545]"
-                  >訂單快覽</span
-                >
+                <span class="text-[20px] font-semibold text-[#454545]">訂單快覽</span>
               </div>
-              <!-- Order rows -->
               <div class="flex flex-col gap-5">
-                <!-- row with NEW badge -->
-                <div
-                  class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5"
-                >
+                <div class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5">
                   <span class="text-base text-[#4F4F4F]">今日到訪</span>
-                  <span
-                    class="bg-[#E12129] text-[#F6F6F6] text-xs rounded px-1 py-0.5"
-                    >NEW</span
-                  >
+                  <span class="bg-[#E12129] text-[#F6F6F6] text-xs rounded px-1 py-0.5">NEW</span>
                 </div>
-                <div
-                  class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5"
-                >
+                <div class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5">
                   <span class="text-base text-[#4F4F4F]">今日訂單</span>
-                  <span
-                    class="bg-[#E12129] text-[#F6F6F6] text-xs rounded px-1 py-0.5"
-                    >12</span
-                  >
+                  <span class="bg-[#E12129] text-[#F6F6F6] text-xs rounded px-1 py-0.5">12</span>
                 </div>
-                <div
-                  class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5"
-                >
+                <div class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5">
                   <span class="text-base text-[#4F4F4F]">今日進房</span>
-                  <span
-                    class="bg-[#D1D1D1] text-[#4F4F4F] text-xs rounded px-1 py-0.5"
-                    >0</span
-                  >
+                  <span class="bg-[#D1D1D1] text-[#4F4F4F] text-xs rounded px-1 py-0.5">0</span>
                 </div>
-                <div
-                  class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5"
-                >
+                <div class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5">
                   <span class="text-base text-[#4F4F4F]">今日退款</span>
-                  <span
-                    class="bg-[#D1D1D1] text-[#4F4F4F] text-xs rounded px-1 py-0.5"
-                    >0</span
-                  >
+                  <span class="bg-[#D1D1D1] text-[#4F4F4F] text-xs rounded px-1 py-0.5">0</span>
                 </div>
-                <div
-                  class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5"
-                >
+                <div class="flex items-center justify-between bg-[#F6FAFD] border border-[#E05216] rounded-md px-3 py-1.5">
                   <span class="text-base text-[#4F4F4F]">今日逾期</span>
-                  <span
-                    class="bg-[#D1D1D1] text-[#4F4F4F] text-xs rounded px-1 py-0.5"
-                    >0</span
-                  >
+                  <span class="bg-[#D1D1D1] text-[#4F4F4F] text-xs rounded px-1 py-0.5">0</span>
                 </div>
               </div>
             </div>
@@ -540,68 +397,39 @@
             <div class="section-card bg-white flex-1">
               <div class="flex items-center gap-2 mb-3">
                 <img src="./assets/icons/label.svg" class="w-6 h-6" />
-                <span class="text-[20px] font-semibold text-[#454545]"
-                  >系統通知</span
-                >
+                <span class="text-[20px] font-semibold text-[#454545]">系統通知</span>
               </div>
-              <div
-                class="flex flex-col gap-2 text-sm text-[#454545] overflow-y-auto max-h-[250px] pr-1"
-              >
+              <div class="flex flex-col gap-2 text-sm text-[#454545] overflow-y-auto max-h-[250px] pr-1">
                 <div class="flex items-start gap-2">
                   <span class="text-[#888888] shrink-0">1.</span>
                   <span>有 <strong>28</strong> 張超賣憑單。</span>
-                  <span
-                    class="ml-auto bg-[#E12129] text-white text-[10px] rounded px-1.5 py-0.5 shrink-0"
-                    >超賣</span
-                  >
+                  <span class="ml-auto bg-[#E12129] text-white text-[10px] rounded px-1.5 py-0.5 shrink-0">超賣</span>
                 </div>
                 <div class="flex items-start gap-2">
                   <span class="text-[#888888] shrink-0">2.</span>
                   <span>簡訊 顯示約 <strong>28</strong> 通。</span>
-                  <span
-                    class="ml-auto bg-[#2ACA18] text-white text-[10px] rounded px-1.5 py-0.5 shrink-0"
-                    >簡訊</span
-                  >
+                  <span class="ml-auto bg-[#2ACA18] text-white text-[10px] rounded px-1.5 py-0.5 shrink-0">簡訊</span>
                 </div>
                 <div class="flex items-start gap-2">
                   <span class="text-[#888888] shrink-0">3.</span>
                   <span>簡訊 顯示約 <strong>28</strong> 通。</span>
-                  <span
-                    class="ml-auto bg-[#2ACA18] text-white text-[10px] rounded px-1.5 py-0.5 shrink-0"
-                    >簡訊</span
-                  >
+                  <span class="ml-auto bg-[#2ACA18] text-white text-[10px] rounded px-1.5 py-0.5 shrink-0">簡訊</span>
                 </div>
                 <div class="flex items-start gap-2">
                   <span class="text-[#888888] shrink-0">4.</span>
-                  <span
-                    >最大義山莊網址到期日
-                    <strong class="text-[#E12129]">2022-01-22</strong> 距 28
-                    天逾期。</span
-                  >
+                  <span>最大義山莊網址到期日 <strong class="text-[#E12129]">2022-01-22</strong> 距 28 天逾期。</span>
                 </div>
                 <div class="flex items-start gap-2">
                   <span class="text-[#888888] shrink-0">5.</span>
-                  <span
-                    >最大義山莊網址到期日
-                    <strong class="text-[#E12129]">2022-01-22</strong> 距 28
-                    天逾期。</span
-                  >
+                  <span>最大義山莊網址到期日 <strong class="text-[#E12129]">2022-01-22</strong> 距 28 天逾期。</span>
                 </div>
                 <div class="flex items-start gap-2">
                   <span class="text-[#888888] shrink-0">6.</span>
-                  <span
-                    >最大義山莊網址到期日
-                    <strong class="text-[#E12129]">2022-01-22</strong> 距 28
-                    天逾期。</span
-                  >
+                  <span>最大義山莊網址到期日 <strong class="text-[#E12129]">2022-01-22</strong> 距 28 天逾期。</span>
                 </div>
                 <div class="flex items-start gap-2">
                   <span class="text-[#888888] shrink-0">7.</span>
-                  <span
-                    >最大義山莊網址到期日
-                    <strong class="text-[#E12129]">2022-01-22</strong> 距 28
-                    天逾期。</span
-                  >
+                  <span>最大義山莊網址到期日 <strong class="text-[#E12129]">2022-01-22</strong> 距 28 天逾期。</span>
                 </div>
               </div>
             </div>
@@ -611,97 +439,52 @@
           <div class="section-card">
             <div class="flex items-center gap-2 mb-3">
               <img src="./assets/icons/dashboard.svg" class="w-6 h-6" />
-              <span class="text-[20px] font-semibold text-[#454545]"
-                >營業資訊</span
-              >
+              <span class="text-[20px] font-semibold text-[#454545]">營業資訊</span>
             </div>
-            <!-- Cards: horizontal scroll on mobile, flex-nowrap on desktop -->
             <div class="scroll-x">
               <div class="flex gap-4 min-w-max md:min-w-0 md:flex-wrap">
-                <!-- Card 1: 今日營收 (trend up) -->
-                <div
-                  class="border border-[#D1D1D1] rounded-lg px-6 py-3 w-[220px] md:flex-1 shrink-0"
-                >
+                <!-- Card 1 -->
+                <div class="border border-[#D1D1D1] rounded-lg px-6 py-3 w-[220px] md:flex-1 shrink-0">
                   <div class="flex items-center justify-between mb-1">
                     <span class="text-base text-[#454545]">今日營收</span>
-                    <button
-                      class="border border-[#D1D1D1] rounded text-xs text-[#454545] px-2 py-1 flex items-center gap-1"
-                    >
+                    <button class="border border-[#D1D1D1] rounded text-xs text-[#454545] px-2 py-1 flex items-center gap-1">
                       <span>日營收</span>
-                      <img
-                        src="./assets/icons/attached-link.svg"
-                        class="w-6 h-6 opacity-60"
-                      />
+                      <img src="./assets/icons/attached-link.svg" class="w-6 h-6 opacity-60" />
                     </button>
                   </div>
-                  <div class="text-2xl font-semibold text-[#454545] mb-2">
-                    NT$ 350,000
-                  </div>
+                  <div class="text-2xl font-semibold text-[#454545] mb-2">NT$ 350,000</div>
                   <div class="flex items-center gap-2">
-                    <img
-                      src="./assets/icons/trend-up-red.svg"
-                      class="w-6 h-6"
-                    />
+                    <img src="./assets/icons/trend-up-red.svg" class="w-6 h-6" />
                     <span class="text-base text-[#E12129]">↑ +16%</span>
                     <span class="text-xs text-[#454545]">較昨日</span>
                   </div>
                 </div>
-
-                <!-- Card 2: 平均房價 (trend down) -->
-                <div
-                  class="border border-[#D1D1D1] rounded-lg px-6 py-3 w-[220px] md:flex-1 shrink-0"
-                >
-                  <span class="block text-base text-[#454545] mb-1"
-                    >平均房價</span
-                  >
-                  <div class="text-2xl font-semibold text-[#454545] mb-2">
-                    NT$ 4,200
-                  </div>
+                <!-- Card 2 -->
+                <div class="border border-[#D1D1D1] rounded-lg px-6 py-3 w-[220px] md:flex-1 shrink-0">
+                  <span class="block text-base text-[#454545] mb-1">平均房價</span>
+                  <div class="text-2xl font-semibold text-[#454545] mb-2">NT$ 4,200</div>
                   <div class="flex items-center gap-2">
-                    <img
-                      src="./assets/icons/trend-down-green.svg"
-                      class="w-6 h-6"
-                    />
+                    <img src="./assets/icons/trend-down-green.svg" class="w-6 h-6" />
                     <span class="text-base text-[#2ACA18]">↓ -16%</span>
                     <span class="text-xs text-[#454545]">較昨日</span>
                   </div>
                 </div>
-
-                <!-- Card 3: 今日住房率 -->
-                <div
-                  class="border border-[#D1D1D1] rounded-lg px-6 py-3 w-[220px] md:flex-1 shrink-0"
-                >
-                  <span class="block text-base text-[#454545] mb-1"
-                    >今日住房率</span
-                  >
-                  <div class="text-2xl font-semibold text-[#454545] mb-2">
-                    92%
-                  </div>
+                <!-- Card 3 -->
+                <div class="border border-[#D1D1D1] rounded-lg px-6 py-3 w-[220px] md:flex-1 shrink-0">
+                  <span class="block text-base text-[#454545] mb-1">今日住房率</span>
+                  <div class="text-2xl font-semibold text-[#454545] mb-2">92%</div>
                   <div class="flex items-center gap-2">
-                    <img
-                      src="./assets/icons/trend-up-red.svg"
-                      class="w-6 h-6"
-                    />
+                    <img src="./assets/icons/trend-up-red.svg" class="w-6 h-6" />
                     <span class="text-base text-[#E12129]">↑ +5%</span>
                     <span class="text-xs text-[#454545]">較昨日</span>
                   </div>
                 </div>
-
-                <!-- Card 4: 平均客房收益 -->
-                <div
-                  class="border border-[#D1D1D1] rounded-lg px-6 py-3 w-[220px] md:flex-1 shrink-0"
-                >
-                  <span class="block text-base text-[#454545] mb-1"
-                    >平均客房收益</span
-                  >
-                  <div class="text-2xl font-semibold text-[#454545] mb-2">
-                    170
-                  </div>
+                <!-- Card 4 -->
+                <div class="border border-[#D1D1D1] rounded-lg px-6 py-3 w-[220px] md:flex-1 shrink-0">
+                  <span class="block text-base text-[#454545] mb-1">平均客房收益</span>
+                  <div class="text-2xl font-semibold text-[#454545] mb-2">170</div>
                   <div class="flex items-center gap-2">
-                    <img
-                      src="./assets/icons/trend-down-green.svg"
-                      class="w-6 h-6"
-                    />
+                    <img src="./assets/icons/trend-down-green.svg" class="w-6 h-6" />
                     <span class="text-base text-[#2ACA18]">+16%</span>
                     <span class="text-xs text-[#454545]">較昨日</span>
                   </div>
@@ -714,131 +497,69 @@
           <div class="section-card">
             <div class="flex items-center gap-2 mb-3">
               <img src="./assets/icons/chart.svg" class="w-6 h-6" />
-              <span class="text-[20px] font-semibold text-[#454545]"
-                >統計圖表</span
-              >
+              <span class="text-[20px] font-semibold text-[#454545]">統計圖表</span>
             </div>
-
-            <!-- Charts grid:
-           Desktop: 2×2 (bar top-left, line top-right, diverging bottom-left, doughnut bottom-right)
-           Mobile:  1 col (bar → diverging → line → doughnut)
-      -->
             <div class="flex flex-wrap gap-5">
               <!-- Bar chart -->
-              <div
-                class="w-full md:w-[calc(50%-10px)] order-1 bg-white border border-[#D1D1D1] rounded-lg p-3"
-              >
-                <p class="text-center text-xs text-[#454545] mb-2">
-                  2026-01-31 今日可住房況
-                </p>
-                <div style="height: 220px; position: relative">
-                  <canvas id="chartBar"></canvas>
-                </div>
+              <div class="w-full md:w-[calc(50%-10px)] order-1 bg-white border border-[#D1D1D1] rounded-lg p-3">
+                <p class="text-center text-xs text-[#454545] mb-2">2026-01-31 今日可住房況</p>
+                <div style="height:220px;position:relative"><canvas id="chartBar"></canvas></div>
               </div>
-
-              <!-- Line chart — desktop: top-right; mobile: order-3 -->
-              <div
-                class="w-full md:w-[calc(50%-10px)] order-3 md:order-2 bg-white border border-[#D1D1D1] rounded-lg p-3"
-              >
-                <p class="text-center text-xs text-[#454545] mb-2">
-                  一週訂單統計
-                </p>
-                <div style="height: 220px; position: relative">
-                  <canvas id="chartLine"></canvas>
-                </div>
+              <!-- Line chart -->
+              <div class="w-full md:w-[calc(50%-10px)] order-3 md:order-2 bg-white border border-[#D1D1D1] rounded-lg p-3">
+                <p class="text-center text-xs text-[#454545] mb-2">一週訂單統計</p>
+                <div style="height:220px;position:relative"><canvas id="chartLine"></canvas></div>
               </div>
-
-              <!-- Diverging chart — desktop: bottom-left; mobile: order-2 -->
-              <div
-                class="w-full md:w-[calc(50%-10px)] order-2 md:order-3 bg-white border border-[#D1D1D1] rounded-lg p-3"
-              >
-                <p class="text-center text-xs text-[#454545] mb-2">
-                  2026-01-31 今日超賣管理
-                </p>
-                <div style="height: 240px; position: relative">
-                  <canvas id="chartDiverging"></canvas>
-                </div>
-                <!-- X-axis label -->
-                <p class="text-center text-xs mt-1" style="color: #888">
-                  房間數量
-                </p>
-                <!-- Legend -->
+              <!-- Diverging chart -->
+              <div class="w-full md:w-[calc(50%-10px)] order-2 md:order-3 bg-white border border-[#D1D1D1] rounded-lg p-3">
+                <p class="text-center text-xs text-[#454545] mb-2">2026-01-31 今日超賣管理</p>
+                <div style="height:240px;position:relative"><canvas id="chartDiverging"></canvas></div>
+                <p class="text-center text-xs mt-1" style="color:#888">房間數量</p>
                 <div class="flex justify-center gap-5 mt-2">
-                  <div class="flex items-center gap-1">
-                    <span
-                      class="inline-block w-7 h-3 rounded"
-                      style="background: #e12129"
-                    ></span
-                    ><span class="text-xs text-[#888]">已超賣</span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span
-                      class="inline-block w-7 h-3 rounded"
-                      style="background: #2aca18"
-                    ></span
-                    ><span class="text-xs text-[#888]">已賣出</span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span
-                      class="inline-block w-7 h-3 rounded"
-                      style="background: #888888"
-                    ></span
-                    ><span class="text-xs text-[#888]">當日庫存</span>
-                  </div>
+                  <div class="flex items-center gap-1"><span class="inline-block w-7 h-3 rounded" style="background:#e12129"></span><span class="text-xs text-[#888]">已超賣</span></div>
+                  <div class="flex items-center gap-1"><span class="inline-block w-7 h-3 rounded" style="background:#2aca18"></span><span class="text-xs text-[#888]">已賣出</span></div>
+                  <div class="flex items-center gap-1"><span class="inline-block w-7 h-3 rounded" style="background:#888888"></span><span class="text-xs text-[#888]">當日庫存</span></div>
                 </div>
               </div>
-
               <!-- Doughnut chart -->
-              <div
-                class="w-full md:w-[calc(50%-10px)] order-4 bg-white border border-[#D1D1D1] rounded-lg p-3"
-              >
-                <p class="text-center text-xs text-[#454545] mb-1">
-                  今日訂單來源分佈
-                </p>
-                <!-- Legend -->
+              <div class="w-full md:w-[calc(50%-10px)] order-4 bg-white border border-[#D1D1D1] rounded-lg p-3">
+                <p class="text-center text-xs text-[#454545] mb-1">今日訂單來源分佈</p>
                 <div class="flex justify-center gap-4 mb-2">
-                  <div class="flex items-center gap-1.5 text-xs text-[#888]">
-                    <span
-                      class="inline-block w-7 h-3.5 rounded"
-                      style="background: #005fcc"
-                    ></span
-                    >OTA
-                  </div>
-                  <div class="flex items-center gap-1.5 text-xs text-[#888]">
-                    <span
-                      class="inline-block w-7 h-3.5 rounded"
-                      style="background: #34c759"
-                    ></span
-                    >官網
-                  </div>
-                  <div class="flex items-center gap-1.5 text-xs text-[#888]">
-                    <span
-                      class="inline-block w-7 h-3.5 rounded"
-                      style="background: #b0b0b0"
-                    ></span
-                    >電話/現場
-                  </div>
+                  <div class="flex items-center gap-1.5 text-xs text-[#888]"><span class="inline-block w-7 h-3.5 rounded" style="background:#005fcc"></span>OTA</div>
+                  <div class="flex items-center gap-1.5 text-xs text-[#888]"><span class="inline-block w-7 h-3.5 rounded" style="background:#34c759"></span>官網</div>
+                  <div class="flex items-center gap-1.5 text-xs text-[#888]"><span class="inline-block w-7 h-3.5 rounded" style="background:#b0b0b0"></span>電話/現場</div>
                 </div>
-                <div style="height: 260px; position: relative">
-                  <canvas id="chartDoughnut"></canvas>
-                </div>
+                <div style="height:260px;position:relative"><canvas id="chartDoughnut"></canvas></div>
               </div>
             </div>
-            <!-- end charts grid -->
           </div>
-        </main>
-      </div>
-      <!-- end contentWrap -->
-    </div>
-    <!-- end root -->
 
-    <div
-      id="mobileSidebarBackdrop"
-      class="mobile-sidebar-backdrop md:hidden"
-    ></div>
+        </main>
+        <!-- /#mainContent -->
+
+      </div>
+      <!-- /#bodyArea -->
+
+    </div>
+    <!-- /#rootWrap -->
+
+    <!-- ── Mobile AI float button ── -->
+    <div class="fixed bottom-8 right-16 md:hidden flex flex-col items-center gap-1">
+      <span class="text-base text-[#454545]">客服</span>
+      <div class="w-12 h-12 rounded-full bg-[#F6FAFD] flex items-center justify-center shadow cursor-pointer">
+        <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+          <img src="./assets/icons/ai.svg" class="w-6 h-6" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         MOBILE SIDEBAR PANEL (overlay)
+    ════════════════════════════════════ -->
+    <div id="mobileSidebarBackdrop" class="mobile-sidebar-backdrop md:hidden"></div>
     <aside
       id="mobileSidebarPanel"
-      class="mobile-sidebar-panel md:hidden max-width-[240px]"
+      class="mobile-sidebar-panel md:hidden"
       aria-modal="true"
       role="dialog"
       aria-labelledby="mobileSidebarTitle"
@@ -846,381 +567,339 @@
       <div class="mobile-sidebar-header">
         <div class="flex items-center gap-2">
           <img src="./assets/icons/logo.svg" class="h-6 w-auto" alt="Swift" />
-          <h2
-            id="mobileSidebarTitle"
-            class="text-base font-semibold text-[#454545]"
-          >
-            功能選單
-          </h2>
+          <h2 id="mobileSidebarTitle" class="text-base font-semibold text-[#454545]">功能選單</h2>
         </div>
-        <button
-          id="mobileSidebarClose"
-          class="mobile-sidebar-close"
-          aria-label="關閉選單"
-        >
-          ✕
-        </button>
+        <button id="mobileSidebarClose" class="mobile-sidebar-close" aria-label="關閉選單">✕</button>
       </div>
       <div class="px-4 pb-6">
-        <div
-          class="flex items-center justify-between py-3 border-b border-[#E1E1E0]"
-        >
+        <!-- Account row -->
+        <div class="flex items-center justify-between py-3 border-b border-[#E1E1E0]">
           <span class="text-sm text-[#454545]">elaon999</span>
           <div class="flex gap-3">
-            <img
-              src="./assets/icons/logout.svg"
-              class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
-              alt="登出"
-            />
-            <img
-              src="./assets/icons/switch.svg"
-              class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
-              alt="切換帳號"
-            />
+            <img src="./assets/icons/logout.svg" class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100" alt="登出" />
+            <img src="./assets/icons/switch.svg" class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100" alt="切換帳號" />
           </div>
         </div>
+
+        <!-- Selects -->
         <div class="grid gap-3 mt-4">
-          <button class="sidebar-select">
-            <span class="truncate">188 ｜ 總部</span>
-            <img
-              src="./assets/icons/down.svg"
-              class="w-4 h-4 shrink-0"
-              alt="下拉"
-            />
-          </button>
-          <button class="sidebar-select">
-            <span class="truncate text-left">199 地球村美日語太平洋旅店</span>
-            <img
-              src="./assets/icons/down.svg"
-              class="w-4 h-4 shrink-0"
-              alt="下拉"
-            />
-          </button>
+          <select class="sidebar-select">
+            <option>188 ｜ 總部</option>
+            <option>189 ｜ 台北館</option>
+            <option>190 ｜ 高雄館</option>
+          </select>
+          <select class="sidebar-select">
+            <option>199 地球村美日語太平洋旅店</option>
+            <option>200 大安旅館</option>
+            <option>201 台南福灣</option>
+          </select>
         </div>
-        <div class="mt-6">
-          <div
-            class="flex items-center gap-2 mb-2 text-sm font-semibold text-[#454545]"
-          >
-            <img
-              src="./assets/icons/operation-system.svg"
-              class="w-5 h-5"
-              alt="系統操作"
-            />
+
+        <!-- 系統操作 -->
+        <div class="mt-5">
+          <div class="flex items-center gap-2 mb-2 text-sm font-semibold text-[#454545]">
+            <img src="./assets/icons/operation-system.svg" class="w-5 h-5" />
             <span>系統操作</span>
           </div>
-          <div class="flex flex-col gap-1">
-            <button
-              class="text-left py-2 px-3 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD]"
-            >
-              主項目 一
-            </button>
-            <button
-              class="text-left py-2 px-3 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD]"
-            >
-              主項目 二
-            </button>
-            <div class="flex flex-col gap-1 pl-3 mt-1">
-              <button
-                class="text-left py-2 px-3 text-xs text-[#454545] rounded hover:bg-[#F6FAFD]"
-              >
-                子項目 一
-              </button>
-              <button
-                class="text-left py-2 px-3 text-xs text-[#454545] rounded hover:bg-[#F6FAFD]"
-              >
-                子項目 二
-              </button>
-              <button
-                class="text-left py-2 px-3 text-xs text-[#454545] rounded hover:bg-[#F6FAFD]"
-              >
-                子項目 三
-              </button>
+          <div class="flex flex-col gap-0.5">
+            <div class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer">
+              <span>主項目 一</span>
+              <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
             </div>
-            <button
-              class="text-left py-2 px-3 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD]"
-            >
-              主項目 三
-            </button>
-            <button
-              class="text-left py-2 px-3 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD]"
-            >
-              主項目 四
-            </button>
+            <!-- accordion 預設展開 -->
+            <div>
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-2">
+                <span>主項目 二</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon open" />
+              </div>
+              <div id="mob-acc-2" class="flex flex-col gap-0.5 pl-4 mt-0.5">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer sub-item-selected">訂單管理</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">房型設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">價格日曆</div>
+              </div>
+            </div>
+            <!-- accordion 預設收起 -->
+            <div>
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-3">
+                <span>主項目 三</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-3" class="hidden flex flex-col gap-0.5 pl-4 mt-0.5">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">報表總覽</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">營收報表</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">住房統計</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer">
+              <span>主項目 四</span>
+              <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
+            </div>
+            <!-- accordion 預設收起 -->
+            <div>
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-5">
+                <span>主項目 五</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-5" class="hidden flex flex-col gap-0.5 pl-4 mt-0.5">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">帳號管理</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">權限設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">稽核紀錄</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer">
+              <span>主項目 六</span>
+              <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 客服 -->
+        <div class="mt-5 pt-4 border-t border-[#E1E1E0]">
+          <div class="flex items-center gap-2 mb-2">
+            <img src="./assets/icons/service.svg" class="w-5 h-5" />
+            <span class="text-sm font-semibold text-[#454545]">客服</span>
+            <span class="text-xs text-[#454545] ml-auto">平日 09:00~18:00</span>
+          </div>
+          <div class="border border-[#D1D1D1] rounded-lg p-3 flex flex-col gap-2">
+            <div class="flex justify-center">
+              <img src="./assets/images/service_line.png" class="w-[110px] h-[110px] object-contain" alt="LINE 客服 QR Code" />
+            </div>
+            <div class="flex flex-col gap-2 text-sm text-[#454545]">
+              <div class="flex"><span class="w-[68px] shrink-0">電話</span><span>02-2826-3881</span></div>
+              <div class="flex"><span class="w-[68px] shrink-0">傳真</span><span>02-2821-8289</span></div>
+              <div class="flex"><span class="w-[68px] shrink-0">北客服</span><span>#13 紅樹林</span></div>
+              <div class="flex"><span class="w-[68px] shrink-0">西客服</span><span>#12 Jimmy</span></div>
+              <div class="flex"><span class="w-[68px] shrink-0">東客服</span><span>#22 Luka</span></div>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs text-[#454545]">
+              <img src="./assets/icons/email.svg" class="w-5 h-5 shrink-0" />
+              <span class="truncate">service@bbnet.gmail.com</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 檔案 -->
+        <div class="mt-5 pt-4 border-t border-[#E1E1E0]">
+          <div class="flex items-center gap-2 mb-2">
+            <img src="./assets/icons/download.svg" class="w-5 h-5" />
+            <span class="text-sm font-semibold text-[#454545]">檔案</span>
+          </div>
+          <div class="border border-[#D1D1D1] rounded-lg p-3 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col gap-0.5">
+                <span class="text-sm text-[#454545]">教育訓練手冊</span>
+                <span class="text-xs text-[#888]">2018-09-06</span>
+              </div>
+              <img src="./assets/icons/download.svg" class="w-5 h-5 cursor-pointer shrink-0" />
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col gap-0.5">
+                <span class="text-sm text-[#454545]">套件</span>
+                <span class="text-xs text-[#888]">1.0.13</span>
+              </div>
+              <img src="./assets/icons/download.svg" class="w-5 h-5 cursor-pointer shrink-0" />
+            </div>
           </div>
         </div>
       </div>
     </aside>
-
-    <!-- ── Mobile float AI button ─────────────────────────────────── -->
-    <div
-      class="fixed bottom-8 right-16 md:hidden flex flex-col items-center gap-1"
-    >
-      <span class="text-base text-[#454545]">客服</span>
-      <div
-        class="w-12 h-12 rounded-full bg-[#F6FAFD] flex items-center justify-center shadow cursor-pointer"
-      >
-        <div
-          class="w-6 h-6 rounded-full bg-white flex items-center justify-center"
-        >
-          <img src="./assets/icons/ai.svg" class="w-6 h-6" />
-        </div>
-      </div>
-    </div>
+    <!-- /#mobileSidebarPanel -->
 
     <!-- ════════════════════════════════════
-     Chart.js 初始化
-════════════════════════════════════ -->
+         Chart.js + Interaction scripts
+    ════════════════════════════════════ -->
     <script>
-      // ── Sidebar collapse toggle ──────────────────────────────────────
+      // ── Accordion toggle ─────────────────────────────────────────────
+      document.querySelectorAll('.accordion-trigger').forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          var targetId = trigger.dataset.accordionTarget;
+          var content = document.getElementById(targetId);
+          var icon = trigger.querySelector('.accordion-icon');
+          if (!content) return;
+          if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            icon && icon.classList.add('open');
+          } else {
+            content.classList.add('hidden');
+            icon && icon.classList.remove('open');
+          }
+        });
+      });
+
+      // ── Desktop sidebar collapse / expand ────────────────────────────
       (function () {
-        const rootWrap = document.getElementById("rootWrap");
-        const sidebar = document.getElementById("sidebar");
-        const sidebarFull = document.getElementById("sidebarFull");
-        const sidebarCompact = document.getElementById("sidebarCompact");
-        const foldBtn = document.getElementById("foldBtn");
-        const expandBtn = document.getElementById("expandBtn");
+        var sidebar        = document.getElementById('sidebar');
+        var sidebarCompact = document.getElementById('sidebarCompact');
+        var foldBtn        = document.getElementById('foldBtn');
+        var expandBtn      = document.getElementById('expandBtn');
 
         function collapse() {
-          sidebar.classList.add("collapsed");
-          sidebarFull.classList.add("hidden");
-          sidebarCompact.classList.remove("hidden");
-          sidebarCompact.classList.add("flex");
+          // md-collapsed only hides on md+; the base `hidden` class keeps it hidden on mobile
+          sidebar.classList.add('md-collapsed');
+          sidebarCompact.classList.remove('hidden');
+          sidebarCompact.classList.add('flex');
         }
 
         function expand() {
-          sidebar.classList.remove("collapsed");
-          sidebarFull.classList.remove("hidden");
-          sidebarCompact.classList.add("hidden");
-          sidebarCompact.classList.remove("flex");
+          sidebar.classList.remove('md-collapsed');
+          sidebarCompact.classList.add('hidden');
+          sidebarCompact.classList.remove('flex');
         }
 
-        foldBtn && foldBtn.addEventListener("click", collapse);
-        expandBtn && expandBtn.addEventListener("click", expand);
-
-        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-        const mobileSidebarBackdrop = document.getElementById(
-          "mobileSidebarBackdrop",
-        );
-        const mobileSidebarPanel =
-          document.getElementById("mobileSidebarPanel");
-        const mobileSidebarClose =
-          document.getElementById("mobileSidebarClose");
-
-        const openMobileSidebar = () => {
-          mobileSidebarBackdrop?.classList.add("open");
-          mobileSidebarPanel?.classList.add("open");
-          document.body.classList.add("mobile-sidebar-open");
-        };
-
-        const closeMobileSidebar = () => {
-          mobileSidebarBackdrop?.classList.remove("open");
-          mobileSidebarPanel?.classList.remove("open");
-          document.body.classList.remove("mobile-sidebar-open");
-        };
-
-        mobileMenuBtn?.addEventListener("click", openMobileSidebar);
-        mobileSidebarBackdrop?.addEventListener("click", closeMobileSidebar);
-        mobileSidebarClose?.addEventListener("click", closeMobileSidebar);
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") closeMobileSidebar();
-        });
+        foldBtn   && foldBtn.addEventListener('click', collapse);
+        expandBtn && expandBtn.addEventListener('click', expand);
       })();
 
-      const FONT = "'Noto Sans TC', sans-serif";
+      // ── Mobile sidebar ───────────────────────────────────────────────
+      (function () {
+        var mobileMenuBtn        = document.getElementById('mobileMenuBtn');
+        var mobileSidebarBackdrop = document.getElementById('mobileSidebarBackdrop');
+        var mobileSidebarPanel   = document.getElementById('mobileSidebarPanel');
+        var mobileSidebarClose   = document.getElementById('mobileSidebarClose');
+
+        function openMobileSidebar() {
+          mobileSidebarBackdrop.classList.add('open');
+          mobileSidebarPanel.classList.add('open');
+          document.body.classList.add('mobile-sidebar-open');
+        }
+        function closeMobileSidebar() {
+          mobileSidebarBackdrop.classList.remove('open');
+          mobileSidebarPanel.classList.remove('open');
+          document.body.classList.remove('mobile-sidebar-open');
+        }
+
+        mobileMenuBtn       && mobileMenuBtn.addEventListener('click', openMobileSidebar);
+        mobileSidebarBackdrop && mobileSidebarBackdrop.addEventListener('click', closeMobileSidebar);
+        mobileSidebarClose  && mobileSidebarClose.addEventListener('click', closeMobileSidebar);
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMobileSidebar(); });
+      })();
+
+      // ── Chart.js defaults ────────────────────────────────────────────
+      var FONT = "'Noto Sans TC', sans-serif";
       Chart.defaults.font.family = FONT;
       Chart.defaults.font.size = 12;
-      Chart.defaults.color = "#454545";
+      Chart.defaults.color = '#454545';
 
-      // ── 1. Bar chart — 今日可住房況 ────────────────────────────────
-      new Chart(document.getElementById("chartBar"), {
-        type: "bar",
+      // ── 1. Bar chart ─────────────────────────────────────────────────
+      new Chart(document.getElementById('chartBar'), {
+        type: 'bar',
         data: {
-          labels: [
-            "威尼斯雙人",
-            "夏慕尼四人",
-            "義大利三人",
-            "保留房二人",
-            "保留房四人",
-          ],
+          labels: ['威尼斯雙人','夏慕尼四人','義大利三人','保留房二人','保留房四人'],
+          datasets: [{
+            label: '今日可住',
+            data: [10, 7, 12, 6, 3],
+            backgroundColor: '#86B7FE',
+            borderRadius: 3,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#4f4f4f', callbacks: { label: (ctx) => `可住 ${ctx.parsed.y} 間` } },
+          },
+          scales: {
+            x: { ticks: { color: '#454545', font: { size: 11 } }, grid: { display: false }, border: { display: false } },
+            y: { min: 0, ticks: { color: '#454545', stepSize: 5 }, grid: { color: '#e1e1e0' }, border: { display: false } },
+          },
+        },
+      });
+
+      // ── 2. Line chart ────────────────────────────────────────────────
+      new Chart(document.getElementById('chartLine'), {
+        type: 'line',
+        data: {
+          labels: ['12/21','12/25','12/29','1/2','1/5','1/9','1/15'],
+          datasets: [{
+            label: '訂單數',
+            data: [45, 62, 55, 70, 48, 65, 58],
+            borderColor: '#FF0BD6',
+            backgroundColor: 'rgba(255,11,214,0.08)',
+            borderWidth: 2,
+            pointBackgroundColor: '#FF0BD6',
+            pointRadius: 3,
+            tension: 0.3,
+            fill: true,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#4f4f4f' },
+          },
+          scales: {
+            x: { ticks: { color: '#454545', font: { size: 11 } }, grid: { display: false }, border: { display: false } },
+            y: { ticks: { color: '#454545' }, grid: { color: '#e1e1e0' }, border: { display: false } },
+          },
+        },
+      });
+
+      // ── 3. Diverging bar ─────────────────────────────────────────────
+      new Chart(document.getElementById('chartDiverging'), {
+        type: 'bar',
+        data: {
+          labels: ['威尼斯雙人','夏慕尼四人','義大利三人','保留房二人','保留房四人'],
           datasets: [
-            {
-              label: "今日可住",
-              data: [10, 7, 12, 6, 3],
-              backgroundColor: "#86B7FE",
-              borderRadius: 3,
-            },
+            { label: '當日庫存', data: [10,7,12,6,3], backgroundColor: '#888888', borderRadius: 2 },
+            { label: '已賣出',   data: [-10,null,-8,-5,null], backgroundColor: '#2aca18', borderRadius: 2 },
+            { label: '已超賣',   data: [null,-9,null,null,null], backgroundColor: '#e12129', borderRadius: 2 },
           ],
         },
         options: {
+          indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: "#4f4f4f",
-              callbacks: { label: (ctx) => `可住 ${ctx.parsed.y} 間` },
-            },
-          },
-          scales: {
-            x: {
-              ticks: { color: "#454545", font: { size: 11 } },
-              grid: { display: false },
-              border: { display: false },
-            },
-            y: {
-              min: 0,
-              ticks: { color: "#454545", stepSize: 5 },
-              grid: { color: "#e1e1e0" },
-              border: { display: false },
-            },
-          },
-        },
-      });
-
-      // ── 2. Line chart — 一週訂單統計 ───────────────────────────────
-      new Chart(document.getElementById("chartLine"), {
-        type: "line",
-        data: {
-          labels: ["12/21", "12/25", "12/29", "1/2", "1/5", "1/9", "1/15"],
-          datasets: [
-            {
-              label: "訂單數",
-              data: [45, 62, 55, 70, 48, 65, 58],
-              borderColor: "#FF0BD6",
-              backgroundColor: "rgba(255,11,214,0.08)",
-              borderWidth: 2,
-              pointBackgroundColor: "#FF0BD6",
-              pointRadius: 3,
-              tension: 0.3,
-              fill: true,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { backgroundColor: "#4f4f4f" },
-          },
-          scales: {
-            x: {
-              ticks: { color: "#454545", font: { size: 11 } },
-              grid: { display: false },
-              border: { display: false },
-            },
-            y: {
-              ticks: { color: "#454545" },
-              grid: { color: "#e1e1e0" },
-              border: { display: false },
-            },
-          },
-        },
-      });
-
-      // ── 3. Diverging bar — 今日超賣管理 ────────────────────────────
-      new Chart(document.getElementById("chartDiverging"), {
-        type: "bar",
-        data: {
-          labels: [
-            "威尼斯雙人",
-            "夏慕尼四人",
-            "義大利三人",
-            "保留房二人",
-            "保留房四人",
-          ],
-          datasets: [
-            {
-              label: "當日庫存",
-              data: [10, 7, 12, 6, 3],
-              backgroundColor: "#888888",
-              borderRadius: 2,
-            },
-            {
-              label: "已賣出",
-              data: [-10, null, -8, -5, null],
-              backgroundColor: "#2aca18",
-              borderRadius: 2,
-            },
-            {
-              label: "已超賣",
-              data: [null, -9, null, null, null],
-              backgroundColor: "#e12129",
-              borderRadius: 2,
-            },
-          ],
-        },
-        options: {
-          indexAxis: "y",
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: "#4f4f4f",
+              backgroundColor: '#4f4f4f',
               displayColors: false,
               callbacks: {
-                title: (items) =>
-                  items[0].dataset.label === "已超賣"
-                    ? "超賣"
-                    : items[0].dataset.label,
+                title: (items) => items[0].dataset.label === '已超賣' ? '超賣' : items[0].dataset.label,
                 label: (ctx) => `${Math.abs(ctx.parsed.x)} 間`,
               },
             },
           },
           scales: {
             x: {
-              stacked: true,
-              reverse: true,
-              min: -10,
-              max: 15,
-              ticks: {
-                color: "#454545",
-                stepSize: 5,
-                callback: (v) => v,
-              },
+              stacked: true, reverse: true, min: -10, max: 15,
+              ticks: { color: '#454545', stepSize: 5, callback: (v) => v },
               grid: {
-                color: (ctx) => (ctx.tick?.value === 0 ? "#b0b0b0" : "#e1e1e0"),
-                lineWidth: (ctx) => (ctx.tick?.value === 0 ? 1.5 : 1),
+                color: (ctx) => ctx.tick?.value === 0 ? '#b0b0b0' : '#e1e1e0',
+                lineWidth: (ctx) => ctx.tick?.value === 0 ? 1.5 : 1,
               },
               border: { display: false },
             },
-            y: {
-              stacked: true,
-              ticks: { color: "#454545", font: { size: 11 } },
-              grid: { display: false },
-              border: { display: false },
-            },
+            y: { stacked: true, ticks: { color: '#454545', font: { size: 11 } }, grid: { display: false }, border: { display: false } },
           },
         },
       });
 
-      // ── 4. Doughnut — 今日訂單來源分佈 ────────────────────────────
-      new Chart(document.getElementById("chartDoughnut"), {
-        type: "doughnut",
+      // ── 4. Doughnut ──────────────────────────────────────────────────
+      new Chart(document.getElementById('chartDoughnut'), {
+        type: 'doughnut',
         data: {
-          labels: ["OTA", "官網", "電話/現場"],
-          datasets: [
-            {
-              data: [302, 138, 110],
-              backgroundColor: ["#005fcc", "#34c759", "#b0b0b0"],
-              hoverBackgroundColor: ["#0052b3", "#28b34e", "#969696"],
-              borderWidth: 0,
-            },
-          ],
+          labels: ['OTA','官網','電話/現場'],
+          datasets: [{
+            data: [302, 138, 110],
+            backgroundColor: ['#005fcc','#34c759','#b0b0b0'],
+            hoverBackgroundColor: ['#0052b3','#28b34e','#969696'],
+            borderWidth: 0,
+          }],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          cutout: "62%",
+          cutout: '62%',
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: "#4f4f4f",
+              backgroundColor: '#4f4f4f',
               displayColors: false,
-              callbacks: {
-                label: (ctx) => `${ctx.label}：${ctx.raw} 筆`,
-              },
+              callbacks: { label: (ctx) => `${ctx.label}：${ctx.raw} 筆` },
             },
           },
         },
