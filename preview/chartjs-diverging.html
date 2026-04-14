@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今日超賣管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Noto Sans TC', 'Noto Sans', sans-serif; }
+
+    /* Card variants */
+    .card { background: #fff; border: 1px solid #e1e1e0; border-radius: 12px; overflow: hidden; }
+
+    /* Legend swatch */
+    .swatch { display: inline-block; width: 32px; height: 14px; border-radius: 2px; }
+
+    /* State tabs */
+    .tab-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .tab { padding: 6px 14px; border-radius: 9999px; border: 1px solid #d1d1d1;
+           cursor: pointer; font-size: 13px; color: #454545; background: #fff; }
+    .tab.active { background: #454545; color: #fff; border-color: #454545; }
+
+    /* Tooltip custom style */
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(50,50,50,0.92);
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      white-space: nowrap;
+      transform: translateY(-50%);
+      transition: opacity 0.15s;
+    }
+    .chart-tooltip::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 6px 0 6px 6px;
+      border-style: solid;
+      border-color: transparent transparent transparent rgba(50,50,50,0.92);
+    }
+    .chart-tooltip.hidden { opacity: 0; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-10 flex flex-col items-center">
+
+  <h1 class="text-xl font-semibold text-gray-700 mb-6">chartjs – diverging</h1>
+
+  <!-- State tabs -->
+  <div class="tab-bar" id="tabs">
+    <button class="tab active" data-state="default">Default</button>
+    <button class="tab" data-state="md">md</button>
+    <button class="tab" data-state="hover">hover</button>
+    <button class="tab" data-state="sm">sm</button>
+    <button class="tab" data-state="sm-hover">sm hover</button>
+  </div>
+
+  <!-- Chart card -->
+  <div id="card-wrapper">
+    <div class="card" id="chart-card" style="width:525px; padding: 20px 20px 16px 20px;">
+      <!-- Title -->
+      <p id="chart-title" class="text-center text-xs mb-3" style="color:#454545;">
+        2026-01-31 今日超賣管理
+      </p>
+
+      <!-- Y-labels + Chart area side by side -->
+      <div class="flex" style="gap:0;">
+        <!-- Y labels column -->
+        <div id="y-labels" class="flex flex-col justify-around" style="width:80px; padding-right:8px;">
+          <!-- rendered by JS -->
+        </div>
+
+        <!-- Chart + x-axis -->
+        <div class="flex-1 flex flex-col">
+          <div style="position:relative; flex:1;">
+            <canvas id="chart"></canvas>
+            <!-- Custom tooltip -->
+            <div class="chart-tooltip hidden" id="tooltip">
+              <div id="tt-title" style="font-weight:500;"></div>
+              <div id="tt-body"></div>
+            </div>
+          </div>
+          <!-- X-axis ticks -->
+          <div id="x-ticks" class="flex justify-between" style="padding: 4px 0 0 0;">
+            <!-- rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- X-axis unit label -->
+      <p class="text-center text-xs mt-2" style="color:#888888;">房間數量</p>
+
+      <!-- Legend -->
+      <div class="flex justify-center gap-6 mt-3" id="legend">
+        <div class="flex items-center gap-2">
+          <span class="swatch" style="background:#e12129;"></span>
+          <span class="text-xs" style="color:#454545;">已超賣</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="swatch" style="background:#2aca18;"></span>
+          <span class="text-xs" style="color:#454545;">已賣出</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="swatch" style="background:#888888;"></span>
+          <span class="text-xs" style="color:#454545;">當日庫存</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ─── Data ────────────────────────────────────────────────────────────────────
+  const CATEGORIES = ['威尼斯雙人', '夏慕尼四人', '義大利三人', '保留房二人', '保留房四人'];
+
+  // Positive = 當日庫存 (gray, left)
+  // Negative = 已賣出 (green, right) or 已超賣 (red, right)
+  const DATA = {
+    stock:     [10, 7, 12, 6, 3],   // 當日庫存
+    sold:      [-10, null, -8, -5, null],  // 已賣出
+    oversold:  [null, -9, null, null, null], // 已超賣
+  };
+
+  const COLORS = {
+    stock:    '#888888',
+    sold:     '#2aca18',
+    oversold: '#e12129',
+    grid:     '#e1e1e0',
+    zeroLine: '#b0b0b0',
+    text:     '#454545',
+    subtext:  '#888888',
+  };
+
+  const X_MIN = -10, X_MAX = 15;
+  const X_TICKS = [15, 10, 5, 0, -5, -10];
+
+  // ─── State config ─────────────────────────────────────────────────────────────
+  // Each state controls dimensions & whether tooltip is pre-shown
+  const STATES = {
+    'default':  { cardWidth: 525, rowH: 40, showTooltip: false },
+    'md':       { cardWidth: 525, rowH: 60, showTooltip: false },
+    'hover':    { cardWidth: 525, rowH: 40, showTooltip: true  },
+    'sm':       { cardWidth: 342, rowH: 40, showTooltip: false },
+    'sm-hover': { cardWidth: 342, rowH: 40, showTooltip: true  },
+  };
+
+  let currentState = 'default';
+  let chartInstance = null;
+
+  // ─── Build chart ──────────────────────────────────────────────────────────────
+  function buildChart(state) {
+    const cfg = STATES[state];
+    const card = document.getElementById('chart-card');
+    const canvas = document.getElementById('chart');
+    const tooltip = document.getElementById('tooltip');
+    const yLabels = document.getElementById('y-labels');
+    const xTicks = document.getElementById('x-ticks');
+
+    // Card width
+    card.style.width = cfg.cardWidth + 'px';
+
+    // Canvas height
+    const canvasH = CATEGORIES.length * cfg.rowH;
+    canvas.style.height = canvasH + 'px';
+    canvas.height = canvasH * window.devicePixelRatio;
+
+    // Y labels (manual, aligned to rows)
+    yLabels.innerHTML = '';
+    const yLabelW = state.startsWith('sm') ? 60 : 80;
+    document.getElementById('y-labels').style.width = yLabelW + 'px';
+    CATEGORIES.forEach(cat => {
+      const div = document.createElement('div');
+      div.textContent = cat;
+      div.style.cssText = `
+        font-size: 12px; color: ${COLORS.text};
+        height: ${cfg.rowH}px; display:flex; align-items:center;
+        justify-content: flex-end; white-space: nowrap;
+      `;
+      yLabels.appendChild(div);
+    });
+
+    // X ticks
+    xTicks.innerHTML = '';
+    X_TICKS.forEach(v => {
+      const span = document.createElement('span');
+      span.textContent = v;
+      span.style.cssText = `font-size:11px; color:${COLORS.text};`;
+      xTicks.appendChild(span);
+    });
+
+    // Destroy old chart
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+    const ctx = canvas.getContext('2d');
+    chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: CATEGORIES,
+        datasets: [
+          {
+            label: '當日庫存',
+            data: DATA.stock,
+            backgroundColor: COLORS.stock,
+            borderRadius: 2,
+            borderSkipped: false,
+          },
+          {
+            label: '已賣出',
+            data: DATA.sold,
+            backgroundColor: COLORS.sold,
+            borderRadius: 2,
+            borderSkipped: false,
+          },
+          {
+            label: '已超賣',
+            data: DATA.oversold,
+            backgroundColor: COLORS.oversold,
+            borderRadius: 2,
+            borderSkipped: false,
+          },
+        ],
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: false,
+        maintainAspectRatio: false,
+        animation: { duration: 200 },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: false, // use external tooltip
+            external: externalTooltip,
+          },
+        },
+        scales: {
+          x: {
+            stacked: true,
+            reverse: true,
+            min: X_MIN,
+            max: X_MAX,
+            display: false, // we render ticks manually
+            grid: {
+              color: ctx => {
+                const v = ctx.tick?.value;
+                return v === 0 ? COLORS.zeroLine : COLORS.grid;
+              },
+              lineWidth: ctx => ctx.tick?.value === 0 ? 1.5 : 1,
+              drawBorder: false,
+            },
+            border: { display: false },
+          },
+          y: {
+            stacked: true,
+            display: false, // we render labels manually
+            grid: { display: false },
+            border: { display: false },
+          },
+        },
+      },
+    });
+
+    // Pre-show tooltip for hover states
+    tooltip.classList.add('hidden');
+    if (cfg.showTooltip) {
+      setTimeout(() => showStaticTooltip(cfg.rowH), 250);
+    }
+  }
+
+  // ─── External tooltip ─────────────────────────────────────────────────────────
+  function externalTooltip(context) {
+    const tooltip = document.getElementById('tooltip');
+    const { chart, tooltip: model } = context;
+
+    if (model.opacity === 0) {
+      tooltip.classList.add('hidden');
+      return;
+    }
+
+    const item = model.dataPoints?.[0];
+    if (!item) return;
+
+    renderTooltip(tooltip, item.dataset.label, Math.abs(item.parsed.x));
+
+    // Position: attach to left of the negative bar (at x=0 line)
+    const zeroX = chart.scales.x.getPixelForValue(0);
+    const barY  = chart.scales.y.getPixelForValue(item.index);
+    const canvasRect = chart.canvas.getBoundingClientRect();
+    const wrapRect  = document.getElementById('chart-card').getBoundingClientRect();
+
+    const relX = (canvasRect.left - wrapRect.left) + zeroX - 8;
+    const relY = (canvasRect.top  - wrapRect.top)  + barY;
+
+    tooltip.style.left = relX + 'px';
+    tooltip.style.top  = relY + 'px';
+    tooltip.classList.remove('hidden');
+  }
+
+  function renderTooltip(el, label, value) {
+    const title = label === '已超賣' ? '超賣' : label;
+    document.getElementById('tt-title').textContent = title;
+    document.getElementById('tt-body').textContent  = `${value} 間`;
+    el.style.right = 'auto';
+  }
+
+  // Show static tooltip for hover states (fixed on 夏慕尼四人 / 已超賣)
+  function showStaticTooltip(rowH) {
+    if (!chartInstance) return;
+    const tooltip = document.getElementById('tooltip');
+    renderTooltip(tooltip, '已超賣', 9);
+
+    const zeroX = chartInstance.scales.x.getPixelForValue(0);
+    const barY  = chartInstance.scales.y.getPixelForValue(1); // index 1 = 夏慕尼四人
+    const canvasRect = chartInstance.canvas.getBoundingClientRect();
+    const wrapRect   = document.getElementById('chart-card').getBoundingClientRect();
+
+    tooltip.style.left = ((canvasRect.left - wrapRect.left) + zeroX - 8) + 'px';
+    tooltip.style.top  = ((canvasRect.top  - wrapRect.top)  + barY) + 'px';
+    tooltip.classList.remove('hidden');
+  }
+
+  // ─── Tab switching ────────────────────────────────────────────────────────────
+  document.getElementById('tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    currentState = btn.dataset.state;
+    buildChart(currentState);
+  });
+
+  // Initial render
+  buildChart('default');
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+<svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rectangle 2: left narrow strip (sidebar panel) -->
+  <rect x="0.5" y="0.5" width="8" height="19" rx="1.5" fill="white" stroke="black"/>
+  <!-- Rectangle 1: right wide body (content area) -->
+  <rect x="3.93" y="0.5" width="19.57" height="19" rx="1.5" fill="white" stroke="black"/>
+</svg>
