@@ -77,16 +77,16 @@
 | 子項目列表 x | `24px`（連接線寬 16 + gap 8） | — |
 | 子項目高度 | `16px`（sm 字號） | — |
 | 子項目間距 | `8px`（y:0, y:24，高 16 → gap 8） | `Spacing/8` |
-| 子項目文字 | `Texts / sm (12px Regular)`，#454545 | — |
+| 子項目文字 | `Texts / sm (12px Regular)`，`#2178cf` | `Color/MenuItem/Default` |
 
 ### 子項目狀態
 
 | 狀態 | 背景 | 說明 |
 |---|---|---|
-| 選中（active） | `#e1e1e0` | `Color/Neutral/100`，含 `icons/cursor` 疊加 |
-| 未選中 | `#ffffff` | `Color/Neutral/0` |
+| 選中（active） | 透明（無 fill） | 顯示父層黃底 `#f7d275`（`Color/Tab/Yellow`） |
+| 未選中 / hover | `#ffffff` | `Color/Neutral/0` |
 
-> `icons/cursor`（24×24）疊加於選中子項目上方（x:47, y:8.77），代表游標 hover 狀態的視覺提示。
+> `icons/cursor`（24×24）疊加於選中子項目右側（x:47, y:8.77），代表游標 hover 狀態的視覺提示。
 
 ---
 
@@ -103,7 +103,7 @@
 
 1. **收合/展開切換**：點擊主項目列 toggle `state`，icon 從 right → down
 2. **左側縱線**：`border-l border-[#b0b0b0]`，高度隨子項目數量延伸
-3. **選中子項目**：`bg-[#e1e1e0]`，其餘 `bg-white hover:bg-[#F6FAFD]`
+3. **選中子項目**：背景透明（父層 `#f7d275`），其餘 `bg-white hover:bg-[#F6FAFD]`
 4. **icons/cursor**：hover 效果，實作用 CSS `:hover` 顯示游標 icon 或改變 cursor 樣式
 
 ---

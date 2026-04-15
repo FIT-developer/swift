@@ -2,15 +2,19 @@
 
 **Figma Node ID**: `71:396`（COMPONENT_SET）  
 **Type**: COMPONENT_SET  
-**最後同步**: 2026-04-13
+**最後同步**: 2026-04-15
 
 ---
 
 ## 概述
 
 `Tooltips` 提供 UI 提示泡泡，共 **11 個 variants**（屬性 `state`）。  
-分為三種外觀：**深色 sm**（一般 UI）、**黃色 md**（資料標注）、**圖表專用**（雙行資料）。  
+分為三種外觀：**深色 sm**（一般 UI）、**黃色 md**（設計稿標注專用，不渲染到 HTML）、**圖表專用**（雙行資料）。  
 箭頭方向（上/下/左/右）決定 tooltip 出現的相對位置。
+
+> **⚠️ 重要分類：**
+> - **實作用**（會出現在 HTML）：深色 sm 系列（Default / down / right / left / state6）+ 圖表系列（chartjs line / chartjs bar）
+> - **設計標注用**（只存在設計稿，**不實作到 HTML**）：黃色 md 系列（md up / md right / md left / md down）
 
 ---
 
@@ -26,7 +30,7 @@
 | `state=left` | `194:2195` | 向左（←） | 左側，x:-7.36 |
 | `state=state6` | `194:2191` | 向下（↓） | 下方中央（同 down） |
 
-### 黃色（Yellow）md — bg `#f9e616`，文字 `#454545`，20px，stroke `#000000`
+### 黃色（Yellow）md — bg `#f9e616`，文字 `#454545`，20px，stroke `#000000` ⚠️ 設計稿標注專用，不渲染到 HTML
 
 | Variant 名稱 | Node ID | 箭頭方向 |
 |---|---|---|
@@ -64,7 +68,7 @@
 
 ---
 
-## 黃色 md Tooltips
+## 黃色 md Tooltips（設計稿標注專用，不實作到 HTML）
 
 ```
 [COMPONENT] Tooltips — md up/right/left/down (96×31px)
@@ -126,7 +130,7 @@
 | chartjs - line 資料點 | `state=chartjs line`（↑） | 顯示日期 + 數值 |
 | chartjs - bar 長條 | `state=chartjs bar`（→） | 顯示日期 + 數值 |
 | 其他 UI icon | 深色 sm 系列 | 依方向選擇 |
-| 資料標注 | 黃色 md 系列 | 較大字號，黃底黑邊 |
+| 資料標注（設計稿） | 黃色 md 系列 | **設計稿標注專用，不出現在 HTML** |
 
 ---
 

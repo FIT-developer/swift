@@ -26,6 +26,21 @@
 
 ---
 
+## 全站 Backdrop（遮罩）規格
+
+> **全站統一**：所有 Modal 共用同一 backdrop 設定，不因 Modal 內容不同而異。
+
+| 屬性 | 值 | 說明 |
+|---|---|---|
+| HTML 實作 | `rgba(0, 0, 0, 0.4)` | 半透明黑色遮罩，全站統一 |
+| z-index | `60`（高於 mobile sidebar `50`） | — |
+| 定位 | `position: fixed; inset: 0` | 全屏覆蓋 |
+| 關閉行為 | 點擊 backdrop 關閉 Modal | — |
+
+> **Figma 設計稿說明**：設計稿中以全屏 `#d9d9d9` 矩形（Rectangle 3）+ `Subtract` Boolean Operation 表示遮罩示意，**純粹用於 UI 設計稿交付展示**，不對應 HTML 的實際色值，實作時以上方 `rgba(0, 0, 0, 0.4)` 為準。
+
+---
+
 ## 共用外框
 
 | 屬性 | 值 | Token |
@@ -197,7 +212,7 @@ Modal (320×455px)
 
 ## 實作注意事項
 
-1. **Overlay**：Modal 背後需有半透明遮罩（`bg-black/40` 或 `rgba(0,0,0,0.4)`）
+1. **Overlay**：全站統一使用 `rgba(0, 0, 0, 0.4)` 半透明黑色遮罩（見「全站 Backdrop 規格」）
 2. **置中**：`position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)`
 3. **關閉**：點 icons/close 或遮罩關閉 Modal
 4. **Tab 切換**：password / nick name / IP 共用同一 Modal，tab 控制顯示內容
@@ -205,4 +220,4 @@ Modal (320×455px)
 
 ---
 
-*Generated from Figma component set · Updated 2026-04-13*
+*Generated from Figma component set · Updated 2026-04-13 · Backdrop 規格補充 2026-04-15*

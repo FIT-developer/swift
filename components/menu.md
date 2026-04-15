@@ -227,4 +227,124 @@ mobile (1146px) — 獨立響應式版本，由視窗寬度決定，Folder 不�
 
 ---
 
-*Generated from Figma COMPONENT_SET `57:439` on 2026-04-13*
+## Interactions（互動規格）
+
+> 來源：Figma Section `Menu states - Interactions`（`194:3863`），包含 3 個 menu instance + 2 個 Modal + connector 說明  
+> Tooltips 僅作為設計交付說明用，**不會出現在 HTML 呈現**
+
+### 1. Logo
+
+| 觸發 | 效果 |
+|---|---|
+| 點擊 | 回後台首頁（navigate to dashboard root） |
+
+---
+
+### 2. Account 區 — Logout icon（`icons/logout`）
+
+| 觸發 | 效果 |
+|---|---|
+| Hover | 顯示 Tooltip `登出`（dark bg `#4f4f4f`，text `#e1e1e0`，12px，6px radius，arrow 朝上） |
+| 點擊 | 開啟 **確定登出？** Modal（見下方 Modal 規格） |
+
+---
+
+### 3. Account 區 — Switch icon（`icons/switch`）
+
+| 觸發 | 效果 |
+|---|---|
+| Hover | 顯示 Tooltip（同 logout tooltip 樣式，文字：更換帳號） |
+| 點擊 | 開啟 **帳號切換** Modal（見下方 Modal 規格） |
+
+---
+
+### 4. Dropdown aside（主項目）nav item
+
+| 觸發 | 效果 |
+|---|---|
+| Hover | 背景變色（`項目 Hover` state，Figma 定義為 `extend hover` variant） |
+| 點擊（`icons/right` 收合） | 展開 accordion，圖示換為 `icons/down`（旋轉 180°） |
+| 點擊（`icons/down` 展開） | 收合 accordion，圖示換回 `icons/right` |
+
+---
+
+### 5. Sub-items（子項目）
+
+| 狀態 | 背景 | 說明 |
+|---|---|---|
+| Default | `#ffffff`（白色 fill） | 未選取、未 hover |
+| Hover | `#ffffff`（白色 fill）+ cursor pointer | `Hover 內容` 標記，滑鼠游標進入 |
+| Selected | 透明（無 fill） | 顯示下方黃底 `#f7d275`（`sub-item-selected` class） |
+
+> Sub-item text color 固定為 `#2178cf`，字重 Regular 400，12px（sm）。
+
+---
+
+### 6. Modals
+
+#### Modal A：確定登出？
+
+| 屬性 | 值 |
+|---|---|
+| 尺寸 | `320 × 109px` |
+| Figma Instance | `194:4606` |
+| 觸發方式 | Logout icon 點擊 |
+
+**結構：**
+
+```
+Modal (320×109, bg #ffffff)
+├── Frame 12 — 上半部
+│   ├── Frame 10 (padding 12px)
+│   │   ├── Texts [md] "確定登出？" — SemiBold 20px #454545
+│   │   └── icons/close  24×24
+│   └── Texts (padding 12px) — body 說明文字（placeholder，實作自訂）
+└── Frame 11 (padding 12px) — 按鈕列
+    ├── Button Y/N "取消"  bg #d1d1d1  text #454545
+    └── Button Y/N "確定"  bg #454545  text #e1e1e0
+```
+
+#### Modal B：帳號切換
+
+| 屬性 | 值 |
+|---|---|
+| 尺寸 | `320 × 277px` |
+| Figma Instance | `194:4750` |
+| 觸發方式 | Switch icon 點擊 |
+
+**結構：**
+
+```
+Modal (320×277, bg #ffffff)
+├── Frame 12 — 上半部
+│   ├── Frame 10 (padding 12px)
+│   │   ├── Texts [md] "帳號切換" — SemiBold 20px #454545
+│   │   └── icons/close  24×24
+│   └── content swap (padding 12px, border #d1d1d1)
+│       ├── Frame 13
+│       │   ├── Texts [base] "暱稱"  #454545
+│       │   └── Select — 顯示 "xiaomi999"（帳號下拉）
+│       └── Frame 14
+│           ├── Texts [base] "密碼"  #454545
+│           └── Input — 顯示 "********"（密碼輸入）
+└── Frame 11 (padding 12px) — 按鈕列
+    ├── Button Y/N "取消"  bg #d1d1d1  text #454545
+    └── Button Y/N "確定"  bg #454545  text #e1e1e0
+```
+
+---
+
+## 需要補讀的 Components
+
+以下 component 在此互動規格中被引用，請個別指向後補充規格：
+
+| Component | 目前狀態 | 需補充事項 |
+|---|---|---|
+| `Tooltip`（深色 hover tooltip） | `components/tooltips.md` 存在 | 深色 variant（bg `#4f4f4f`）樣式確認 |
+| `Modal`（確定/取消）| `components/modal.md` 存在 | 兩個 modal variant（登出/帳號切換）樣式確認 |
+| `Button Y/N`（確定/取消按鈕）| `components/button-yn.md` 存在 | 兩種 variant 色彩規格確認 |
+| `Dropdown aside`（子項目狀態）| `components/dropdown-aside.md` 存在 | sub-item selected/hover 狀態規格確認 |
+
+---
+
+*Generated from Figma COMPONENT_SET `57:439` on 2026-04-13 · Interactions updated from `194:3863` on 2026-04-15*

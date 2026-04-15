@@ -10,7 +10,39 @@
 
 **當前任務**：`preview/landing.html` 持續修正中，桌面與行動版皆在同一檔案。
 
-**Figma 當前頁面**：Landing page - 0414 extend frame
+**Figma 當前頁面**：Function buttons Interactions - administer（`194:6726`）
+
+---
+
+## Session 6 交接（2026-04-15）
+
+### 本次完成
+
+| 項目 | 說明 |
+|---|---|
+| Modal C — Bulletin vendor JS 補完 | 開啟觸發、tab 切換、row 展開/收合 |
+| Modal D — Bulletin Administer 新增 | `icons/message` 觸發，9 tabs，4 欄表格，雙列預設展開，mobile 滿版 |
+| Modal A/B mobile 尺寸確認 | 原設計大小置中（不滿版） |
+| Table 格線規範 | 僅行間水平線，無垂直線，最後一行無底線，header 保留 `bg-[#fef6ee]` |
+| Tab / 控制按鈕列規範 | `whitespace-nowrap` + `w-max` + `overflow-x-auto` 包層 |
+| Modal 內 Search Input 規範 | mobile `flex-col` / `w-full`，sm+ 並排 `w-[124px]` |
+| 展開內文規範 | div row group，data 行各自 `overflow-x-auto`，展開內文在外側自然填滿 |
+| `specs/html-conventions.md` 新建並持續更新 | 全站 HTML 實作規範文件 |
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| 其餘 function icons | `icons/person-md`、`icons/system` 對應 modal 尚未讀取 |
+| Sidebar sub-item 選中切換 | 目前僅靜態 CSS |
+| Logo click | 回後台首頁行為 |
+| Main nav hover state | 視覺反饋 |
+
+### 重要規則提醒
+
+- **任何 modal 實作前**：詢問 mobile 滿版或原設計大小
+- **展開內文**：div row group，不放進 `min-w-max` 表格
+- **全站 HTML 規範**：見 `specs/html-conventions.md`
 
 ---
 
@@ -88,6 +120,11 @@
 | 2026-04-13 | Chart 圖表色從 Bootstrap token 分離，建立獨立 Color/Chart/* group | 語意獨立，避免混用 |
 | 2026-04-13 | Color/Scrollbar/Default = #D9D9D9，非 Figma variable，HTML 自動生成不需引用 | 捲動條由瀏覽器渲染，Figma 視覺稿用 |
 | 2026-04-13 | Mobile 範圍：375px–768px；desktop：769px+ | 最小寬度 375px，無更小尺寸 |
+| 2026-04-15 | Modal backdrop 全站統一 `rgba(0,0,0,0.4)`，z-index 60；Figma 的 #d9d9d9 Subtract 僅為設計稿交付示意，不對應 HTML 色值 | 見 `components/modal.md` |
+| 2026-04-15 | Modal mobile 尺寸規則：個別設定，施作前詢問；Bulletin modal mobile 滿版，Modal A/B 原設計大小置中 | 見 `specs/html-conventions.md` |
+| 2026-04-15 | Table 格線規範：僅行間水平線，無垂直分隔，最後一行不加底線（下方有 border-t 元素時）；header 保留 `bg-[#fef6ee]` | 見 `specs/html-conventions.md` |
+| 2026-04-15 | 展開內文用 div row group + 各自 overflow-x-auto；不放進 min-w-max 表格；文字自然向下流動 | 見 `specs/html-conventions.md` |
+| 2026-04-15 | Tab 列：whitespace-nowrap + w-max + overflow-x-auto；Search input：mobile w-full / sm+ w-[124px] | 見 `specs/html-conventions.md` |
 
 ---
 
@@ -140,6 +177,49 @@
 ---
 
 ## 交接筆記區
+
+### 本次進度交接（2026-04-15 session 5）
+
+**已完成**：
+- 讀取 Figma `Menu states - Interactions`（`194:3863`）：
+  - 解析 3 個 menu 互動狀態：hover tooltip、登出 modal flow、帳號切換 modal flow
+  - 解析 7 個 Tooltip 標注（確認 md 系列為設計稿專用，不實作）
+  - 解析 2 個 Modal instance（確定登出 / 帳號切換）
+- 更新規格文件：
+  - `components/menu.md`：新增「## Interactions」完整互動規格區段
+  - `components/tooltips.md`：新增 md 系列設計稿標注說明，明確標示不實作到 HTML
+  - `components/dropdown-aside.md`：修正子項目文字色（`#454545` → `#2178cf`）、選中背景（`#e1e1e0` → 透明顯示 `#f7d275`）
+- 確認 `components/modal.md`、`components/button-yn.md` 已完整，不需重讀
+- `preview/landing.html` 實作兩個 modal 互動：
+  - Desktop sidebar / compact bar / mobile panel 的 logout、switch icon 加 ID
+  - Desktop sidebar logout icon 加 hover tooltip（dark `#4f4f4f`，箭頭向下）
+  - Modal A「確定登出？」：header + body + 取消/確定 footer，水平垂直置中
+  - Modal B「帳號切換」：header + 暱稱 Select + 密碼 Input + 取消/確定 footer
+  - 關閉方式：close button、取消按鈕、backdrop click、Escape 鍵
+- 資料夾正規化（session 4 已完成，本次確認無遺漏）
+
+**進行中**：
+- landing.html 互動功能持續補齊，對應 Menu states - Interactions 規格
+
+**下一步應做**：
+1. 讀取 Account component（`components/account.md` 可能需補充 hover / tooltip 狀態）
+2. 讀取 Dropdown aside 互動規格（sub-item click → selected state 切換邏輯）
+3. 確認 landing.html 的 sub-item 點擊是否實作 selected state 切換（目前只有靜態 CSS）
+4. 繼續補齊其他按鈕互動（logo click、主項目 hover state）
+5. chartjs-diverging / chartjs-doughnut component spec md 補齊
+
+**重要決定**：
+- Tooltips `md` 系列（md up/down/left/right）確認為設計稿標注用，不實作到 HTML
+- Modal 置中：`position: fixed; inset: 0; display: flex; align-items: center; justify-content: center`
+- 三個觸發點（desktop sidebar / compact bar / mobile panel）共用同一 modal，用 ID 統一管理
+
+**未解問題**：
+- `Color/Surface/Secondary`（#F9E616）、`Color/Surface/Accent`（#42EBE9）語意未確認
+- `Spacing/18`、`Spacing/76` 用途未說明
+- desktop 版 floatIcons/ai 是否也應顯示
+- logo click 是否需要實際連結（目前純視覺）
+
+---
 
 ### 本次進度交接（2026-04-15 session 4）
 
