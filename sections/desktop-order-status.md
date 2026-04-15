@@ -63,7 +63,7 @@ Desktop Row 1 左欄。顯示今日各類訂單的即時數量，由 `Title` + 5
 | 列高 | `34px` | — |
 | 列間距 | `54 - 34 = 20px` | `Spacing/20` |
 | Background | `#F6FAFD` | `Color/Neutral/75` |
-| Border | `#E05216` | `Color/Surface/Brand-600-Active` |
+| Border | **左側僅一條** `#E05216`，`2px`；其他三邊無 | `Color/Surface/Brand-600-Active` |
 | Padding | top/bottom `6px`、left/right `12px` | `Spacing/6`、`Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 
@@ -97,7 +97,10 @@ Desktop Row 1 左欄。顯示今日各類訂單的即時數量，由 `Title` + 5
 
 1. **Order rows 全寬**：`w-full` 填滿父容器去掉 padding 後的寬度
 2. **列間距**：`gap-5`（20px）
-3. **此 section 在 Mobile 不存在**；Mobile 版 Order status 包含於 `mobile-top` section 中
+3. **左側 border 僅**：`border-l-2 border-[#E05216]`，不加 `border` 全框
+4. **Badge Active**：`bg-[#E12129] text-[#F6F6F6] rounded`（4px radius），值 ≤ 99 顯示數字，> 99 顯示 `99+`
+5. **Badge Empty**：`bg-[#D1D1D1] text-[#454545] rounded-lg`（8px radius），顯示 `0`
+6. **此 section 在 Mobile 不存在**；Mobile 版 Order status 包含於 `mobile-top` section 中
 
 ---
 

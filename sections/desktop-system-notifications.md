@@ -79,10 +79,45 @@ Desktop Row 1 右欄。顯示系統層級的警示通知（授權數量、簡訊
 
 ---
 
+## Input Chip 規格（inline badge）
+
+> `Input — Default` variant 在此作為彩色 chip 使用，填色覆寫原始白底。
+
+| 語意 | 文字 | bg | Token | 用於 |
+|---|---|---|---|---|
+| 類型：簡訊 | `簡訊` | `#34C759` | `Color/Accent/Green` | Row 2, 3 |
+| 嚴重度：總部 | `總部` | `#E12129` | `Color/Surface/Negative` | Row 2 |
+| 嚴重度：分館 | `分館` | `#F28B45` | `Color/Surface/Brand-400-Hover` | Row 3 |
+| 類型：網址 | `網址` | `#2178CF` | `Color/MenuItem/Default` | Row 4–7 |
+
+共用 chip 樣式：`height: 28px`、`padding: 6px 12px`、`border-radius: 6px`、`font-size: 12px`、`color: #F6F6F6`
+
+---
+
+## 通知列 HTML 實作規格
+
+| 列 | 結構 | chip |
+|---|---|---|
+| 1 | `序號` + 純文字（`#E12129` 強調數字） | 無 |
+| 2 | `序號` + GREEN chip + RED chip + 文字 | 簡訊（綠）、總部（紅） |
+| 3 | `序號` + GREEN chip + ORANGE chip + 文字 | 簡訊（綠）、分館（橘） |
+| 4–7 | `序號` + BLUE chip + 文字（日期 `#2178CF`，天數 `#E12129`） | 網址（藍） |
+
+**HTML 語意選用**：
+- 列表容器：`<ol class="list-none">` — 有序列表，符合編號語意
+- 日期值：`<time>` — 語意化時間標記
+- 強調數字：`<span class="text-[#E12129]">` — 僅色彩強調，不改變字重
+- 藍色日期：`<time class="text-[#2178CF]">` — 日期 + 顏色合一
+- Chip：`<span class="inline-flex ...">` — inline badge，無互動
+
+---
+
 ## 實作注意事項
 
-1. **通知列為混合內容**：純文字、inline Input chip、彩色 Texts 混合；詳見 `components/system-notifications-Specification.md`
-2. **右側捲動**：若通知列超過容器高度，加 `overflow-y: auto`；原生捲動條取代 Figma 的指示矩形
+1. **chip 位置**：chip 在序號之後、說明文字之前（非行末）
+2. **文字大小**：通知文字為 `base`（16px），chip 內文字為 `sm`（12px）
+3. **右側捲動**：若通知列超過容器高度，加 `overflow-y: auto`；原生捲動條取代 Figma 的指示矩形
+4. **不使用 `<strong>` 改字重**：數字強調只需換色，字重保持 Regular 400
 
 ---
 

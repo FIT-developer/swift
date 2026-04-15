@@ -20,45 +20,46 @@
 |---|---|---|
 | Design Tokens | `specs/assets/tokens.md` | 2026-04-13 |
 | Icon System（87 個） | `specs/icons.md` + `preview/assets/icons/*.svg` | 2026-04-13 |
-| menu component | `components/menu-Specification.md` | 2026-04-13 |
+| menu component | `components/menu.md` | 2026-04-13 |
 | 開發規則 | `start.md` | 2026-04-13 |
-| Order component | `components/order-Specification.md` | 2026-04-13 |
-| System notifications component | `components/system-notifications-Specification.md` | 2026-04-13 |
-| Revenue trends section | `components/revenue-trends-Specification.md` | 2026-04-13 |
-| Card component | `components/card-Specification.md` | 2026-04-13 |
-| Input component | `components/input-Specification.md` | 2026-04-13 |
-| Statistics section | `components/statistics-Specification.md` | 2026-04-13 |
-| Folder component | `components/folder-Specification.md` | 2026-04-13 |
-| Mobile layout | `layout/mobile-Specification.md` | 2026-04-13 |
-| Mobile top section（Frame 25） | `section/mobile-top-Specification.md` | 2026-04-13 |
-| Mobile System notifications section | `section/mobile-system-notifications-Specification.md` | 2026-04-13 |
-| Mobile Revenue trends section | `section/mobile-revenue-trends-Specification.md` | 2026-04-13 |
-| Mobile Statistics section | `section/mobile-statistics-Specification.md` | 2026-04-13 |
-| Mobile floatIcons/ai section | `section/mobile-float-ai-Specification.md` | 2026-04-13 |
+| Order component | `components/order.md` | 2026-04-13 |
+| System notifications component | `components/system-notifications.md` | 2026-04-13 |
+| Revenue trends section | `components/revenue-trends.md` | 2026-04-13 |
+| Card component | `components/card.md` | 2026-04-13 |
+| Input component | `components/input.md` | 2026-04-13 |
+| Statistics section | `components/statistics.md` | 2026-04-13 |
+| Folder component | `components/folder.md` | 2026-04-13 |
+| Mobile layout | `layouts/mobile.md` | 2026-04-13 |
+| Mobile top section（Frame 25） | `sections/mobile-top.md` | 2026-04-13 |
+| Mobile System notifications section | `sections/mobile-system-notifications.md` | 2026-04-13 |
+| Mobile Revenue trends section | `sections/mobile-revenue-trends.md` | 2026-04-13 |
+| Mobile Statistics section | `sections/mobile-statistics.md` | 2026-04-13 |
+| Mobile floatIcons/ai section | `sections/mobile-float-ai.md` | 2026-04-13 |
 | chartjs - diverging preview HTML | `preview/chartjs-diverging.html` | 2026-04-14 |
 | chartjs - doughnut preview HTML | `preview/chartjs-doughnut.html` | 2026-04-14 |
-| Desktop layout spec | `layout/desktop-Specification.md` | 2026-04-14 |
-| Desktop Order status section spec | `section/desktop-order-status-Specification.md` | 2026-04-14 |
-| Desktop System notifications section spec | `section/desktop-system-notifications-Specification.md` | 2026-04-14 |
-| Desktop Revenue trends section spec | `section/desktop-revenue-trends-Specification.md` | 2026-04-14 |
-| Desktop Statistics section spec | `section/desktop-statistics-Specification.md` | 2026-04-14 |
+| Desktop layout spec | `layouts/desktop.md` | 2026-04-14 |
+| Desktop Order status section spec | `sections/desktop-order-status.md` | 2026-04-14 |
+| Desktop System notifications section spec | `sections/desktop-system-notifications.md` | 2026-04-14 |
+| Desktop Revenue trends section spec | `sections/desktop-revenue-trends.md` | 2026-04-14 |
+| Desktop Statistics section spec | `sections/desktop-statistics.md` | 2026-04-14 |
 | start.md 修正（Figma 讀取後必須立刻寫檔、交接寫入 progress.md） | `start.md` | 2026-04-14 |
-| Texts component | `components/texts-Specification.md` | 2026-04-13 |
-| Title component | `components/title-Specification.md` | 2026-04-13 |
-| Logo component | `components/logo-Specification.md` | 2026-04-13 |
-| Select component | `components/select-Specification.md` | 2026-04-13 |
-| Select content component | `components/select-content-Specification.md` | 2026-04-13 |
-| Dropdown aside component | `components/dropdown-aside-Specification.md` | 2026-04-13 |
-| Function icons component | `components/function-icons-Specification.md` | 2026-04-13 |
-| Customers service component | `components/customers-service-Specification.md` | 2026-04-13 |
-| Account component | `components/account-Specification.md` | 2026-04-13 |
-| Tooltips component | `components/tooltips-Specification.md` | 2026-04-13 |
-| Button Y/N component | `components/button-yn-Specification.md` | 2026-04-13 |
-| Modal component | `components/modal-Specification.md` | 2026-04-13 |
-| Bulletin - vendor component | `components/bulletin-vendor-Specification.md` | 2026-04-13 |
-| Bulletin - Administer component | `components/bulletin-administer-Specification.md` | 2026-04-13 |
-| Pagination component | `components/pagination-Specification.md` | 2026-04-13 |
+| Texts component | `components/texts.md` | 2026-04-13 |
+| Title component | `components/title.md` | 2026-04-13 |
+| Logo component | `components/logo.md` | 2026-04-13 |
+| Select component | `components/select.md` | 2026-04-13 |
+| Select content component | `components/select-content.md` | 2026-04-13 |
+| Dropdown aside component | `components/dropdown-aside.md` | 2026-04-13 |
+| Function icons component | `components/function-icons.md` | 2026-04-13 |
+| Customers service component | `components/customers-service.md` | 2026-04-13 |
+| Account component | `components/account.md` | 2026-04-13 |
+| Tooltips component | `components/tooltips.md` | 2026-04-13 |
+| Button Y/N component | `components/button-yn.md` | 2026-04-13 |
+| Modal component | `components/modal.md` | 2026-04-13 |
+| Bulletin - vendor component | `components/bulletin-vendor.md` | 2026-04-13 |
+| Bulletin - Administer component | `components/bulletin-administer.md` | 2026-04-13 |
+| Pagination component | `components/pagination.md` | 2026-04-13 |
 | Color/Tab/Yellow token | `specs/assets/tokens.md` | 2026-04-13 |
+| 資料夾結構正規化 + spec 檔案 rename | 全部 `*-Specification.md` → `*.md`；`section/`→`sections/`；`layout/`→`layouts/` | 2026-04-15 |
 
 ---
 
@@ -139,6 +140,40 @@
 ---
 
 ## 交接筆記區
+
+### 本次進度交接（2026-04-15 session 4）
+
+**已完成**：
+- `preview/landing.html` 補齊 mobile sidebar modal function icons：
+  - 新增 `Function icons` 列（bulletin / message / person-md / system），位於 modal header 與 account row 之間
+  - badge 值依 Figma "Landing page (mobile) - 0414 menu modal"：bulletin=99、message=0、person-md=99+、system=99+
+  - 四圖示 `justify-around`，橙色 `#EF6F25` badge，底部 border 分隔 account 區
+- 資料夾結構正規化（依 start.md 規範）：
+  - 所有 `*-Specification.md` → `*.md`（移除多餘後綴）
+  - `section/` → `sections/`（改為複數，符合 start.md 專案結構）
+  - `layout/` → `layouts/`（改為複數，符合 start.md 專案結構）
+  - 舊的空資料夾 `section/`、`layout/` 已刪除
+- `specs/progress.md` 所有檔案路徑已同步更新
+
+**進行中**：
+- landing.html 視覺細節持續對齊 Figma
+
+**下一步應做**：
+1. 瀏覽器測試 desktop sidebar collapse/expand + mobile modal 行為
+2. 確認 mobile AI 浮動按鈕是否在 desktop 也需顯示（目前 `md:hidden`）
+3. chartjs-diverging / chartjs-doughnut component spec md 補齊
+4. 確認 Color/Surface/Secondary (#F9E616)、Color/Surface/Accent (#42EBE9) 語意
+
+**重要決定**：
+- spec 檔案命名：一律不加 `-Specification` 後綴，資料夾分層已足夠說明語意
+- 資料夾使用複數：`sections/`、`layouts/`（與 start.md 專案結構一致）
+
+**未解問題**：
+- `Color/Surface/Secondary`（#F9E616）、`Color/Surface/Accent`（#42EBE9）語意未確認
+- `Spacing/18`、`Spacing/76` 用途未說明
+- desktop 版 floatIcons/ai 是否也應顯示
+
+---
 
 ### 本次進度交接（2026-04-14 session 3）
 

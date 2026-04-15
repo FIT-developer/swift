@@ -23,8 +23,8 @@
 | Padding | top/bottom `6px`、left/right `12px` | `Spacing/6`、`Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 | Background fill | `#F6FAFD` | `Color/Neutral/75` |
-| Border (stroke) | `#E05216` | `Color/Surface/Brand-600-Active` |
-| Border width | `1px` | — |
+| Border | **左側僅一條**，`#E05216`，`2px` | `Color/Surface/Brand-600-Active` |
+| 其他三邊 border | なし（無） | — |
 
 ---
 
@@ -51,7 +51,7 @@
 | Padding | top/bottom `2px`、left/right `4px` | `Spacing/2`、`Spacing/4` |
 | Text color | `#F6F6F6` | `Color/Neutral/50` |
 | Font size | `12px`（sm） | — |
-| 範例值 | `"99+"` | — |
+| 顯示規則 | 數值 ≤ 99 → 直接顯示；數值 > 99 → 顯示 `"99+"` | — |
 
 ### 狀態二：Empty（數量為 0）
 
@@ -62,7 +62,7 @@
 | Padding | top/bottom `2px`、left/right `4px` | `Spacing/2`、`Spacing/4` |
 | Text color | `#454545` | `Color/Neutral/800` |
 | Font size | `12px`（sm） | — |
-| 範例值 | `"0"` | — |
+| 顯示規則 | 固定顯示 `"0"` | — |
 
 ---
 
