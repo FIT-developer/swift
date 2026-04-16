@@ -88,7 +88,7 @@ Mobile 版統計圖表區塊。Desktop 的 2×2 grid 改為**單欄垂直堆疊*
 
 ## 各圖表規格（Mobile 尺寸）
 
-> 顏色、資料、軸標籤等完整規格見 `components/statistics-Specification.md`。  
+> 顏色、資料、軸標籤等完整規格見 `components/statistics.md`。  
 > 以下僅記錄 Mobile 尺寸（與 Desktop 不同）。
 
 | 圖表 | Desktop 尺寸 | Mobile 尺寸 | 說明 |

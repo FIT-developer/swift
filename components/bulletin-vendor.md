@@ -162,7 +162,7 @@
 | 元素 | 規格 |
 |---|---|
 | 筆數文字 | `"共 61 筆"`，base 16px，`#454545` |
-| Pagination | 320×46px instance，見 `components/pagination-Specification.md` |
+| Pagination | 320×46px instance，見 `components/pagination.md` |
 
 ### Pagination 預覽（內嵌）
 

@@ -223,9 +223,19 @@ Mobile 版與 Desktop 版**內容完全相同**，差異僅在佈局：
 | `Folder` component 功能與 spec | ⬜ 待讀取 Folder component |
 | floatIcons/ai 的點擊行為 | Figma 未定義互動 |
 | Revenue trends 捲動指示器（點點或箭頭） | Figma 未定義 |
-| Nav bar 的 Folder icon 展開後的 menu 樣式 | Figma 未定義 |
-| 375px 最小寬度下各元件的縮放行為 | Figma 未定義（示意稿為 768px） |
+| Nav bar 的 Folder icon 展開後的 menu 樣式 | 見 `components/folder.md`（待補讀） |
+| 375px 最小寬度下各元件的縮放行為 | ✅ 已定案：若有過度擠壓問題先 flag 給使用者確認，不自行決定（2026-04-16） |
 
 ---
 
-*Generated from Figma display page · Updated 2026-04-13（Landing page - mobile - 0116）*
+## Nav Bar Sticky 規格（2026-04-16 定案）
+
+Mobile nav bar（高度 48px）需 `position: sticky; top: 0`，讓使用者在任何捲動位置都可觸發側欄。
+
+**實作影響**：
+- nav bar 加 `sticky top-0 z-10`
+- nav bar 下方第一個元素加 `pt-12`（48px）補回被佔掉的空間，否則頂部內容會被遮住
+
+---
+
+*Generated from Figma display page · Updated 2026-04-13（Landing page - mobile - 0116）· Sticky nav 定案 2026-04-16*

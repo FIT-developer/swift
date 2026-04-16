@@ -71,10 +71,10 @@ Mobile 頂部區塊，由 **Nav bar**（Frame 4）與 **Order status** 兩個子
 |---|---|---|
 | 尺寸 | 24×24px | — |
 | 位置 | x:720, y:0 | 右邊對齊（744 - 24 = 720） |
-| 結構 | Rectangle 2（左條 9×24px）+ Rectangle 1（右體 20.57×24px） | 見 `components/folder-Specification.md` |
+| 結構 | Rectangle 2（左條 9×24px）+ Rectangle 1（右體 20.57×24px） | 見 `components/folder.md` |
 | 視覺語意 | 面板切換（側欄 + 內容區） | 點擊展開側邊 menu |
 
-> 完整規格見 `components/folder-Specification.md`。
+> 完整規格見 `components/folder.md`。
 
 ---
 
@@ -118,7 +118,7 @@ Mobile 頂部區塊，由 **Nav bar**（Frame 4）與 **Order status** 兩個子
 | 4 | 訂單異常 | 需處理的異常訂單 |
 | 5 | 今日退房 | 今日 check-out |
 
-> 完整 Order 列規格見 `components/order-Specification.md`。
+> 完整 Order 列規格見 `components/order.md`。
 
 ---
 
@@ -148,7 +148,7 @@ Mobile 頂部區塊，由 **Nav bar**（Frame 4）與 **Order status** 兩個子
 | 項目 | 狀態 |
 |---|---|
 | Folder icon 點擊後的展開 menu 樣式 | Figma 未定義 |
-| Nav bar 的 sticky / fixed 行為 | Figma 未定義 |
+| Nav bar 的 sticky / fixed 行為 | ✅ 已定案：`sticky top-0 z-10`，下方內容補 `pt-12`（2026-04-16） |
 | Logo 的連結目標 | Figma 未定義 |
 
 ---

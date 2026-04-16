@@ -56,9 +56,9 @@
 
 ---
 
-## Card Component（完整規格見 card-Specification.md）
+## Card Component（完整規格見 card.md）
 
-> 參見 `components/card-Specification.md`。以下為本節點使用的 variant 對照。
+> 參見 `components/card.md`。以下為本節點使用的 variant 對照。
 
 ### Card 容器樣式
 
@@ -192,7 +192,7 @@
 
 | 項目 | 狀態 |
 |---|---|
-| Card component set 完整 variants | ✅ 見 `card-Specification.md` |
+| Card component set 完整 variants | ✅ 見 `card.md` |
 | Card 連結 chip 的點擊互動（導航目標） | Figma 未定義 |
 | Hover 狀態 | Figma 未定義 |
 | Trend details Card 間距（精確值） | 推測 16px，待確認 |

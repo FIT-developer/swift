@@ -143,7 +143,7 @@ Select content (30×241px)
     └── TEXT "199) 地球村美日語太平洋旅店"  16px  Regular
 ```
 
-> 完整 `Select content` 規格見 `components/select-content-Specification.md`。
+> 完整 `Select content` 規格見 `components/select-content.md`。
 
 ---
 

@@ -78,7 +78,7 @@ Desktop Row 1 左欄。顯示今日各類訂單的即時數量，由 `Title` + 5
 | 5 | 今日逾期 | 今日逾期未處理數 |
 
 > 標籤文字為動態資料，以上為 Figma 示意稿的範例值。  
-> 完整 Order component 規格（badge 狀態等）見 `components/order-Specification.md`。
+> 完整 Order component 規格（badge 狀態等）見 `components/order.md`。
 
 ---
 

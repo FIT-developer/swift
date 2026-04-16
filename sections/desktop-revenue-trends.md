@@ -69,7 +69,7 @@ Desktop Row 2，全寬橫排。顯示今日 4 項 KPI 數據（營收、房價�
 ## 實作注意事項
 
 1. **Desktop**：`flex gap-4`（16px），4 卡不換行
-2. **Card 規格**：完整見 `components/card-Specification.md` 與 `components/revenue-trends-Specification.md`
+2. **Card 規格**：完整見 `components/card.md` 與 `components/revenue-trends.md`
 
 ---
 

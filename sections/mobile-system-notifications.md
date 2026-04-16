@@ -38,7 +38,7 @@ Mobile 版系統通知區塊，為 `System notifications` component instance 直
 
 ## 內容
 
-完整規格見 `components/system-notifications-Specification.md`。
+完整規格見 `components/system-notifications.md`。
 
 結構摘要：
 - **Title**：icons/label + "系統通知"（SemiBold 600，20px，#454545）

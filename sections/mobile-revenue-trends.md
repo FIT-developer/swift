@@ -93,7 +93,7 @@ Mobile 版營業資訊趨勢區塊。Card 排列改為**橫向捲動**，Card 4 
 | Card 3 | `tend up` | 今日住房率 | 同上 |
 | Card 4 | `over sold` | 今日超賣 | 標籤橙色，warning icon |
 
-> 完整 Card 規格見 `components/card-Specification.md`。
+> 完整 Card 規格見 `components/card.md`。
 
 ---
 

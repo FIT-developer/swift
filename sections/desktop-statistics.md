@@ -95,10 +95,10 @@ Desktop Row 3，全寬。顯示 4 個統計圖表，以 **2×2 grid** 排列：
 2. **右欄右對齊**：右欄圖表靠右，doughnut 不需填滿右欄寬度
 3. **各圖表使用 default variant**（525px 寬）；Mobile 用 sm variant（342px）
 4. **圖表各自的完整規格**：
-   - `components/chartjs-bar-Specification.md`
-   - `components/chartjs-line-Specification.md`
-   - `components/chartjs-diverging-Specification.md`（待補）
-   - `components/chartjs-doughnut-Specification.md`（待補）
+   - `components/chartjs-bar.md`
+   - `components/chartjs-line.md`
+   - `components/chartjs-diverging.md`（待補）
+   - `components/chartjs-doughnut.md`（待補）
 
 ---
 

@@ -14,6 +14,61 @@
 
 ---
 
+## 待處理問題清單（2026-04-16 整理）
+
+> 以下問題經 .md 全面掃描整理，需逐一確認或補讀 Figma 後解決。
+
+### 二、互動行為未定義
+
+| # | 問題 | 來源 |
+|---|---|---|
+| I1 | Folder icon 點擊後展開 menu 的樣式（桌面版收折後怎麼再展開） | `sections/mobile-top.md`, `components/folder.md` |
+| I2 | Logo 點擊後導航目標 | `sections/mobile-top.md` |
+| I3 | Function icons（bulletin / message / person / system）點擊行為 | `layouts/desktop.md` |
+| I4 | floatIcons/ai 點擊行為（開啟客服視窗？） | `components/float-icons-ai.md`, `sections/mobile-float-ai.md` |
+| I5 | Order badge 的 hover / click / 展開互動 | `components/order.md` |
+| I6 | Card link chip 點擊後的導航目標 | `components/card.md`, `components/revenue-trends.md` |
+| I7 | `icons/switch`（帳號切換）點擊後的畫面 | `components/account.md` |
+
+### 三、Component 狀態未定義
+
+| # | 問題 | 來源 |
+|---|---|---|
+| S1 | `input` — number variant 的 +/- 互動行為 | `components/input.md` |
+| S2 | `input` — text area 最大高度 / 展開行為 | `components/input.md` |
+| S3 | `input` — range（radio selected）觸發方式 | `components/input.md` |
+| S4 | `input` — 行動版佈局 | `components/input.md` |
+| S5 | `modal` — `icons/eye-closed` icon 尚未定義（密碼 toggle 只有 eye-open） | `components/modal.md` |
+| S6 | `system-notifications` — 捲動行為、空狀態、hover/click | `components/system-notifications.md` |
+| S7 | `statistics` 各圖表 hover / tooltip | `components/statistics.md` |
+| S8 | `folder` — active / 展開狀態外觀 | `components/folder.md` |
+
+### 四、Token 問題
+
+| # | 問題 | 來源 |
+|---|---|---|
+| T1 | `#D9D9D9`（system-notifications Rectangle 15）不在 tokens.md，與 `Neutral/200 = #D1D1D1` 數值不符，是獨立 token 還是 Figma 誤差？ | `components/system-notifications.md` |
+
+### 五、數值待確認（推測值）
+
+| # | 問題 | 來源 |
+|---|---|---|
+| V1 | `statistics` 2×2 grid gap：觀測約水平 80px、垂直 20px，未從 Figma 讀取精確值 | `components/statistics.md` |
+| V2 | `revenue-trends` Trend details card 間距：推測 16px | `components/revenue-trends.md` |
+| V3 | `mobile-float-ai` 的 fixed bottom 值：推測 `bottom-16 right-[65px]` | `sections/mobile-float-ai.md` |
+
+### 六、待補讀 Components（被引用但規格不完整）
+
+| # | 問題 | 來源 |
+|---|---|---|
+| R1 | `Tooltip` 深色 variant（bg `#4f4f4f`）樣式未確認 | `components/menu.md` |
+| R2 | `Modal A`（確定登出）、`Modal B`（帳號切換）兩個 variant 樣式確認 | `components/menu.md` |
+| R3 | `Button Y/N` 兩種 variant 色彩規格確認 | `components/menu.md` |
+| R4 | `Dropdown aside` sub-item selected/hover 狀態 | `components/menu.md` |
+| R5 | `folder` component set 尚未直接從 Figma 讀取（目前是 instance 觀測） | `components/folder.md` |
+
+---
+
 ## Session 9 交接（2026-04-16）
 
 ### 本次完成

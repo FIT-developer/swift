@@ -78,7 +78,7 @@ Desktop 版為左側固定 sidebar（menu）+ 右側主內容區的雙欄佈局�
 | Background | `#FFFFFF` | `Color/Neutral/0` |
 | Border | `#E1E1E0` | `Color/Neutral/150` |
 
-> 完整規格見 `components/menu-Specification.md`。
+> 完整規格見 `components/menu.md`。
 
 ---
 
@@ -90,7 +90,7 @@ Desktop 版為左側固定 sidebar（menu）+ 右側主內容區的雙欄佈局�
 | 位置 | x:1272, y:20 |
 | 內容 | 4 個 icon（bulletin、message、person-md、system） |
 
-> 完整規格見 `components/function-icons-Specification.md`。
+> 完整規格見 `components/function-icons.md`。
 
 ---
 
@@ -113,7 +113,7 @@ Desktop 版為左側固定 sidebar（menu）+ 右側主內容區的雙欄佈局�
 | 尺寸 | `1154×200px` |
 | 位置 | x:272, y:409 |
 
-> 完整規格見 `components/revenue-trends-Specification.md`。
+> 完整規格見 `components/revenue-trends.md`。
 
 ---
 
@@ -140,7 +140,7 @@ Statistics details 子框架（1130×741, x:12 y:51 within Statistics）：
 - 下排右側：doughnut 寬 367px，x=763（右對齊，763+367=1130）
 - 上下排間距：y=324 - y=293.5 = **30.5px** gap（bar 下沿到 diverging 上沿）
 
-> 完整規格見 `components/statistics-Specification.md`。
+> 完整規格見 `components/statistics.md`。
 
 ---
 
@@ -176,8 +176,8 @@ Statistics details 子框架（1130×741, x:12 y:51 within Statistics）：
 
 | 項目 | 狀態 |
 |---|---|
-| Sidebar 在 769px–1024px 區間的行為（是否收合？） | Figma 未定義 |
-| 頁面 scroll 時 sidebar 是否 sticky | Figma 未定義 |
+| Sidebar 在 769px–1024px 區間的行為（是否收合？） | ✅ 已定案：預設展開，不自動收合，由 Folder 按鈕手動控制（2026-04-16） |
+| 頁面 scroll 時 sidebar 是否 sticky | ✅ 已定案：不做 sticky，維持靜態佈局（2026-04-16） |
 | Function icons 的點擊行為 | Figma 未定義 |
 
 ---
