@@ -14,6 +14,32 @@
 
 ---
 
+## Session 9 交接（2026-04-16）
+
+### 本次完成
+
+| 項目 | 說明 |
+|---|---|
+| POS entrance 位置修正 | 從系統操作下方移到客服＋檔案區之後（最底部），桌面與 mobile 同步 |
+| POS entrance 文字置中修正 | 原 `flex justify-between` 導致文字偏左；改為 `grid grid-cols-3`，左 icon / 中文字 `text-center` / 右 icon，真正置中 |
+| Mobile POS 修正漏失說明 | `replace_all` 因縮排不同未替換到 mobile 段落，已手動補修 |
+
+### 已知問題 / 規則記錄
+
+- **兩套 menu HTML**：桌面 `aside#sidebar`（`hidden md:flex`）與 mobile `aside#mobileSidebarPanel`（`md:hidden`）分開維護，改動重複區塊時必須同步兩處
+- **三欄置中佈局**：左 icon + 中央文字 + 右 icon 結構一律用 `grid grid-cols-3`，不用 `flex justify-between`
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| 其餘 function icons | `icons/system` 對應 modal 尚未讀取 |
+| Sidebar sub-item 選中切換 | 目前僅靜態 CSS |
+| Logo click | 回後台首頁行為 |
+| Main nav hover state | 視覺反饋 |
+
+---
+
 ## Session 7 交接（2026-04-16）
 
 ### 本次完成

@@ -100,8 +100,38 @@
 - Customers service: **collapsed** (39px)
 - File download: **collapsed** (39px)
 - **POS entrance 新增**：`Pos entance icon` (216 × 39)
-  - 含 icons/pos + 文字 "POS"
-  - 含 icons/attached-link（外連結）
+  - 含 icons/pos + 文字 "POS" + icons/attached-link（外連結）
+  - 外框：horizontal gradient stroke 3px，`#E376F9`（左）→ `#FF7878`（右）
+  - 形狀：pill（`cornerRadius: 56`，`rounded-full`）
+  - 內距：`padding: 6px 12px`
+  - **Hover 狀態**：stroke 不變 + 新增 fill `#FCFEC0`→`#F8ABFB` opacity 0.2
+
+#### POS entrance 漸層外框實作方式
+與 floatIcons/ai 相同的雙層包裹技巧（gradient stroke 無法用 `border` 直接實現）：
+- 外層：`p-[3px] rounded-full`，`background: linear-gradient(to right, #E376F9, #FF7878)`
+- 內層：`rounded-full bg-white`，hover 時背景換為 `linear-gradient(to right, rgba(252,254,192,0.2), rgba(248,171,251,0.2))`
+
+#### POS entrance HTML 實作
+```html
+<div class="mb-4 pos-entrance-btn">
+  <div class="p-[3px] rounded-full" style="background: linear-gradient(to right, #E376F9, #FF7878);">
+    <div class="pos-entrance-inner flex items-center justify-between px-3 h-[33px] rounded-full cursor-pointer">
+      <div class="flex items-center gap-1.5">
+        <img src="./assets/icons/pos.svg" class="w-6 h-6 shrink-0" />
+        <span class="text-sm font-semibold text-[#454545]">POS</span>
+      </div>
+      <img src="./assets/icons/attached-link.svg" class="w-6 h-6 shrink-0" />
+    </div>
+  </div>
+</div>
+```
+CSS（加入 `<style>` 區塊）：
+```css
+.pos-entrance-inner { background: white; transition: background 0.2s; }
+.pos-entrance-btn:hover .pos-entrance-inner {
+  background: linear-gradient(to right, rgba(252,254,192,0.2), rgba(248,171,251,0.2));
+}
+```
 
 ### `state=mobile`
 - Folder: ✗（不存在）
@@ -347,4 +377,4 @@ Modal (320×277, bg #ffffff)
 
 ---
 
-*Generated from Figma COMPONENT_SET `57:439` on 2026-04-13 · Interactions updated from `194:3863` on 2026-04-15*
+*Generated from Figma COMPONENT_SET `57:439` on 2026-04-13 · Interactions updated from `194:3863` on 2026-04-15 · POS - pattern hover gradient confirmed via SVG export on 2026-04-16*

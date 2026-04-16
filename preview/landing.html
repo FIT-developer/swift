@@ -47,6 +47,19 @@
         height: 4px;
       }
 
+      /* POS entrance button hover fill */
+      .pos-entrance-inner {
+        background: white;
+        transition: background 0.2s;
+      }
+      .pos-entrance-btn:hover .pos-entrance-inner {
+        background: linear-gradient(
+          to right,
+          rgba(252, 254, 192, 0.2),
+          rgba(248, 171, 251, 0.2)
+        );
+      }
+
       /* Section card */
       .section-card {
         background: #fff;
@@ -588,6 +601,28 @@
                 <img
                   src="./assets/icons/download.svg"
                   class="w-5 h-5 cursor-pointer shrink-0"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- POS 入口 (state=POS - pattern) -->
+          <div class="mt-4 pos-entrance-btn">
+            <div
+              class="p-[3px] rounded-full"
+              style="background: linear-gradient(to right, #e376f9, #ff7878)"
+            >
+              <div
+                class="pos-entrance-inner grid grid-cols-3 items-center px-3 h-[33px] rounded-full cursor-pointer"
+              >
+                <img
+                  src="./assets/icons/pos.svg"
+                  class="w-6 h-6 shrink-0 justify-self-start"
+                />
+                <span class="text-sm font-semibold text-[#454545] text-center">POS</span>
+                <img
+                  src="./assets/icons/attached-link.svg"
+                  class="w-6 h-6 shrink-0 justify-self-end"
                 />
               </div>
             </div>
@@ -1340,6 +1375,28 @@
             </div>
           </div>
         </div>
+
+        <!-- POS 入口 (state=POS - pattern) -->
+        <div class="mt-4 pos-entrance-btn">
+          <div
+            class="p-[3px] rounded-full"
+            style="background: linear-gradient(to right, #e376f9, #ff7878)"
+          >
+            <div
+              class="pos-entrance-inner grid grid-cols-3 items-center px-3 h-[33px] rounded-full cursor-pointer"
+            >
+              <img
+                src="./assets/icons/pos.svg"
+                class="w-6 h-6 shrink-0 justify-self-start"
+              />
+              <span class="text-sm font-semibold text-[#454545] text-center">POS</span>
+              <img
+                src="./assets/icons/attached-link.svg"
+                class="w-6 h-6 shrink-0 justify-self-end"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </aside>
     <!-- /#mobileSidebarPanel -->
@@ -1970,6 +2027,20 @@
             確定
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         floatIcons/ai — 浮動客服按鈕
+         fixed 右下角，40×70px，圓形 icon frame #f6fafd
+    ════════════════════════════════════ -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-1.5">
+      <span class="text-base text-[#454545] whitespace-nowrap">客服</span>
+      <!-- 漸層外框：外層 gradient wrapper p-[3px]，內層白底圓形 -->
+      <div class="rounded-full p-[3px]" style="background: linear-gradient(to bottom, #FFB624, #3F930B); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25));">
+        <button class="w-[42px] h-[42px] rounded-full bg-[#f6fafd] flex items-center justify-center">
+          <img src="./assets/icons/ai.svg" class="w-6 h-6" />
+        </button>
       </div>
     </div>
 

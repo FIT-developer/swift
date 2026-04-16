@@ -66,6 +66,12 @@ tokens → icons → components → sections → layout → 實作
 - 讀取 section → 立刻寫 `sections/{name}.md`
 - 讀取 layout → 立刻寫 `layouts/{name}.md`
 - **不允許只把分析結果顯示在對話中而不寫入檔案**
+
+**Figma MCP 漸層限制**:
+- `get_node` / `get_design_context` 只序列化純色 paint
+- 漸層 **stroke** → 靜默省略（`styles.strokes` 欄位消失，無任何提示）
+- 漸層 **fill** → 回傳佔位符 `"s1"` 而非 hex
+- 遇到上述情況，立刻補一步 `save_screenshots(format: SVG)`，從 SVG `<defs>` 讀取完整漸層定義再實作
 **粒度原則**:
 - 複雜元件分開做,不要一次實作整頁
 - 每個區塊做完立刻產預覽 HTML,存到 preview/ 資料夾
