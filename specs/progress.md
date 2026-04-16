@@ -14,6 +14,35 @@
 
 ---
 
+## Session 7 交接（2026-04-16）
+
+### 本次完成
+
+| 項目 | 說明 |
+|---|---|
+| Figma MCP plugin 重建 | 下載 plugin.zip 解壓到 `~/Code/plugins/plugin/`，重新 import manifest，連線恢復 |
+| Modal E — 會員安全管理 tab 樣式修正 | 從 Figma 直接讀取，確認 tab 無外框（strokes 為空），選中僅 `bg-[#e1e1e0]`，未選中 `bg-white` 無任何框線 |
+| Tab 寬度修正 | 密碼/暱稱 `w-11`（44px），IP紀錄 `w-[63px]`（63px），字型改 `text-base`（16px） |
+| Tab whitespace-nowrap + overflow | 外層 `overflow-x-auto`，內層 `w-max flex gap-3`，標題不換行，過長可水平滑動 |
+| `components/modal.md` Tab 列規格更新 | 加入確認日期、正確寬度、無外框說明 |
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| 其餘 function icons | `icons/system` 對應 modal 尚未讀取 |
+| Sidebar sub-item 選中切換 | 目前僅靜態 CSS |
+| Logo click | 回後台首頁行為 |
+| Main nav hover state | 視覺反饋 |
+
+### 重要規則提醒
+
+- **任何 modal 實作前**：詢問 mobile 滿版或原設計大小
+- **Member modal tab**：無外框，選中 `bg-[#e1e1e0]`，未選中 `bg-white`，`whitespace-nowrap` + `overflow-x-auto`
+- **全站 HTML 規範**：見 `specs/html-conventions.md`
+
+---
+
 ## Session 6 交接（2026-04-15）
 
 ### 本次完成

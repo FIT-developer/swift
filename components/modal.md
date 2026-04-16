@@ -135,13 +135,19 @@ Modal (320×407px)
 
 ### Tab 列規格
 
-3 個 Input instance 橫排（選中者背景 `#e1e1e0`）：
+**確認日期**：2026-04-16
 
-| Tab | 寬度 | x | 選中狀態 |
-|---|---|---|---|
-| 密碼 | 56px | x:0 | `#e1e1e0`（已選） |
-| 暱稱 | 56px | x:68 | `#ffffff` |
-| IP 紀錄 | 76px | x:136 | `#ffffff` |
+3 個 Input instance 橫排，`gap: 12px`，**全部無外框（無 strokes）**：
+
+| Tab | Figma 寬度 | HTML class | 選中狀態 | 未選中狀態 |
+|---|---|---|---|---|
+| 密碼 | 44px | `w-11` | `bg-[#e1e1e0]` | `bg-white`（無底色差異） |
+| 暱稱 | 44px | `w-11` | `bg-[#e1e1e0]` | `bg-white` |
+| IP 紀錄 | 63px | `w-[63px]` | `bg-[#e1e1e0]` | `bg-white` |
+
+- Padding：`py-1.5 px-3`（6px/12px）
+- 字型：`text-base`（16px）`text-[#454545]`
+- **不加 border**：選中只有 `bg-[#e1e1e0]`，未選中看起來無框無底色
 
 ### 密碼欄位
 
