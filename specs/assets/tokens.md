@@ -2,7 +2,7 @@
 
 > 來源：Figma Variables（Collection: **Semantic**, Mode: **Mode 1**）  
 > Local Styles 全部為空，所有 token 皆來自 Variables。  
-> 上次同步：2026-04-13
+> 上次同步：2026-04-21
 
 ---
 
@@ -29,26 +29,39 @@
 
 ---
 
-### Surface / Brand（主品牌橙色系）
+### Brand（主品牌橙色 scale）
 
-| Variable 名稱 | Hex 值 | 語意用途 | Tailwind 對應建議 |
+> Figma 路徑：`Color/Brand/Brand-*`。語意層的 Default/Hover/Active 見 Surface 章節。
+
+| Variable 名稱 | Hex 值 | Tailwind 對應建議 |
+|---|---|---|
+| Color/Brand/Brand-50 | `#FEF6EE` | `orange-50` |
+| Color/Brand/Brand-100 | `#FDEBD7` | `orange-100` |
+| Color/Brand/Brand-200 | `#FAD4AE` | `orange-200` |
+| Color/Brand/Brand-300 | `#F7B57A` | `orange-300` |
+| Color/Brand/Brand-400 | `#F28B45` | `orange-400` |
+| Color/Brand/Brand-500 | `#EF6F25` | `orange-500` |
+| Color/Brand/Brand-600 | `#E05216` | `orange-600` |
+| Color/Brand/Brand-700 | `#BA3D14` | `orange-700` |
+| Color/Brand/Brand-800 | `#943218` | `orange-800` |
+| Color/Brand/Brand-900 | `#772B17` | `orange-900` |
+| Color/Brand/Brand-950 | `#401406` | `orange-950` |
+
+---
+
+### Surface（語意背景色）
+
+| Variable 名稱 | 解析值 | 語意用途 | Tailwind 對應建議 |
 |---|---|---|---|
-| Color/Surface/Brand-50 | `#FEF6EE` | 品牌極淡背景 | `orange-50` |
-| Color/Surface/Brand-100 | `#FDEBD7` | 品牌淡背景 | `orange-100` |
-| Color/Surface/Brand-200 | `#FAD4AE` | 品牌色階 | `orange-200` |
-| Color/Surface/Brand-300 | `#F7B57A` | 品牌色階 | `orange-300` |
-| Color/Surface/Brand-400-Hover | `#F28B45` | 主按鈕 Hover | `orange-400` |
-| Color/Surface/Brand-500-Default | `#EF6F25` | **主品牌色 / 主按鈕預設** | `orange-500` |
-| Color/Surface/Brand-600-Active | `#E05216` | 主按鈕按下 / Active | `orange-600` |
-| Color/Surface/Brand-700 | `#BA3D14` | 深品牌色 | `orange-700` |
-| Color/Surface/Brand-800 | `#943218` | 更深品牌色 | `orange-800` |
-| Color/Surface/Brand-900 | `#772B17` | 深橙/棕 | `orange-900` |
-| Color/Surface/Brand-950 | `#40140A` | 近黑橙 | `orange-950` |
-| Color/Surface/Default | `#F6F6F6` | 頁面預設背景（= Neutral/50） | `gray-100` |
-| Color/Surface/Secondary | `#F9E616` | 輔助強調（鮮黃）— 語意待確認 | `yellow-400` |
-| Color/Surface/Accent | `#42EBE9` | 強調色（青色）— 語意待確認 | `cyan-400` |
-| Color/Surface/Negative | `#E12129` | 錯誤/危險狀態 | `red-600` |
-| Color/Surface/Positive | `#2ACA18` | 成功狀態 | `green-500` |
+| Color/Surface/Default | `#F6F6F6` → Neutral/50 | 頁面預設背景 | `gray-100` |
+| Color/Surface/Brand-Default | `#EF6F25` → Brand-500 | **主品牌色 / 主按鈕預設** | `orange-500` |
+| Color/Surface/Brand-Hover | `#F28B45` → Brand-400 | 主按鈕 Hover | `orange-400` |
+| Color/Surface/Brand-Active | `#E05216` → Brand-600 | 主按鈕按下 / Active | `orange-600` |
+| Color/Surface/Action-Default | `#005FCC` | 動作按鈕（藍色系）| `blue-600` |
+| Color/Surface/Secondary | `#F9E616` | 輔助強調（鮮黃） | `yellow-400` |
+| Color/Surface/Accent | `#42EBE9` | 強調色（青色） | `cyan-400` |
+| Color/Surface/Status-Negative | `#E12129` | 錯誤/危險狀態 | `red-600` |
+| Color/Surface/Status-Positive | `#2ACA18` | 成功狀態 | `green-500` |
 
 ---
 
@@ -92,7 +105,7 @@
 | Variable 名稱 | 解析值 | 語意用途 |
 |---|---|---|
 | Color/Modal/Default-Today | `#6D6D6D` → Neutral/500 | 日曆「今天」預設標示 |
-| Color/Modal/Options-Selected | `#EF6F25` → Brand-500 | 選單選中項目 |
+| Color/Modal/Text-hightlight | `#EF6F25` → Brand-Default | 選單選中項目文字高亮 |
 | Color/Modal/Hover | `#F6FAFD` → Neutral/75 | 選單 hover 背景 |
 
 ---
@@ -101,7 +114,7 @@
 
 | Variable 名稱 | Hex 值 | 語意用途 |
 |---|---|---|
-| Color/MenuItem/Default | `#2178CF` | 側邊選單連結色（系統藍）— 已修正拼字 |
+| Color/MenuItem/Default | `#2178CF` | 側邊選單連結色（系統藍） |
 | Color/Radio/Default | `#005FCC` | Radio/Checkbox 預設 |
 | Color/Radio/Hover | `#3B78D5` | Radio/Checkbox Hover |
 | Color/SubItem/Selected | `#F7D275` | 子選單選中（黃色標示） |
@@ -114,7 +127,7 @@
 |---|---|---|
 | Color/Bootstrap/components/focus | `#86B7FE` | Focus ring（Bootstrap 藍） |
 | Color/Bootstrap/focus-background | `#D3EBFD` | Focus 狀態背景 |
-| Color/Bootstrap/aside/Notification | `#F44DF4` | 提示註解元件用色（洋紅）— 已從 `aside/hover` 改名 |
+| Color/Bootstrap/aside/Notification | `#F44DF4` | 提示註解元件用色（洋紅） |
 
 ---
 
@@ -132,7 +145,7 @@
 
 | Variable 名稱 | Hex 值 | 語意用途 |
 |---|---|---|
-| Color/Tab/Yellow | `#ffcc00` | 選中 tab 背景色（Bulletin 分類篩選） |
+| Color/Tab/yellow | `#FFCC00` | 選中 tab 背景色（Bulletin 分類篩選） |
 
 ---
 
@@ -150,20 +163,11 @@
 
 ### Scrollbar（捲動條）
 
-> 此色值出現於 Figma 視覺稿，但 HTML 捲動條由瀏覽器自動生成，實作時**不需直接引用**。  
-> 記錄於此供設計稿對照。
+> 此色值出現於 Figma 視覺稿，但 HTML 捲動條由瀏覽器自動生成，實作時**不需直接引用**。
 
 | 名稱（非 Figma variable） | Hex 值 | 語意用途 |
 |---|---|---|
 | Color/Scrollbar/Default | `#D9D9D9` | 捲動條指示器顏色（Figma 視覺稿用） |
-
----
-
-### SubItem
-
-| Variable 名稱 | Hex 值 | 語意用途 |
-|---|---|---|
-| Color/SubItem/Selected | `#F7D275` | 子項目選中狀態（黃） |
 
 ---
 
@@ -223,10 +227,7 @@
 
 ## 字體 (Typography)
 
-> 目前 **無正式 Text Style 定義**。以下為從元件節點觀察到的實際規格（推論值）。  
-> 說明：Typography Token 是把字體大小、行高、字重等打包成有名字的設計變數。  
-> 有了它，修改全站字體規格只需改一個地方；沒有的話，每個元件節點都要逐一手調。  
-> **現階段不做不影響運作，但若未來要換字體或做多語版本，補上會省很多力氣。**
+> 目前 **無正式 Text Style 定義**。以下為從元件節點觀察到的實際規格（推論值）。
 
 | 觀察名稱 | 大小 | 推測行高 | 用途 |
 |---|---|---|---|
@@ -238,8 +239,7 @@
 
 ## 陰影 (Shadows)
 
-> 目前 **無 Effect Style（陰影）定義**，元件無陰影 token。  
-> 若有陰影需求建議後續補充 `shadow-sm`（卡片）與 `shadow-md`（彈窗）兩個層級。
+> 目前 **無 Effect Style（陰影）定義**，元件無陰影 token。
 
 ---
 
@@ -247,23 +247,11 @@
 
 1. **分組層級**：`Category/SubCategory/Scale`，以斜線分隔、大寫開頭
 2. **色彩 Scale**：使用數字（50/100…950），對應 Tailwind shade 系統
-3. **語意後綴**：狀態直接接在 scale 後，如 `Brand-500-Default`、`Brand-600-Active`
+3. **Brand vs Surface**：`Color/Brand/*` 為完整色階（50–950）；`Color/Surface/Brand-*` 只有 3 個語意 alias（Default/Hover/Active）
 4. **Radius 對應 Spacing**：Radius token 全部 alias 同名 Spacing，各有元件使用故保留
 5. **Text / Neutral 並存**：兩組色階數值高度重疊，但各有元件獨立綁定，維持拆分
 6. **Bootstrap 子群組**：`Color/Bootstrap/` 前綴標示源自 Bootstrap 規範的互動狀態色
 
 ---
 
-## 待辦事項
-
-> 以下需在 **Figma 端手動操作**（MCP 工具無 rename variable 功能）：
-
-| 狀態 | 項目 |
-|---|---|
-| ✅ 已完成 | `Color/MenuItem/Default` — 拼字已修正（verified 2026-04-13） |
-| ✅ 已完成 | `Color/Bootstrap/aside/Notification` — 已改名（verified 2026-04-13） |
-| ✅ 已完成 | 刪除孤兒 token `Number = 80` |
-
----
-
-*Generated from Figma file Variables · 2026-04-13*
+*Generated from Figma file Variables · 2026-04-21*
