@@ -74,12 +74,12 @@
 
 | 層級名稱 | 大小 | 字重 | 常見用途 |
 |---|---|---|---|
-| `sm` | `12px` | 400 | Badge、日期、chip 文字、說明標籤 |
-| `base` | `16px` | 400 | 趨勢數值、選單項目文字 |
-| `md` | `20px` | 400 | KPI 卡片標籤、Section 副標題 |
+| badge | `10px` | 400 | 通知數字 badge（`-top-1.5` 絕對定位） |
+| `sm` | `12px` | 400 / 600 | 日期、chip 文字、說明標籤；`<th>` 文字用 600 |
+| sidebar label | `13px` | 600 | Sidebar 分區標題（系統操作、客服、檔案） |
+| `base` | `16px` | 400 | 趨勢數值、Order 列文字、選單項目文字 |
+| `md` | `20px` | 400 / 600 | KPI 卡片標籤（400）、Section 標題 / Modal header（600） |
 | `lg` | `24px` | 600 | KPI 卡片數值 |
-| Modal 標題 | `20px` | 600 | Modal header 標題 |
-| Table header | `12px` | 600 | `<th>` 文字 |
 
 > 目前無正式 Text Style token，以上為從元件節點觀察的實際規格。
 
@@ -168,7 +168,8 @@
 ```
 
 - 預設邊框 `#D1D1D1`
-- Focus 邊框 `#86B7FE`（Bootstrap focus blue）
+- Focus 邊框 `#86B7FE`（Bootstrap focus blue）—— **一般 Input 元件**
+- Modal 內搜尋框 / sidebar `<select>` 的 focus 邊框：`#2178CF`（Color/MenuItem/Default）—— 這兩個地方另有不同
 - Disabled：背景 `#E1E1E0`，文字 `#888888`
 
 ---
@@ -177,7 +178,8 @@
 
 ```html
 <div class="fixed inset-0 bg-black/40 z-60 flex items-center justify-center">
-  <div class="bg-white border border-[#b0b0b0] rounded-lg w-[320px]">
+  <div class="bg-white border border-[#b0b0b0] rounded-lg w-[320px]"
+       style="box-shadow: 0 4px 24px rgba(0,0,0,0.18)">
     <!-- header 51px -->
     <div class="flex items-center justify-between px-3 py-3 border-b border-[#d1d1d1]">
       <span class="text-[20px] font-semibold text-[#454545]">標題</span>
@@ -189,9 +191,11 @@
 </div>
 ```
 
-- 固定寬 `320px`
+- 固定寬 `320px`（全寬 modal 另計）
 - 邊框 `#B0B0B0`（比一般元件略深）
 - Backdrop：`rgba(0, 0, 0, 0.4)`
+- **Box-shadow 例外**：Modal box 和 mobile sidebar panel 使用 `box-shadow` 提供層次感；一般卡片、section 仍維持無陰影
+- Mobile sidebar backdrop：`rgba(0, 0, 0, 0.28)`（比 Modal 略淺，因為是側邊滑出式而非阻斷式）
 
 ---
 
@@ -244,7 +248,7 @@
 | 禁止事項 | 原因 |
 |---|---|
 | 在 HTML 裡寫死 hex 值 | 所有色值必須對應 token 名稱（見 tokens.md） |
-| 加 box-shadow | 設計稿無陰影系統，不要自行添加 |
+| 加 box-shadow 到卡片 / section | 一般元件無陰影；僅 Modal box 和 sidebar panel（overlay）允許使用 |
 | 使用 React / Vue / 任何框架 | 專案堅持原生 HTML + Tailwind CDN |
 | 使用 @apply 或 Tailwind build 特性 | 當前無 build step |
 | 自行腦補 hover / disabled / error 樣式 | Figma 未定義的狀態標記「Figma 未定義」，等待確認 |
