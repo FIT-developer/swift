@@ -148,7 +148,7 @@ Mobile 頂部區塊，由 **Nav bar**（Frame 4）與 **Order status** 兩個子
 | 項目 | 狀態 |
 |---|---|
 | Folder icon 點擊後的展開 menu 樣式 | Figma 未定義 |
-| Nav bar 的 sticky / fixed 行為 | ✅ 已定案：`sticky top-0 z-10`，下方內容補 `pt-12`（2026-04-16） |
+| Nav bar 的 sticky / fixed 行為 | ✅ 已定案：非 sticky，作為頁面 `flex flex-col gap-3` 容器的第一個子項自然流排版，無需 `pt-12` 補償（2026-04-22） |
 | Logo 的連結目標 | Figma 未定義 |
 
 ---
