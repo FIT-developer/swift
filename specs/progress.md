@@ -14,6 +14,47 @@
 
 ---
 
+## Session 14 交接（2026-04-30）
+
+### 本次完成
+
+| 項目 | 說明 |
+|---|---|
+| Calendar 元件整合至 [A] 空房查詢 | 取代舊左側 panel（日期輸入 + 間數計數器），改為 Figma 規格月曆（351px 固定寬，r:12，pad 12） |
+| Calendar HTML 結構 | 控制列（已選N天 + 今日按鈕 56×34 + interval select 79×36 背景 #e1e1e0）+ 月份導覽列（←40×40 r:4 #b0b0b0 / 2026年01月 md / →）+ 星期標頭 + grid |
+| Calendar CSS（Figma 規格） | cell 42×55 r:12；sel-start/end `#2178cf`；sel-mid `#e1e1e0`；today `#ffc0cb`；outside border `#e1e1e0`；全部 scoped `.rb-cal-wrap .day` |
+| Grid 間距 | `column-gap: 5px`（Figma：橫向 5px）、`row-gap: 8px`（縱向 8px）；欄 `repeat(7, 42px)` 固定 |
+| 模式切換按鈕位置 | 移至右側面板頂端（filter tabs 上方），不放在月曆內 — 與 Figma 示意一致 |
+| .mode-toggle CSS | r:28 pill split，active `#005fcc` 白字，inactive 白底 `#454545` |
+| initCalendar() JS | 參考 JS 邏輯完全相同（arrow fn → var fn，template literal → 字串拼接）；封裝於函式中防止多次注入衝突；由 `initSubPageBehaviors()` 在 innerHTML 注入後呼叫 |
+| dayjs CDN | `<head>` 加入 dayjs@1 + isoWeek plugin |
+
+### Calendar 狀態顏色對照（Figma → 實作）
+
+| 狀態 | Figma | 實作 |
+|---|---|---|
+| 選中起/終 | — | `#2178cf` fill，白色文字 |
+| 選中範圍 | `#e1e1e0` fill | `#e1e1e0` fill |
+| 今日 | 特殊日 `#ffc0cb` | `#ffc0cb` fill |
+| 跨月 | stroke `#e1e1e0` | border `#e1e1e0`，文字 `#b0b0b0` |
+| 預設 | stroke `#d1d1d1` | border `#d1d1d1` |
+
+### 架構規則補充
+
+- `initCalendar()` 內 `window.setCalendarMode = setMode` 仍導出全域，讓右側 btnRoom/btnInventory 切換時改變月曆 mode
+- 月曆切換 room ↔ inventory 會改變 intervalSelect disabled 狀態、selStart/selEnd 計算、及 grid 是否追加週列
+- `initCalendar()` 開頭有 `if (!document.getElementById('calGrid')) return` 守衛，非房間預定頁不執行
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| 外層 padding 修正 | rootWrap 仍 `p-3`（12px），應改為 `px-5 pt-3`（左右 20px） |
+| Section [B] 訂房資料 Grid | datepicker / checkbox 欄位規格尚未讀取 Figma |
+| 其他 sub-page 內容 | 訂單處理等仍為佔位 |
+
+---
+
 ## Session 13 交接（2026-04-30）
 
 ### 本次完成
