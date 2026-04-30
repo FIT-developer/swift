@@ -14,6 +14,52 @@
 
 ---
 
+## Session 12 交接（2026-04-30）
+
+### 本次完成
+
+| 項目 | 說明 |
+|---|---|
+| 多 tab 支援 | `pageTabsInline` 支援複數 chip 同時存在；點擊各 chip 切換對應 main 內容 |
+| Chip 樣式對齊 Figma | 讀取 Frame 220（`1437:47023`）：active = `#f6fafd` + `#86b7fe` 藍邊；inactive = `#ffffff` + `#d1d1d1` 灰邊；radius 6px，padding 6/12 |
+| Chip hover | `.page-tab:hover` 加 `#f6fafd` 背景，與 active 同色 |
+| Close icon | 改用 `assets/icons/close.svg`（24×24，Figma 規範） |
+| 同名頁面去重 | 同一子項目重複點擊不新增 chip，直接切換 active |
+| 關閉行為 | 關閉 active tab → 自動切換至相鄰 tab；最後一個關閉 → 回 landing |
+| Menu selected 去黃 | `.sub-item-selected` 從 `#f7d275`（黃）改為 `#f6fafd`（與 hover 同）；HTML 預設 class 移除，完全由 JS 控制 |
+| `pageTabsInline` 右間距 | `#desktopTopRow` 加 `gap-5`，確保 chip overflow 時不緊貼 function buttons |
+| 左 border 細化 | 全部 26 個 `desk-acc-` / `mob-acc-` children 容器從 `border-l-2`（2px）改為 `border-l`（1px） |
+
+### Chip 狀態規則（已實作）
+
+```
+pages = [{name, html}]   // 有序陣列
+activePage = string|null
+
+openPage(name)       → 不存在則新增，activatePage
+activatePage(name)   → 更新 activePage、renderChips、setMenuSelected、showSubPage
+closePageByName(name)→ 移除，若是 active 則切至相鄰；若全部關閉回 landing
+renderChips()        → 全部重建，active chip 加 .active class
+```
+
+### Chip HTML 結構（Figma 對齊）
+
+```
+div.page-tab[.active]
+  span(pageName)
+  button.page-tab-close
+    img(icons/close.svg, w-6 h-6)
+```
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| 各子頁面實際內容 | sub-page 仍為佔位文字，room-booking 等尚未實作 |
+| 外層 padding 修正 | rootWrap 仍 `p-3`（12px），應改為 `px-5 pt-3`（左右 20px） |
+
+---
+
 ## Session 11 交接（2026-04-30）
 
 ### 本次完成

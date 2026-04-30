@@ -33,24 +33,32 @@
         border-radius: 3px;
       }
 
-      /* Nav sub-item selected state */
+      /* Nav sub-item selected state — same bg as hover */
       .sub-item-selected {
-        background: #f7d275;
+        background: #f6fafd;
       }
       /* Page tab chip */
+      /* Page tab chip — inactive (default) and active states match Figma spec */
       .page-tab {
         display: inline-flex; align-items: center; gap: 6px;
-        padding: 4px 8px 4px 12px;
-        background: #FEF6EE; border: 1px solid #FAD4AE; border-radius: 20px;
-        font-size: 12px; color: #E05216; white-space: nowrap;
+        padding: 6px 12px;
+        background: #ffffff; border: 1px solid #d1d1d1; border-radius: 6px;
+        font-size: 16px; color: #454545; white-space: nowrap;
+        cursor: pointer; user-select: none; flex-shrink: 0;
+      }
+      .page-tab:hover {
+        background: #f6fafd;
+      }
+      .page-tab.active {
+        background: #f6fafd; border-color: #86b7fe;
       }
       .page-tab-close {
         display: flex; align-items: center; justify-content: center;
-        width: 16px; height: 16px; border-radius: 50%;
-        font-size: 14px; line-height: 1; color: #B0B0B0;
+        width: 24px; height: 24px;
         cursor: pointer; border: none; background: transparent; padding: 0;
+        opacity: 0.5; flex-shrink: 0;
       }
-      .page-tab-close:hover { background: #FAD4AE; color: #E05216; }
+      .page-tab-close:hover { opacity: 1; }
       /* Menu category: parent trigger is neutral, children items are blue */
       .menu-category .accordion-trigger {
         color: #454545;
@@ -371,8 +379,8 @@
                   <span>前台作業</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon open" />
                 </div>
-                <div id="desk-acc-1" class="flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
-                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded sub-item-selected">房間預定</div>
+                <div id="desk-acc-1" class="flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">房間預定</div>
                 </div>
               </div>
 
@@ -382,7 +390,7 @@
                   <span>訂單處理作業</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-2" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-2" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">自動對帳紀錄查詢</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">訂單處理</div>
                 </div>
@@ -394,7 +402,7 @@
                   <span>基本資料設定</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-3" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-3" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">房型資料設定</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">須知設定</div>
                 </div>
@@ -406,7 +414,7 @@
                   <span>訂房資料設定</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-4" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-4" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">房間數量設定</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">定義日期種類</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">專案價格數量設定</div>
@@ -421,7 +429,7 @@
                   <span>其他消費設定</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-5" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-5" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">類別設定</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">產品設定</div>
                 </div>
@@ -433,7 +441,7 @@
                   <span>財務專區</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-6" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-6" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">訂金處理</div>
                 </div>
               </div>
@@ -444,7 +452,7 @@
                   <span>會員管理</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-7" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-7" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">會員資料查詢</div>
                 </div>
               </div>
@@ -455,7 +463,7 @@
                   <span>簡訊管理</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-8" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-8" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">訂單簡訊及樣本管理</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">定時簡訊管理</div>
                 </div>
@@ -467,7 +475,7 @@
                   <span>報表</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-9" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-9" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">住房統計表</div>
                 </div>
               </div>
@@ -478,7 +486,7 @@
                   <span>系統設定</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-10" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-10" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">帳號及權限設定</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">系統基本設定</div>
                 </div>
@@ -490,7 +498,7 @@
                   <span>對應設定</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-11" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-11" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">OTA串接設定</div>
                 </div>
               </div>
@@ -501,7 +509,7 @@
                   <span>多國語設定</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-12" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-12" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">飯店基本設定</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">規約設定</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">房型設定</div>
@@ -515,7 +523,7 @@
                   <span>系統商服務</span>
                   <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div id="desk-acc-13" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div id="desk-acc-13" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">線上授權單</div>
                   <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">請款紀錄查詢</div>
                 </div>
@@ -634,7 +642,7 @@
         <div id="mainColumn" class="flex-1 flex flex-col min-w-0 gap-3">
 
         <!-- ── Desktop top row (hidden on mobile): sidebarCompact | chips | function icons ── -->
-        <div id="desktopTopRow" class="hidden md:flex items-center">
+        <div id="desktopTopRow" class="hidden md:flex items-center gap-5">
           <!-- Compact sidebar: visible only when aside is collapsed -->
           <div id="sidebarCompact" class="hidden items-center gap-3">
             <img
@@ -662,7 +670,7 @@
             />
           </div>
           <!-- Page tab chips -->
-          <div id="pageTabsInline" class="flex-1 flex items-center gap-2 overflow-x-auto px-4"></div>
+          <div id="pageTabsInline" class="flex-1 flex items-center gap-3 overflow-x-auto px-4"></div>
           <!-- Function icons -->
           <div id="topWrap" class="flex items-center gap-11">
             <div id="desktopBulletinBtn" class="relative cursor-pointer">
@@ -1240,8 +1248,8 @@
                 <span>前台作業</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon open" />
               </div>
-              <div id="mob-acc-1" class="flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
-                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer sub-item-selected">房間預定</div>
+              <div id="mob-acc-1" class="flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">房間預定</div>
               </div>
             </div>
 
@@ -1251,7 +1259,7 @@
                 <span>訂單處理作業</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-2" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-2" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">自動對帳紀錄查詢</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">訂單處理</div>
               </div>
@@ -1263,7 +1271,7 @@
                 <span>基本資料設定</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-3" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-3" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">房型資料設定</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">須知設定</div>
               </div>
@@ -1275,7 +1283,7 @@
                 <span>訂房資料設定</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-4" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-4" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">房間數量設定</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">定義日期種類</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">專案價格數量設定</div>
@@ -1290,7 +1298,7 @@
                 <span>其他消費設定</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-5" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-5" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">類別設定</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">產品設定</div>
               </div>
@@ -1302,7 +1310,7 @@
                 <span>財務專區</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-6" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-6" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">訂金處理</div>
               </div>
             </div>
@@ -1313,7 +1321,7 @@
                 <span>會員管理</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-7" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-7" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">會員資料查詢</div>
               </div>
             </div>
@@ -1324,7 +1332,7 @@
                 <span>簡訊管理</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-8" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-8" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">訂單簡訊及樣本管理</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">定時簡訊管理</div>
               </div>
@@ -1336,7 +1344,7 @@
                 <span>報表</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-9" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-9" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">住房統計表</div>
               </div>
             </div>
@@ -1347,7 +1355,7 @@
                 <span>系統設定</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-10" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-10" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">帳號及權限設定</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">系統基本設定</div>
               </div>
@@ -1359,7 +1367,7 @@
                 <span>對應設定</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-11" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-11" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">OTA串接設定</div>
               </div>
             </div>
@@ -1370,7 +1378,7 @@
                 <span>多國語設定</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-12" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-12" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">飯店基本設定</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">規約設定</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">房型設定</div>
@@ -1384,7 +1392,7 @@
                 <span>系統商服務</span>
                 <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div id="mob-acc-13" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+              <div id="mob-acc-13" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1">
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">線上授權單</div>
                 <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">請款紀錄查詢</div>
               </div>
@@ -2260,11 +2268,15 @@
          Chart.js + Interaction scripts
     ════════════════════════════════════ -->
     <script>
-      // ── Sub-item navigation (tab chip + page swap) ──────────────────
+      // ── Sub-item navigation (multi-tab chips + page swap) ───────────
       (function () {
         var pageTabsInline = document.getElementById('pageTabsInline');
         var landingContent = document.getElementById('landingContent');
         var subPageContent = document.getElementById('subPageContent');
+
+        // pages: [{name, html}], preserves insertion order
+        var pages = [];
+        var activePage = null;
 
         function closeMobileSidebarIfOpen() {
           var backdrop = document.getElementById('mobileSidebarBackdrop');
@@ -2274,57 +2286,108 @@
           document.body.classList.remove('mobile-sidebar-open');
         }
 
-        function setSelectedByText(text) {
+        function setMenuSelected(text) {
           document.querySelectorAll('[id^="desk-acc-"] > div, [id^="mob-acc-"] > div').forEach(function (el) {
-            el.classList.remove('sub-item-selected');
-            if (el.textContent.trim() === text) el.classList.add('sub-item-selected');
+            el.classList.toggle('sub-item-selected', el.textContent.trim() === text);
           });
         }
 
-        function clearSelected() {
+        function clearMenuSelected() {
           document.querySelectorAll('[id^="desk-acc-"] > div, [id^="mob-acc-"] > div').forEach(function (el) {
             el.classList.remove('sub-item-selected');
           });
         }
 
-        function closePage() {
+        // Rebuild all chips; event listeners are attached fresh each render
+        function renderChips() {
           pageTabsInline.innerHTML = '';
-          landingContent.classList.remove('hidden');
+          pages.forEach(function (page) {
+            var tab = document.createElement('div');
+            tab.className = 'page-tab' + (page.name === activePage ? ' active' : '');
+
+            var label = document.createElement('span');
+            label.textContent = page.name;
+
+            var closeBtn = document.createElement('button');
+            closeBtn.className = 'page-tab-close';
+            closeBtn.setAttribute('aria-label', '關閉');
+            var closeImg = document.createElement('img');
+            closeImg.src = './assets/icons/close.svg';
+            closeImg.className = 'w-6 h-6';
+            closeBtn.appendChild(closeImg);
+
+            // Click chip body → activate
+            tab.addEventListener('click', function (e) {
+              if (closeBtn.contains(e.target)) return;
+              activatePage(page.name);
+            });
+            // Click × → close that tab
+            closeBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              closePageByName(page.name);
+            });
+
+            tab.appendChild(label);
+            tab.appendChild(closeBtn);
+            pageTabsInline.appendChild(tab);
+          });
+        }
+
+        function showSubPage(html) {
+          landingContent.classList.add('hidden');
+          subPageContent.classList.remove('hidden');
+          subPageContent.innerHTML = html;
+        }
+
+        function showLanding() {
           subPageContent.classList.add('hidden');
           subPageContent.innerHTML = '';
-          clearSelected();
+          landingContent.classList.remove('hidden');
+        }
+
+        function activatePage(name) {
+          activePage = name;
+          var page = pages.find(function (p) { return p.name === name; });
+          setMenuSelected(name);
+          renderChips();
+          showSubPage(page ? page.html : '');
+        }
+
+        function closePageByName(name) {
+          var idx = pages.findIndex(function (p) { return p.name === name; });
+          if (idx === -1) return;
+          pages.splice(idx, 1);
+
+          if (pages.length === 0) {
+            activePage = null;
+            pageTabsInline.innerHTML = '';
+            clearMenuSelected();
+            showLanding();
+          } else if (activePage === name) {
+            // Activate nearest tab (prefer next, fall back to prev)
+            var newIdx = Math.min(idx, pages.length - 1);
+            activatePage(pages[newIdx].name);
+          } else {
+            renderChips(); // just update active styling
+          }
         }
 
         function openPage(pageName) {
-          // Rebuild tab chip in top row
-          pageTabsInline.innerHTML = '';
-          var tab = document.createElement('div');
-          tab.className = 'page-tab';
-          var label = document.createElement('span');
-          label.textContent = pageName;
-          var closeBtn = document.createElement('button');
-          closeBtn.className = 'page-tab-close';
-          closeBtn.setAttribute('aria-label', '關閉');
-          closeBtn.textContent = '×';
-          closeBtn.addEventListener('click', closePage);
-          tab.appendChild(label);
-          tab.appendChild(closeBtn);
-          pageTabsInline.appendChild(tab);
-
-          // Swap content
-          landingContent.classList.add('hidden');
-          subPageContent.classList.remove('hidden');
-          subPageContent.innerHTML =
-            '<div class="section-card flex items-center justify-center min-h-[300px] text-[#888] text-base">' +
-            pageName + '</div>';
+          var exists = pages.find(function (p) { return p.name === pageName; });
+          if (!exists) {
+            pages.push({
+              name: pageName,
+              html: '<div class="section-card flex items-center justify-center min-h-[300px] text-[#888] text-base">' +
+                    pageName + '</div>'
+            });
+          }
+          activatePage(pageName);
         }
 
-        // Attach to all sub-items in both sidebars
+        // Attach click to all sub-items in both sidebars
         document.querySelectorAll('[id^="desk-acc-"] > div, [id^="mob-acc-"] > div').forEach(function (item) {
           item.addEventListener('click', function () {
-            var pageName = item.textContent.trim();
-            setSelectedByText(pageName);
-            openPage(pageName);
+            openPage(item.textContent.trim());
             closeMobileSidebarIfOpen();
           });
         });
