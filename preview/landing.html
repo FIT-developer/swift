@@ -6,6 +6,8 @@
     <title>Swift — 今日總覽</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/isoWeek.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
       rel="stylesheet"
@@ -267,21 +269,140 @@
           margin: 0;
         }
       }
-      /* Room-booking sub-page interactive states */
-      .rb-toggle-btn {
-        height: 42px; padding: 0 24px; border: 1px solid #d1d1d1;
-        font-size: 16px; cursor: pointer; background: #ffffff; color: #454545;
+      /* ── Room-booking: mode toggle (calendar JS managed) ─── */
+      .mode-toggle {
+        display: inline-flex;
+        border: 1px solid #d1d1d1;
+        border-radius: 28px;
+        overflow: hidden;
       }
-      .rb-toggle-btn:first-child { border-radius: 28px 0 0 28px; }
-      .rb-toggle-btn:last-child  { border-radius: 0 28px 28px 0; }
-      .rb-toggle-btn.rb-active   { background: #005fcc; color: #ffffff; }
+      .mode-btn {
+        height: 42px; padding: 0 24px;
+        background: #ffffff; border: none;
+        font-size: 16px; color: #454545; cursor: pointer;
+      }
+      .mode-btn.active { background: #005fcc; color: #ffffff; }
+      .mode-btn:not(.active):hover { background: #f6fafd; }
+
+      /* ── Room-booking: filter tabs ─────────────────────── */
       .rb-filter-tab {
         height: 42px; padding: 0 12px; border-radius: 28px;
         font-size: 16px; cursor: pointer; color: #454545;
         background: #e1e1e0; border: none;
       }
       .rb-filter-tab.rb-active { background: #f7d275; }
+
+      /* ── Room-booking: accordion ───────────────────────── */
       .rb-accordion-content.rb-hidden { display: none; }
+
+      /* ── Calendar component ────────────────────────────── */
+      .rb-cal-wrap {
+        width: 351px; background: #ffffff;
+        border: 1px solid #d1d1d1; border-radius: 12px;
+        padding: 12px; flex-shrink: 0;
+      }
+      .rb-cal-row1 {
+        display: flex; align-items: center;
+        justify-content: space-between;
+        height: 36px; margin-bottom: 12px;
+      }
+      .rb-cal-row2 {
+        display: flex; align-items: center;
+        justify-content: space-between;
+        height: 40px; margin-bottom: 8px;
+      }
+      .rb-selected-count { font-size: 16px; color: #454545; }
+      .rb-cal-right-controls { display: flex; align-items: center; gap: 8px; }
+      .rb-today-btn {
+        font-size: 16px; border: 1px solid #d1d1d1; border-radius: 6px;
+        width: 56px; height: 34px;
+        background: #ffffff; color: #454545; cursor: pointer;
+      }
+      .rb-today-btn:hover { background: #f6fafd; }
+      .rb-interval-select {
+        font-size: 14px; border: 1px solid #d1d1d1; border-radius: 6px;
+        width: 79px; height: 36px;
+        background: #e1e1e0; color: #454545; cursor: pointer; padding: 0 6px;
+      }
+      .rb-interval-select:disabled { opacity: 0.6; cursor: not-allowed; }
+      .rb-nav-btn {
+        width: 40px; height: 40px;
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid #b0b0b0; border-radius: 4px;
+        background: #ffffff; cursor: pointer;
+      }
+      .rb-nav-btn:hover { background: #f6fafd; }
+      .rb-cal-title {
+        font-size: 20px; font-weight: 600; color: #454545;
+        min-width: 125px; text-align: center;
+      }
+      .rb-grid-header {
+        display: grid;
+        grid-template-columns: repeat(7, 42px);
+        column-gap: 5px; margin-bottom: 4px;
+      }
+      .rb-grid-header span {
+        text-align: center; font-size: 14px; color: #888888; padding: 2px 0;
+      }
+      #calGrid {
+        display: grid;
+        grid-template-columns: repeat(7, 42px);
+        column-gap: 5px; row-gap: 8px;
+        touch-action: none;
+      }
+      /* Day cells — scoped under .rb-cal-wrap */
+      .rb-cal-wrap .day {
+        width: 42px; height: 55px; border-radius: 12px;
+        border: 1px solid #d1d1d1; padding: 6px 4px;
+        text-align: center; background: #ffffff;
+        cursor: pointer; user-select: none; -webkit-user-select: none;
+        box-sizing: border-box;
+      }
+      .rb-cal-wrap .day:hover:not(.disabled) {
+        border-color: #b0b0b0; background: #f6fafd;
+      }
+      .rb-cal-wrap .day-wday { font-size: 10px; color: #888888; margin-bottom: 2px; }
+      .rb-cal-wrap .day-num  { font-size: 16px; font-weight: 600; color: #454545; line-height: 1.4; }
+      .rb-cal-wrap .day.outside { border-color: #e1e1e0; }
+      .rb-cal-wrap .day.outside .day-wday,
+      .rb-cal-wrap .day.outside .day-num { color: #b0b0b0; }
+      .rb-cal-wrap .day.disabled {
+        background: #f0f0f0 !important; border-color: #e1e1e0 !important;
+        cursor: not-allowed; pointer-events: none;
+      }
+      .rb-cal-wrap .day.disabled .day-wday,
+      .rb-cal-wrap .day.disabled .day-num { color: #b0b0b0 !important; }
+      .rb-cal-wrap .day.today {
+        background: #ffc0cb !important; border-color: #ffc0cb !important;
+      }
+      .rb-cal-wrap .day.today .day-wday,
+      .rb-cal-wrap .day.today .day-num { color: #454545 !important; }
+      .rb-cal-wrap .day.sel-start,
+      .rb-cal-wrap .day.sel-end {
+        background: #2178cf !important; border-color: #2178cf !important;
+      }
+      .rb-cal-wrap .day.sel-start .day-wday, .rb-cal-wrap .day.sel-start .day-num,
+      .rb-cal-wrap .day.sel-end .day-wday,   .rb-cal-wrap .day.sel-end .day-num {
+        color: #ffffff !important;
+      }
+      .rb-cal-wrap .day.sel-mid {
+        background: #e1e1e0 !important; border-color: #e1e1e0 !important;
+      }
+      .rb-cal-wrap .day.sel-mid .day-wday,
+      .rb-cal-wrap .day.sel-mid .day-num { color: #454545 !important; }
+      .rb-cal-wrap .day.today.sel-mid {
+        background: #e1e1e0 !important; border-color: #e1e1e0 !important;
+      }
+      .rb-cal-wrap .day.today.sel-mid .day-wday,
+      .rb-cal-wrap .day.today.sel-mid .day-num { color: #454545 !important; }
+      .rb-cal-wrap .day.today.sel-start,
+      .rb-cal-wrap .day.today.sel-end {
+        background: #2178cf !important; border-color: #2178cf !important;
+      }
+      .rb-cal-wrap .day.today.sel-start .day-wday, .rb-cal-wrap .day.today.sel-start .day-num,
+      .rb-cal-wrap .day.today.sel-end .day-wday,   .rb-cal-wrap .day.today.sel-end .day-num {
+        color: #ffffff !important;
+      }
     </style>
   </head>
   <body>
@@ -2398,6 +2519,221 @@
             var display = input.closest('.rb-range-row').querySelector('.rb-range-val');
             input.addEventListener('input', function () { if (display) display.textContent = input.value; });
           });
+          // Calendar (room-booking page only)
+          initCalendar();
+        }
+
+        function initCalendar() {
+          if (!document.getElementById('calGrid')) return;
+
+          dayjs.extend(window.dayjs_plugin_isoWeek);
+
+          var mode = "room";
+          var currentMonth = dayjs();
+          var selStart = null;
+          var selEnd = null;
+          var isDragging = false;
+          var extraWeeks = 0;
+          var MAX_EXTRA_ROOM = 3;
+
+          var grid = document.getElementById("calGrid");
+          var titleEl = document.getElementById("calTitle");
+          var countEl = document.getElementById("count");
+          var intervalSelect = document.getElementById("intervalSelect");
+          var btnRoom = document.getElementById("btnRoom");
+          var btnInventory = document.getElementById("btnInventory");
+
+          function today() { return dayjs().startOf("day"); }
+          function getInterval() { return parseInt(intervalSelect.value); }
+
+          function getAbsoluteLimit() {
+            var monthEnd = currentMonth.endOf("month").startOf("day");
+            var monthEndWeekEnd = monthEnd.endOf("isoWeek").startOf("day");
+            return monthEndWeekEnd.add(4, "week");
+          }
+
+          function calcSelEnd(start) {
+            var rawEnd = start.add(getInterval() - 1, "day");
+            var limit = getAbsoluteLimit();
+            return rawEnd.isAfter(limit) ? limit : rawEnd;
+          }
+
+          function getLastRenderedDate() {
+            var cells = grid.querySelectorAll(".day");
+            if (!cells.length) return null;
+            return dayjs(cells[cells.length - 1].dataset.date);
+          }
+
+          function getDayElFromPoint(x, y) {
+            var el = document.elementFromPoint(x, y);
+            if (!el) return null;
+            return el.closest(".day");
+          }
+
+          function ensureSelEndVisible() {
+            if (mode !== "inventory" || !selEnd) return;
+            var limit = getAbsoluteLimit();
+            var last = getLastRenderedDate();
+            while (last && selEnd.isAfter(last, "day") && last.isBefore(limit, "day")) {
+              for (var i = 0; i < 7; i++) { last = last.add(1, "day"); appendCell(last); }
+              last = getLastRenderedDate();
+            }
+          }
+
+          function buildGrid() {
+            grid.innerHTML = "";
+            extraWeeks = 0;
+            titleEl.textContent = currentMonth.format("YYYY 年 MM 月");
+            var start = currentMonth.startOf("month").startOf("isoWeek");
+            var d = start;
+            for (var i = 0; i < 42; i++) { appendCell(d); d = d.add(1, "day"); }
+            if (mode === "inventory") ensureSelEndVisible();
+            applyStyles();
+          }
+
+          function handleDragMove(dateStr) {
+            if (!isDragging) return;
+            selEnd = dayjs(dateStr);
+            var last = getLastRenderedDate();
+            if (last && selEnd.isSame(last, "day") && extraWeeks < MAX_EXTRA_ROOM) {
+              var ld = last;
+              for (var i = 0; i < 7; i++) { ld = ld.add(1, "day"); appendCell(ld); }
+              extraWeeks++;
+            }
+            applyStyles();
+            updateCount();
+          }
+
+          function appendCell(d) {
+            var t = today();
+            var isPast = d.isBefore(t, "day");
+            var isToday = d.isSame(t, "day");
+            var isOutside = !d.isSame(currentMonth, "month");
+            var el = document.createElement("div");
+            el.className = "day";
+            el.dataset.date = d.format("YYYY-MM-DD");
+            el.innerHTML = '<div class="day-wday">' + d.format("ddd") + '</div><div class="day-num">' + d.format("DD") + '</div>';
+            if (isPast) {
+              el.classList.add("disabled");
+            } else {
+              if (mode === "room") {
+                el.addEventListener("mousedown", function (e) {
+                  e.preventDefault();
+                  isDragging = true;
+                  selStart = dayjs(el.dataset.date);
+                  selEnd = selStart;
+                  applyStyles();
+                  updateCount();
+                });
+                el.addEventListener("mouseover", function () { handleDragMove(el.dataset.date); });
+                el.addEventListener("touchstart", function (e) {
+                  e.preventDefault();
+                  isDragging = true;
+                  selStart = dayjs(el.dataset.date);
+                  selEnd = selStart;
+                  applyStyles();
+                  updateCount();
+                }, { passive: false });
+              } else {
+                el.addEventListener("click", function () {
+                  selStart = dayjs(el.dataset.date);
+                  selEnd = calcSelEnd(selStart);
+                  ensureSelEndVisible();
+                  applyStyles();
+                  updateCount();
+                });
+              }
+            }
+            if (isOutside) el.classList.add("outside");
+            if (isToday) el.classList.add("today");
+            grid.appendChild(el);
+          }
+
+          grid.addEventListener("touchmove", function (e) {
+            if (!isDragging || mode !== "room") return;
+            e.preventDefault();
+            var touch = e.touches[0];
+            var target = getDayElFromPoint(touch.clientX, touch.clientY);
+            if (target && target.dataset.date && !target.classList.contains("disabled")) {
+              handleDragMove(target.dataset.date);
+            }
+          }, { passive: false });
+
+          grid.addEventListener("touchend", function () { isDragging = false; });
+          document.addEventListener("mouseup", function () { isDragging = false; });
+
+          function applyStyles() {
+            var cells = grid.querySelectorAll(".day");
+            cells.forEach(function (el) { el.classList.remove("sel-start", "sel-end", "sel-mid"); });
+            if (!selStart) return;
+            var s = selStart.startOf("day");
+            var e = (selEnd || selStart).startOf("day");
+            if (s.isAfter(e)) { var tmp = s; s = e; e = tmp; }
+            cells.forEach(function (el) {
+              var d = dayjs(el.dataset.date).startOf("day");
+              if (d.isSame(s) && d.isSame(e)) el.classList.add("sel-start");
+              else if (d.isSame(s)) el.classList.add("sel-start");
+              else if (d.isSame(e)) el.classList.add("sel-end");
+              else if (d.isAfter(s) && d.isBefore(e)) el.classList.add("sel-mid");
+            });
+          }
+
+          function updateCount() {
+            if (!selStart) { countEl.textContent = "已選 0 天"; return; }
+            var s = selStart.startOf("day");
+            var e = (selEnd || selStart).startOf("day");
+            if (s.isAfter(e)) { var tmp = s; s = e; e = tmp; }
+            countEl.textContent = "已選 " + (e.diff(s, "day") + 1) + " 天";
+          }
+
+          function setMode(m) {
+            var prevSelStart = selStart;
+            mode = m;
+            intervalSelect.disabled = mode === "room";
+            btnRoom.classList.toggle("active", mode === "room");
+            btnInventory.classList.toggle("active", mode === "inventory");
+            if (mode === "inventory") {
+              selStart = prevSelStart ? prevSelStart.startOf("day") : today();
+              currentMonth = selStart.startOf("month");
+              selEnd = calcSelEnd(selStart);
+            } else {
+              selStart = null;
+              selEnd = null;
+            }
+            buildGrid();
+            updateCount();
+          }
+
+          intervalSelect.addEventListener("change", function () {
+            if (mode === "inventory" && selStart) {
+              selEnd = calcSelEnd(selStart);
+              ensureSelEndVisible();
+              applyStyles();
+              updateCount();
+            }
+          });
+
+          document.getElementById("todayBtn").addEventListener("click", function () {
+            currentMonth = dayjs();
+            selStart = today();
+            selEnd = mode === "inventory" ? calcSelEnd(selStart) : selStart;
+            buildGrid();
+            updateCount();
+          });
+          document.getElementById("prevBtn").addEventListener("click", function () {
+            currentMonth = currentMonth.subtract(1, "month");
+            buildGrid();
+          });
+          document.getElementById("nextBtn").addEventListener("click", function () {
+            currentMonth = currentMonth.add(1, "month");
+            buildGrid();
+          });
+
+          btnRoom.addEventListener("click", function () { if (mode !== "room") setMode("room"); });
+          btnInventory.addEventListener("click", function () { if (mode !== "inventory") setMode("inventory"); });
+
+          window.setCalendarMode = setMode;
+          buildGrid();
         }
 
         function showLanding() {
@@ -2929,49 +3265,53 @@
         <div class="rb-accordion rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-5">
           <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none mb-4">
             <span class="text-xl font-semibold text-[#454545]">空房與庫存查詢</span>
-            <img src="./assets/icons/up.svg" class="rb-accordion-icon w-6 h-6" data-open="up" />
+            <img src="./assets/icons/up.svg" class="rb-accordion-icon w-6 h-6" />
           </div>
           <div class="rb-accordion-content bg-white rounded-xl p-3">
-            <div class="flex gap-6 flex-wrap">
-              <!-- Left: controls -->
-              <div class="flex flex-col gap-4 w-[320px] shrink-0">
-                <!-- Toggle: 空房查詢 / 庫存表 -->
-                <div class="rb-toggle-group flex">
-                  <button class="rb-toggle-btn rb-active">空房查詢</button>
-                  <button class="rb-toggle-btn">庫存表</button>
-                </div>
-                <!-- 入住 -->
-                <div class="flex flex-col gap-1">
-                  <span class="text-base text-[#454545]">入住</span>
-                  <div class="flex items-center bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-3 cursor-pointer">
-                    <span class="text-base text-[#454545] flex-1">2026-02-15</span>
-                    <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+            <div class="flex gap-4 items-start flex-wrap">
+
+              <!-- LEFT: calendar (351px fixed) -->
+              <div class="rb-cal-wrap">
+                <!-- Row 1: 已選N天 + 今日 + interval select -->
+                <div class="rb-cal-row1">
+                  <span class="rb-selected-count" id="count">已選 0 天</span>
+                  <div class="rb-cal-right-controls">
+                    <button class="rb-today-btn" id="todayBtn">今日</button>
+                    <select class="rb-interval-select" id="intervalSelect" disabled>
+                      <option value="1">1</option>
+                      <option value="7">7</option>
+                      <option value="12" selected>12</option>
+                      <option value="14">14</option>
+                      <option value="16">16</option>
+                      <option value="30">30</option>
+                    </select>
                   </div>
                 </div>
-                <!-- 退房 -->
-                <div class="flex flex-col gap-1">
-                  <span class="text-base text-[#454545]">退房</span>
-                  <div class="flex items-center bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-3 cursor-pointer">
-                    <span class="text-base text-[#454545] flex-1">2026-02-18</span>
-                    <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
-                  </div>
+                <!-- Row 2: ← 2026年01月 → -->
+                <div class="rb-cal-row2">
+                  <button class="rb-nav-btn" id="prevBtn">
+                    <img src="./assets/icons/arrow-left.svg" class="w-6 h-6" />
+                  </button>
+                  <span class="rb-cal-title" id="calTitle"></span>
+                  <button class="rb-nav-btn" id="nextBtn">
+                    <img src="./assets/icons/arrow-right.svg" class="w-6 h-6" />
+                  </button>
                 </div>
-                <!-- 訂房間數 -->
-                <div class="flex flex-col gap-1">
-                  <span class="text-base text-[#454545]">訂房間數</span>
-                  <div class="rb-count-group flex items-center border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-3 bg-white">
-                    <button class="rb-count-minus w-6 h-6 flex items-center justify-center cursor-pointer">
-                      <img src="./assets/icons/outline-minus.svg" class="w-6 h-6" />
-                    </button>
-                    <span class="rb-count-val flex-1 text-center text-base text-[#454545]">5</span>
-                    <button class="rb-count-plus w-6 h-6 flex items-center justify-center cursor-pointer">
-                      <img src="./assets/icons/outline-plus.svg" class="w-6 h-6" />
-                    </button>
-                  </div>
+                <!-- Weekday header -->
+                <div class="rb-grid-header">
+                  <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
                 </div>
+                <!-- Date grid -->
+                <div id="calGrid"></div>
               </div>
-              <!-- Right: filter + table + range + actions -->
+
+              <!-- RIGHT: mode toggle + filter tabs + table + range + actions -->
               <div class="flex flex-col gap-3 flex-1 min-w-0">
+                <!-- Mode toggle (空房查詢 / 庫存表) — Figma button.md spec, r:28 pill -->
+                <div class="mode-toggle">
+                  <button class="mode-btn active" id="btnRoom">空房查詢</button>
+                  <button class="mode-btn" id="btnInventory">庫存表</button>
+                </div>
                 <!-- Filter tabs -->
                 <div class="rb-filter-tabs flex gap-0 flex-wrap">
                   <button class="rb-filter-tab rb-active">全部</button>
@@ -3050,6 +3390,7 @@
                   <button class="flex-1 h-[42px] border border-[#d1d1d1] rounded-xl bg-[#e1e1e0] text-[#e1e1e0] text-base cursor-not-allowed" disabled>加入訂單</button>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -3058,13 +3399,12 @@
         <div class="rb-accordion rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-5">
           <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none">
             <span class="text-xl font-semibold text-[#454545]">訂單條件</span>
-            <img src="./assets/icons/down.svg" class="rb-accordion-icon w-6 h-6" data-open="down" />
+            <img src="./assets/icons/down.svg" class="rb-accordion-icon w-6 h-6" />
           </div>
           <div class="rb-accordion-content rb-hidden bg-white rounded-xl p-3 mt-4">
             <div class="flex gap-8 flex-wrap">
               <!-- Column 1 -->
               <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
-                <!-- 人數大/小 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">人數大/小</span>
                   <div class="flex items-center gap-2 flex-1">
@@ -3077,33 +3417,22 @@
                     </select>
                   </div>
                 </div>
-                <!-- 到店方式 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">到店方式</span>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
-                    <option>自行到店</option>
-                  </select>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>自行到店</option></select>
                 </div>
-                <!-- 發票 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">發票</span>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
-                    <option>不開發票</option>
-                  </select>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>不開發票</option></select>
                 </div>
-                <!-- 統編 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">統編</span>
-                  <input type="text" placeholder="placeholder" disabled
-                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
+                  <input type="text" placeholder="placeholder" disabled class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
                 </div>
-                <!-- 抬頭 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">抬頭</span>
-                  <input type="text" placeholder="placeholder" disabled
-                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
+                  <input type="text" placeholder="placeholder" disabled class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
                 </div>
-                <!-- 繳款期限 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">繳款期限</span>
                   <div class="flex items-center gap-2 flex-1">
@@ -3117,53 +3446,36 @@
               </div>
               <!-- Column 2 -->
               <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
-                <!-- 折扣 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">折扣</span>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
-                    <option>無折扣</option>
-                  </select>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>無折扣</option></select>
                 </div>
-                <!-- 總房價 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">總房價</span>
-                  <input type="text" value="1444"
-                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1" />
+                  <input type="text" value="1444" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1" />
                 </div>
-                <!-- 加購項目併單 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">加購項目併單</span>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
-                    <option>併單</option>
-                  </select>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>併單</option></select>
                 </div>
-                <!-- 預付百分比 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">預付百分比</span>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
-                    <option>100%</option>
-                  </select>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>100%</option></select>
                 </div>
-                <!-- 預付 -->
                 <div class="flex items-center">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">預付</span>
-                  <input type="text" value="1444"
-                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1" />
+                  <input type="text" value="1444" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1" />
                 </div>
               </div>
               <!-- Column 3 -->
               <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
-                <!-- 訂單備註 -->
                 <div class="flex items-start">
                   <span class="text-base text-[#454545] w-[100px] shrink-0 pt-1">訂單備註</span>
-                  <textarea rows="4"
-                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1 resize-none"></textarea>
+                  <textarea rows="4" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1 resize-none"></textarea>
                 </div>
-                <!-- 需求備註 -->
                 <div class="flex items-start">
                   <span class="text-base text-[#454545] w-[100px] shrink-0 pt-1">需求備註</span>
-                  <textarea rows="4"
-                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1 resize-none">需要瓦斯爐</textarea>
+                  <textarea rows="4" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1 resize-none">需要瓦斯爐</textarea>
                 </div>
               </div>
             </div>
@@ -3176,48 +3488,36 @@
             <span class="text-xl font-semibold text-[#454545]">訂房資料</span>
           </div>
           <div class="bg-white rounded-xl p-3 flex flex-col gap-4">
-            <!-- 國籍 -->
             <div class="flex items-center gap-3">
               <span class="text-base text-[#454545] w-16 shrink-0">國籍</span>
               <div class="flex gap-5">
                 <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="rb-nation" value="tw" checked
-                    class="w-5 h-5 rounded-full accent-[#888888]" />
+                  <input type="radio" name="rb-nation" value="tw" checked class="w-5 h-5 rounded-full accent-[#888888]" />
                   <span class="text-base text-[#454545]">臺灣</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="rb-nation" value="foreign"
-                    class="w-5 h-5 rounded-full" />
+                  <input type="radio" name="rb-nation" value="foreign" class="w-5 h-5 rounded-full" />
                   <span class="text-base text-[#454545]">外籍</span>
                 </label>
               </div>
             </div>
-            <!-- 地址 -->
             <div class="flex gap-3">
               <span class="text-base text-[#454545] w-16 shrink-0 pt-1">地址</span>
               <div class="flex flex-col gap-4 flex-1">
-                <!-- 縣/市 -->
                 <div class="flex flex-col gap-1">
                   <span class="text-base text-[#454545]">縣/市</span>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#d1d1d1] text-[#888888] text-base">
-                    <option>台中</option>
-                  </select>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#d1d1d1] text-[#888888] text-base"><option>台中</option></select>
                 </div>
-                <!-- 行政區 -->
                 <div class="flex flex-col gap-1">
                   <div class="flex justify-between">
                     <span class="text-base text-[#454545]">行政區</span>
                     <span class="text-base text-[#454545]">406</span>
                   </div>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#d1d1d1] text-[#888888] text-base">
-                    <option>北屯區</option>
-                  </select>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#d1d1d1] text-[#888888] text-base"><option>北屯區</option></select>
                 </div>
-                <!-- 街道 -->
                 <div class="flex flex-col gap-1">
                   <span class="text-base text-[#454545]">街道</span>
-                  <input type="text" placeholder="placeholder"
-                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base" />
+                  <input type="text" placeholder="placeholder" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base" />
                 </div>
               </div>
             </div>
