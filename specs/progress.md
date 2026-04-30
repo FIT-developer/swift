@@ -14,6 +14,37 @@
 
 ---
 
+## Session 13 交接（2026-04-30）
+
+### 本次完成
+
+| 項目 | 說明 |
+|---|---|
+| `order-condition.md` 更新 | 重讀元件定義（841:18596）；更新為緊湊單欄版（351×526）：折扣/加購/預付百分比/預付金額輸入區 + 加購/訂金/房價摘要列 + 加購併單 chip + 總計列 |
+| 房間預定 sub-page 實裝 | `openPage('房間預定')` 改從 `#tpl-room-booking` 取 HTML；包含 [A] 空房庫存查詢、[C] 訂單條件、[D] 訂房資料三個 section |
+| Section [A] 空房與庫存查詢 | Accordion（預設展開）；左：toggle 按鈕組（空房查詢/庫存表）+ 入住/退房日期 + 訂房間數；右：棟別 filter tabs + 庫存表格（7 欄）+ 數量分配 range + 清除/加入訂單按鈕 |
+| Section [C] 訂單條件 | Accordion（預設收折）；3 欄：欄 1（人數/到店/發票/統編/抬頭/繳款期限）、欄 2（折扣/總房價/加購/預付百分比/預付）、欄 3（訂單備註/需求備註 textarea） |
+| Section [D] 訂房資料 | 靜態表單：國籍 radio（臺灣/外籍）+ 地址（縣市/行政區/街道） |
+| sub-page JS 互動初始化 | `initSubPageBehaviors(root)` 在 `showSubPage` 後呼叫；處理 accordion toggle、toggle 按鈕組、filter tabs、訂房間數 ±、range display 同步 |
+| PAGE_TEMPLATES 映射 | `var PAGE_TEMPLATES = { '房間預定': 'tpl-room-booking' }`；其他 sub-page 仍顯示佔位文字 |
+
+### 架構規則（新增）
+
+- 每個 sub-page 的互動元件 class 名稱前綴 `rb-`，避免與全域樣式衝突
+- 新增 CSS：`.rb-toggle-btn`、`.rb-toggle-btn.rb-active`、`.rb-filter-tab`、`.rb-filter-tab.rb-active`、`.rb-accordion-content.rb-hidden`
+- 新 sub-page 的 template：加 `<div id="tpl-xxx" style="display:none">` → 登記到 `PAGE_TEMPLATES` → `initSubPageBehaviors` 補對應行為
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| 外層 padding 修正 | rootWrap 仍 `p-3`（12px），應改為 `px-5 pt-3`（左右 20px） |
+| Section [B] 訂房資料 Grid | datepicker/checkbox 等欄位的第二個 section，規格尚未從 Figma 讀取 |
+| 房間預定 calendar popup | 點擊日期輸入欄後的全月曆元件（calendar.md 已有規格，但尚未接 UI） |
+| 其他 sub-page 內容 | 訂單處理、各設定類別等仍為佔位 |
+
+---
+
 ## Session 12 交接（2026-04-30）
 
 ### 本次完成

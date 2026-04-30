@@ -267,6 +267,21 @@
           margin: 0;
         }
       }
+      /* Room-booking sub-page interactive states */
+      .rb-toggle-btn {
+        height: 42px; padding: 0 24px; border: 1px solid #d1d1d1;
+        font-size: 16px; cursor: pointer; background: #ffffff; color: #454545;
+      }
+      .rb-toggle-btn:first-child { border-radius: 28px 0 0 28px; }
+      .rb-toggle-btn:last-child  { border-radius: 0 28px 28px 0; }
+      .rb-toggle-btn.rb-active   { background: #005fcc; color: #ffffff; }
+      .rb-filter-tab {
+        height: 42px; padding: 0 12px; border-radius: 28px;
+        font-size: 16px; cursor: pointer; color: #454545;
+        background: #e1e1e0; border: none;
+      }
+      .rb-filter-tab.rb-active { background: #f7d275; }
+      .rb-accordion-content.rb-hidden { display: none; }
     </style>
   </head>
   <body>
@@ -2337,6 +2352,52 @@
           landingContent.classList.add('hidden');
           subPageContent.classList.remove('hidden');
           subPageContent.innerHTML = html;
+          initSubPageBehaviors(subPageContent);
+        }
+
+        function initSubPageBehaviors(root) {
+          // Accordion toggles
+          root.querySelectorAll('.rb-accordion-header').forEach(function (header) {
+            header.addEventListener('click', function () {
+              var content = header.closest('.rb-accordion').querySelector('.rb-accordion-content');
+              var icon = header.querySelector('.rb-accordion-icon');
+              var opening = content.classList.contains('rb-hidden');
+              content.classList.toggle('rb-hidden');
+              var base = icon.src.replace(/[^/]*\.svg$/, '');
+              icon.src = opening ? base + 'up.svg' : base + 'down.svg';
+            });
+          });
+          // Toggle button pairs (空房查詢 / 庫存表)
+          root.querySelectorAll('.rb-toggle-group').forEach(function (group) {
+            group.querySelectorAll('.rb-toggle-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                group.querySelectorAll('.rb-toggle-btn').forEach(function (b) { b.classList.remove('rb-active'); });
+                btn.classList.add('rb-active');
+              });
+            });
+          });
+          // Filter tabs
+          root.querySelectorAll('.rb-filter-tabs').forEach(function (tabs) {
+            tabs.querySelectorAll('.rb-filter-tab').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                tabs.querySelectorAll('.rb-filter-tab').forEach(function (b) { b.classList.remove('rb-active'); });
+                btn.classList.add('rb-active');
+              });
+            });
+          });
+          // Room count ± buttons
+          root.querySelectorAll('.rb-count-minus, .rb-count-plus').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              var display = btn.closest('.rb-count-group').querySelector('.rb-count-val');
+              var val = parseInt(display.textContent, 10) || 0;
+              display.textContent = btn.classList.contains('rb-count-minus') ? Math.max(1, val - 1) : val + 1;
+            });
+          });
+          // Range → display value
+          root.querySelectorAll('.rb-range').forEach(function (input) {
+            var display = input.closest('.rb-range-row').querySelector('.rb-range-val');
+            input.addEventListener('input', function () { if (display) display.textContent = input.value; });
+          });
         }
 
         function showLanding() {
@@ -2372,14 +2433,20 @@
           }
         }
 
+        var PAGE_TEMPLATES = { '房間預定': 'tpl-room-booking' };
+
         function openPage(pageName) {
           var exists = pages.find(function (p) { return p.name === pageName; });
           if (!exists) {
-            pages.push({
-              name: pageName,
-              html: '<div class="section-card flex items-center justify-center min-h-[300px] text-[#888] text-base">' +
-                    pageName + '</div>'
-            });
+            var html;
+            var tplId = PAGE_TEMPLATES[pageName];
+            if (tplId) {
+              var tpl = document.getElementById(tplId);
+              html = tpl ? tpl.innerHTML : '';
+            } else {
+              html = '<div class="flex items-center justify-center min-h-[300px] text-[#888] text-base">' + pageName + '</div>';
+            }
+            pages.push({ name: pageName, html: html });
           }
           activatePage(pageName);
         }
@@ -2853,5 +2920,312 @@
         },
       });
     </script>
+
+    <!-- ── Room-booking page template (hidden, scanned by Tailwind CDN) ── -->
+    <div id="tpl-room-booking" style="display:none" aria-hidden="true">
+      <div class="flex flex-col gap-4">
+
+        <!-- [A] 空房與庫存查詢 accordion -->
+        <div class="rb-accordion rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-5">
+          <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none mb-4">
+            <span class="text-xl font-semibold text-[#454545]">空房與庫存查詢</span>
+            <img src="./assets/icons/up.svg" class="rb-accordion-icon w-6 h-6" data-open="up" />
+          </div>
+          <div class="rb-accordion-content bg-white rounded-xl p-3">
+            <div class="flex gap-6 flex-wrap">
+              <!-- Left: controls -->
+              <div class="flex flex-col gap-4 w-[320px] shrink-0">
+                <!-- Toggle: 空房查詢 / 庫存表 -->
+                <div class="rb-toggle-group flex">
+                  <button class="rb-toggle-btn rb-active">空房查詢</button>
+                  <button class="rb-toggle-btn">庫存表</button>
+                </div>
+                <!-- 入住 -->
+                <div class="flex flex-col gap-1">
+                  <span class="text-base text-[#454545]">入住</span>
+                  <div class="flex items-center bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-3 cursor-pointer">
+                    <span class="text-base text-[#454545] flex-1">2026-02-15</span>
+                    <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                  </div>
+                </div>
+                <!-- 退房 -->
+                <div class="flex flex-col gap-1">
+                  <span class="text-base text-[#454545]">退房</span>
+                  <div class="flex items-center bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-3 cursor-pointer">
+                    <span class="text-base text-[#454545] flex-1">2026-02-18</span>
+                    <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                  </div>
+                </div>
+                <!-- 訂房間數 -->
+                <div class="flex flex-col gap-1">
+                  <span class="text-base text-[#454545]">訂房間數</span>
+                  <div class="rb-count-group flex items-center border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-3 bg-white">
+                    <button class="rb-count-minus w-6 h-6 flex items-center justify-center cursor-pointer">
+                      <img src="./assets/icons/outline-minus.svg" class="w-6 h-6" />
+                    </button>
+                    <span class="rb-count-val flex-1 text-center text-base text-[#454545]">5</span>
+                    <button class="rb-count-plus w-6 h-6 flex items-center justify-center cursor-pointer">
+                      <img src="./assets/icons/outline-plus.svg" class="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Right: filter + table + range + actions -->
+              <div class="flex flex-col gap-3 flex-1 min-w-0">
+                <!-- Filter tabs -->
+                <div class="rb-filter-tabs flex gap-0 flex-wrap">
+                  <button class="rb-filter-tab rb-active">全部</button>
+                  <button class="rb-filter-tab">A 棟</button>
+                  <button class="rb-filter-tab">B 棟</button>
+                  <button class="rb-filter-tab">C 棟</button>
+                </div>
+                <!-- Inventory table -->
+                <div class="border border-[#d1d1d1] rounded-xl p-3 overflow-x-auto">
+                  <div class="text-base font-semibold text-[#454545] mb-2">2026 / 02 / 15&ensp;四</div>
+                  <table class="w-full text-sm text-[#454545] min-w-[580px]">
+                    <thead>
+                      <tr class="border-t border-b border-[#454545]">
+                        <th class="w-[46px] py-2 text-center">
+                          <div class="w-3.5 h-3.5 bg-white border border-[#d1d1d1] rounded-[4px] mx-auto"></div>
+                        </th>
+                        <th class="w-[151px] py-2 text-left px-2">房型</th>
+                        <th class="w-[62px] py-2 text-center">代號</th>
+                        <th class="w-[88px] py-2 text-center">庫存總數</th>
+                        <th class="w-[104px] py-2 text-center">可用庫存數</th>
+                        <th class="w-[88px] py-2 text-center">保留房數</th>
+                        <th class="w-[72px] py-2 text-center">分配數</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-b border-[#d1d1d1]">
+                        <td class="py-2 text-center">
+                          <div class="w-3.5 h-3.5 bg-white border border-[#d1d1d1] rounded-[4px] mx-auto"></div>
+                        </td>
+                        <td class="py-2 px-2">義大利麵房</td>
+                        <td class="py-2 text-center">XYZ</td>
+                        <td class="py-2 text-center">99</td>
+                        <td class="py-2 text-center">88</td>
+                        <td class="py-2 text-center">11</td>
+                        <td class="py-2">
+                          <input type="text" class="w-full border border-[#d1d1d1] rounded-[6px] px-2 py-1 text-center bg-white" />
+                        </td>
+                      </tr>
+                      <tr class="border-b border-[#454545]">
+                        <td class="py-2 text-center">
+                          <div class="w-3.5 h-3.5 bg-white border border-[#d1d1d1] rounded-[4px] mx-auto"></div>
+                        </td>
+                        <td class="py-2 px-2">香蕉船房</td>
+                        <td class="py-2 text-center">XYZ</td>
+                        <td class="py-2 text-center">99</td>
+                        <td class="py-2 text-center">88</td>
+                        <td class="py-2 text-center">11</td>
+                        <td class="py-2">
+                          <input type="text" class="w-full border border-[#d1d1d1] rounded-[6px] px-2 py-1 text-center bg-[#e1e1e0]" disabled />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="py-2"></td>
+                        <td class="py-2 px-2 font-semibold">總計</td>
+                        <td class="py-2 text-center">—</td>
+                        <td class="py-2 text-center">200</td>
+                        <td class="py-2 text-center font-semibold text-[#e05216]">200</td>
+                        <td class="py-2 text-center">200</td>
+                        <td class="py-2 text-center">100</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- Range: 數量分配 -->
+                <div class="rb-range-row border border-[#d1d1d1] rounded-xl px-4 py-3 flex items-center gap-3 bg-white">
+                  <input type="range" min="0" max="10" value="3" class="rb-range flex-1" style="accent-color:#2178cf" />
+                  <div class="rb-range-val border border-[#e1e1e0] rounded-xl px-3 py-1 text-sm text-[#454545] shrink-0 min-w-[54px] text-center">3</div>
+                  <button class="flex items-center gap-2 border border-[#d1d1d1] rounded-xl px-4 py-2 bg-white shrink-0">
+                    <span class="text-base text-[#454545]">數量分配</span>
+                    <img src="./assets/icons/submit.svg" class="w-4 h-4" />
+                  </button>
+                </div>
+                <!-- Action buttons -->
+                <div class="flex gap-3">
+                  <button class="flex-1 h-[42px] border border-[#d1d1d1] rounded-xl bg-white text-[#454545] text-base cursor-pointer">清除</button>
+                  <button class="flex-1 h-[42px] border border-[#d1d1d1] rounded-xl bg-[#e1e1e0] text-[#e1e1e0] text-base cursor-not-allowed" disabled>加入訂單</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- [C] 訂單條件 accordion (collapsed by default) -->
+        <div class="rb-accordion rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-5">
+          <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none">
+            <span class="text-xl font-semibold text-[#454545]">訂單條件</span>
+            <img src="./assets/icons/down.svg" class="rb-accordion-icon w-6 h-6" data-open="down" />
+          </div>
+          <div class="rb-accordion-content rb-hidden bg-white rounded-xl p-3 mt-4">
+            <div class="flex gap-8 flex-wrap">
+              <!-- Column 1 -->
+              <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
+                <!-- 人數大/小 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">人數大/小</span>
+                  <div class="flex items-center gap-2 flex-1">
+                    <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base w-20">
+                      <option>大</option><option>小</option>
+                    </select>
+                    <span class="text-base text-[#454545]">/</span>
+                    <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base w-20">
+                      <option>1</option><option>2</option><option>3</option>
+                    </select>
+                  </div>
+                </div>
+                <!-- 到店方式 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">到店方式</span>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
+                    <option>自行到店</option>
+                  </select>
+                </div>
+                <!-- 發票 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">發票</span>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
+                    <option>不開發票</option>
+                  </select>
+                </div>
+                <!-- 統編 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">統編</span>
+                  <input type="text" placeholder="placeholder" disabled
+                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
+                </div>
+                <!-- 抬頭 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">抬頭</span>
+                  <input type="text" placeholder="placeholder" disabled
+                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
+                </div>
+                <!-- 繳款期限 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">繳款期限</span>
+                  <div class="flex items-center gap-2 flex-1">
+                    <span class="text-base text-[#454545]">3 天</span>
+                    <div class="flex items-center bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer flex-1">
+                      <span class="text-base text-[#454545] flex-1">2026-02-27</span>
+                      <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Column 2 -->
+              <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
+                <!-- 折扣 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">折扣</span>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
+                    <option>無折扣</option>
+                  </select>
+                </div>
+                <!-- 總房價 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">總房價</span>
+                  <input type="text" value="1444"
+                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1" />
+                </div>
+                <!-- 加購項目併單 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">加購項目併單</span>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
+                    <option>併單</option>
+                  </select>
+                </div>
+                <!-- 預付百分比 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">預付百分比</span>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
+                    <option>100%</option>
+                  </select>
+                </div>
+                <!-- 預付 -->
+                <div class="flex items-center">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">預付</span>
+                  <input type="text" value="1444"
+                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1" />
+                </div>
+              </div>
+              <!-- Column 3 -->
+              <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
+                <!-- 訂單備註 -->
+                <div class="flex items-start">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0 pt-1">訂單備註</span>
+                  <textarea rows="4"
+                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1 resize-none"></textarea>
+                </div>
+                <!-- 需求備註 -->
+                <div class="flex items-start">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0 pt-1">需求備註</span>
+                  <textarea rows="4"
+                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1 resize-none">需要瓦斯爐</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- [D] 訂房資料表單 -->
+        <div class="rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-5">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xl font-semibold text-[#454545]">訂房資料</span>
+          </div>
+          <div class="bg-white rounded-xl p-3 flex flex-col gap-4">
+            <!-- 國籍 -->
+            <div class="flex items-center gap-3">
+              <span class="text-base text-[#454545] w-16 shrink-0">國籍</span>
+              <div class="flex gap-5">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="rb-nation" value="tw" checked
+                    class="w-5 h-5 rounded-full accent-[#888888]" />
+                  <span class="text-base text-[#454545]">臺灣</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="rb-nation" value="foreign"
+                    class="w-5 h-5 rounded-full" />
+                  <span class="text-base text-[#454545]">外籍</span>
+                </label>
+              </div>
+            </div>
+            <!-- 地址 -->
+            <div class="flex gap-3">
+              <span class="text-base text-[#454545] w-16 shrink-0 pt-1">地址</span>
+              <div class="flex flex-col gap-4 flex-1">
+                <!-- 縣/市 -->
+                <div class="flex flex-col gap-1">
+                  <span class="text-base text-[#454545]">縣/市</span>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#d1d1d1] text-[#888888] text-base">
+                    <option>台中</option>
+                  </select>
+                </div>
+                <!-- 行政區 -->
+                <div class="flex flex-col gap-1">
+                  <div class="flex justify-between">
+                    <span class="text-base text-[#454545]">行政區</span>
+                    <span class="text-base text-[#454545]">406</span>
+                  </div>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#d1d1d1] text-[#888888] text-base">
+                    <option>北屯區</option>
+                  </select>
+                </div>
+                <!-- 街道 -->
+                <div class="flex flex-col gap-1">
+                  <span class="text-base text-[#454545]">街道</span>
+                  <input type="text" placeholder="placeholder"
+                    class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- ── end room-booking template ── -->
   </body>
 </html>
