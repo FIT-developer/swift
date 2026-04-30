@@ -14,6 +14,105 @@
 
 ---
 
+## Session 11 交接（2026-04-30）
+
+### 本次完成
+
+| 項目 | 說明 |
+|---|---|
+| Page tab chip 移至 function icons 同列 | `#pageTabsInline` 插入 `#desktopTopRow`，flex-1 吸收剩餘空間，chip 與 function icons 在同一橫列 |
+| 頁面佈局根本重構 | `#desktopTopRow` 從 `rootWrap` 直接子元素移入新增的 `#mainColumn`（詳見下方） |
+| `#pageTabs`（main 內舊佔位）移除 | chip 現在只活在 `#pageTabsInline`，`<main>` 不再有獨立 tab bar |
+
+### 佈局重構說明
+
+**原結構（錯誤）**：
+```
+rootWrap (flex-col)
+  ├── mobile top bar
+  ├── desktopTopRow   ← 橫跨全寬，aside 與 function icons 不同高
+  └── bodyArea
+        ├── aside
+        └── main
+```
+
+**新結構（對齊設計稿）**：
+```
+rootWrap (flex-col)
+  ├── mobile top bar
+  └── bodyArea (flex-row)
+        ├── aside         ← 移除 self-start，與 mainColumn 等高
+        └── mainColumn (flex-col)
+              ├── desktopTopRow   ← aside 與 function icons 同起點
+              └── main
+```
+
+設計稿規範：展開時 aside 與 function icons 同一起始高度；收摺時 compact bar 出現在 desktopTopRow 左端，與 function icons 同列。新結構完全對齊此規範。
+
+### 收摺行為（確認正確）
+
+| 狀態 | 結構 |
+|---|---|
+| aside 展開 | aside（240px）+ mainColumn（desktopTopRow 只有 function icons + main） |
+| aside 收摺 | aside 隱藏（md-collapsed）+ mainColumn（desktopTopRow 左端出現 sidebarCompact，與 function icons 同列） |
+
+### Mobile 不受影響
+
+- Mobile sidebar 仍為 overlay drawer（`#mobileSidebarPanel`，`md:hidden`）
+- `#desktopTopRow` 本身已有 `hidden md:flex`，mobile 完全不顯示
+- Mobile top bar（logo + hamburger）結構不變
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| 各子頁面實際內容 | 目前 sub-page 仍為佔位文字，room-booking 等頁面尚未實作 |
+| 外層 padding 修正 | rootWrap 目前仍 `p-3`（12px），應改為左右 `px-5`（20px），上 `pt-3` |
+| 其餘 function icons | `icons/system` 對應 modal 尚未讀取 |
+
+---
+
+## Session 10 交接（2026-04-30）
+
+### 本次完成
+
+| 項目 | 說明 |
+|---|---|
+| Aside menu 真實內容替換 | 將 desktop + mobile sidebar 的假資料（主項目一～六）全數替換為 13 個真實類別 |
+| 角色過濾邏輯 | 第一個 select 選「總部」時，自動隱藏飯店限定項目；切換回館名則全部顯示 |
+| 父層文字中性色 | 父層 accordion trigger 由藍色改為 `#454545`，符合設計稿規範 |
+| 子層文字藍色 + 垂直線 | 子層 items 改為 `#2178CF` 藍色；children container 加 `border-l-2 border-[#2178CF]` 垂直藍線 |
+| 垂直線縮排調整 | `ml-4`（16px）讓線條縮排在父層文字以內，呈現清楚的階層感 |
+
+### 角色過濾規則
+
+| 類別 | 飯店限定項目 |
+|---|---|
+| 基本資料設定 | 房型資料設定 |
+| 訂房資料設定 | 房間數量設定、專案價格數量設定、數量價格表、通路庫存設定 |
+| 財務專區 | 整個類別（總部無此項） |
+| 對應設定 | 整個類別（總部無此項） |
+| 多國語設定 | 房型設定、套裝設定 |
+
+### HTML 規則補充
+
+- 飯店限定項目：在 sub-item div 或 category div 加 `data-role="hotel"`
+- 整類隱藏：在 `.menu-category` div 本身加 `data-role="hotel"`
+- 判斷依據：第一個 `[data-role-select]` select 的 option text 含「總部」→ hq 模式
+- Desktop / mobile select 切換時互相同步 selectedIndex
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| Sub-item 點擊切換 selected state | 目前僅靜態 CSS（房間預定預設選中） |
+| 其餘 function icons | `icons/system` 對應 modal 尚未讀取 |
+| Logo click | 回後台首頁行為 |
+
+---
+
+---
+
 ## 待處理問題清單（2026-04-16 整理）
 
 > 以下問題經 .md 全面掃描整理，需逐一確認或補讀 Figma 後解決。

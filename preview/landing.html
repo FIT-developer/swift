@@ -37,6 +37,28 @@
       .sub-item-selected {
         background: #f7d275;
       }
+      /* Page tab chip */
+      .page-tab {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 8px 4px 12px;
+        background: #FEF6EE; border: 1px solid #FAD4AE; border-radius: 20px;
+        font-size: 12px; color: #E05216; white-space: nowrap;
+      }
+      .page-tab-close {
+        display: flex; align-items: center; justify-content: center;
+        width: 16px; height: 16px; border-radius: 50%;
+        font-size: 14px; line-height: 1; color: #B0B0B0;
+        cursor: pointer; border: none; background: transparent; padding: 0;
+      }
+      .page-tab-close:hover { background: #FAD4AE; color: #E05216; }
+      /* Menu category: parent trigger is neutral, children items are blue */
+      .menu-category .accordion-trigger {
+        color: #454545;
+      }
+      .menu-category [id^="desk-acc-"] > div,
+      .menu-category [id^="mob-acc-"] > div {
+        color: #2178CF;
+      }
 
       /* Mobile horizontal scroll */
       .scroll-x {
@@ -259,63 +281,8 @@
         </button>
       </div>
 
-      <!-- ── Desktop top row (hidden on mobile)
-           flex items-center: sidebarCompact on left (when collapsed), topWrap ml-auto on right
-      ── -->
-      <div id="desktopTopRow" class="hidden md:flex items-center">
-        <!-- Compact sidebar content: visible only when sidebar is collapsed -->
-        <div id="sidebarCompact" class="hidden items-center gap-3">
-          <img
-            src="./assets/icons/logo.svg"
-            class="h-8 w-auto object-contain shrink-0"
-          />
-          <span class="text-xs text-[#454545] shrink-0">elaon999</span>
-          <img
-            id="compactLogoutBtn"
-            src="./assets/icons/logout.svg"
-            class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100 shrink-0"
-            alt="登出"
-          />
-          <img
-            id="compactSwitchBtn"
-            src="./assets/icons/switch.svg"
-            class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100 shrink-0"
-            alt="更換帳號"
-          />
-          <img
-            id="expandBtn"
-            src="./assets/icons/folder.svg"
-            class="w-5 h-5 cursor-pointer opacity-60 hover:opacity-100 shrink-0"
-            title="展開選單"
-          />
-        </div>
-        <!-- Toolbar icons — ml-auto pushes to right in both expanded & collapsed states -->
-        <div id="topWrap" class="flex items-center gap-11 ml-auto">
-          <div id="desktopBulletinBtn" class="relative cursor-pointer">
-            <img src="./assets/icons/bulletin.svg" class="w-6 h-6" />
-            <span
-              class="absolute -top-1.5 -right-2 bg-[#EF6F25] text-white text-[10px] rounded-full px-1 py-0.5 leading-none"
-              >99</span
-            >
-          </div>
-          <div id="desktopMessageBtn" class="relative cursor-pointer">
-            <img src="./assets/icons/message.svg" class="w-6 h-6" />
-            <span
-              class="absolute -top-1.5 -right-1 bg-[#EF6F25] text-white text-[10px] rounded-full px-1 py-0.5 leading-none"
-              >0</span
-            >
-          </div>
-          <img
-            id="desktopMemberBtn"
-            src="./assets/icons/person-md.svg"
-            class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
-          />
-          <img src="./assets/icons/system.svg" class="w-6 h-6" />
-        </div>
-      </div>
-
-      <!-- ── Body area: aside (left, desktop only) + main (right, always) ── -->
-      <!-- flex-col on mobile, flex-row on desktop; gap-3 = 12px between aside and main -->
+      <!-- ── Body area: aside (left, desktop only) + mainColumn (right) ── -->
+      <!-- On desktop: flex-row. On mobile: aside hidden, mainColumn is full-width. -->
       <div id="bodyArea" class="flex flex-col md:flex-row gap-3 flex-1 min-w-0">
         <!-- ════════════════════════════════════
              ASIDE — in flow, 240px, hidden on mobile
@@ -323,7 +290,7 @@
         ════════════════════════════════════ -->
         <aside
           id="sidebar"
-          class="hidden md:flex w-[240px] shrink-0 flex-col bg-white border border-[#E1E1E0] rounded-lg p-3 self-start"
+          class="hidden md:flex w-[240px] shrink-0 flex-col bg-white border border-[#E1E1E0] rounded-lg p-3"
         >
           <!-- Folder / collapse toggle -->
           <div class="flex justify-end mb-3">
@@ -339,7 +306,7 @@
           <div class="mb-3">
             <img
               src="./assets/icons/logo.svg"
-              class="w-full h-auto max-h-[116px] object-contain"
+              class="w-full h-auto max-h-[80px] object-contain"
             />
           </div>
 
@@ -376,7 +343,7 @@
 
           <!-- Selects -->
           <div class="flex flex-col gap-3 mb-4">
-            <select class="sidebar-select">
+            <select class="sidebar-select" data-role-select>
               <option>188 ｜ 總部</option>
               <option>189 ｜ 台北館</option>
               <option>190 ｜ 高雄館</option>
@@ -397,132 +364,163 @@
               <span>系統操作</span>
             </div>
             <div class="flex flex-col gap-1 pl-1">
-              <!-- 主項目一：連結 -->
-              <div
-                class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-              >
-                <span>主項目 一</span>
-                <img
-                  src="./assets/icons/right.svg"
-                  class="w-4 h-4 opacity-60"
-                />
-              </div>
-              <!-- 主項目二：accordion 預設展開 -->
-              <div>
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  data-accordion-target="desk-acc-2"
-                >
-                  <span>主項目 二</span>
-                  <img
-                    src="./assets/icons/down.svg"
-                    class="w-4 h-4 opacity-60 accordion-icon open"
-                  />
+
+              <!-- 1. 前台作業 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-1">
+                  <span>前台作業</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon open" />
                 </div>
-                <div id="desk-acc-2" class="flex flex-col gap-0.5 pl-4 mt-0.5">
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded sub-item-selected"
-                  >
-                    訂單管理
-                  </div>
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    房型設定
-                  </div>
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    價格日曆
-                  </div>
+                <div id="desk-acc-1" class="flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded sub-item-selected">房間預定</div>
                 </div>
               </div>
-              <!-- 主項目三：accordion 預設收起 -->
-              <div>
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  data-accordion-target="desk-acc-3"
-                >
-                  <span>主項目 三</span>
-                  <img
-                    src="./assets/icons/down.svg"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
+
+              <!-- 2. 訂單處理作業 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-2">
+                  <span>訂單處理作業</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div
-                  id="desk-acc-3"
-                  class="hidden flex flex-col gap-0.5 pl-4 mt-0.5"
-                >
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    報表總覽
-                  </div>
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    營收報表
-                  </div>
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    住房統計
-                  </div>
+                <div id="desk-acc-2" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">自動對帳紀錄查詢</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">訂單處理</div>
                 </div>
               </div>
-              <!-- 主項目四：連結 -->
-              <div
-                class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-              >
-                <span>主項目 四</span>
-                <img
-                  src="./assets/icons/right.svg"
-                  class="w-4 h-4 opacity-60"
-                />
-              </div>
-              <!-- 主項目五：accordion 預設收起 -->
-              <div>
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  data-accordion-target="desk-acc-5"
-                >
-                  <span>主項目 五</span>
-                  <img
-                    src="./assets/icons/down.svg"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
+
+              <!-- 3. 基本資料設定 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-3">
+                  <span>基本資料設定</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
                 </div>
-                <div
-                  id="desk-acc-5"
-                  class="hidden flex flex-col gap-0.5 pl-4 mt-0.5"
-                >
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    帳號管理
-                  </div>
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    權限設定
-                  </div>
-                  <div
-                    class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
-                  >
-                    稽核紀錄
-                  </div>
+                <div id="desk-acc-3" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">房型資料設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">須知設定</div>
                 </div>
               </div>
-              <!-- 主項目六：連結 -->
-              <div
-                class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded"
-              >
-                <span>主項目 六</span>
-                <img
-                  src="./assets/icons/right.svg"
-                  class="w-4 h-4 opacity-60"
-                />
+
+              <!-- 4. 訂房資料設定 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-4">
+                  <span>訂房資料設定</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-4" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">房間數量設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">定義日期種類</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">專案價格數量設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">數量價格表</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">通路庫存設定</div>
+                </div>
               </div>
+
+              <!-- 5. 其他消費設定 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-5">
+                  <span>其他消費設定</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-5" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">類別設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">產品設定</div>
+                </div>
+              </div>
+
+              <!-- 6. 財務專區（飯店限定）-->
+              <div class="menu-category" data-role="hotel">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-6">
+                  <span>財務專區</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-6" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">訂金處理</div>
+                </div>
+              </div>
+
+              <!-- 7. 會員管理 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-7">
+                  <span>會員管理</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-7" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">會員資料查詢</div>
+                </div>
+              </div>
+
+              <!-- 8. 簡訊管理 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-8">
+                  <span>簡訊管理</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-8" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">訂單簡訊及樣本管理</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">定時簡訊管理</div>
+                </div>
+              </div>
+
+              <!-- 9. 報表 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-9">
+                  <span>報表</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-9" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">住房統計表</div>
+                </div>
+              </div>
+
+              <!-- 10. 系統設定 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-10">
+                  <span>系統設定</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-10" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">帳號及權限設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">系統基本設定</div>
+                </div>
+              </div>
+
+              <!-- 11. 對應設定（飯店限定）-->
+              <div class="menu-category" data-role="hotel">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-11">
+                  <span>對應設定</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-11" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">OTA串接設定</div>
+                </div>
+              </div>
+
+              <!-- 12. 多國語設定 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-12">
+                  <span>多國語設定</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-12" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">飯店基本設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">規約設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">房型設定</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded" data-role="hotel">套裝設定</div>
+                </div>
+              </div>
+
+              <!-- 13. 系統商服務 -->
+              <div class="menu-category">
+                <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] cursor-pointer hover:bg-[#F6FAFD] rounded" data-accordion-target="desk-acc-13">
+                  <span>系統商服務</span>
+                  <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+                </div>
+                <div id="desk-acc-13" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">線上授權單</div>
+                  <div class="py-1 px-2 text-xs text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded">請款紀錄查詢</div>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -631,9 +629,73 @@
         <!-- /#sidebar -->
 
         <!-- ════════════════════════════════════
+             MAIN COLUMN — flex-col: desktop top row + main content
+        ════════════════════════════════════ -->
+        <div id="mainColumn" class="flex-1 flex flex-col min-w-0 gap-3">
+
+        <!-- ── Desktop top row (hidden on mobile): sidebarCompact | chips | function icons ── -->
+        <div id="desktopTopRow" class="hidden md:flex items-center">
+          <!-- Compact sidebar: visible only when aside is collapsed -->
+          <div id="sidebarCompact" class="hidden items-center gap-3">
+            <img
+              src="./assets/icons/logo.svg"
+              class="h-8 w-auto object-contain shrink-0"
+            />
+            <span class="text-xs text-[#454545] shrink-0">elaon999</span>
+            <img
+              id="compactLogoutBtn"
+              src="./assets/icons/logout.svg"
+              class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100 shrink-0"
+              alt="登出"
+            />
+            <img
+              id="compactSwitchBtn"
+              src="./assets/icons/switch.svg"
+              class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100 shrink-0"
+              alt="更換帳號"
+            />
+            <img
+              id="expandBtn"
+              src="./assets/icons/folder.svg"
+              class="w-5 h-5 cursor-pointer opacity-60 hover:opacity-100 shrink-0"
+              title="展開選單"
+            />
+          </div>
+          <!-- Page tab chips -->
+          <div id="pageTabsInline" class="flex-1 flex items-center gap-2 overflow-x-auto px-4"></div>
+          <!-- Function icons -->
+          <div id="topWrap" class="flex items-center gap-11">
+            <div id="desktopBulletinBtn" class="relative cursor-pointer">
+              <img src="./assets/icons/bulletin.svg" class="w-6 h-6" />
+              <span
+                class="absolute -top-1.5 -right-2 bg-[#EF6F25] text-white text-[10px] rounded-full px-1 py-0.5 leading-none"
+                >99</span
+              >
+            </div>
+            <div id="desktopMessageBtn" class="relative cursor-pointer">
+              <img src="./assets/icons/message.svg" class="w-6 h-6" />
+              <span
+                class="absolute -top-1.5 -right-1 bg-[#EF6F25] text-white text-[10px] rounded-full px-1 py-0.5 leading-none"
+                >0</span
+              >
+            </div>
+            <img
+              id="desktopMemberBtn"
+              src="./assets/icons/person-md.svg"
+              class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
+            />
+            <img src="./assets/icons/system.svg" class="w-6 h-6" />
+          </div>
+        </div>
+        <!-- /#desktopTopRow -->
+
+        <!-- ════════════════════════════════════
              MAIN CONTENT — flex-1, always visible
         ════════════════════════════════════ -->
-        <main class="flex-1 flex flex-col gap-6 min-w-0 w-full">
+        <main class="flex-1 flex flex-col min-w-0 w-full">
+
+          <!-- Landing dashboard content -->
+          <div id="landingContent" class="flex flex-col gap-6">
           <!-- ── Row 1: Order status + System notifications ── -->
           <div class="flex flex-col md:flex-row gap-6">
             <!-- Order status -->
@@ -1047,8 +1109,16 @@
               </div>
             </div>
           </div>
+          </div>
+          <!-- /#landingContent -->
+
+          <!-- Sub-page content (injected by JS) -->
+          <div id="subPageContent" class="hidden flex flex-col gap-6"></div>
+
         </main>
         <!-- /#mainContent -->
+        </div>
+        <!-- /#mainColumn -->
       </div>
       <!-- /#bodyArea -->
     </div>
@@ -1144,7 +1214,7 @@
 
         <!-- Selects -->
         <div class="grid gap-3 mt-4">
-          <select class="sidebar-select">
+          <select class="sidebar-select" data-role-select>
             <option>188 ｜ 總部</option>
             <option>189 ｜ 台北館</option>
             <option>190 ｜ 高雄館</option>
@@ -1158,127 +1228,168 @@
 
         <!-- 系統操作 -->
         <div class="mt-5">
-          <div
-            class="flex items-center gap-2 mb-2 text-sm font-semibold text-[#454545]"
-          >
+          <div class="flex items-center gap-2 mb-2 text-sm font-semibold text-[#454545]">
             <img src="./assets/icons/operation-system.svg" class="w-5 h-5" />
             <span>系統操作</span>
           </div>
           <div class="flex flex-col gap-0.5">
-            <div
-              class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer"
-            >
-              <span>主項目 一</span>
-              <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
-            </div>
-            <!-- accordion 預設展開 -->
-            <div>
-              <div
-                class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                data-accordion-target="mob-acc-2"
-              >
-                <span>主項目 二</span>
-                <img
-                  src="./assets/icons/down.svg"
-                  class="w-4 h-4 opacity-60 accordion-icon open"
-                />
+
+            <!-- 1. 前台作業 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-1">
+                <span>前台作業</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon open" />
               </div>
-              <div id="mob-acc-2" class="flex flex-col gap-0.5 pl-4 mt-0.5">
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer sub-item-selected"
-                >
-                  訂單管理
-                </div>
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                >
-                  房型設定
-                </div>
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                >
-                  價格日曆
-                </div>
+              <div id="mob-acc-1" class="flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer sub-item-selected">房間預定</div>
               </div>
             </div>
-            <!-- accordion 預設收起 -->
-            <div>
-              <div
-                class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                data-accordion-target="mob-acc-3"
-              >
-                <span>主項目 三</span>
-                <img
-                  src="./assets/icons/down.svg"
-                  class="w-4 h-4 opacity-60 accordion-icon"
-                />
+
+            <!-- 2. 訂單處理作業 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-2">
+                <span>訂單處理作業</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div
-                id="mob-acc-3"
-                class="hidden flex flex-col gap-0.5 pl-4 mt-0.5"
-              >
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                >
-                  報表總覽
-                </div>
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                >
-                  營收報表
-                </div>
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                >
-                  住房統計
-                </div>
+              <div id="mob-acc-2" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">自動對帳紀錄查詢</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">訂單處理</div>
               </div>
             </div>
-            <div
-              class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer"
-            >
-              <span>主項目 四</span>
-              <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
-            </div>
-            <!-- accordion 預設收起 -->
-            <div>
-              <div
-                class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                data-accordion-target="mob-acc-5"
-              >
-                <span>主項目 五</span>
-                <img
-                  src="./assets/icons/down.svg"
-                  class="w-4 h-4 opacity-60 accordion-icon"
-                />
+
+            <!-- 3. 基本資料設定 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-3">
+                <span>基本資料設定</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
               </div>
-              <div
-                id="mob-acc-5"
-                class="hidden flex flex-col gap-0.5 pl-4 mt-0.5"
-              >
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                >
-                  帳號管理
-                </div>
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                >
-                  權限設定
-                </div>
-                <div
-                  class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
-                >
-                  稽核紀錄
-                </div>
+              <div id="mob-acc-3" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">房型資料設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">須知設定</div>
               </div>
             </div>
-            <div
-              class="flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer"
-            >
-              <span>主項目 六</span>
-              <img src="./assets/icons/right.svg" class="w-4 h-4 opacity-60" />
+
+            <!-- 4. 訂房資料設定 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-4">
+                <span>訂房資料設定</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-4" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">房間數量設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">定義日期種類</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">專案價格數量設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">數量價格表</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">通路庫存設定</div>
+              </div>
             </div>
+
+            <!-- 5. 其他消費設定 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-5">
+                <span>其他消費設定</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-5" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">類別設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">產品設定</div>
+              </div>
+            </div>
+
+            <!-- 6. 財務專區（飯店限定）-->
+            <div class="menu-category" data-role="hotel">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-6">
+                <span>財務專區</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-6" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">訂金處理</div>
+              </div>
+            </div>
+
+            <!-- 7. 會員管理 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-7">
+                <span>會員管理</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-7" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">會員資料查詢</div>
+              </div>
+            </div>
+
+            <!-- 8. 簡訊管理 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-8">
+                <span>簡訊管理</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-8" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">訂單簡訊及樣本管理</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">定時簡訊管理</div>
+              </div>
+            </div>
+
+            <!-- 9. 報表 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-9">
+                <span>報表</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-9" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">住房統計表</div>
+              </div>
+            </div>
+
+            <!-- 10. 系統設定 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-10">
+                <span>系統設定</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-10" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">帳號及權限設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">系統基本設定</div>
+              </div>
+            </div>
+
+            <!-- 11. 對應設定（飯店限定）-->
+            <div class="menu-category" data-role="hotel">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-11">
+                <span>對應設定</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-11" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">OTA串接設定</div>
+              </div>
+            </div>
+
+            <!-- 12. 多國語設定 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-12">
+                <span>多國語設定</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-12" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">飯店基本設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">規約設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">房型設定</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer" data-role="hotel">套裝設定</div>
+              </div>
+            </div>
+
+            <!-- 13. 系統商服務 -->
+            <div class="menu-category">
+              <div class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-xs text-[#2178CF] rounded hover:bg-[#F6FAFD] cursor-pointer" data-accordion-target="mob-acc-13">
+                <span>系統商服務</span>
+                <img src="./assets/icons/down.svg" class="w-4 h-4 opacity-60 accordion-icon" />
+              </div>
+              <div id="mob-acc-13" class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l-2 border-[#2178CF] mt-1">
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">線上授權單</div>
+                <div class="py-1 px-2 text-xs text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer">請款紀錄查詢</div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -2149,6 +2260,99 @@
          Chart.js + Interaction scripts
     ════════════════════════════════════ -->
     <script>
+      // ── Sub-item navigation (tab chip + page swap) ──────────────────
+      (function () {
+        var pageTabsInline = document.getElementById('pageTabsInline');
+        var landingContent = document.getElementById('landingContent');
+        var subPageContent = document.getElementById('subPageContent');
+
+        function closeMobileSidebarIfOpen() {
+          var backdrop = document.getElementById('mobileSidebarBackdrop');
+          var panel    = document.getElementById('mobileSidebarPanel');
+          if (backdrop) backdrop.classList.remove('open');
+          if (panel)    panel.classList.remove('open');
+          document.body.classList.remove('mobile-sidebar-open');
+        }
+
+        function setSelectedByText(text) {
+          document.querySelectorAll('[id^="desk-acc-"] > div, [id^="mob-acc-"] > div').forEach(function (el) {
+            el.classList.remove('sub-item-selected');
+            if (el.textContent.trim() === text) el.classList.add('sub-item-selected');
+          });
+        }
+
+        function clearSelected() {
+          document.querySelectorAll('[id^="desk-acc-"] > div, [id^="mob-acc-"] > div').forEach(function (el) {
+            el.classList.remove('sub-item-selected');
+          });
+        }
+
+        function closePage() {
+          pageTabsInline.innerHTML = '';
+          landingContent.classList.remove('hidden');
+          subPageContent.classList.add('hidden');
+          subPageContent.innerHTML = '';
+          clearSelected();
+        }
+
+        function openPage(pageName) {
+          // Rebuild tab chip in top row
+          pageTabsInline.innerHTML = '';
+          var tab = document.createElement('div');
+          tab.className = 'page-tab';
+          var label = document.createElement('span');
+          label.textContent = pageName;
+          var closeBtn = document.createElement('button');
+          closeBtn.className = 'page-tab-close';
+          closeBtn.setAttribute('aria-label', '關閉');
+          closeBtn.textContent = '×';
+          closeBtn.addEventListener('click', closePage);
+          tab.appendChild(label);
+          tab.appendChild(closeBtn);
+          pageTabsInline.appendChild(tab);
+
+          // Swap content
+          landingContent.classList.add('hidden');
+          subPageContent.classList.remove('hidden');
+          subPageContent.innerHTML =
+            '<div class="section-card flex items-center justify-center min-h-[300px] text-[#888] text-base">' +
+            pageName + '</div>';
+        }
+
+        // Attach to all sub-items in both sidebars
+        document.querySelectorAll('[id^="desk-acc-"] > div, [id^="mob-acc-"] > div').forEach(function (item) {
+          item.addEventListener('click', function () {
+            var pageName = item.textContent.trim();
+            setSelectedByText(pageName);
+            openPage(pageName);
+            closeMobileSidebarIfOpen();
+          });
+        });
+      })();
+
+      // ── Menu role filter (飯店 vs 總部) ─────────────────────────────
+      (function () {
+        function applyRole(hq) {
+          document.querySelectorAll('[data-role="hotel"]').forEach(function (el) {
+            el.style.display = hq ? 'none' : '';
+          });
+        }
+        var roleSelects = document.querySelectorAll('[data-role-select]');
+        roleSelects.forEach(function (sel) {
+          sel.addEventListener('change', function () {
+            var hq = sel.options[sel.selectedIndex].text.indexOf('總部') !== -1;
+            roleSelects.forEach(function (other) {
+              if (other !== sel) other.selectedIndex = sel.selectedIndex;
+            });
+            applyRole(hq);
+          });
+        });
+        if (roleSelects.length > 0) {
+          var firstText = roleSelects[0].options[roleSelects[0].selectedIndex].text;
+          applyRole(firstText.indexOf('總部') !== -1);
+        }
+      })();
+
       // ── Accordion toggle ─────────────────────────────────────────────
       document
         .querySelectorAll(".accordion-trigger")
