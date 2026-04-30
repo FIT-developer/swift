@@ -361,43 +361,50 @@
       .rb-cal-wrap .day:hover:not(.disabled) {
         border-color: #b0b0b0; background: #f6fafd;
       }
-      .rb-cal-wrap .day-wday { font-size: 10px; color: #888888; margin-bottom: 2px; }
+      .rb-cal-wrap .day-wday { font-size: 12px; color: #454545; margin-bottom: 2px; }
       .rb-cal-wrap .day-num  { font-size: 16px; font-weight: 600; color: #454545; line-height: 1.4; }
+      /* outside month (type=future): no fill, #e1e1e0 border, #888888 text */
       .rb-cal-wrap .day.outside { border-color: #e1e1e0; }
       .rb-cal-wrap .day.outside .day-wday,
-      .rb-cal-wrap .day.outside .day-num { color: #b0b0b0; }
+      .rb-cal-wrap .day.outside .day-num { color: #888888; }
+      /* past/disabled (type=diasbled): #e1e1e0 fill+border, #888888 text */
       .rb-cal-wrap .day.disabled {
-        background: #f0f0f0 !important; border-color: #e1e1e0 !important;
+        background: #e1e1e0 !important; border-color: #e1e1e0 !important;
         cursor: not-allowed; pointer-events: none;
       }
       .rb-cal-wrap .day.disabled .day-wday,
-      .rb-cal-wrap .day.disabled .day-num { color: #b0b0b0 !important; }
+      .rb-cal-wrap .day.disabled .day-num { color: #888888 !important; }
+      /* today (type=today): #ffc0cb fill, white text */
       .rb-cal-wrap .day.today {
         background: #ffc0cb !important; border-color: #ffc0cb !important;
       }
       .rb-cal-wrap .day.today .day-wday,
-      .rb-cal-wrap .day.today .day-num { color: #454545 !important; }
+      .rb-cal-wrap .day.today .day-num { color: #ffffff !important; }
+      /* sel-start/end (type=focus): #86b7fe fill, #ffffff border, white text */
       .rb-cal-wrap .day.sel-start,
       .rb-cal-wrap .day.sel-end {
-        background: #2178cf !important; border-color: #2178cf !important;
+        background: #86b7fe !important; border-color: #ffffff !important;
       }
       .rb-cal-wrap .day.sel-start .day-wday, .rb-cal-wrap .day.sel-start .day-num,
       .rb-cal-wrap .day.sel-end .day-wday,   .rb-cal-wrap .day.sel-end .day-num {
         color: #ffffff !important;
       }
+      /* sel-mid (type=selected): #bbf7d0 fill, #454545 text */
       .rb-cal-wrap .day.sel-mid {
-        background: #e1e1e0 !important; border-color: #e1e1e0 !important;
+        background: #bbf7d0 !important; border-color: #bbf7d0 !important;
       }
       .rb-cal-wrap .day.sel-mid .day-wday,
       .rb-cal-wrap .day.sel-mid .day-num { color: #454545 !important; }
+      /* today + sel-mid: green overrides pink */
       .rb-cal-wrap .day.today.sel-mid {
-        background: #e1e1e0 !important; border-color: #e1e1e0 !important;
+        background: #bbf7d0 !important; border-color: #bbf7d0 !important;
       }
       .rb-cal-wrap .day.today.sel-mid .day-wday,
       .rb-cal-wrap .day.today.sel-mid .day-num { color: #454545 !important; }
+      /* today + sel-start/end: blue overrides pink */
       .rb-cal-wrap .day.today.sel-start,
       .rb-cal-wrap .day.today.sel-end {
-        background: #2178cf !important; border-color: #2178cf !important;
+        background: #86b7fe !important; border-color: #ffffff !important;
       }
       .rb-cal-wrap .day.today.sel-start .day-wday, .rb-cal-wrap .day.today.sel-start .day-num,
       .rb-cal-wrap .day.today.sel-end .day-wday,   .rb-cal-wrap .day.today.sel-end .day-num {

@@ -44,14 +44,18 @@
 - 上：星期縮寫（16px，`#454545`），`26 × 16`
 - 下：日期數字（md/27px，`#454545`），`26 × 27`
 
-### 格狀態
+### 格狀態（從 Calendar components 366:14657 直接讀取）
 
-| 狀態 | fill | stroke |
-|---|---|---|
-| 預設 | — | `#d1d1d1` |
-| 選中範圍 | `#e1e1e0` | `#e1e1e0` |
-| 跨月（淡） | — | `#e1e1e0` |
-| 特殊日（如假日） | `#ffc0cb` | — |
+| variant | Figma 名稱 | fill | stroke | text |
+|---|---|---|---|---|
+| 預設 | `type=not focus` | `#ffffff` | `#d1d1d1` | `#454545` |
+| 首末日（sel-start/end） | `type=focus` | `#86b7fe` | `#ffffff` | `#ffffff` |
+| 今日 | `type=today` | `#ffc0cb` | none | `#ffffff` |
+| 區間（sel-mid） | `type=selected` | `#bbf7d0` | none | `#454545` |
+| 過去/禁用 | `type=diasbled`（原文拼字） | `#e1e1e0` | `#e1e1e0` | `#888888` |
+| 跨月 | `type=future` | none | `#e1e1e0` | `#888888` |
+
+**優先順序**：點擊今日 → 藍色（`#86b7fe`）取代粉色；區間包含今日 → 綠色取代粉色
 
 ### Grid 排列
 
