@@ -14,6 +14,50 @@
 
 ---
 
+## Session 15 交接（2026-04-30）
+
+### 本次完成
+
+#### 規格檔
+| 項目 | 說明 |
+|---|---|
+| `components/table.md` 新增 | 從 Table 元件（486:4370）讀取兩個 variant，寫入完整規格 |
+| `type=allocate` 規格 | 643×263，7 欄（checkbox/房型/代號/庫存總數/可用庫存數/保留房數/分配數），rows 38px，footer 可用庫存數 `#e05216`，分配數 Input 可編輯/停用兩態 |
+| `type=inventory` 規格 | 1203×303，左固定區（房型/代號）+ 7 日期欄，週末欄 `#ffc0cb` header，資料格 3 色 chip（綠 `#2aca18` / 藍 `#86b7fe` / 橙 `#f28b45`） |
+| `components/table-inventory.md` 補 | 新增「訂 / 餘 / 保 metric toggle」區塊，從 Figma `Frame 346` 讀到實際按鈕標籤；`table.md` 早期推測（可用/保留/警示）保留為歷史紀錄 |
+| `components/calendar.md` 補 | 新增 RWD 行為（封頂 351 + 等比縮）、`<900px` column 排版說明 |
+
+#### Landing.html 實作
+| 項目 | 說明 |
+|---|---|
+| 兩表切換 | `id="tableAllocate"` / `id="tableInventory"`（後者預設 `hidden`）；`setMode()` 依模式 toggle `.hidden` |
+| Allocate row checkbox 互動 | 勾選 → 該列分配數 input 可編輯（`bg-white`）；取消 → 停用（`bg-[#e1e1e0]`） |
+| 數量分配 range + button | range max = `Σ` 各列可用庫存數；按鈕點擊 → 把 range value 平均分配到 checked 列，依各列可用庫存數封頂、餘額遞補 |
+| 訂/餘/保 metric toggle | Frame 346 三顆按鈕（36×36，r:4，border + active fill 用 `--c` 變數）；點擊 toggle 對應 metric chip 的 `display`；僅庫存表模式顯示 |
+| 棟別 chip gap 修正 | `gap-0` → `gap-4`（16px），符合 chip_button_spec |
+| `rb-interval-select` CSS 修正 | 基底改為 `bg-white`；`:disabled` 才套 `bg-[#e1e1e0]`（原本反了） |
+| 月曆星期標頭移除 | 刪除 HTML 的 `.rb-grid-header` 列（一二三四五六日）及其 CSS；星期縮寫由格內上方文字保留 |
+| Calendar 響應式 | grid 由 `repeat(7, 42px)` → `repeat(7, minmax(0, 1fr))`；`.rb-cal-wrap` 加 `max-width: 100%`；day cell 移除固定 `width: 42px`，高度仍 55px |
+| `[A]` 區 RWD | `<900px` viewport 切 column（calendar 上、查詢下，`mx-auto`）；右側面板加 `max-[899px]:w-full` |
+| Mode toggle 按鈕等寬 | JS 量測「空房查詢 / 庫存表」兩按鈕 rendered width，取 max 套用兩者，避免文字長度不同造成左右視覺不平衡 |
+
+### 切換邏輯總結
+
+| 按鈕 | 月曆模式 | intervalSelect | 表格 | 訂餘保 toggle |
+|---|---|---|---|---|
+| 空房查詢 | room（拖曳自由選） | disabled → `#e1e1e0` 背景 | tableAllocate 顯示 | 隱藏 |
+| 庫存表 | inventory（固定區間） | enabled → 白色背景 | tableInventory 顯示 | 顯示 |
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| 外層 padding 修正 | rootWrap 仍 `p-3`（12px），應改為 `px-5 pt-3`（左右 20px） |
+| Section [B] 訂房資料 Grid | datepicker / checkbox 欄位規格尚未讀取 Figma |
+| 其他 sub-page 內容 | 訂單處理等仍為佔位 |
+
+---
+
 ## Session 14 交接（2026-04-30）
 
 ### 本次完成

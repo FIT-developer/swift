@@ -272,6 +272,7 @@
       /* ── Room-booking: mode toggle (calendar JS managed) ─── */
       .mode-toggle {
         display: inline-flex;
+        align-self: flex-start;
         border: 1px solid #d1d1d1;
         border-radius: 28px;
         overflow: hidden;
@@ -280,26 +281,41 @@
         height: 42px; padding: 0 24px;
         background: #ffffff; border: none;
         font-size: 16px; color: #454545; cursor: pointer;
+        text-align: center; white-space: nowrap;
       }
       .mode-btn.active { background: #005fcc; color: #ffffff; }
       .mode-btn:not(.active):hover { background: #f6fafd; }
 
       /* ── Room-booking: filter tabs ─────────────────────── */
+      /* 對應 Figma Payment method state=options chip：間距 16px、padding 10px 16px、radius 28px */
       .rb-filter-tab {
-        height: 42px; padding: 0 12px; border-radius: 28px;
+        height: 42px; padding: 10px 16px; border-radius: 28px;
         font-size: 16px; cursor: pointer; color: #454545;
         background: #e1e1e0; border: none;
       }
       .rb-filter-tab.rb-active { background: #f7d275; }
 
+      /* ── Inventory metric toggle (訂/餘/保) ───────────── */
+      /* 對應 Figma Frame 346：36×36、r:4、border 同 --c、active 時填 --c；文字統一 #454545 */
+      .inv-metric-btn {
+        width: 36px; height: 36px; border-radius: 4px;
+        border: 1px solid var(--c); background: #ffffff;
+        color: #454545; font-size: 16px; line-height: 1;
+        display: inline-flex; align-items: center; justify-content: center;
+        cursor: pointer; padding: 0;
+      }
+      .inv-metric-btn.rb-active { background: var(--c); }
+
       /* ── Room-booking: accordion ───────────────────────── */
       .rb-accordion-content.rb-hidden { display: none; }
 
       /* ── Calendar component ────────────────────────────── */
+      /* width 封頂 351px；容器更窄時等比縮（cell 用 1fr 分配） */
       .rb-cal-wrap {
-        width: 351px; background: #ffffff;
+        width: 351px; max-width: 100%;
+        background: #ffffff;
         border: 1px solid #d1d1d1; border-radius: 12px;
-        padding: 12px; flex-shrink: 0;
+        padding: 12px;
       }
       .rb-cal-row1 {
         display: flex; align-items: center;
@@ -322,9 +338,9 @@
       .rb-interval-select {
         font-size: 14px; border: 1px solid #d1d1d1; border-radius: 6px;
         width: 79px; height: 36px;
-        background: #e1e1e0; color: #454545; cursor: pointer; padding: 0 6px;
+        background: #ffffff; color: #454545; cursor: pointer; padding: 0 6px;
       }
-      .rb-interval-select:disabled { opacity: 0.6; cursor: not-allowed; }
+      .rb-interval-select:disabled { background: #e1e1e0; opacity: 1; cursor: not-allowed; }
       .rb-nav-btn {
         width: 40px; height: 40px;
         display: flex; align-items: center; justify-content: center;
@@ -336,23 +352,15 @@
         font-size: 20px; font-weight: 600; color: #454545;
         min-width: 125px; text-align: center;
       }
-      .rb-grid-header {
-        display: grid;
-        grid-template-columns: repeat(7, 42px);
-        column-gap: 5px; margin-bottom: 4px;
-      }
-      .rb-grid-header span {
-        text-align: center; font-size: 14px; color: #888888; padding: 2px 0;
-      }
       #calGrid {
         display: grid;
-        grid-template-columns: repeat(7, 42px);
+        grid-template-columns: repeat(7, minmax(0, 1fr));
         column-gap: 5px; row-gap: 8px;
         touch-action: none;
       }
       /* Day cells — scoped under .rb-cal-wrap */
       .rb-cal-wrap .day {
-        width: 42px; height: 55px; border-radius: 12px;
+        height: 55px; border-radius: 12px;
         border: 1px solid #d1d1d1; padding: 6px 4px;
         text-align: center; background: #ffffff;
         cursor: pointer; user-select: none; -webkit-user-select: none;
@@ -2513,6 +2521,29 @@
               });
             });
           });
+          // Inventory metric toggle (訂/餘/保) → 顯示/隱藏 cell 內對應 chip
+          root.querySelectorAll('.inv-metric-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              btn.classList.toggle('rb-active');
+              var on = btn.classList.contains('rb-active');
+              var metric = btn.dataset.metric;
+              root.querySelectorAll('#tableInventory [data-metric="' + metric + '"]').forEach(function (chip) {
+                chip.style.display = on ? '' : 'none';
+              });
+            });
+          });
+          // Allocate row checkbox → toggle 分配數 input enabled/disabled
+          root.querySelectorAll('.rb-alloc-cb').forEach(function (cb) {
+            cb.addEventListener('change', function () {
+              var row = cb.closest('tr');
+              if (!row) return;
+              var input = row.querySelector('.rb-alloc-input');
+              if (!input) return;
+              input.disabled = !cb.checked;
+              input.classList.toggle('bg-white', cb.checked);
+              input.classList.toggle('bg-[#e1e1e0]', !cb.checked);
+            });
+          });
           // Room count ± buttons
           root.querySelectorAll('.rb-count-minus, .rb-count-plus').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -2526,6 +2557,66 @@
             var display = input.closest('.rb-range-row').querySelector('.rb-range-val');
             input.addEventListener('input', function () { if (display) display.textContent = input.value; });
           });
+          // Allocate: range max = sum of 可用庫存數, button distributes value to checked rows
+          (function () {
+            var rows = root.querySelectorAll('.rb-alloc-row');
+            if (!rows.length) return;
+            var stockSum = 0;
+            rows.forEach(function (tr) {
+              var cell = tr.querySelector('.rb-alloc-stock');
+              var n = cell ? parseInt(cell.textContent.trim(), 10) || 0 : 0;
+              tr.dataset.stock = n;
+              stockSum += n;
+            });
+            var rangeRow = root.querySelector('.rb-range-row');
+            if (!rangeRow) return;
+            var range = rangeRow.querySelector('.rb-range');
+            var rangeVal = rangeRow.querySelector('.rb-range-val');
+            if (range && stockSum > 0) {
+              range.max = stockSum;
+              if (parseInt(range.value, 10) > stockSum) range.value = stockSum;
+              if (rangeVal) rangeVal.textContent = range.value;
+            }
+            var btn = rangeRow.querySelector('.rb-alloc-btn');
+            if (btn) {
+              btn.addEventListener('click', function () {
+                var qty = parseInt(range.value, 10) || 0;
+                var checked = [];
+                rows.forEach(function (tr) {
+                  var cb = tr.querySelector('.rb-alloc-cb');
+                  if (cb && cb.checked) checked.push(tr);
+                });
+                if (!checked.length) return;
+                // Even split with remainder, capped per-row by stock; spillover cascades
+                var allocs = checked.map(function () { return 0; });
+                var caps = checked.map(function (tr) { return parseInt(tr.dataset.stock, 10) || 0; });
+                var remaining = qty;
+                while (remaining > 0) {
+                  var openIdx = [];
+                  checked.forEach(function (_, i) { if (allocs[i] < caps[i]) openIdx.push(i); });
+                  if (!openIdx.length) break;
+                  var share = Math.floor(remaining / openIdx.length);
+                  if (share === 0) {
+                    for (var k = 0; k < openIdx.length && remaining > 0; k++) {
+                      var i2 = openIdx[k];
+                      allocs[i2]++;
+                      remaining--;
+                    }
+                    break;
+                  }
+                  openIdx.forEach(function (i) {
+                    var add = Math.min(share, caps[i] - allocs[i]);
+                    allocs[i] += add;
+                    remaining -= add;
+                  });
+                }
+                checked.forEach(function (tr, i) {
+                  var input = tr.querySelector('.rb-alloc-input');
+                  if (input) input.value = allocs[i];
+                });
+              });
+            }
+          })();
           // Calendar (room-booking page only)
           initCalendar();
         }
@@ -2549,6 +2640,16 @@
           var intervalSelect = document.getElementById("intervalSelect");
           var btnRoom = document.getElementById("btnRoom");
           var btnInventory = document.getElementById("btnInventory");
+          var tableAllocate = document.getElementById("tableAllocate");
+          var tableInventory = document.getElementById("tableInventory");
+          var invMetricToggle = document.getElementById("invMetricToggle");
+
+          // Equalize mode-toggle button widths — both set to the wider one's rendered width
+          (function() {
+            var w = Math.max(btnRoom.getBoundingClientRect().width, btnInventory.getBoundingClientRect().width);
+            btnRoom.style.width = w + "px";
+            btnInventory.style.width = w + "px";
+          })();
 
           function today() { return dayjs().startOf("day"); }
           function getInterval() { return parseInt(intervalSelect.value); }
@@ -2699,6 +2800,9 @@
             intervalSelect.disabled = mode === "room";
             btnRoom.classList.toggle("active", mode === "room");
             btnInventory.classList.toggle("active", mode === "inventory");
+            if (tableAllocate) tableAllocate.classList.toggle("hidden", mode === "inventory");
+            if (tableInventory) tableInventory.classList.toggle("hidden", mode === "room");
+            if (invMetricToggle) invMetricToggle.classList.toggle("hidden", mode === "room");
             if (mode === "inventory") {
               selStart = prevSelStart ? prevSelStart.startOf("day") : today();
               currentMonth = selStart.startOf("month");
@@ -3275,10 +3379,10 @@
             <img src="./assets/icons/up.svg" class="rb-accordion-icon w-6 h-6" />
           </div>
           <div class="rb-accordion-content bg-white rounded-xl p-3">
-            <div class="flex gap-4 items-start flex-wrap">
+            <div class="flex gap-4 items-start flex-wrap max-[899px]:flex-col">
 
               <!-- LEFT: calendar (351px fixed) -->
-              <div class="rb-cal-wrap">
+              <div class="rb-cal-wrap max-[899px]:mx-auto">
                 <!-- Row 1: 已選N天 + 今日 + interval select -->
                 <div class="rb-cal-row1">
                   <span class="rb-selected-count" id="count">已選 0 天</span>
@@ -3305,36 +3409,38 @@
                   </button>
                 </div>
                 <!-- Weekday header -->
-                <div class="rb-grid-header">
-                  <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
-                </div>
                 <!-- Date grid -->
                 <div id="calGrid"></div>
               </div>
 
               <!-- RIGHT: mode toggle + filter tabs + table + range + actions -->
-              <div class="flex flex-col gap-3 flex-1 min-w-0">
+              <div class="flex flex-col gap-3 flex-1 min-w-0 max-[899px]:w-full">
                 <!-- Mode toggle (空房查詢 / 庫存表) — Figma button.md spec, r:28 pill -->
                 <div class="mode-toggle">
                   <button class="mode-btn active" id="btnRoom">空房查詢</button>
                   <button class="mode-btn" id="btnInventory">庫存表</button>
                 </div>
-                <!-- Filter tabs -->
-                <div class="rb-filter-tabs flex gap-0 flex-wrap">
-                  <button class="rb-filter-tab rb-active">全部</button>
-                  <button class="rb-filter-tab">A 棟</button>
-                  <button class="rb-filter-tab">B 棟</button>
-                  <button class="rb-filter-tab">C 棟</button>
+                <!-- Filter row：棟別 chips（左）+ 訂餘保 toggle（右，僅庫存表模式顯示） -->
+                <div class="flex justify-between items-center gap-4">
+                  <div class="rb-filter-tabs flex gap-4 flex-wrap min-w-0">
+                    <button class="rb-filter-tab rb-active">全部</button>
+                    <button class="rb-filter-tab">A 棟</button>
+                    <button class="rb-filter-tab">B 棟</button>
+                    <button class="rb-filter-tab">C 棟</button>
+                  </div>
+                  <div id="invMetricToggle" class="hidden shrink-0 flex gap-[20px]">
+                    <button data-metric="ord" class="inv-metric-btn rb-active" style="--c:#2aca18">訂</button>
+                    <button data-metric="rem" class="inv-metric-btn rb-active" style="--c:#86b7fe">餘</button>
+                    <button data-metric="rsv" class="inv-metric-btn rb-active" style="--c:#f28b45">保</button>
+                  </div>
                 </div>
-                <!-- Inventory table -->
-                <div class="border border-[#d1d1d1] rounded-xl p-3 overflow-x-auto">
+                <!-- Allocate table（空房查詢模式） -->
+                <div id="tableAllocate" class="border border-[#d1d1d1] rounded-xl p-3 overflow-x-auto">
                   <div class="text-base font-semibold text-[#454545] mb-2">2026 / 02 / 15&ensp;四</div>
                   <table class="w-full text-sm text-[#454545] min-w-[580px]">
                     <thead>
                       <tr class="border-t border-b border-[#454545]">
-                        <th class="w-[46px] py-2 text-center">
-                          <div class="w-3.5 h-3.5 bg-white border border-[#d1d1d1] rounded-[4px] mx-auto"></div>
-                        </th>
+                        <th class="w-[46px] py-2"></th>
                         <th class="w-[151px] py-2 text-left px-2">房型</th>
                         <th class="w-[62px] py-2 text-center">代號</th>
                         <th class="w-[88px] py-2 text-center">庫存總數</th>
@@ -3344,30 +3450,30 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="border-b border-[#d1d1d1]">
+                      <tr class="rb-alloc-row border-b border-[#d1d1d1]">
                         <td class="py-2 text-center">
-                          <div class="w-3.5 h-3.5 bg-white border border-[#d1d1d1] rounded-[4px] mx-auto"></div>
+                          <input type="checkbox" class="rb-alloc-cb w-3.5 h-3.5 align-middle" checked />
                         </td>
                         <td class="py-2 px-2">義大利麵房</td>
                         <td class="py-2 text-center">XYZ</td>
                         <td class="py-2 text-center">99</td>
-                        <td class="py-2 text-center">88</td>
+                        <td class="py-2 text-center rb-alloc-stock">88</td>
                         <td class="py-2 text-center">11</td>
                         <td class="py-2">
-                          <input type="text" class="w-full border border-[#d1d1d1] rounded-[6px] px-2 py-1 text-center bg-white" />
+                          <input type="text" class="rb-alloc-input w-full border border-[#d1d1d1] rounded-[6px] px-2 py-1 text-center bg-white" />
                         </td>
                       </tr>
-                      <tr class="border-b border-[#454545]">
+                      <tr class="rb-alloc-row border-b border-[#454545]">
                         <td class="py-2 text-center">
-                          <div class="w-3.5 h-3.5 bg-white border border-[#d1d1d1] rounded-[4px] mx-auto"></div>
+                          <input type="checkbox" class="rb-alloc-cb w-3.5 h-3.5 align-middle" />
                         </td>
                         <td class="py-2 px-2">香蕉船房</td>
                         <td class="py-2 text-center">XYZ</td>
                         <td class="py-2 text-center">99</td>
-                        <td class="py-2 text-center">88</td>
+                        <td class="py-2 text-center rb-alloc-stock">88</td>
                         <td class="py-2 text-center">11</td>
                         <td class="py-2">
-                          <input type="text" class="w-full border border-[#d1d1d1] rounded-[6px] px-2 py-1 text-center bg-[#e1e1e0]" disabled />
+                          <input type="text" class="rb-alloc-input w-full border border-[#d1d1d1] rounded-[6px] px-2 py-1 text-center bg-[#e1e1e0]" disabled />
                         </td>
                       </tr>
                       <tr>
@@ -3382,19 +3488,170 @@
                     </tbody>
                   </table>
                 </div>
-                <!-- Range: 數量分配 -->
-                <div class="rb-range-row border border-[#d1d1d1] rounded-xl px-4 py-3 flex items-center gap-3 bg-white">
-                  <input type="range" min="0" max="10" value="3" class="rb-range flex-1" style="accent-color:#2178cf" />
-                  <div class="rb-range-val border border-[#e1e1e0] rounded-xl px-3 py-1 text-sm text-[#454545] shrink-0 min-w-[54px] text-center">3</div>
-                  <button class="flex items-center gap-2 border border-[#d1d1d1] rounded-xl px-4 py-2 bg-white shrink-0">
+
+                <!-- Inventory table（庫存表模式） -->
+                <div id="tableInventory" class="hidden border border-[#d1d1d1] rounded-xl p-3 overflow-x-auto">
+                  <div class="text-base font-semibold text-[#454545] mb-2">2026 / 02</div>
+                  <table class="text-xs text-[#454545] border-collapse" style="min-width:860px">
+                    <thead>
+                      <!-- 日期行 -->
+                      <tr class="border-b border-[#454545]">
+                        <th class="w-[152px] py-2 text-left px-2 border-b border-[#454545]" rowspan="2">房型</th>
+                        <th class="w-[70px] py-2 text-center border-b border-[#454545]" rowspan="2">代號</th>
+                        <th class="w-[100px] py-2 text-center">11</th>
+                        <th class="w-[100px] py-2 text-center">12</th>
+                        <th class="w-[100px] py-2 text-center">13</th>
+                        <th class="w-[100px] py-2 text-center">14</th>
+                        <th class="w-[100px] py-2 text-center">15</th>
+                        <th class="w-[100px] py-2 text-center bg-[#ffc0cb]">16</th>
+                        <th class="w-[100px] py-2 text-center bg-[#ffc0cb]">17</th>
+                      </tr>
+                      <!-- 星期行 -->
+                      <tr class="border-b border-[#454545]">
+                        <th class="py-1 text-center text-[#888888]">一</th>
+                        <th class="py-1 text-center text-[#888888]">二</th>
+                        <th class="py-1 text-center text-[#888888]">三</th>
+                        <th class="py-1 text-center text-[#888888]">四</th>
+                        <th class="py-1 text-center text-[#888888]">五</th>
+                        <th class="py-1 text-center text-[#888888] bg-[#ffc0cb]">六</th>
+                        <th class="py-1 text-center text-[#888888] bg-[#ffc0cb]">日</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-b border-[#d1d1d1]">
+                        <td class="py-2 px-2">義大利麵房</td>
+                        <td class="py-2 text-center">XYZ</td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">88</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">5</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">6</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">80</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">8</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">11</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">75</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">13</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">11</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">88</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">5</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">6</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">70</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">18</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">11</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">55</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">30</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">14</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">60</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">25</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">14</span>
+                        </span></td>
+                      </tr>
+                      <tr class="border-b border-[#454545]">
+                        <td class="py-2 px-2">香蕉船房</td>
+                        <td class="py-2 text-center">XYZ</td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">40</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">3</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">2</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">38</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">4</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">3</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">35</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">7</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">3</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">40</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">3</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">2</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">30</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">10</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">5</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">20</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">17</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">8</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">22</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">15</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">8</span>
+                        </span></td>
+                      </tr>
+                      <!-- footer 總計行 -->
+                      <tr>
+                        <td class="py-2 px-2 font-semibold">總計</td>
+                        <td></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">128</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">8</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">8</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">118</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">12</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">14</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">110</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">20</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">14</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">128</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">8</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">8</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">100</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">28</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">16</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">75</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">47</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">22</span>
+                        </span></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
+                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">82</span>
+                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">40</span>
+                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">22</span>
+                        </span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- Range: 數量分配（≤1080 viewport 時 wrap，slider 獨佔一行） -->
+                <div class="rb-range-row border border-[#d1d1d1] rounded-xl px-4 py-3 flex items-center gap-3 bg-white max-[1080px]:flex-wrap">
+                  <input type="range" min="0" max="10" value="3" class="rb-range flex-1 max-[1080px]:basis-full" style="accent-color:#2178cf" />
+                  <div class="rb-range-val border border-[#e1e1e0] rounded-xl px-3 py-1 text-sm text-[#454545] shrink-0 min-w-[54px] text-center max-[1080px]:ml-auto">3</div>
+                  <button class="rb-alloc-btn flex items-center gap-2 border border-[#d1d1d1] rounded-xl px-4 py-2 bg-white shrink-0">
                     <span class="text-base text-[#454545]">數量分配</span>
                     <img src="./assets/icons/submit.svg" class="w-4 h-4" />
                   </button>
                 </div>
-                <!-- Action buttons -->
-                <div class="flex gap-3">
-                  <button class="flex-1 h-[42px] border border-[#d1d1d1] rounded-xl bg-white text-[#454545] text-base cursor-pointer">清除</button>
-                  <button class="flex-1 h-[42px] border border-[#d1d1d1] rounded-xl bg-[#e1e1e0] text-[#e1e1e0] text-base cursor-not-allowed" disabled>加入訂單</button>
+                <!-- Action buttons：對齊 Figma Button Y/N component（h 34、radius 6、padding 6/12、font 16） -->
+                <div class="flex justify-end gap-2">
+                  <button class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-[#d1d1d1] rounded-[6px] bg-[#d1d1d1] text-[#454545] text-base cursor-pointer">清除</button>
+                  <button class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-[#d1d1d1] rounded-[6px] bg-[#454545] text-[#e1e1e0] text-base cursor-pointer">加入訂單</button>
                 </div>
               </div>
 

@@ -8,6 +8,8 @@
 
 `351 × 431`，fill `#ffffff`，stroke `#d1d1d1`，r:12，pad 12
 
+> **RWD 補充（2026-04-30）**：實作改採 `width: 351px; max-width: 100%`，封頂 351，當外層容器（如 `[A]` accordion 在 375 viewport 下扣掉 `rootWrap p-3` + `accordion p-5` + `accordion-content p-3` = 88px 後僅餘 287px）放不下時等比縮，避免破版。
+
 ---
 
 ## Frame 120（控制列）
@@ -66,5 +68,13 @@
 
 ## 實作注意
 
-- 寬度 351px **不因 aside 展開/收折改變**
-- 月曆 grid 使用 CSS grid 7 欄，格寬固定 42px
+- 寬度 **封頂 351px**（`max-width: 351px; width: 100%`）；不因 aside 展開/收折改變，但容器更窄時等比縮
+- 月曆 grid 使用 CSS grid 7 欄，格寬 `minmax(0, 1fr)`（原設計 42px，能放下時實渲染仍為 42px；放不下時等比縮）
+- 格高度 55px 固定（不隨寬度縮放）
+
+### RWD 行為（2026-04-30）
+
+- **≥900px viewport**：`[A]` 兩欄 row 排版（calendar 左、查詢右）；calendar 維持 351
+- **<900px viewport**：`[A]` 切 column，calendar 在上、查詢在下；calendar `mx-auto` 水平置中，最大 351
+- **375px viewport（最小邊界）**：calendar 縮到約 287px，cell 寬約 33px（仍可顯示 `MON 15` 等內容），高度仍 55px
+- **不採全響應式**：原設計 cell / badge / 字級針對 42px 網格調過，封頂 351 + 向下等比縮可重用全部 typography 與 badge 規格，不需重調
