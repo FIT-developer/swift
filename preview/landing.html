@@ -286,6 +286,21 @@
       .mode-btn.active { background: #005fcc; color: #ffffff; }
       .mode-btn:not(.active):hover { background: #f6fafd; }
 
+      /* ── Payment method chip (正式單 panel) ───────────── */
+      /* Figma Button component-set:
+         circle-none-selected (974:12453) → padding 10/16, r:28, stroke #d1d1d1, no fill
+         circle-selected-yellow (1482:26085) → padding 10/16, r:28, fill+stroke #f7d275 */
+      .rb-pay-chip {
+        padding: 10px 16px; border-radius: 28px;
+        background: transparent; border: 1px solid #d1d1d1;
+        font-size: 16px; color: #454545; cursor: pointer;
+        white-space: nowrap;
+      }
+      .rb-pay-chip:hover { background: #f6fafd; }
+      .rb-pay-chip.rb-pay-active {
+        background: #f7d275; border-color: #f7d275; color: #454545;
+      }
+
       /* ── Nation radio (selected = 藍框) ───────────────── */
       .nation-radio { accent-color: #2178cf; }
 
@@ -433,14 +448,20 @@
         outline: none; padding: 0;
       }
 
-      /* ── Room-booking: filter tabs ─────────────────────── */
-      /* 對應 Figma Payment method state=options chip：間距 16px、padding 10px 16px、radius 28px */
+      /* ── Room-booking: filter tabs (棟別 chips) ─────────── */
+      /* Figma Button component-set:
+         circle-none-selected (974:12453)  → transparent + stroke #d1d1d1, padding 10/16, r:28
+         circle-selected-yellow (1482:26085) → fill+stroke #f7d275, padding 10/16, r:28 */
       .rb-filter-tab {
         height: 42px; padding: 10px 16px; border-radius: 28px;
         font-size: 16px; cursor: pointer; color: #454545;
-        background: #e1e1e0; border: none;
+        background: transparent; border: 1px solid #d1d1d1;
+        white-space: nowrap;
       }
-      .rb-filter-tab.rb-active { background: #f7d275; }
+      .rb-filter-tab:hover { background: #f6fafd; }
+      .rb-filter-tab.rb-active {
+        background: #f7d275; border-color: #f7d275; color: #454545;
+      }
 
       /* ── Inventory metric toggle (訂/餘/保) ───────────── */
       /* 對應 Figma Frame 346：36×36、r:4、border 同 --c、active 時填 --c；文字統一 #454545 */
@@ -2936,6 +2957,21 @@
             radios.forEach(function (r) { r.addEventListener('change', apply); });
             apply();
           })();
+          // 正式單 panel：付款方式 chip → 切換對應欄位組
+          (function () {
+            var chips = root.querySelectorAll('#paymentChips .rb-pay-chip');
+            var fieldsRoot = root.querySelector('#paymentFields');
+            if (!chips.length || !fieldsRoot) return;
+            chips.forEach(function (c) {
+              c.addEventListener('click', function () {
+                chips.forEach(function (x) { x.classList.toggle('rb-pay-active', x === c); });
+                var key = c.dataset.pay;
+                fieldsRoot.querySelectorAll('[data-pay-fields]').forEach(function (f) {
+                  f.classList.toggle('hidden', f.dataset.payFields !== key);
+                });
+              });
+            });
+          })();
           // 訂房資料 國籍 radio → toggle 地址結構 (taiwan vs foreign) + 國家 select
           (function () {
             root.querySelectorAll('.nation-group').forEach(function (group) {
@@ -4914,11 +4950,81 @@
                 <span class="text-base text-[#454545]">候補單</span>
               </label>
             </div>
-            <!-- 對應內容區（依訂單類型顯示）：預設「無設定」顯示置中文字「未設定」 -->
-            <div id="orderTypeContent" class="min-h-[200px] flex items-center justify-center">
-              <div data-order-type-panel="none" class="text-xl text-[#454545]">未設定</div>
-              <div data-order-type-panel="official" class="hidden text-xl text-[#454545]">正式單內容（待 Figma frame 補齊）</div>
-              <div data-order-type-panel="substitute" class="hidden text-xl text-[#454545]">候補單內容（待 Figma frame 補齊）</div>
+            <!-- 對應內容區（依訂單類型顯示） -->
+            <div id="orderTypeContent">
+              <!-- 無設定 → 置中「未設定」 -->
+              <div data-order-type-panel="none" class="min-h-[200px] flex items-center justify-center text-xl text-[#454545]">未設定</div>
+
+              <!-- 正式單 → 8 顆付款 chip + 動態欄位 -->
+              <div data-order-type-panel="official" class="hidden">
+                <!-- payment chips -->
+                <div id="paymentChips" class="flex flex-wrap gap-2 mb-5">
+                  <button type="button" class="rb-pay-chip rb-pay-active" data-pay="transfer">轉帳</button>
+                  <button type="button" class="rb-pay-chip" data-pay="fax">傳真刷卡</button>
+                  <button type="button" class="rb-pay-chip" data-pay="ticket">票券</button>
+                  <button type="button" class="rb-pay-chip" data-pay="frontdesk">前台自付</button>
+                  <button type="button" class="rb-pay-chip" data-pay="credit">信用交易</button>
+                  <button type="button" class="rb-pay-chip" data-pay="check">支票</button>
+                  <button type="button" class="rb-pay-chip" data-pay="deposit">訂金</button>
+                  <button type="button" class="rb-pay-chip" data-pay="bonus">紅利</button>
+                </div>
+                <!-- payment-specific field sets -->
+                <div id="paymentFields">
+                  <!-- 轉帳 -->
+                  <div data-pay-fields="transfer" class="flex flex-col gap-3">
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">支付金額</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">收款帳號</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">客支付帳號</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                  </div>
+                  <!-- 傳真刷卡 — 支付金額 / 卡號 / 授權碼 -->
+                  <div data-pay-fields="fax" class="hidden flex flex-col gap-3">
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">支付金額</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">卡號</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">授權碼</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                  </div>
+                  <!-- 票券 — 支付金額 / 票券號碼 / 備註 + 取消・檢查 (no 授權碼) -->
+                  <div data-pay-fields="ticket" class="hidden flex flex-col gap-3">
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">支付金額</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">票券號碼</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-start gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0 pt-1.5">備註</span><textarea rows="3" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"></textarea></div>
+                    <div class="flex justify-end gap-2 mt-1">
+                      <button type="button" class="h-[34px] px-3 border border-[#d1d1d1] rounded-[6px] bg-[#d1d1d1] text-[#454545] text-base">取消</button>
+                      <button type="button" class="h-[34px] px-3 border border-[#d1d1d1] rounded-[6px] bg-[#454545] text-[#e1e1e0] text-base">檢查</button>
+                    </div>
+                  </div>
+                  <!-- 前台自付 -->
+                  <div data-pay-fields="frontdesk" class="hidden flex flex-col gap-3">
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">支付金額</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">內容</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-start gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0 pt-1.5">備註</span><textarea rows="3" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"></textarea></div>
+                  </div>
+                  <!-- 信用交易 — 支付金額 / 內容 / 備註 -->
+                  <div data-pay-fields="credit" class="hidden flex flex-col gap-3">
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">支付金額</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">內容</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-start gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0 pt-1.5">備註</span><textarea rows="3" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"></textarea></div>
+                  </div>
+                  <!-- 支票 -->
+                  <div data-pay-fields="check" class="hidden flex flex-col gap-3">
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">支付金額</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">內容</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                    <div class="flex items-start gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0 pt-1.5">備註</span><textarea rows="3" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"></textarea></div>
+                  </div>
+                  <!-- 訂金 — 訂金餘額（顯示） + 支付金額 (no 內容/備註) -->
+                  <div data-pay-fields="deposit" class="hidden flex flex-col gap-3">
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">訂金餘額</span><span class="flex-1 text-base text-[#454545]">可用：11,044</span></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">支付金額</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                  </div>
+                  <!-- 紅利 — 紅利餘額（顯示） + 支付金額 (no 內容/備註) -->
+                  <div data-pay-fields="bonus" class="hidden flex flex-col gap-3">
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">紅利餘額</span><span class="flex-1 text-base text-[#454545]">可用：11,044</span></div>
+                    <div class="flex items-center gap-3"><span class="text-base text-[#454545] w-[88px] shrink-0">支付金額</span><input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" /></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 候補單 → 暫無 Figma frame -->
+              <div data-order-type-panel="substitute" class="hidden min-h-[200px] flex items-center justify-center text-xl text-[#454545]">候補單內容（待 Figma frame 補齊）</div>
             </div>
           </div>
         </div>

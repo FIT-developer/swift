@@ -34,7 +34,43 @@ Sits as `[E]` next to `[D] 訂房資料`. Wrapped together in a grid:
 ### 內容區
 - Centered text. Default state (`無設定`) → shows `未設定` (md 20 px `#454545`).
 - Behavior: clicking a different radio swaps the panel via `[data-order-type-panel]` selector → `hidden` class.
-- `正式單` / `候補單` panels currently placeholder; need Figma frames to fill in actual content.
+
+### 正式單 panel — 付款方式 chip + 動態欄位 (Figma 967:11982 ~ 1402:24416, 8 variants)
+
+選 `正式單` 後出現第二列：
+
+**Payment method chips (8 顆，single-select)**：
+`轉帳` / `傳真刷卡` / `票券` / `前台自付` / `信用交易` / `支票` / `訂金` / `紅利`
+
+Active chip 顏色：fill `#f7d275`（黃）、text `#454545`、border `#f7d275`。
+Inactive：white bg、border `#d1d1d1`、text `#454545`。
+（**不要**用 `#005fcc` 藍 — 那是 mode-btn 的色，跟這組 chip 沒關係，請依 Figma `Button` node 的 `styles.fills` 取色。）
+
+**選中 chip → 顯示對應欄位組**（依 Figma `circle-selected-yellow` 變體實際 active accordion 比對）：
+
+| chip | 欄位（label : input type） |
+| --- | --- |
+| 轉帳 | 支付金額 / 收款帳號 / 客支付帳號 |
+| 傳真刷卡 | 支付金額 / **卡號** / 授權碼 |
+| 票券 | 支付金額 / 票券號碼 / 備註 textarea + 取消・檢查 buttons（**no 授權碼**） |
+| 前台自付 | 支付金額 / 內容 / 備註 |
+| 信用交易 | 支付金額 / 內容 / 備註 |
+| 支票 | 支付金額 / 內容 / 備註 |
+| 訂金 | 訂金餘額（顯示 `可用：11,044`，read-only）+ 支付金額（**no 內容/備註**） |
+| 紅利 | 紅利餘額（顯示 `可用：11,044`，read-only）+ 支付金額（**no 內容/備註**） |
+
+**修正歷史**：
+1. 把 傳真刷卡 ↔ 信用交易 的欄位組對調了（已修）
+2. 票券 加了「票券號碼 兩個 input」與「授權碼」欄位 — 都是錯的；票券 只有 票券號碼 一個 input、沒有 授權碼（已修）
+3. 訂金 / 紅利 多加了「內容 / 備註」欄位 — 兩者都只有 餘額（顯示）+ 支付金額（已修）
+
+**修正方法**：對每個 accordion 找 `styles.fills == ["#f7d275"]` 的 chip 鎖定哪個方法 active，再讀同一 accordion 內 chip 列下方的 label/input texts；不要從前後 accordion 推斷或補上「合理常見欄位」。
+
+所有 input 預設 `placeholder` 文字、white bg、stroke `#d1d1d1`、radius 6、padding 6/12。
+餘額顯示為 read-only label + value（不是 input）。
+
+### 候補單 panel
+尚未提供 Figma frame，placeholder 顯示「候補單內容（待 Figma frame 補齊）」。
 
 ## DOM contract
 - Radios: `name="rb-order-type"`, values `none` | `official` | `substitute`, `data-order-type` attribute too

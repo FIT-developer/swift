@@ -14,6 +14,56 @@
 
 ---
 
+## Session 17 交接（2026-05-02）
+
+### 本次完成
+
+#### 規格檔
+| 檔 | 說明 |
+|---|---|
+| `components/order-status.md` 補完 | [E] 正式單 panel 內容：付款方式 8-chip + 對應欄位組（依 active accordion `#f7d275` chip 比對）；含「修正歷史」明列三次錯誤 |
+| `components/button.md` 補完 | Pill chip variants 表（包含 ID）；新增「2026-05-02 全域 chip 風格統一」區塊：所有 chip 改 transparent + stroke `#d1d1d1` (inactive)、`#f7d275` 黃 (active)，淘汰舊的 `#e1e1e0` 灰底版本 |
+
+#### Memory（持久跨 session）
+| 檔 | 摘要 |
+|---|---|
+| `feedback_check_figma_styles_dont_assume.md` | 讀 Figma 不能只 dump text，要同時抓 `styles.fills/strokes/cornerRadius`；不可從現有 `mode-btn` / `customer-btn` 等前例推顏色 |
+| `feedback_chip_variants_yellow_vs_blue.md` | Pill chip 兩個選中 variant：黃 `#f7d275` (`circle-selected-yellow`) = 指示性 chip（付款方式、棟別 filter）；藍 `#005fcc` (`circle-selected`/`circle-one`) = mode/toggle 切換；不可混用 |
+
+#### Landing.html 實作
+
+| 區塊 | 變更 |
+|---|---|
+| [E] 正式單 panel | 從 placeholder 補完：8 顆付款方式 chip（轉帳/傳真刷卡/票券/前台自付/信用交易/支票/訂金/紅利）+ 各自欄位組 swap；chip 預設選 轉帳；JS toggle `[data-pay-fields]` `.hidden` |
+| [E] 付款 chip 顏色 | `#005fcc` 藍 → `#f7d275` 黃（依 Figma `circle-selected-yellow` 1482:26085）；padding 8 → 10、bg `#ffffff` → `transparent`（與 Figma `circle-none-selected` 974:12453 一致） |
+| [E] 欄位組對應修正 | 三輪修正：(1) 傳真刷卡 ↔ 信用交易 對調；(2) 票券去除多餘的「票券號碼 第二 input」與整列「授權碼」；(3) 訂金 / 紅利 去除「內容 / 備註」欄位（只留餘額 + 支付金額） |
+| [A] 棟別 filter chip | `.rb-filter-tab` 從 `#e1e1e0` 灰底 / 無 border 改成跟 `.rb-pay-chip` 同套（transparent + `#d1d1d1` stroke / `#f7d275` 黃 active），響應使用者「全域 chip 統一」更新 |
+
+### 切換邏輯總結
+
+| UI 動作 | 影響 |
+|---|---|
+| 訂單類型 = 正式單 | 顯示 `paymentChips` + 對應 `[data-pay-fields]` panel |
+| 付款 chip click | toggle `.rb-pay-active`；其他 chip 移除 active；切換對應欄位組顯示 |
+| [A] 棟別 chip | 同為 yellow chip 樣式；既有 JS 邏輯（`.rb-active`）不變 |
+
+### 反覆出錯的根因（必須記住）
+
+1. **顏色推前例**：`mode-btn` 是藍 → 我把付款 chip 也預設成藍。修正：每個視覺元件都從 Figma `styles.fills` 取色
+2. **跨 accordion 欄位污染**：8 個 accordion text 一起 dump 後，沒有按「哪個 chip 是黃 active」逐一綁定，導致 傳真刷卡 拿到 信用交易 的欄位、票券拿到不存在的「授權碼」、訂金/紅利硬塞「內容/備註」。修正：先抓 `fills == "#f7d275"` 鎖定 active chip，再讀同一 accordion 內後續 labels
+3. **記憶斷層**：使用者前次交付的 reference code（calendar）/ 觀察（lock toggle / 客戶 toggle 連動 / 紅綠 lock 規則）我都沒存進 memory，導致使用者反覆糾正。修正：所有「使用者解釋過的規則」都立刻寫進 `~/.claude/projects/.../memory/feedback_*.md`，不論大小
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| [E] 候補單 panel 內容 | 仍為 placeholder（需 Figma frame） |
+| [D] 入住人同訂房人 checkbox 連動 | copy 訂房值 → 入住 + lock 入住 panel；目前 checkbox 無 handler |
+| [D] 寄送訂房資訊 checkbox | 純 UI、無功能 |
+| 訂房資料 → 訂單條件 整合驗證 | 各區塊獨立運作、未串資料流 |
+
+---
+
 ## Session 16 交接（2026-05-01）
 
 ### 本次完成
