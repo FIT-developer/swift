@@ -14,6 +14,69 @@
 
 ---
 
+## Session 16 交接（2026-05-01）
+
+### 本次完成
+
+#### 規格檔
+| 檔 | 說明 |
+|---|---|
+| `components/order-data.md` 新增 | [D] 訂房資料 section：3 tabs（訂房 / 入住 / 合約）+ 4-quadrant form + lock toggle 行為 |
+| `components/order-status.md` 新增 | [E] 正式單與候補單 accordion：訂單類型 radio（無設定/正式單/候補單）+ panel 切換邏輯；含 [D]+[E] 側欄佈局決策 |
+| `components/calendar-simple.md` 改寫 | 兩變體：default vs `data-cal-variant="birthday"`；後者 header 換成 inline `<select>` year/month；disable 規則：default 擋過去、birthday 擋未來；預設值一律「今日」由 JS 注入 |
+| `components/location.md` 補 | 國籍切換規則：臺灣 = 縣/市+行政區+街道；外籍 = 國家 select + 單一住所 input |
+
+#### Memory（持久跨 session）
+| 檔 | 摘要 |
+|---|---|
+| `feedback_lock_toggle_input_state.md` | 訂房資料 lock 是 toggle：紅 = inputs disabled、綠 = inputs active；只影響 訂房 / 入住 panels，不影響 合約（合約是 read-only 文字） |
+| `feedback_customer_toggle_links_order_tab.md` | 一般/合約客戶按鈕連動 [D] 訂房資料 tab；合約客戶 → 顯示合約 tab + 切到合約 panel；一般客戶 → 隱藏合約 tab |
+| `feedback_calendar_use_reference_code.md` | Calendar 元件須照 user 提供的 reference code，不可發明新 picker mode |
+
+#### Landing.html 實作
+
+| 區塊 | 變更 |
+|---|---|
+| [B] 訂房明細表 | 新增 `日期 / 星期` 兩列 thead（colspan 4 + 置中）、`棟別 / 房型 / 代號 / 可用庫存數` 四欄 + `中秋連假` 註記、`總計` 列 200 改為 `sum(rb-alloc-cap)` 動態計算（borderless 顯示） |
+| [B] 訂房明細表 | 退房日欄寬 198→240px；`5 夜` 文字改放 button 旁；calendar dropdown 改 `position: fixed` + getBoundingClientRect 定位以避開 overflow-x-auto 截斷 |
+| [B] 訂單明細 footer | 總計列 間數 cell 由左對齊改置中（與 stepper 視覺對齊） |
+| [A] 空房查詢/庫存表 清除按鈕 | 加 `#rbAllocClear`，點擊清空所有 `.rb-alloc-input` 並 recalc 總計 |
+| [A] 庫存表 可用庫存數 總計 | hardcode 200 改為 sum(rb-alloc-cap)；空房查詢 總計列同樣改為 column-wise sum，分配數隨 input event 即時更新 |
+| [B] 客戶 toggle | 客戶類型按鈕同時切 `#contractFields` + 訂房資料 tab；合約客戶按鈕點擊才顯示合約 tab |
+| [B] 訂單條件 繳款期限 | 改用 `.rb-cal-cell + .rb-cal-btn + .rb-cal-date` 結構，掛上既有 calendar dropdown |
+| [B] 合約專屬群組 | 新的訂房人 從 button → `<select>`（沿用 `.input-group` merged border 樣式） |
+| [D] 訂房資料 整段重建 | header（title + lock + 清除 + 兩 checkbox）+ 3 tabs + 4-quadrant form。訂房/入住 為實體 form；合約是 read-only `.contract-display` 底線文字 |
+| [D] 國籍 radio | 切換臺灣/外籍：外籍多一列國家 select + 地址簡化為單一「住所」placeholder。兩變體用相同 outer flex（`pt-1.5` 對齊 label）以避免切換時垂直跳動 |
+| [D] Calendar simple | 寫死日期清空，由 JS 預設今日；新增 birthday 變體（inline year/month select、現年→1920 遞減；不擋過去、擋未來）；dropdown 加 viewport clamp（`position: fixed` + `getBoundingClientRect` + 邊界 fallback 上方開啟） |
+| [D] 性別 radio | accent-color 從 `#888888` 改 `#2178cf`，男/女選中色一致 |
+| [D] Lock | 紅 lock = 整 panel inputs/selects/textareas 變灰 disabled、radios/checkboxes 也 `disabled = true`（因 `<label>` 點擊預設會觸發 radio，光 pointer-events:none 不夠）；綠 lock = 全部恢復可編輯。合約 panel 不受影響 |
+| [E] 正式單與候補單（新增 accordion） | 訂單類型 radio（無設定 / 正式單 / 候補單）+ 對應內容 panel 切換；無設定 panel 顯示「未設定」置中；正式單 / 候補單 panel 待 Figma frame 補齊 |
+| [D]+[E] 側欄佈局 | wrapped in `grid grid-cols-1 xl:grid-cols-3 gap-5`；`<xl` 上下堆疊、`≥xl` 並排（D = `xl:col-span-2`、E = `xl:col-span-1`）。合約 panel 內部 3-col 從 `xl:` 推到 `2xl:` 以避開側欄擠壓 |
+| RWD 整體 | 4 個 section wrapper `p-5 → p-3 md:p-5`；訂房資料 white card 同；tabs `gap-7 → gap-3 md:gap-7 + flex-wrap`；input-group `max-width: 100%` + 480px 以下子元素 `flex: 1 1 0`；`.order-panel > * { min-width: 0 }` 讓 grid cell 可縮；訂房 / 入住 panel 由 `md:grid-cols-2` 改 `lg:grid-cols-2`（避免 950px 時 inputs 爆出） |
+
+### 切換邏輯總結
+
+| UI 動作 | 影響 |
+|---|---|
+| 客戶類型 = 合約客戶 | 顯示 #contractFields + 顯示 合約 tab + 切到合約 panel |
+| 客戶類型 = 一般客戶 | 隱藏 #contractFields + 隱藏 合約 tab + 切到訂房 panel |
+| 點 lock（紅↔綠） | 訂房 / 入住 panel 內 inputs/selects/textareas/radios/checkboxes/calendar 全部切 disabled；合約 panel 不變 |
+| 國籍 = 外籍 | 顯示國家 select + 切到單一「住所」input；同 panel 內 |
+| 訂單類型 radio | 切換 [E] 內 `[data-order-type-panel]` panel |
+| 生日 calendar | header 為 inline year/month select；過去日 OK，今天 OK，未來 disabled |
+| 入住日 / 退房日 / 繳款期限 calendar | header 為純文字月份；過去日 disabled、未來 OK |
+
+### 尚未實作
+
+| 項目 | 說明 |
+|---|---|
+| [E] 正式單 / 候補單 panel 內容 | 預期使用者後續送 Figma frame，現為 placeholder |
+| [D] 入住人同訂房人 checkbox 連動 | 應 copy 訂房 panel 值到入住 panel + lock 入住 inputs；目前 checkbox 無 handler |
+| [D] 寄送訂房資訊 checkbox | 純 UI，無功能 |
+| 訂房資料 → 訂單條件 整合驗證 | 各區塊獨立運作，未串聯資料流 |
+
+---
+
 ## Session 15 交接（2026-04-30）
 
 ### 本次完成

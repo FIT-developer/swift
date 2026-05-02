@@ -1,6 +1,19 @@
 # Location（地址欄位組）
 
-> 用於 [D] 訂房資料表單。
+> 用於 [D] 訂房資料表單。**結構依 國籍 radio 切換**。
+
+## 切換規則
+
+| 國籍 | 國籍 row 下方 | 地址內容 |
+| --- | --- | --- |
+| 臺灣 (default) | 無 | 縣/市 select + 行政區 select +（郵遞區 inline） + 街道 input |
+| 外籍 | 多一列「國家 select」（預設 `英國`） | 單一「住所」input（label 16px `#454545` + Input 36px stroke `#d1d1d1`） |
+
+**外籍 radio 選中樣式**：double stroke `#d1d1d1` + `#2178cf`（藍框，沿用 sex 男/女 selected 規則）。
+
+實作：在 訂房 + 入住 panel 各放 `data-addr-mode="taiwan"` / `data-addr-mode="foreign"` 兩個區塊，由 nation radio change handler toggle `.hidden`。
+
+
 
 ---
 

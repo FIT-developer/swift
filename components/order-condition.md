@@ -1,7 +1,8 @@
 # Order condition（訂單條件摘要卡）
 
 > 元件定義 841:18596（COMPONENT_SET）。  
-> ⚠️ 頁面上 Section [C] 是此元件的展開版實例（3 欄、1076px），此 spec 描述元件本體的緊湊單欄版本。
+> ⚠️ 頁面上 Section [C] 是此元件的展開版實例（3 欄、1076px），此 spec 描述元件本體的緊湊單欄版本。  
+> **展開版（用於 landing.html [C] 區）的完整規格在本檔最下方「Section [C] 展開版」**。
 
 ---
 
@@ -140,3 +141,102 @@ Row 格式：label（Texts 100×22，left）+ 數值（Texts right-aligned，@ x
   </div>
 </div>
 ```
+
+---
+
+## Section [C] 展開版（landing.html 實際使用） — `1449:25447`
+
+> 來源：Figma `Order condition` 單一元件 instance，房間預定 sub-page [C] 區。  
+> 與緊湊版差異：3 欄佈局、欄位更多（人數 / 到店方式 / 發票 / 統編 / 抬頭 / 繳款期限 / 折扣 / 總房價 / 加購併單 / 預付百分比 / 預付 / 訂單備註 / 需求備註）。
+
+### 外層
+
+`1140 × 425`，fills `#f6fafd`，stroke `#d1d1d1`，r:12，padding 20
+
+### Header（Frame 369）
+
+`1100 × 27`，flex 兩端對齊
+- 「訂單條件」md 20px Regular，fills `#454545`
+- `icons/down` 24×24
+
+### Content container
+
+`1100 × 342`，fills `#ffffff`，r:12，padding 12，header → content top gap 16
+
+### Grid — 3 columns
+
+容器內 `Frame 370`：1076×318，三欄 `Frame 412`，**欄寬 337.33，欄距 32**（x=0 / 369.33 / 738.67）。
+
+### 共通 row 規格
+
+- **row 縱向間距 20px**（不是 14px）
+- **label column 寬 100px**，font 16px Regular `#454545`，垂直置中（特例：繳款期限）
+- **label → input 間距 12px**（label 結束 x=100，input 開始 x=112）
+- **input/select 共用樣式**：bg `#ffffff`，stroke `#d1d1d1`，r:6，padding `6 12 6 12`，font 16px `#454545`
+- **disabled input**：bg 換 `#e1e1e0`
+
+### Column 1（x=0，6 rows）
+
+| Row | y | h | 內容 |
+|---|---|---|---|
+| 人數 | 0 | 36 | label `人數` + Select 82.67×36「1」+ `大`(sm 12) + Select 82.67×36「0」+ `小`(sm 12)，元素間距 **12px** |
+| 到店方式 | 56 | 36 | label + Select 225.33（內容「自行到店」+ `icons/road` 24×24） |
+| 發票 | 112 | 36 | label + Select 225.33（內容「不開發票」） |
+| 統編 | 168 | 34 | label + Input 225.33（placeholder，**bg `#e1e1e0` 停用**） |
+| 抬頭 | 222 | 34 | label + Input 225.33（placeholder，**停用**） |
+| 繳款期限 | 276 | 42 | **label 直排堆疊** + Calendar simple Input 225.33×36 |
+
+#### 人數 row（重點 — 修正項）
+
+```
+[「人數」 100px] · 12 · [Select 82.67×36] · 12 · [大 sm 12] · 12 · [Select 82.67×36] · 12 · [小 sm 12]
+```
+
+- 兩個 select 為**獨立計數**：第一個 = 大人數，第二個 = 小孩數
+- 「大」「小」為 **sm 12px** 後綴文字，**不是 select 的選項或欄位 label 的一部分**
+- ❌ 錯誤實作：`人數大/小` label + select(大/小) + / + select(1/2/3)
+- ✅ 正確實作：`人數` label + select(0-N) + 大 + select(0-N) + 小
+
+#### 繳款期限 row
+
+```
+[label-col 100px:           ] · 12 · [Calendar Input 225.33×36]
+  繳款期限 (16px)                      「2026-02-27」+ icons/calendar 24×24
+  3 天     (sm 12px)
+```
+
+- label column 高 42（label + sm 直排）
+- 「繳款期限」y=0，「3 天」y=26（sm 12px）
+
+### Column 2（x=369.33，5 rows）
+
+| Row | y | h | 內容 |
+|---|---|---|---|
+| 折扣 | 0 | 36 | Select 225.33「無折扣」 |
+| 總房價 | 56 | 34 | Input 225.33「1444」 |
+| 加購項目併單 | 110 | 36 | Select 225.33「併單」 |
+| 預付百分比 | 166 | 36 | Select 225.33「100%」 |
+| 預付 | 222 | 34 | Input 225.33「1444」 |
+
+### Column 3（x=738.67，2 rows）
+
+| Row | y | h | 內容 |
+|---|---|---|---|
+| 訂單備註 | 0 | 88 | Input 225.33×88（textarea，placeholder「???」） |
+| 需求備註 | 108 | 88 | Input 225.33×88（textarea，預設「需要瓦斯爐」） |
+
+label 在 row 內**頂端對齊**（y=0），高 19px。
+
+### Tailwind 對照
+
+| Figma | Tailwind |
+|---|---|
+| 欄距 32px | `gap-8` |
+| row gap 20px | `gap-5` |
+| label/元素間距 12px | `gap-3` |
+| label 寬 100px | `w-[100px] shrink-0` |
+| 16px Regular | `text-base` |
+| sm 12px | `text-xs` |
+| input/select 樣式 | `border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-base text-[#454545]` |
+| disabled input | + `bg-[#e1e1e0]` |
+| Select 82.67px | `w-[82.67px]`（或近似 `w-20`） |

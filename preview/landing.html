@@ -286,6 +286,153 @@
       .mode-btn.active { background: #005fcc; color: #ffffff; }
       .mode-btn:not(.active):hover { background: #f6fafd; }
 
+      /* ── Nation radio (selected = 藍框) ───────────────── */
+      .nation-radio { accent-color: #2178cf; }
+
+      /* ── Order data lock toggle ──────────────────────── */
+      /* 紅鎖 = inputs disabled (灰底)；綠鎖 = inputs active (白底) */
+      .order-lock { background: transparent; border: 0; padding: 0; }
+      .order-lock[data-locked="true"]  .order-lock-icon { filter: invert(38%) sepia(86%) saturate(1832%) hue-rotate(355deg) brightness(95%) contrast(91%); } /* 紅 #e05216 */
+      .order-lock[data-locked="false"] .order-lock-icon { filter: invert(64%) sepia(58%) saturate(465%) hue-rotate(85deg) brightness(95%) contrast(85%); }   /* 綠 ~#34c759 */
+      .order-panel.is-locked input:not([type="radio"]):not([type="checkbox"]),
+      .order-panel.is-locked select,
+      .order-panel.is-locked textarea {
+        background: #e1e1e0; color: #888888; pointer-events: none;
+      }
+      .order-panel.is-locked input[type="radio"],
+      .order-panel.is-locked input[type="checkbox"] {
+        pointer-events: none; opacity: 0.5;
+      }
+      .order-panel.is-locked label { cursor: default; }
+      .order-panel.is-locked .rb-cal-cell { background: #d1d1d1; pointer-events: none; }
+      .order-panel.is-locked .rb-cal-cell .rb-cal-date { color: #888888; }
+
+      /* 訂房資料 panels：grid cell + flex children 都允許縮到 0，input 才能跟著螢幕寬度縮 */
+      .order-panel > * { min-width: 0; }
+      .order-panel input,
+      .order-panel select,
+      .order-panel textarea { min-width: 0; }
+
+      /* 合約 panel：read-only 文字 + 底線（不是 input 框） */
+      .contract-display {
+        display: block;
+        padding: 4px 0;
+        border: 0;
+        border-bottom: 1px solid #d1d1d1;
+        background: transparent;
+        color: #454545;
+        font-size: 16px;
+        line-height: 22px;
+      }
+
+      /* ── Order data tabs (訂房 / 入住 / 合約) ─────────── */
+      /* Figma Frame 356：72×42, padding 10/20, gap 28, radius top-only */
+      .order-tab {
+        height: 42px;
+        padding: 10px 20px;
+        background: #d1d1d1;
+        border: 1px solid #e1e1e0;
+        border-bottom: none;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        font-size: 16px;
+        color: #454545;
+        cursor: pointer;
+      }
+      .order-tab.order-tab-active {
+        background: #ffffff;
+        position: relative;
+        z-index: 1;
+        margin-bottom: -1px;
+      }
+
+      /* ── Customer type toggle (一般客戶 / 合約客戶) ───── */
+      /* 視覺參考 mode-toggle（pill r:28），尺寸保持 Figma Frame 97 (176×42)：兩顆 88×42 */
+      .customer-toggle {
+        display: inline-flex;
+        border: 1px solid #d1d1d1;
+        border-radius: 28px;
+        overflow: hidden;
+      }
+      .customer-btn {
+        min-width: 88px; height: 42px; padding: 10px 12px;
+        background: #ffffff; border: none;
+        font-size: 16px; color: #454545; cursor: pointer;
+        text-align: center; white-space: nowrap;
+      }
+      .customer-btn.active { background: #005fcc; color: #ffffff; }
+      .customer-btn:not(.active):hover { background: #f6fafd; }
+
+      /* ── Merged input group (Bootstrap-style) ─────────── */
+      /* 統編 / 合約公司 / 新的訂房人：共邊框，外圓角僅在首尾 */
+      .input-group { display: inline-flex; max-width: 100%; }
+      .input-group > * { min-width: 0; }
+      @media (max-width: 480px) {
+        .input-group > input,
+        .input-group > select { width: auto !important; flex: 1 1 0; min-width: 80px; }
+      }
+      .input-group > * {
+        height: 36px;
+        border: 1px solid #d1d1d1;
+        background: #ffffff;
+        color: #454545;
+        font-size: 16px;
+        padding: 0 12px;
+        margin: 0;
+      }
+      .input-group > *:not(:first-child) { border-left: none; }
+      .input-group > *:first-child { border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
+      .input-group > *:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
+      .input-group > button { cursor: pointer; }
+      .input-group > select { appearance: auto; }
+
+      /* ── Simple calendar dropdown (variant 2) ─────────── */
+      /* 用於訂房明細表 入住日 / 退房日 cells；藍色用 surface-action #005FCC */
+      .rb-cal-cell { position: relative; min-width: 160px; }
+      .calendar-dropdown {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        background: #ffffff;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        width: 280px;
+      }
+      .calendar-dropdown.active { display: block; }
+      .calendar-day:hover:not(:disabled) { background-color: #f3f4f6; }
+      .calendar-day.selected { background-color: #005fcc !important; color: #ffffff !important; }
+      .calendar-day.today { border: 1.5px solid #005fcc; font-weight: bold; }
+      .title-highlight { background-color: #ffc0cb !important; border-radius: 4px; }
+      .calendar-day:disabled { color: #000000; cursor: not-allowed; opacity: 0.5; }
+      .calendar-header-select {
+        border: none; background: transparent; font-weight: bold;
+        color: #374151; cursor: pointer; padding: 2px 4px; border-radius: 4px;
+      }
+      .calendar-header-select:hover { background-color: #f3f4f6; }
+      .calendar-header-select:focus { outline: 2px solid #005fcc; }
+
+      /* ── Stepper input (table 間數欄) ──────────────────── */
+      /* 對應 Figma 間數 cell：145×36 box，內含 [−] [N] [+] */
+      .stepper {
+        display: inline-flex; align-items: center;
+        width: 145px; height: 36px;
+        border: 1px solid #d1d1d1; border-radius: 6px;
+        background: #ffffff; overflow: hidden;
+      }
+      .stepper-btn {
+        flex: 0 0 44px; height: 100%;
+        background: transparent; border: none; cursor: pointer;
+        font-size: 16px; color: #454545; line-height: 1;
+      }
+      .stepper-btn:hover { background: #f6fafd; }
+      .stepper input {
+        flex: 1; min-width: 0; height: 100%;
+        border: none; background: transparent;
+        text-align: center; font-size: 16px; color: #454545;
+        outline: none; padding: 0;
+      }
+
       /* ── Room-booking: filter tabs ─────────────────────── */
       /* 對應 Figma Payment method state=options chip：間距 16px、padding 10px 16px、radius 28px */
       .rb-filter-tab {
@@ -2521,6 +2668,51 @@
               });
             });
           });
+          // 可用庫存數 總計 = sum of data rows' [data-inv-cap]
+          (function () {
+            var total = root.querySelector('#tableInventory [data-inv-cap-total]');
+            if (!total) return;
+            var sum = 0;
+            root.querySelectorAll('#tableInventory [data-inv-cap]').forEach(function (cell) {
+              sum += parseInt(cell.textContent, 10) || 0;
+            });
+            total.textContent = sum;
+          })();
+          // 空房查詢 (Allocate) 總計 = column-wise sum of data rows
+          (function () {
+            var allocTable = root.querySelector('#tableAllocate');
+            if (!allocTable) return;
+            function recalc() {
+              ['cap', 'stock', 'rsv'].forEach(function (col) {
+                var sum = 0;
+                allocTable.querySelectorAll('[data-alloc-col="' + col + '"]').forEach(function (cell) {
+                  sum += parseInt(cell.textContent, 10) || 0;
+                });
+                var t = allocTable.querySelector('[data-alloc-total="' + col + '"]');
+                if (t) t.textContent = sum;
+              });
+              var allocSum = 0;
+              allocTable.querySelectorAll('.rb-alloc-input').forEach(function (inp) {
+                allocSum += parseInt(inp.value, 10) || 0;
+              });
+              var allocT = allocTable.querySelector('[data-alloc-total="alloc"]');
+              if (allocT) allocT.textContent = allocSum;
+            }
+            allocTable.querySelectorAll('.rb-alloc-input').forEach(function (inp) {
+              inp.addEventListener('input', recalc);
+            });
+            // 清除按鈕：清空所有 分配數 input + 重算總計
+            var clearBtn = root.querySelector('#rbAllocClear');
+            if (clearBtn) {
+              clearBtn.addEventListener('click', function () {
+                allocTable.querySelectorAll('.rb-alloc-input').forEach(function (inp) {
+                  inp.value = '';
+                });
+                recalc();
+              });
+            }
+            recalc();
+          })();
           // Inventory metric toggle (訂/餘/保) → 顯示/隱藏 cell 內對應 chip
           root.querySelectorAll('.inv-metric-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -2544,6 +2736,316 @@
               input.classList.toggle('bg-[#e1e1e0]', !cb.checked);
             });
           });
+          // 訂房明細表 入住日 / 退房日 cell：simple calendar dropdown (variant 2)
+          (function () {
+            if (typeof window.activeSimpleCalendar === 'undefined') {
+              window.activeSimpleCalendar = null;
+              document.addEventListener('click', function () {
+                if (window.activeSimpleCalendar) {
+                  window.activeSimpleCalendar.classList.remove('active');
+                  window.activeSimpleCalendar = null;
+                }
+              });
+            }
+            root.querySelectorAll('.rb-cal-cell').forEach(function (cell) {
+              if (cell.dataset.calInit) return;
+              cell.dataset.calInit = '1';
+              var btn = cell.querySelector('.rb-cal-btn');
+              var displayEl = cell.querySelector('.rb-cal-date');
+              if (!btn || !displayEl) return;
+              var variant = cell.dataset.calVariant;       // undefined | 'birthday'
+              var allowPast = variant === 'birthday';      // birthday 允許過去
+              var blockFuture = variant === 'birthday';    // birthday 禁止未來（生日不可能未來）
+              var hasYMSelects = variant === 'birthday';   // 生日：header 用 year/month select
+              var dropdown = document.createElement('div');
+              dropdown.className = 'calendar-dropdown p-4';
+              var headerCenter = hasYMSelects
+                ? '<div class="flex gap-1">' +
+                    '<select class="year-select calendar-header-select"></select>' +
+                    '<select class="month-select calendar-header-select"></select>' +
+                  '</div>'
+                : '<span class="month-label font-bold text-gray-700 text-sm"></span>';
+              dropdown.innerHTML =
+                '<div class="flex justify-between items-center mb-4">' +
+                  '<button type="button" class="prev-month p-1 hover:bg-gray-100 rounded text-gray-500">&lt;</button>' +
+                  headerCenter +
+                  '<button type="button" class="next-month p-1 hover:bg-gray-100 rounded text-gray-500">&gt;</button>' +
+                '</div>' +
+                '<div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-gray-500 mb-2">' +
+                  '<div class="title-highlight py-1">日</div>' +
+                  '<div class="py-1">一</div>' +
+                  '<div class="py-1">二</div>' +
+                  '<div class="py-1">三</div>' +
+                  '<div class="py-1">四</div>' +
+                  '<div class="py-1">五</div>' +
+                  '<div class="title-highlight py-1">六</div>' +
+                '</div>' +
+                '<div class="days-grid grid grid-cols-7 gap-1"></div>';
+              cell.appendChild(dropdown);
+              dropdown.addEventListener('click', function (e) { e.stopPropagation(); });
+              var daysGrid = dropdown.querySelector('.days-grid');
+              var monthLabel = dropdown.querySelector('.month-label');
+              var yearSelect = dropdown.querySelector('.year-select');
+              var monthSelect = dropdown.querySelector('.month-select');
+              // Birthday variant：填年份（今年 → 1920，遞減）+ 月份（1–12）
+              if (hasYMSelects) {
+                var thisYear = dayjs().year();
+                for (var y = thisYear; y >= 1920; y--) {
+                  yearSelect.add(new Option(y + ' 年', y));
+                }
+                for (var m = 1; m <= 12; m++) {
+                  monthSelect.add(new Option(m + ' 月', m - 1));
+                }
+                yearSelect.onclick = function (e) { e.stopPropagation(); };
+                monthSelect.onclick = function (e) { e.stopPropagation(); };
+                yearSelect.addEventListener('change', function (e) {
+                  e.stopPropagation();
+                  viewingDate = viewingDate.year(parseInt(yearSelect.value, 10)).month(parseInt(monthSelect.value, 10));
+                  render();
+                });
+                monthSelect.addEventListener('change', function (e) {
+                  e.stopPropagation();
+                  viewingDate = viewingDate.year(parseInt(yearSelect.value, 10)).month(parseInt(monthSelect.value, 10));
+                  render();
+                });
+              }
+              // 預設日期：使用 markup 既有日期；若空則填今日
+              var existing = displayEl.textContent.trim();
+              if (!/^\d{4}-\d{2}-\d{2}$/.test(existing)) {
+                displayEl.textContent = dayjs().format('YYYY-MM-DD');
+              }
+              var viewingDate = dayjs(displayEl.textContent.trim());
+              function render() {
+                daysGrid.innerHTML = '';
+                if (monthLabel) monthLabel.textContent = viewingDate.format('YYYY年 MM月');
+                if (hasYMSelects) {
+                  yearSelect.value = viewingDate.year();
+                  monthSelect.value = viewingDate.month();
+                }
+                var today = dayjs().startOf('day');
+                var startDay = viewingDate.startOf('month').day();
+                var daysInMonth = viewingDate.daysInMonth();
+                var selectedStr = displayEl.textContent.trim();
+                for (var i = 0; i < startDay; i++) {
+                  daysGrid.appendChild(document.createElement('div'));
+                }
+                for (var d = 1; d <= daysInMonth; d++) {
+                  var current = viewingDate.date(d);
+                  var dateStr = current.format('YYYY-MM-DD');
+                  var dayBtn = document.createElement('button');
+                  dayBtn.type = 'button';
+                  dayBtn.textContent = d;
+                  dayBtn.className = 'calendar-day w-8 h-8 flex items-center justify-center text-xs rounded-full transition-all';
+                  if (dateStr === today.format('YYYY-MM-DD')) dayBtn.classList.add('today');
+                  var isPast = current.isBefore(today);
+                  var isFuture = current.isAfter(today);
+                  if ((!allowPast && isPast) || (blockFuture && isFuture)) {
+                    dayBtn.disabled = true;
+                  } else {
+                    (function (ds) {
+                      dayBtn.onclick = function (ev) {
+                        ev.stopPropagation();
+                        displayEl.textContent = ds;
+                        dropdown.classList.remove('active');
+                        window.activeSimpleCalendar = null;
+                      };
+                    })(dateStr);
+                    if (dateStr === selectedStr) dayBtn.classList.add('selected');
+                  }
+                  daysGrid.appendChild(dayBtn);
+                }
+              }
+              function positionDropdown() {
+                var r = btn.getBoundingClientRect();
+                var vw = window.innerWidth;
+                var vh = window.innerHeight;
+                var dw = dropdown.offsetWidth || 280;
+                var dh = dropdown.offsetHeight || 340;
+                var gutter = 8;
+                // Horizontal: anchor under button, clamp inside viewport
+                var left = r.left;
+                if (left + dw + gutter > vw) left = vw - dw - gutter;
+                if (left < gutter) left = gutter;
+                // Vertical: prefer below; flip above if it would overflow
+                var top = r.bottom + gutter;
+                if (top + dh + gutter > vh) {
+                  var above = r.top - dh - gutter;
+                  top = above > gutter ? above : Math.max(gutter, vh - dh - gutter);
+                }
+                dropdown.style.top = top + 'px';
+                dropdown.style.left = left + 'px';
+              }
+              btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (window.activeSimpleCalendar && window.activeSimpleCalendar !== dropdown) {
+                  window.activeSimpleCalendar.classList.remove('active');
+                }
+                dropdown.classList.toggle('active');
+                window.activeSimpleCalendar = dropdown.classList.contains('active') ? dropdown : null;
+                if (window.activeSimpleCalendar) {
+                  // Reset viewingDate to selected date each open
+                  var cur = displayEl.textContent.trim();
+                  if (/^\d{4}-\d{2}-\d{2}$/.test(cur)) viewingDate = dayjs(cur);
+                  positionDropdown();
+                  render();
+                }
+              });
+              window.addEventListener('scroll', function () {
+                if (dropdown.classList.contains('active')) positionDropdown();
+              }, true);
+              window.addEventListener('resize', function () {
+                if (dropdown.classList.contains('active')) positionDropdown();
+              });
+              dropdown.querySelector('.prev-month').onclick = function (e) {
+                e.stopPropagation();
+                viewingDate = viewingDate.subtract(1, 'month');
+                render();
+              };
+              dropdown.querySelector('.next-month').onclick = function (e) {
+                e.stopPropagation();
+                viewingDate = viewingDate.add(1, 'month');
+                render();
+              };
+            });
+          })();
+          // 訂房明細表 stepper（−/+ 按鈕調整訂房間數）
+          root.querySelectorAll('.stepper').forEach(function (s) {
+            var input = s.querySelector('.rb-step-val');
+            if (!input) return;
+            s.querySelector('.rb-step-minus').addEventListener('click', function () {
+              var v = parseInt(input.value, 10) || 0;
+              input.value = Math.max(1, v - 1);
+            });
+            s.querySelector('.rb-step-plus').addEventListener('click', function () {
+              var v = parseInt(input.value, 10) || 0;
+              input.value = v + 1;
+            });
+          });
+          // 正式單/候補單 訂單類型 radio → 切換對應 content panel
+          (function () {
+            var radios = root.querySelectorAll('input[name="rb-order-type"]');
+            var contentArea = root.querySelector('#orderTypeContent');
+            if (!radios.length || !contentArea) return;
+            function apply() {
+              var checked = root.querySelector('input[name="rb-order-type"]:checked');
+              var key = checked ? checked.value : 'none';
+              contentArea.querySelectorAll('[data-order-type-panel]').forEach(function (p) {
+                p.classList.toggle('hidden', p.dataset.orderTypePanel !== key);
+              });
+            }
+            radios.forEach(function (r) { r.addEventListener('change', apply); });
+            apply();
+          })();
+          // 訂房資料 國籍 radio → toggle 地址結構 (taiwan vs foreign) + 國家 select
+          (function () {
+            root.querySelectorAll('.nation-group').forEach(function (group) {
+              function apply() {
+                var checked = group.querySelector('.nation-radio:checked');
+                var isForeign = checked && checked.value === 'foreign';
+                group.querySelectorAll('.nation-foreign-only').forEach(function (el) {
+                  el.classList.toggle('hidden', !isForeign);
+                });
+                group.querySelectorAll('[data-addr-mode="taiwan"]').forEach(function (el) {
+                  el.classList.toggle('hidden', isForeign);
+                });
+                group.querySelectorAll('[data-addr-mode="foreign"]').forEach(function (el) {
+                  el.classList.toggle('hidden', !isForeign);
+                });
+              }
+              group.querySelectorAll('.nation-radio').forEach(function (r) {
+                r.addEventListener('change', apply);
+              });
+              apply();
+            });
+          })();
+          // 訂房資料 lock toggle：紅 = inputs disabled / 綠 = active
+          // 只影響 訂房 / 入住 panels；合約 panel 是 read-only 文字顯示，鎖頭不作用
+          (function () {
+            var lock = root.querySelector('#orderDataLock');
+            if (!lock) return;
+            var lockable = root.querySelectorAll('.order-panel[data-panel="booking"], .order-panel[data-panel="checkin"]');
+            function apply() {
+              var locked = lock.dataset.locked === 'true';
+              lockable.forEach(function (p) {
+                p.classList.toggle('is-locked', locked);
+                // radios + checkboxes：用 disabled 屬性（label click 也會被 disabled 阻擋）
+                p.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(function (el) {
+                  el.disabled = locked;
+                });
+              });
+            }
+            lock.addEventListener('click', function () {
+              lock.dataset.locked = lock.dataset.locked === 'true' ? 'false' : 'true';
+              apply();
+            });
+            apply();
+          })();
+          // 訂房資料 tab switching (訂房 / 入住 / 合約)
+          (function () {
+            var tabs = root.querySelectorAll('#orderDataTabs .order-tab');
+            if (!tabs.length) return;
+            tabs.forEach(function (tab) {
+              tab.addEventListener('click', function () {
+                var key = tab.dataset.tab;
+                tabs.forEach(function (t) { t.classList.toggle('order-tab-active', t === tab); });
+                root.querySelectorAll('.order-panel').forEach(function (p) {
+                  p.classList.toggle('hidden', p.dataset.panel !== key);
+                });
+              });
+            });
+          })();
+          // 訂房資料 清除 button → reset inputs in active panel
+          (function () {
+            var btn = root.querySelector('#orderDataClear');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+              var active = root.querySelector('.order-panel:not(.hidden)');
+              if (!active) return;
+              active.querySelectorAll('input[type="text"], textarea').forEach(function (el) { el.value = ''; });
+              active.querySelectorAll('input[type="checkbox"]').forEach(function (el) { el.checked = false; });
+            });
+          })();
+          // 客戶類型 toggle (一般客戶 / 合約客戶) → 顯示/隱藏合約專屬欄位 + 顯示/隱藏合約 tab
+          (function () {
+            var btns = root.querySelectorAll('.customer-btn');
+            var contractFields = root.querySelector('#contractFields');
+            if (!btns.length || !contractFields) return;
+            var contractTab = root.querySelector('#orderDataTabs .order-tab[data-tab="contract"]');
+            function switchOrderTab(key) {
+              var tabs = root.querySelectorAll('#orderDataTabs .order-tab');
+              if (!tabs.length) return;
+              tabs.forEach(function (t) { t.classList.toggle('order-tab-active', t.dataset.tab === key); });
+              root.querySelectorAll('.order-panel').forEach(function (p) {
+                p.classList.toggle('hidden', p.dataset.panel !== key);
+              });
+            }
+            btns.forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                btns.forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                var isContract = btn.dataset.customer === 'contract';
+                contractFields.classList.toggle('hidden', !isContract);
+                if (contractTab) contractTab.classList.toggle('hidden', !isContract);
+                switchOrderTab(isContract ? 'contract' : 'booking');
+              });
+            });
+          })();
+          // 發票 select → 統編 / 抬頭 enable/disable
+          (function () {
+            var invoice = root.querySelector('#invoiceSelect');
+            var inputs = root.querySelectorAll('.rb-invoice-input');
+            if (!invoice || !inputs.length) return;
+            function applyInvoice() {
+              var enabled = invoice.value === 'issue';
+              inputs.forEach(function (input) {
+                input.disabled = !enabled;
+                input.classList.toggle('bg-white', enabled);
+                input.classList.toggle('bg-[#e1e1e0]', !enabled);
+              });
+            }
+            invoice.addEventListener('change', applyInvoice);
+            applyInvoice();
+          })();
           // Room count ± buttons
           root.querySelectorAll('.rb-count-minus, .rb-count-plus').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -2643,6 +3145,7 @@
           var tableAllocate = document.getElementById("tableAllocate");
           var tableInventory = document.getElementById("tableInventory");
           var invMetricToggle = document.getElementById("invMetricToggle");
+          var rangeRow = document.getElementById("rangeRow");
 
           // Equalize mode-toggle button widths — both set to the wider one's rendered width
           (function() {
@@ -2803,6 +3306,7 @@
             if (tableAllocate) tableAllocate.classList.toggle("hidden", mode === "inventory");
             if (tableInventory) tableInventory.classList.toggle("hidden", mode === "room");
             if (invMetricToggle) invMetricToggle.classList.toggle("hidden", mode === "room");
+            if (rangeRow) rangeRow.classList.toggle("hidden", mode === "inventory");
             if (mode === "inventory") {
               selStart = prevSelStart ? prevSelStart.startOf("day") : today();
               currentMonth = selStart.startOf("month");
@@ -3373,7 +3877,7 @@
       <div class="flex flex-col gap-4">
 
         <!-- [A] 空房與庫存查詢 accordion -->
-        <div class="rb-accordion rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-5">
+        <div class="rb-accordion rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-3 md:p-5">
           <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none mb-4">
             <span class="text-xl font-semibold text-[#454545]">空房與庫存查詢</span>
             <img src="./assets/icons/up.svg" class="rb-accordion-icon w-6 h-6" />
@@ -3456,9 +3960,9 @@
                         </td>
                         <td class="py-2 px-2">義大利麵房</td>
                         <td class="py-2 text-center">XYZ</td>
-                        <td class="py-2 text-center">99</td>
-                        <td class="py-2 text-center rb-alloc-stock">88</td>
-                        <td class="py-2 text-center">11</td>
+                        <td class="py-2 text-center" data-alloc-col="cap">99</td>
+                        <td class="py-2 text-center rb-alloc-stock" data-alloc-col="stock">88</td>
+                        <td class="py-2 text-center" data-alloc-col="rsv">11</td>
                         <td class="py-2">
                           <input type="text" class="rb-alloc-input w-full border border-[#d1d1d1] rounded-[6px] px-2 py-1 text-center bg-white" />
                         </td>
@@ -3469,9 +3973,9 @@
                         </td>
                         <td class="py-2 px-2">香蕉船房</td>
                         <td class="py-2 text-center">XYZ</td>
-                        <td class="py-2 text-center">99</td>
-                        <td class="py-2 text-center rb-alloc-stock">88</td>
-                        <td class="py-2 text-center">11</td>
+                        <td class="py-2 text-center" data-alloc-col="cap">99</td>
+                        <td class="py-2 text-center rb-alloc-stock" data-alloc-col="stock">88</td>
+                        <td class="py-2 text-center" data-alloc-col="rsv">11</td>
                         <td class="py-2">
                           <input type="text" class="rb-alloc-input w-full border border-[#d1d1d1] rounded-[6px] px-2 py-1 text-center bg-[#e1e1e0]" disabled />
                         </td>
@@ -3479,25 +3983,24 @@
                       <tr>
                         <td class="py-2"></td>
                         <td class="py-2 px-2 font-semibold">總計</td>
-                        <td class="py-2 text-center">—</td>
-                        <td class="py-2 text-center">200</td>
-                        <td class="py-2 text-center font-semibold text-[#e05216]">200</td>
-                        <td class="py-2 text-center">200</td>
-                        <td class="py-2 text-center">100</td>
+                        <td></td>
+                        <td class="py-2 text-center" data-alloc-total="cap"></td>
+                        <td class="py-2 text-center font-semibold text-[#e05216]" data-alloc-total="stock"></td>
+                        <td class="py-2 text-center" data-alloc-total="rsv"></td>
+                        <td class="py-2 text-center" data-alloc-total="alloc">0</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
 
-                <!-- Inventory table（庫存表模式） -->
+                <!-- Inventory table（庫存表模式） — Figma "type=table 2" (557:8398) -->
                 <div id="tableInventory" class="hidden border border-[#d1d1d1] rounded-xl p-3 overflow-x-auto">
                   <div class="text-base font-semibold text-[#454545] mb-2">2026 / 02</div>
-                  <table class="text-xs text-[#454545] border-collapse" style="min-width:860px">
+                  <table class="text-xs text-[#454545] border-collapse" style="min-width:1240px">
                     <thead>
-                      <!-- 日期行 -->
+                      <!-- Row 1: 日期 label (centered across 4 left cols) + date numbers -->
                       <tr class="border-b border-[#454545]">
-                        <th class="w-[152px] py-2 text-left px-2 border-b border-[#454545]" rowspan="2">房型</th>
-                        <th class="w-[70px] py-2 text-center border-b border-[#454545]" rowspan="2">代號</th>
+                        <th colspan="4" class="py-2 text-center font-normal">日期</th>
                         <th class="w-[100px] py-2 text-center">11</th>
                         <th class="w-[100px] py-2 text-center">12</th>
                         <th class="w-[100px] py-2 text-center">13</th>
@@ -3506,8 +4009,9 @@
                         <th class="w-[100px] py-2 text-center bg-[#ffc0cb]">16</th>
                         <th class="w-[100px] py-2 text-center bg-[#ffc0cb]">17</th>
                       </tr>
-                      <!-- 星期行 -->
+                      <!-- Row 2: 星期 label (centered across 4 left cols) + weekday letters -->
                       <tr class="border-b border-[#454545]">
+                        <th colspan="4" class="py-2 text-center font-normal">星期</th>
                         <th class="py-1 text-center text-[#888888]">一</th>
                         <th class="py-1 text-center text-[#888888]">二</th>
                         <th class="py-1 text-center text-[#888888]">三</th>
@@ -3516,11 +4020,22 @@
                         <th class="py-1 text-center text-[#888888] bg-[#ffc0cb]">六</th>
                         <th class="py-1 text-center text-[#888888] bg-[#ffc0cb]">日</th>
                       </tr>
+                      <!-- Row 3: 4 left col-headers + 中秋連假 annotation (only in date 11 col) -->
+                      <tr class="border-b border-[#454545]">
+                        <th class="w-[136px] py-2 px-2 text-left font-normal">棟別</th>
+                        <th class="w-[151px] py-2 px-2 text-left font-normal">房型</th>
+                        <th class="w-[70px] py-2 text-center font-normal">代號</th>
+                        <th class="w-[104px] py-2 text-center font-normal">可用庫存數</th>
+                        <td class="py-2 text-center text-[10px] text-[#e91e63] whitespace-nowrap">中秋連假</td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td>
+                      </tr>
                     </thead>
                     <tbody>
                       <tr class="border-b border-[#d1d1d1]">
+                        <td class="py-2 px-2">A 棟</td>
                         <td class="py-2 px-2">義大利麵房</td>
                         <td class="py-2 text-center">XYZ</td>
+                        <td class="py-2 text-center" data-inv-cap>99</td>
                         <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
                           <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">88</span>
                           <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">5</span>
@@ -3558,8 +4073,10 @@
                         </span></td>
                       </tr>
                       <tr class="border-b border-[#454545]">
+                        <td class="py-2 px-2">營地風馬牛啦啦</td>
                         <td class="py-2 px-2">香蕉船房</td>
                         <td class="py-2 text-center">XYZ</td>
+                        <td class="py-2 text-center" data-inv-cap>99</td>
                         <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
                           <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">40</span>
                           <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">3</span>
@@ -3596,51 +4113,53 @@
                           <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">8</span>
                         </span></td>
                       </tr>
-                      <!-- footer 總計行 -->
+                      <!-- footer 總計行 — 可用庫存數 = sum(data rows); date 數值無外框 -->
                       <tr>
+                        <td></td>
                         <td class="py-2 px-2 font-semibold">總計</td>
                         <td></td>
-                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
-                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">128</span>
-                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">8</span>
-                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">8</span>
+                        <td class="py-2 text-center text-[#e05216] font-semibold" data-inv-cap-total></td>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-1">
+                          <span class="text-[10px] text-[#2aca18]" data-metric="ord">128</span>
+                          <span class="text-[10px] text-[#86b7fe]" data-metric="rem">8</span>
+                          <span class="text-[10px] text-[#f28b45]" data-metric="rsv">8</span>
                         </span></td>
-                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
-                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">118</span>
-                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">12</span>
-                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">14</span>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-1">
+                          <span class="text-[10px] text-[#2aca18]" data-metric="ord">118</span>
+                          <span class="text-[10px] text-[#86b7fe]" data-metric="rem">12</span>
+                          <span class="text-[10px] text-[#f28b45]" data-metric="rsv">14</span>
                         </span></td>
-                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
-                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">110</span>
-                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">20</span>
-                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">14</span>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-1">
+                          <span class="text-[10px] text-[#2aca18]" data-metric="ord">110</span>
+                          <span class="text-[10px] text-[#86b7fe]" data-metric="rem">20</span>
+                          <span class="text-[10px] text-[#f28b45]" data-metric="rsv">14</span>
                         </span></td>
-                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
-                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">128</span>
-                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">8</span>
-                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">8</span>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-1">
+                          <span class="text-[10px] text-[#2aca18]" data-metric="ord">128</span>
+                          <span class="text-[10px] text-[#86b7fe]" data-metric="rem">8</span>
+                          <span class="text-[10px] text-[#f28b45]" data-metric="rsv">8</span>
                         </span></td>
-                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
-                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">100</span>
-                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">28</span>
-                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">16</span>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-1">
+                          <span class="text-[10px] text-[#2aca18]" data-metric="ord">100</span>
+                          <span class="text-[10px] text-[#86b7fe]" data-metric="rem">28</span>
+                          <span class="text-[10px] text-[#f28b45]" data-metric="rsv">16</span>
                         </span></td>
-                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
-                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">75</span>
-                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">47</span>
-                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">22</span>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-1">
+                          <span class="text-[10px] text-[#2aca18]" data-metric="ord">75</span>
+                          <span class="text-[10px] text-[#86b7fe]" data-metric="rem">47</span>
+                          <span class="text-[10px] text-[#f28b45]" data-metric="rsv">22</span>
                         </span></td>
-                        <td class="py-1.5 text-center"><span class="inline-flex gap-0.5">
-                          <span class="border border-[#2aca18] rounded px-1 text-[10px]" data-metric="ord">82</span>
-                          <span class="border border-[#86b7fe] rounded px-1 text-[10px]" data-metric="rem">40</span>
-                          <span class="border border-[#f28b45] rounded px-1 text-[10px]" data-metric="rsv">22</span>
+                        <td class="py-1.5 text-center"><span class="inline-flex gap-1">
+                          <span class="text-[10px] text-[#2aca18]" data-metric="ord">82</span>
+                          <span class="text-[10px] text-[#86b7fe]" data-metric="rem">40</span>
+                          <span class="text-[10px] text-[#f28b45]" data-metric="rsv">22</span>
                         </span></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                <!-- Range: 數量分配（≤1080 viewport 時 wrap，slider 獨佔一行） -->
-                <div class="rb-range-row border border-[#d1d1d1] rounded-xl px-4 py-3 flex items-center gap-3 bg-white max-[1080px]:flex-wrap">
+                <!-- Range: 數量分配（僅空房查詢模式；≤1080 viewport 時 wrap，slider 獨佔一行） -->
+                <div id="rangeRow" class="rb-range-row border border-[#d1d1d1] rounded-xl px-4 py-3 flex items-center gap-3 bg-white max-[1080px]:flex-wrap">
                   <input type="range" min="0" max="10" value="3" class="rb-range flex-1 max-[1080px]:basis-full" style="accent-color:#2178cf" />
                   <div class="rb-range-val border border-[#e1e1e0] rounded-xl px-3 py-1 text-sm text-[#454545] shrink-0 min-w-[54px] text-center max-[1080px]:ml-auto">3</div>
                   <button class="rb-alloc-btn flex items-center gap-2 border border-[#d1d1d1] rounded-xl px-4 py-2 bg-white shrink-0">
@@ -3650,7 +4169,7 @@
                 </div>
                 <!-- Action buttons：對齊 Figma Button Y/N component（h 34、radius 6、padding 6/12、font 16） -->
                 <div class="flex justify-end gap-2">
-                  <button class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-[#d1d1d1] rounded-[6px] bg-[#d1d1d1] text-[#454545] text-base cursor-pointer">清除</button>
+                  <button id="rbAllocClear" type="button" class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-[#d1d1d1] rounded-[6px] bg-[#d1d1d1] text-[#454545] text-base cursor-pointer">清除</button>
                   <button class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-[#d1d1d1] rounded-[6px] bg-[#454545] text-[#e1e1e0] text-base cursor-pointer">加入訂單</button>
                 </div>
               </div>
@@ -3659,85 +4178,334 @@
           </div>
         </div>
 
-        <!-- [C] 訂單條件 accordion (collapsed by default) -->
-        <div class="rb-accordion rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-5">
+        <!-- [B] 訂房明細 — 客戶類型 toggle + 合約資訊列 + 訂房明細表 (Figma Frame 230) -->
+        <div class="rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-3 md:p-5">
+          <!-- 客戶類型 toggle (Frame 97：176×42，pill r:28) -->
+          <div class="customer-toggle mb-4">
+            <button class="customer-btn active" data-customer="general">一般客戶</button>
+            <button class="customer-btn" data-customer="contract">合約客戶</button>
+          </div>
+
+          <!-- Frame 367 中間列：合約專屬群組（merged input group）+ 團體名稱 + 業務 + checkboxes -->
+          <div class="flex flex-wrap items-center gap-4 mb-4">
+            <!-- 合約專屬群組（僅合約客戶顯示）：統編 input + 合約公司 select + 新的訂房人 input，共邊框 -->
+            <div id="contractFields" class="input-group hidden">
+              <input type="text" value="22224332" placeholder="統編" style="width:140px" />
+              <select><option>合約公司</option></select>
+              <select style="width:160px"><option>新的訂房人</option></select>
+            </div>
+            <!-- 團體名稱 ☑ + input -->
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked class="w-3.5 h-3.5 accent-[#2178cf]" />
+              <span class="text-base text-[#454545] whitespace-nowrap">團體名稱</span>
+              <input type="text" placeholder="placeholder" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base w-full max-w-[200px]" />
+            </label>
+            <!-- 業務 select -->
+            <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base">
+              <option>業務</option>
+            </select>
+            <!-- 右側 checkboxes -->
+            <div class="flex items-center gap-4 ml-auto">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="w-3.5 h-3.5" />
+                <span class="text-base text-[#454545]">使用保留房</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="w-3.5 h-3.5" />
+                <span class="text-base text-[#454545]">自加庫存</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Frame 222 訂房明細表 (9 cols；header 38、data row 52、total row 32；每 td 都有 px-3 py-2) -->
+          <div class="bg-white rounded-xl p-3 overflow-x-auto">
+            <table class="w-full text-xs text-[#454545] bg-white" style="min-width:1100px">
+              <thead>
+                <tr class="border-b border-[#454545]" style="height:38px">
+                  <th class="text-left text-base font-normal px-3 py-2 whitespace-nowrap" style="width:198px">入住日</th>
+                  <th class="text-left text-base font-normal px-3 py-2 whitespace-nowrap" style="width:240px">退房日</th>
+                  <th class="text-left text-base font-normal px-3 py-2 whitespace-nowrap" style="width:198px">房型</th>
+                  <th class="text-left text-base font-normal px-3 py-2 whitespace-nowrap" style="width:198px">專案</th>
+                  <!-- 間數 header：左 label + 右副標「團體：8」(sm 12px) -->
+                  <th class="text-base font-normal px-3 py-2" style="width:169px">
+                    <div class="flex items-baseline justify-between">
+                      <span>間數</span>
+                      <span class="text-xs text-[#454545] whitespace-nowrap">團體：8</span>
+                    </div>
+                  </th>
+                  <th class="text-left text-base font-normal px-3 py-2 whitespace-nowrap" style="width:123px">單價</th>
+                  <th class="text-left text-base font-normal px-3 py-2 whitespace-nowrap" style="width:111px">小計</th>
+                  <th class="text-left text-base font-normal px-3 py-2 whitespace-nowrap" style="width:59px">加購</th>
+                  <th class="text-left text-base font-normal px-3 py-2 whitespace-nowrap" style="width:144px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Row 1 -->
+                <tr class="border-b border-[#d1d1d1]" style="height:52px">
+                  <!-- 入住日: Calendar simple input -->
+                  <td class="px-3 py-2 align-middle">
+                    <div class="rb-cal-cell">
+                      <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                        <span class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"></span>
+                        <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                      </button>
+                    </div>
+                  </td>
+                  <!-- 退房日: Calendar simple input + 5夜 紅字（按鈕內右側） -->
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <div class="rb-cal-cell">
+                        <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                          <span class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"></span>
+                          <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                        </button>
+                      </div>
+                      <span class="text-xs text-[#e05216] shrink-0 whitespace-nowrap">5 夜</span>
+                    </div>
+                  </td>
+                  <!-- 房型: select + info icon -->
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <select class="flex-1 min-w-0 border border-[#d1d1d1] rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-[#454545]"><option>香蕉船不是船</option></select>
+                      <img src="./assets/icons/info.svg" class="w-6 h-6 cursor-pointer shrink-0" />
+                    </div>
+                  </td>
+                  <!-- 專案: select -->
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <select class="flex-1 min-w-0 border border-[#d1d1d1] rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-[#454545]"><option>巴黎世家大套房</option></select>
+                      <span class="w-6 h-6 shrink-0" aria-hidden="true"></span>
+                    </div>
+                  </td>
+                  <!-- 間數: stepper only (header 已說明) -->
+                  <td class="px-3 py-2 align-middle">
+                    <div class="stepper">
+                      <button type="button" class="stepper-btn rb-step-minus">−</button>
+                      <input type="text" value="5" class="rb-step-val" />
+                      <button type="button" class="stepper-btn rb-step-plus">+</button>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle text-left whitespace-nowrap">19999</td>
+                  <td class="px-3 py-2 align-middle text-left whitespace-nowrap">19999</td>
+                  <!-- 加購: purchase-item icon button (僅 row 1 有；其他列空 td) -->
+                  <td class="px-3 py-2 align-middle">
+                    <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer">
+                      <img src="./assets/icons/purchase-item.svg" class="w-6 h-6" />
+                    </button>
+                  </td>
+                  <!-- 操作: edit / duplicate / trash-can -->
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center justify-start gap-4">
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/edit.svg" class="w-6 h-6" /></button>
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/duplicate.svg" class="w-6 h-6" /></button>
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/trash-can.svg" class="w-6 h-6" /></button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Row 2 -->
+                <tr class="border-b border-[#d1d1d1]" style="height:52px">
+                  <td class="px-3 py-2 align-middle">
+                    <div class="rb-cal-cell">
+                      <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                        <span class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"></span>
+                        <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                      </button>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <div class="rb-cal-cell">
+                        <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                          <span class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"></span>
+                          <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                        </button>
+                      </div>
+                      <span class="text-xs text-[#e05216] shrink-0 whitespace-nowrap">5 夜</span>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <select class="flex-1 min-w-0 border border-[#d1d1d1] rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-[#454545]"><option>香蕉船不是船</option></select>
+                      <img src="./assets/icons/info.svg" class="w-6 h-6 cursor-pointer shrink-0" />
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <select class="flex-1 min-w-0 border border-[#d1d1d1] rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-[#454545]"><option>巴黎世家大套房</option></select>
+                      <span class="w-6 h-6 shrink-0" aria-hidden="true"></span>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="stepper">
+                      <button type="button" class="stepper-btn rb-step-minus">−</button>
+                      <input type="text" value="5" class="rb-step-val" />
+                      <button type="button" class="stepper-btn rb-step-plus">+</button>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle text-left whitespace-nowrap">19999</td>
+                  <td class="px-3 py-2 align-middle text-left whitespace-nowrap">19999</td>
+                  <td class="px-3 py-2 align-middle"></td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center justify-start gap-4">
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/edit.svg" class="w-6 h-6" /></button>
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/duplicate.svg" class="w-6 h-6" /></button>
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/trash-can.svg" class="w-6 h-6" /></button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Row 3 -->
+                <tr class="border-b border-[#454545]" style="height:52px">
+                  <td class="px-3 py-2 align-middle">
+                    <div class="rb-cal-cell">
+                      <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                        <span class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"></span>
+                        <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                      </button>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <div class="rb-cal-cell">
+                        <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                          <span class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"></span>
+                          <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                        </button>
+                      </div>
+                      <span class="text-xs text-[#e05216] shrink-0 whitespace-nowrap">5 夜</span>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <select class="flex-1 min-w-0 border border-[#d1d1d1] rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-[#454545]"><option>香蕉船不是船</option></select>
+                      <img src="./assets/icons/info.svg" class="w-6 h-6 cursor-pointer shrink-0" />
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center gap-2">
+                      <select class="flex-1 min-w-0 border border-[#d1d1d1] rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-[#454545]"><option>巴黎世家大套房</option></select>
+                      <span class="w-6 h-6 shrink-0" aria-hidden="true"></span>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="stepper">
+                      <button type="button" class="stepper-btn rb-step-minus">−</button>
+                      <input type="text" value="5" class="rb-step-val" />
+                      <button type="button" class="stepper-btn rb-step-plus">+</button>
+                    </div>
+                  </td>
+                  <td class="px-3 py-2 align-middle text-left whitespace-nowrap">19999</td>
+                  <td class="px-3 py-2 align-middle text-left whitespace-nowrap">19999</td>
+                  <td class="px-3 py-2 align-middle"></td>
+                  <td class="px-3 py-2 align-middle">
+                    <div class="flex items-center justify-start gap-4">
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/edit.svg" class="w-6 h-6" /></button>
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/duplicate.svg" class="w-6 h-6" /></button>
+                      <button type="button" class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"><img src="./assets/icons/trash-can.svg" class="w-6 h-6" /></button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- 總計列 (32 高)：加購欄總和顯示在這（無加購則 0） -->
+                <tr style="height:32px">
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2 text-left font-medium whitespace-nowrap">總計</td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2 text-center whitespace-nowrap">15</td>
+                  <td class="px-3 py-2 text-left whitespace-nowrap">2345678</td>
+                  <td class="px-3 py-2 text-left whitespace-nowrap">9911929</td>
+                  <td class="px-3 py-2 text-left whitespace-nowrap">19999</td>
+                  <td class="px-3 py-2"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- [C] 訂單條件 accordion (expanded by default) -->
+        <div class="rb-accordion rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-3 md:p-5">
           <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none">
             <span class="text-xl font-semibold text-[#454545]">訂單條件</span>
-            <img src="./assets/icons/down.svg" class="rb-accordion-icon w-6 h-6" />
+            <img src="./assets/icons/up.svg" class="rb-accordion-icon w-6 h-6" />
           </div>
-          <div class="rb-accordion-content rb-hidden bg-white rounded-xl p-3 mt-4">
+          <div class="rb-accordion-content bg-white rounded-xl p-3 mt-4">
             <div class="flex gap-8 flex-wrap">
               <!-- Column 1 -->
-              <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
-                <div class="flex items-center">
-                  <span class="text-base text-[#454545] w-[100px] shrink-0">人數大/小</span>
-                  <div class="flex items-center gap-2 flex-1">
-                    <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base w-20">
-                      <option>大</option><option>小</option>
-                    </select>
-                    <span class="text-base text-[#454545]">/</span>
-                    <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base w-20">
-                      <option>1</option><option>2</option><option>3</option>
-                    </select>
-                  </div>
+              <div class="flex flex-col gap-5 flex-1 min-w-[280px]">
+                <!-- 人數：label + select 大 + select 小（兩個獨立計數，大/小為單位後綴 sm 12px） -->
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[100px] shrink-0">人數</span>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base w-[82.67px]">
+                    <option>1</option><option>2</option><option>3</option><option>4</option>
+                  </select>
+                  <span class="text-xs text-[#454545]">大</span>
+                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base w-[82.67px]">
+                    <option>0</option><option>1</option><option>2</option><option>3</option>
+                  </select>
+                  <span class="text-xs text-[#454545]">小</span>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">到店方式</span>
                   <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>自行到店</option></select>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">發票</span>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>不開發票</option></select>
+                  <select id="invoiceSelect" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1">
+                    <option value="none">不開發票</option>
+                    <option value="issue">開發票</option>
+                  </select>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">統編</span>
-                  <input type="text" placeholder="placeholder" disabled class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
+                  <input id="invoiceTaxId" type="text" placeholder="placeholder" disabled class="rb-invoice-input border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">抬頭</span>
-                  <input type="text" placeholder="placeholder" disabled class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
+                  <input id="invoiceTitle" type="text" placeholder="placeholder" disabled class="rb-invoice-input border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base flex-1" />
                 </div>
-                <div class="flex items-center">
-                  <span class="text-base text-[#454545] w-[100px] shrink-0">繳款期限</span>
-                  <div class="flex items-center gap-2 flex-1">
-                    <span class="text-base text-[#454545]">3 天</span>
-                    <div class="flex items-center bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer flex-1">
-                      <span class="text-base text-[#454545] flex-1">2026-02-27</span>
+                <!-- 繳款期限：label 直排（label 16px + 3 天 sm 12px） + Calendar input -->
+                <div class="flex items-start gap-3">
+                  <div class="w-[100px] shrink-0 flex flex-col">
+                    <span class="text-base text-[#454545]">繳款期限</span>
+                    <span class="text-xs text-[#454545] mt-1">3 天</span>
+                  </div>
+                  <div class="rb-cal-cell flex-1">
+                    <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                      <span class="rb-cal-date flex-1 text-left text-base text-[#454545]"></span>
                       <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>
               <!-- Column 2 -->
-              <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
-                <div class="flex items-center">
+              <div class="flex flex-col gap-5 flex-1 min-w-[280px]">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">折扣</span>
                   <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>無折扣</option></select>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">總房價</span>
                   <input type="text" value="1444" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1" />
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">加購項目併單</span>
                   <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>併單</option></select>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">預付百分比</span>
                   <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1"><option>100%</option></select>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0">預付</span>
                   <input type="text" value="1444" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1" />
                 </div>
               </div>
               <!-- Column 3 -->
-              <div class="flex flex-col gap-3.5 flex-1 min-w-[280px]">
-                <div class="flex items-start">
+              <div class="flex flex-col gap-5 flex-1 min-w-[280px]">
+                <div class="flex items-start gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0 pt-1">訂單備註</span>
                   <textarea rows="4" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1 resize-none"></textarea>
                 </div>
-                <div class="flex items-start">
+                <div class="flex items-start gap-3">
                   <span class="text-base text-[#454545] w-[100px] shrink-0 pt-1">需求備註</span>
                   <textarea rows="4" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base flex-1 resize-none">需要瓦斯爐</textarea>
                 </div>
@@ -3746,47 +4514,416 @@
           </div>
         </div>
 
-        <!-- [D] 訂房資料表單 -->
-        <div class="rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-5">
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-xl font-semibold text-[#454545]">訂房資料</span>
+        <!-- [D] + [E] side-by-side at xl+ (2/3 + 1/3); stacked below xl -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+        <!-- [D] 訂房資料 — Figma Frame 348 (1437:47107)：3 tabs (訂房/入住/合約) + 4-quadrant form -->
+        <div class="xl:col-span-2 rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-3 md:p-5">
+          <!-- Top header row：title + lock + 清除 + 2 checkboxes -->
+          <div class="flex items-center flex-wrap gap-x-6 gap-y-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xl font-semibold text-[#454545]">訂房資料</span>
+              <button type="button" id="orderDataLock" class="order-lock w-6 h-6 cursor-pointer" data-locked="true" aria-label="鎖定 / 解鎖 輸入欄位">
+                <img src="./assets/icons/lock.svg" class="order-lock-icon w-6 h-6" />
+              </button>
+            </div>
+            <button id="orderDataClear" type="button" class="flex items-center gap-2 cursor-pointer text-base text-[#454545]">
+              <img src="./assets/icons/eraser.svg" class="w-4 h-4" />
+              <span>清除</span>
+            </button>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="orderSameAsBooker" class="w-3.5 h-3.5 align-middle bg-[#b0b0b0]" />
+              <span class="text-base text-[#454545]">入住人同訂房人</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-3.5 h-3.5 align-middle bg-[#b0b0b0]" />
+              <span class="text-base text-[#454545]">寄送訂房資訊</span>
+            </label>
           </div>
-          <div class="bg-white rounded-xl p-3 flex flex-col gap-4">
-            <div class="flex items-center gap-3">
-              <span class="text-base text-[#454545] w-16 shrink-0">國籍</span>
-              <div class="flex gap-5">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="rb-nation" value="tw" checked class="w-5 h-5 rounded-full accent-[#888888]" />
-                  <span class="text-base text-[#454545]">臺灣</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="rb-nation" value="foreign" class="w-5 h-5 rounded-full" />
-                  <span class="text-base text-[#454545]">外籍</span>
-                </label>
+          <!-- Tabs (Frame 356)：訂房 active / 入住 / 合約 (合約 tab 僅當客戶為合約客戶時顯示) -->
+          <div id="orderDataTabs" class="flex gap-3 md:gap-7 px-2 md:px-3 mb-0 flex-wrap">
+            <button type="button" class="order-tab order-tab-active" data-tab="booking">訂房</button>
+            <button type="button" class="order-tab" data-tab="checkin">入住</button>
+            <button type="button" class="order-tab hidden" data-tab="contract">合約</button>
+          </div>
+          <!-- White content card (Frame 277) -->
+          <div class="bg-white rounded-xl border border-[#e1e1e0] p-3 md:p-5">
+            <!-- Tab panel: 訂房 -->
+            <div data-panel="booking" class="order-panel grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5">
+              <!-- TL: 名稱/身份證號/護照號碼/生日/行動電話 -->
+              <div class="flex flex-col gap-5">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">名稱</span>
+                  <input type="text" value="王大頭" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">身份證號</span>
+                  <input type="text" value="X111333555" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">護照號碼</span>
+                  <input type="text" value="X111333555" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">生日</span>
+                  <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
+                    <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                      <span class="rb-cal-date flex-1 text-left text-base text-[#454545] whitespace-nowrap"></span>
+                      <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">行動電話</span>
+                  <input type="text" value="0988777111" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+              </div>
+              <!-- TR: 國籍 + 地址 (隨 nation radio 切換 taiwan/foreign 變體) -->
+              <div class="flex flex-col gap-5 nation-group" data-nation-group="rb">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">國籍</span>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="rb-nation" value="tw" checked class="nation-radio w-5 h-5 rounded-full" />
+                    <span class="text-base text-[#454545]">臺灣</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="rb-nation" value="foreign" class="nation-radio w-5 h-5 rounded-full" />
+                    <span class="text-base text-[#454545]">外籍</span>
+                  </label>
+                </div>
+                <!-- 外籍 only：國家 select -->
+                <div class="flex items-center gap-3 nation-foreign-only hidden">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">國家</span>
+                  <select class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base">
+                    <option>英國</option><option>美國</option><option>日本</option><option>韓國</option>
+                  </select>
+                </div>
+                <!-- 臺灣 地址：縣/市 + 行政區 + 街道 -->
+                <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0 pt-1.5">地址</span>
+                  <div class="flex flex-col gap-3 flex-1">
+                    <div class="flex flex-col gap-1">
+                      <span class="text-base text-[#454545]">縣/市</span>
+                      <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"><option>台中</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <div class="flex justify-between">
+                        <span class="text-base text-[#454545]">行政區</span>
+                        <span class="text-base text-[#454545]">406</span>
+                      </div>
+                      <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"><option>北屯區</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <span class="text-base text-[#454545]">街道</span>
+                      <input type="text" placeholder="placeholder" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                    </div>
+                  </div>
+                </div>
+                <!-- 外籍 地址：單一「住所」input -->
+                <div class="flex gap-3 addr-foreign hidden" data-addr-mode="foreign">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0 pt-1.5">地址</span>
+                  <input type="text" placeholder="住所" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+              </div>
+              <!-- BL: 性別 + Email + 市話 + 傳真 + 會員備註 -->
+              <div class="flex flex-col gap-5">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">性別</span>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="rb-gender" value="male" checked class="w-5 h-5 rounded-full accent-[#2178cf]" />
+                    <span class="text-base text-[#454545]">男</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="rb-gender" value="female" class="w-5 h-5 rounded-full accent-[#2178cf]" />
+                    <span class="text-base text-[#454545]">女</span>
+                  </label>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">Email</span>
+                  <input type="text" value="xyz@hotmail.com.tw" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">市話</span>
+                  <input type="text" value="0988777111" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">傳真</span>
+                  <input type="text" value="02-33331111" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <span class="text-base text-[#454545]">會員備註</span>
+                  <textarea rows="4" placeholder="placeholder" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize"></textarea>
+                </div>
+              </div>
+              <!-- BR: stats + 旅客習慣 -->
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between border-b border-[#e1e1e0] py-1.5 px-3">
+                  <span class="text-base text-[#6d6d6d]">訂金保留</span>
+                  <span class="text-base text-[#454545]">XYZ</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-[#e1e1e0] py-1.5 px-3">
+                  <span class="text-base text-[#6d6d6d]">累積消費</span>
+                  <span class="text-base text-[#454545]">XYZ</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-[#e1e1e0] py-1.5 px-3">
+                  <span class="text-base text-[#6d6d6d]">住房次數</span>
+                  <span class="text-base text-[#454545]">XYZ</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-[#e1e1e0] py-1.5 px-3">
+                  <span class="text-base text-[#6d6d6d]">最新住宿日</span>
+                  <span class="text-base text-[#454545]">XYZ</span>
+                </div>
+                <div class="text-base text-[#454545] text-center mt-2">旅客習慣</div>
+                <div class="flex items-center justify-between gap-3 px-3">
+                  <span class="text-base text-[#454545]">消費方式</span>
+                  <span class="border border-[#454545] rounded px-2 py-1 text-base text-[#454545]">信用卡</span>
+                </div>
+                <div class="flex items-center justify-between gap-3 px-3">
+                  <span class="text-base text-[#454545]">車位</span>
+                  <span class="border border-[#454545] rounded px-2 py-1 text-base text-[#454545]">必須</span>
+                </div>
+                <div class="flex items-center justify-between gap-3 px-3">
+                  <span class="text-base text-[#454545]">住房安靜</span>
+                  <span class="border border-[#454545] rounded px-2 py-1 text-base text-[#454545]">要求高</span>
+                </div>
               </div>
             </div>
-            <div class="flex gap-3">
-              <span class="text-base text-[#454545] w-16 shrink-0 pt-1">地址</span>
-              <div class="flex flex-col gap-4 flex-1">
-                <div class="flex flex-col gap-1">
-                  <span class="text-base text-[#454545]">縣/市</span>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#d1d1d1] text-[#888888] text-base"><option>台中</option></select>
+            <!-- Tab panel: 入住 — 入住人資料；結構同 訂房 (因「入住人同訂房人」可一鍵 copy) -->
+            <div data-panel="checkin" class="order-panel hidden grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5">
+              <!-- TL: 名稱/身份證號/護照號碼/生日/行動電話 -->
+              <div class="flex flex-col gap-5">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">名稱</span>
+                  <input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
                 </div>
-                <div class="flex flex-col gap-1">
-                  <div class="flex justify-between">
-                    <span class="text-base text-[#454545]">行政區</span>
-                    <span class="text-base text-[#454545]">406</span>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">身份證號</span>
+                  <input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">護照號碼</span>
+                  <input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">生日</span>
+                  <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
+                    <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+                      <span class="rb-cal-date flex-1 text-left text-base text-[#454545] whitespace-nowrap"></span>
+                      <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
+                    </button>
                   </div>
-                  <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#d1d1d1] text-[#888888] text-base"><option>北屯區</option></select>
                 </div>
-                <div class="flex flex-col gap-1">
-                  <span class="text-base text-[#454545]">街道</span>
-                  <input type="text" placeholder="placeholder" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-[#e1e1e0] text-base" />
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">行動電話</span>
+                  <input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+              </div>
+              <!-- TR: 國籍 + 地址 (隨 nation radio 切換 taiwan/foreign 變體) -->
+              <div class="flex flex-col gap-5 nation-group" data-nation-group="ci">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">國籍</span>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="ci-nation" value="tw" checked class="nation-radio w-5 h-5 rounded-full" />
+                    <span class="text-base text-[#454545]">臺灣</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="ci-nation" value="foreign" class="nation-radio w-5 h-5 rounded-full" />
+                    <span class="text-base text-[#454545]">外籍</span>
+                  </label>
+                </div>
+                <div class="flex items-center gap-3 nation-foreign-only hidden">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">國家</span>
+                  <select class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base">
+                    <option>英國</option><option>美國</option><option>日本</option><option>韓國</option>
+                  </select>
+                </div>
+                <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0 pt-1.5">地址</span>
+                  <div class="flex flex-col gap-3 flex-1">
+                    <div class="flex flex-col gap-1">
+                      <span class="text-base text-[#454545]">縣/市</span>
+                      <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"><option>台中</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <div class="flex justify-between">
+                        <span class="text-base text-[#454545]">行政區</span>
+                        <span class="text-base text-[#454545]">406</span>
+                      </div>
+                      <select class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"><option>北屯區</option></select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <span class="text-base text-[#454545]">街道</span>
+                      <input type="text" placeholder="placeholder" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                    </div>
+                  </div>
+                </div>
+                <div class="flex gap-3 addr-foreign hidden" data-addr-mode="foreign">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0 pt-1.5">地址</span>
+                  <input type="text" placeholder="住所" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+              </div>
+              <!-- BL: 性別 + Email + 市話 + 傳真 + 會員備註 -->
+              <div class="flex flex-col gap-5">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">性別</span>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="ci-gender" value="male" checked class="w-5 h-5 rounded-full accent-[#2178cf]" />
+                    <span class="text-base text-[#454545]">男</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="ci-gender" value="female" class="w-5 h-5 rounded-full accent-[#2178cf]" />
+                    <span class="text-base text-[#454545]">女</span>
+                  </label>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">Email</span>
+                  <input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">市話</span>
+                  <input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">傳真</span>
+                  <input type="text" placeholder="placeholder" class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <span class="text-base text-[#454545]">入住備註</span>
+                  <textarea rows="4" placeholder="placeholder" class="border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize"></textarea>
+                </div>
+              </div>
+              <!-- BR: 入住偏好 / 預計到達時間 -->
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between border-b border-[#e1e1e0] py-1.5 px-3">
+                  <span class="text-base text-[#6d6d6d]">預計到達時間</span>
+                  <span class="text-base text-[#454545]">XYZ</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-[#e1e1e0] py-1.5 px-3">
+                  <span class="text-base text-[#6d6d6d]">同行人數</span>
+                  <span class="text-base text-[#454545]">XYZ</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-[#e1e1e0] py-1.5 px-3">
+                  <span class="text-base text-[#6d6d6d]">交通方式</span>
+                  <span class="text-base text-[#454545]">XYZ</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-[#e1e1e0] py-1.5 px-3">
+                  <span class="text-base text-[#6d6d6d]">早餐</span>
+                  <span class="text-base text-[#454545]">XYZ</span>
+                </div>
+                <div class="text-base text-[#454545] text-center mt-2">入住偏好</div>
+                <div class="flex items-center justify-between gap-3 px-3">
+                  <span class="text-base text-[#454545]">床型</span>
+                  <span class="border border-[#454545] rounded px-2 py-1 text-base text-[#454545]">大床</span>
+                </div>
+                <div class="flex items-center justify-between gap-3 px-3">
+                  <span class="text-base text-[#454545]">樓層</span>
+                  <span class="border border-[#454545] rounded px-2 py-1 text-base text-[#454545]">高樓層</span>
+                </div>
+                <div class="flex items-center justify-between gap-3 px-3">
+                  <span class="text-base text-[#454545]">枕頭</span>
+                  <span class="border border-[#454545] rounded px-2 py-1 text-base text-[#454545]">硬</span>
+                </div>
+              </div>
+            </div>
+            <!-- Tab panel: 合約 — Figma "Ordering data" (1404:47296)；3 列；皆為 read-only 顯示 -->
+            <div data-panel="contract" class="order-panel hidden grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-5 gap-y-5">
+              <!-- 列 1 (Frame 374)：公司資料 -->
+              <div class="flex flex-col gap-5">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">公司名稱</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">品保</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">統編</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">代號</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">公司別</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+              </div>
+              <!-- 列 2 (Frame 375)：聯絡資料 -->
+              <div class="flex flex-col gap-5">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">交觀甲</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">聯絡人一</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">連電一</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">聯絡人二</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">聯絡電話二</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+              </div>
+              <!-- 列 3 (Frame 376)：傳真 + 備註 -->
+              <div class="flex flex-col gap-5">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">傳真一</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">傳真二</span>
+                  <span class="contract-display flex-1">王大頭</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-[#454545] w-[76px] shrink-0">備註</span>
+                  <span class="contract-display flex-1">王大頭</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- [E] 正式單與候補單 — Figma Frame 1437:47168 -->
+        <div class="rb-accordion xl:col-span-1 rounded-xl bg-[#f6fafd] border border-[#d1d1d1] p-3 md:p-5">
+          <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none">
+            <span class="text-xl font-semibold text-[#454545]">正式單與候補單</span>
+            <img src="./assets/icons/up.svg" class="rb-accordion-icon w-6 h-6" />
+          </div>
+          <div class="rb-accordion-content bg-white rounded-xl p-3 md:p-5 mt-4">
+            <!-- 訂單類型 radio group -->
+            <div class="flex items-center gap-3 flex-wrap mb-5">
+              <span class="text-base text-[#454545] w-[76px] shrink-0">訂單類型</span>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="rb-order-type" value="none" checked class="w-5 h-5 rounded-full accent-[#2178cf]" data-order-type="none" />
+                <span class="text-base text-[#454545]">無設定</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="rb-order-type" value="official" class="w-5 h-5 rounded-full accent-[#2178cf]" data-order-type="official" />
+                <span class="text-base text-[#454545]">正式單</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="rb-order-type" value="substitute" class="w-5 h-5 rounded-full accent-[#2178cf]" data-order-type="substitute" />
+                <span class="text-base text-[#454545]">候補單</span>
+              </label>
+            </div>
+            <!-- 對應內容區（依訂單類型顯示）：預設「無設定」顯示置中文字「未設定」 -->
+            <div id="orderTypeContent" class="min-h-[200px] flex items-center justify-center">
+              <div data-order-type-panel="none" class="text-xl text-[#454545]">未設定</div>
+              <div data-order-type-panel="official" class="hidden text-xl text-[#454545]">正式單內容（待 Figma frame 補齊）</div>
+              <div data-order-type-panel="substitute" class="hidden text-xl text-[#454545]">候補單內容（待 Figma frame 補齊）</div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <!-- end [D]+[E] grid -->
 
       </div>
     </div>
