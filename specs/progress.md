@@ -14,6 +14,40 @@
 
 ---
 
+## Session 18 交接（2026-05-03）
+
+### 本次完成
+
+#### UI/UX 審查驗證（封閉 audit）
+| 動作 | 說明 |
+|---|---|
+| 驗證 #3 focus-visible | AI agent 已在 `landing.html:26-33` 與 `room-booking.html:18-26` 加上全域 `:focus-visible` outline（採用 audit 報告 Option A，主色 `#2178cf`）|
+| 驗證 #4 prefers-reduced-motion | 全域 wildcard 區塊已加 `landing.html:36-45` 與 `room-booking.html:29-38`，把 animation/transition duration 壓到 `0.01ms !important` |
+| 重跑 #1 / #2 / #5 | landing 122/122 imgs 有 alt；3/3 explicit `label[for]` 全部解析到 id；room-booking 14/14 label 接上、`button{cursor:pointer}` 全域 CSS 仍在 |
+| 更新 `specs/ui-audit-2026-05-02.md` | header / #3 / #4 / status table 全改為 ✅ FIXED 2026-05-03，附驗證區塊 |
+| 更新 memory `project_ui_audit_2026_05_02.md` | 從「5 項待修」改為「全數修完 (2026-05-03 verified)」，MEMORY.md 索引同步 |
+
+> 註：使用者確認此 a11y baseline 階段任務結束，更深入的 a11y/ARIA/contrast 留到 backend 整合階段再做。
+
+#### Landing.html 側邊 aside 文字尺寸統一
+| 區塊 | 變更 |
+|---|---|
+| Section title（系統操作 / 客服 / 檔案） | `text-[13px]` 或 `text-sm font-semibold` → `text-xl font-semibold`（20px）；6 處 = 桌面 3 + 行動 3 |
+| 13 類 accordion-trigger（前台作業…）| `text-xs` → `text-base`（16px）；26 處（13 × 2 sidebars）|
+| 52 個 leaf 子項目（房間預定 / 自動對帳…）| `text-xs` → `text-base`（16px）|
+| 客服 contact list 容器（電話 / 傳真 / 北客服…）| `text-sm` → `text-base`（16px）|
+| 檔案 file name span（教育訓練手冊 / 套件）| `text-sm` → `text-base`（16px）|
+| 維持 `text-xs`（12px）的 subtitle | 平日 09:00~18:00 / `service@bbnet.gmail.com` / `2018-09-06` / `1.0.13` |
+
+> Tailwind `text-base` 預設即 16px（`1rem`，`<html>` 無 font-size override），無需自訂 token；用既有 utility 即可。
+
+### 待觀察
+| 項目 | 說明 |
+|---|---|
+| Aside 視覺密度 | 子項目從 12 → 16px，aside 整體變高；下次 review 時若使用者覺得太擠，選項：(a) `py-1` → `py-0.5`，(b) leaf items 退回 `text-sm` (14px) 保留 trigger 16px |
+
+---
+
 ## Session 17 交接（2026-05-02）
 
 ### 本次完成
