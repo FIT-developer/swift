@@ -22,6 +22,7 @@
               menu: "var(--color-menu)",
               radio: "var(--color-radio)",
               "subitem-selected": "var(--color-subitem-selected)",
+              "brand-50": "var(--color-brand-50)",
               "brand-400": "var(--color-brand-400)",
               "brand-active": "var(--color-brand-active)",
               "status-positive": "var(--color-status-positive)",
@@ -58,6 +59,7 @@
         --color-menu: #2178cf;                   /* MenuItem/Default */
         --color-radio: #005fcc;                  /* Radio/Default */
         --color-subitem-selected: #f7d275;       /* SubItem/Selected (yellow chip) */
+        --color-brand-50: #fef6ee;               /* Brand-50 */
         --color-brand-400: #f28b45;              /* Brand-400 */
         --color-brand-active: #e05216;           /* Brand-600 */
         /* Status */
@@ -1008,14 +1010,24 @@
           <!-- 系統操作 -->
           <div class="mb-4">
             <div
-              class="flex items-center gap-2 mb-2 text-xl font-semibold text-[#454545]"
+              class="flex items-center justify-between mb-2 text-xl font-semibold text-[#454545]"
             >
-              <img
-                src="./assets/icons/operation-system.svg"
-                alt="operation-system"
-                class="w-6 h-6"
-              />
-              <span>系統操作</span>
+              <div class="flex items-center gap-2">
+                <img
+                  src="./assets/icons/operation-system.svg"
+                  alt="operation-system"
+                  class="w-6 h-6"
+                />
+                <span>系統操作</span>
+              </div>
+              <button
+                type="button"
+                class="menu-collapse-all px-1 py-1 rounded-lg bg-brand-50 text-base font-normal text-text-default cursor-pointer"
+                aria-label="收合所有選單"
+                title="收合所有選單"
+              >
+                收合
+              </button>
             </div>
             <div class="flex flex-col gap-1 pl-1">
               <!-- 1. 前台作業 -->
@@ -2186,14 +2198,24 @@
         <!-- 系統操作 -->
         <div class="mt-5">
           <div
-            class="flex items-center gap-2 mb-2 text-xl font-semibold text-[#454545]"
+            class="flex items-center justify-between mb-2 text-xl font-semibold text-[#454545]"
           >
-            <img
-              src="./assets/icons/operation-system.svg"
-              alt="operation-system"
-              class="w-5 h-5"
-            />
-            <span>系統操作</span>
+            <div class="flex items-center gap-2">
+              <img
+                src="./assets/icons/operation-system.svg"
+                alt="operation-system"
+                class="w-5 h-5"
+              />
+              <span>系統操作</span>
+            </div>
+            <button
+              type="button"
+              class="menu-collapse-all px-1 py-1 rounded-lg bg-brand-50 text-base font-normal text-text-default cursor-pointer"
+              aria-label="收合所有選單"
+              title="收合所有選單"
+            >
+              收合
+            </button>
           </div>
           <div class="flex flex-col gap-0.5">
             <!-- 1. 前台作業 -->
@@ -4028,6 +4050,7 @@
             var clearBtn = root.querySelector("#orderDataClear");
             function apply() {
               var locked = lock.dataset.locked === "true";
+              lock.setAttribute("aria-pressed", locked ? "true" : "false");
               lockable.forEach(function (p) {
                 p.classList.toggle("is-locked", locked);
                 // radios + checkboxes：用 disabled 屬性（label click 也會被 disabled 阻擋）
@@ -4647,6 +4670,23 @@
               content.classList.add("hidden");
               icon && icon.classList.remove("open");
             }
+          });
+        });
+
+      // ── Collapse-all menu (系統操作 標題右側 icon) ────────────────────
+      document
+        .querySelectorAll(".menu-collapse-all")
+        .forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll(".accordion-trigger")
+              .forEach(function (trigger) {
+                var targetId = trigger.dataset.accordionTarget;
+                var content = targetId && document.getElementById(targetId);
+                var icon = trigger.querySelector(".accordion-icon");
+                if (content) content.classList.add("hidden");
+                if (icon) icon.classList.remove("open");
+              });
           });
         });
 
@@ -6582,6 +6622,7 @@
                   class="order-lock w-6 h-6 cursor-pointer"
                   data-locked="true"
                   aria-label="鎖定 / 解鎖 輸入欄位"
+                  aria-pressed="true"
                 >
                   <img
                     src="./assets/icons/lock.svg"

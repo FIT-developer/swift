@@ -3,3 +3,11 @@ preview/temp/
 # macOS Finder metadata
 .DS_Store
 **/.DS_Store
+
+# Local Codex/agent skills and generated caches
+.agents/skills/
+__pycache__/
+*.pyc
+
+# Local Figma variable export used as design input for generated previews
+specs/assets/figma-variables.json
