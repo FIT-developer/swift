@@ -155,6 +155,8 @@
 ### 建議改為 `currentColor`
 | 檔名 | 問題 | 處理方式 |
 |---|---|---|
+| `pos.svg` | `stroke="black"` 黑色硬寫 | POS 入口已改用 mask + `text-icon-default` 套用，後續可將 SVG 本體改 `currentColor` |
+| `attached-link.svg` | `stroke="black"` 黑色硬寫 | POS 入口已改用 mask + `text-icon-default` 套用，後續可將 SVG 本體改 `currentColor` |
 | `lock.svg` | `fill="#E05216"` 橙色硬寫 | 鎖頭應為中性，改 `currentColor` |
 | `submit.svg` | `fill="#2178CF"` 藍色硬寫 | 由 CSS context 控制，改 `currentColor` |
 | `attached-link-moved.svg` | `stroke="#E1E1E0"` 淺灰硬寫 | 邊框色應由 CSS 控制，改 `currentColor` |
@@ -179,17 +181,18 @@
 ## 使用約定
 
 - **預設尺寸**: 24×24（部分例外見上表）
-- **顏色控制**: 以 CSS `color` + SVG `currentColor` 為主，不在 SVG 內寫死（例外：語意色彩 icon 與品牌 icon）
+- **顏色控制**: 以 CSS `color` + SVG `currentColor` 或 mask icon 為主，不在 SVG 內寫死（例外：語意色彩 icon 與品牌 icon）
+- **一般黑色 icon**: 使用 `Color/Icon/Default`，實作 alias 為 `text-icon-default` / `--color-icon-default`。若 SVG 仍硬寫 black，套用時需改成 mask 或 inline SVG，讓 CSS color 能接管。
 - **引入方式**:
   ```html
   <!-- 一般用法 -->
   <img src="assets/icons/edit.svg" width="24" height="24" alt="編輯">
 
   <!-- 需要 CSS 控色時用 mask-image -->
-  <span style="-webkit-mask-image: url(assets/icons/edit.svg); background-color: currentColor;"></span>
+  <span class="icon-mask text-icon-default" style="-webkit-mask-image: url(assets/icons/edit.svg); mask-image: url(assets/icons/edit.svg);"></span>
   ```
 - **色彩語意 icon** 直接用 `<img>` 引入，不需額外 CSS 染色
 
 ---
 
-*Generated from Figma components page · 87 icons exported · Updated 2026-04-13*
+*Generated from Figma components page · 87 icons exported · Updated 2026-05-04*

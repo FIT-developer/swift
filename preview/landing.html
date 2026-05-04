@@ -19,6 +19,7 @@
               "text-subtitle": "var(--color-text-subtitle)",
               "text-emphasis": "var(--color-text-emphasis)",
               "text-inverse": "var(--color-text-inverse)",
+              "icon-default": "var(--color-icon-default)",
               "surface-default": "var(--color-surface-default)",
               "surface-hover": "var(--color-surface-hover)",
               "surface-action": "var(--color-surface-action)",
@@ -85,6 +86,7 @@
         --color-text-default: #454545;           /* Neutral/800 — main body */
         --color-text-emphasis: #3d3d3d;          /* Text/900 */
         --color-text-inverse: #e1e1e0;           /* Text/100 */
+        --color-icon-default: #000000;           /* Icon/Default */
         /* Brand & action */
         --color-menu: #2178cf;                   /* MenuItem/Default */
         --color-radio: #005fcc;                  /* Radio/Default */
@@ -228,7 +230,7 @@
 
       /* POS entrance button hover fill */
       .pos-entrance-inner {
-        background: white;
+        background: var(--color-white);
         transition: background 0.2s;
       }
       .pos-entrance-btn:hover .pos-entrance-inner {
@@ -237,6 +239,16 @@
           var(--color-accent-float-circle-filled-1),
           var(--color-accent-float-circle-filled-2)
         );
+      }
+      .icon-mask {
+        display: inline-block;
+        background-color: currentColor;
+        -webkit-mask-position: center;
+        mask-position: center;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: contain;
+        mask-size: contain;
       }
 
       /* Section card */
@@ -1580,19 +1592,19 @@
               <div
                 class="pos-entrance-inner grid grid-cols-3 items-center px-3 h-[33px] rounded-full cursor-pointer"
               >
-                <img
-                  src="./assets/icons/pos.svg"
-                  alt="pos"
-                  class="w-6 h-6 shrink-0 justify-self-start"
-                />
+                <span
+                  class="icon-mask w-6 h-6 shrink-0 justify-self-start text-icon-default"
+                  style="-webkit-mask-image: url('./assets/icons/pos.svg'); mask-image: url('./assets/icons/pos.svg')"
+                  aria-hidden="true"
+                ></span>
                 <span class="text-sm font-semibold text-text-default text-center"
                   >POS</span
                 >
-                <img
-                  src="./assets/icons/attached-link.svg"
-                  alt="attached-link"
-                  class="w-6 h-6 shrink-0 justify-self-end"
-                />
+                <span
+                  class="icon-mask w-6 h-6 shrink-0 justify-self-end text-icon-default"
+                  style="-webkit-mask-image: url('./assets/icons/attached-link.svg'); mask-image: url('./assets/icons/attached-link.svg')"
+                  aria-hidden="true"
+                ></span>
               </div>
             </div>
           </div>
@@ -2766,19 +2778,19 @@
             <div
               class="pos-entrance-inner grid grid-cols-3 items-center px-3 h-[33px] rounded-full cursor-pointer"
             >
-              <img
-                src="./assets/icons/pos.svg"
-                alt="pos"
-                class="w-6 h-6 shrink-0 justify-self-start"
-              />
+              <span
+                class="icon-mask w-6 h-6 shrink-0 justify-self-start text-icon-default"
+                style="-webkit-mask-image: url('./assets/icons/pos.svg'); mask-image: url('./assets/icons/pos.svg')"
+                aria-hidden="true"
+              ></span>
               <span class="text-sm font-semibold text-text-default text-center"
                 >POS</span
               >
-              <img
-                src="./assets/icons/attached-link.svg"
-                alt="attached-link"
-                class="w-6 h-6 shrink-0 justify-self-end"
-              />
+              <span
+                class="icon-mask w-6 h-6 shrink-0 justify-self-end text-icon-default"
+                style="-webkit-mask-image: url('./assets/icons/attached-link.svg'); mask-image: url('./assets/icons/attached-link.svg')"
+                aria-hidden="true"
+              ></span>
             </div>
           </div>
         </div>

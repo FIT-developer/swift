@@ -14,6 +14,30 @@
   - JavaScript 讀取 `getComputedStyle(document.documentElement).getPropertyValue("--color-*")`
 - 如果 Figma 視覺稿出現本檔沒有的顏色，先更新 Figma Variables 或請使用者確認 token 名稱；不得直接寫 hex。
 - 若舊實作仍有 `text-[#...]`、`bg-[#...]`、`border-[#...]`，只能在能 1:1 對應本檔 token 時替換；無對應者需列入未解問題。
+- Figma Variables 是底層來源；HTML/Tailwind 實作可使用更符合場景的語意 alias。alias 必須在本檔有對照，不可自行新增未記錄名稱。
+- `white` / `bg-white` / `text-white` 可視為 `Color/Neutral/0` 的授權 Tailwind alias；使用時以「白色表面」或「深色背景反白文字」為語意，不需強制改成 `neutral-0`。
+- `rgba(...)`、box-shadow、drop-shadow、modal backdrop 等 Effect 不納入 Figma Variables 色彩 token。這類固定元件效果需以當前 Figma component 視覺為依據，記錄在元件規範或本檔 Effect 章節，不得混入 `Color/*`。
+- scrollbar 為 HTML/CSS 原生特規：Figma 可用視覺示意色表示 scrollbar 空間，但實作由 DOM/browser 樣式決定，不建立顏色 token。
+
+---
+
+## Figma Variable 與 Tailwind 語意 alias 對照
+
+> 讀取 Figma 時先確認底層 Variable；實作時優先使用右欄較符合場景的 Tailwind / CSS 名稱。
+
+| Figma Variable | 實作 alias | 使用情境 |
+|---|---|---|
+| Color/Neutral/0 | `white`, `bg-white`, `text-white`, `--color-white` | 白色表面、表格/輸入框底色、深色背景上的反白文字 |
+| Color/Neutral/50 / Color/Surface/Default | `bg-surface-default`, `--color-surface-default` | 頁面背景、區塊底色 |
+| Color/Neutral/75 / Color/Modal/Hover | `bg-surface-hover`, `hover:bg-surface-hover`, `--color-surface-hover` | hover 背景、選單 hover |
+| Color/Text/800 / Color/Neutral/800 | `text-text-default`, `--color-text-default` | 主要文字 |
+| Color/Text/100 | `text-text-inverse`, `--color-text-inverse` | 深色 tooltip / badge 上的反白文字；若視覺稿明確為純白，使用 `text-white` |
+| Color/Icon/Default | `text-icon-default`, `--color-icon-default` | 可用 `currentColor` 或 mask 控色的一般黑色 icon |
+| Color/Surface/Brand-Default | `bg-brand-500`, `bg-surface-brand`, `--color-surface-brand` | 主品牌色、主按鈕、重要 badge |
+| Color/Surface/Brand-Hover | `hover:bg-surface-brand-hover`, `--color-surface-brand-hover` | 主品牌 hover |
+| Color/Border/Default | `border-border-default`, `--color-border-default` | 一般分隔線與邊框 |
+| Color/Border/Plugin-Default | `border-border-plugin`, `--color-border-plugin` | 表單輸入框預設邊框 |
+| Color/Accent/* | `text-accent-*`, `bg-accent-*`, `--color-accent-*` | 節慶、POS 入口、浮動客服等點綴色 |
 
 ---
 
@@ -96,6 +120,14 @@
 | Color/Text/800 | `#454545` | **主要內文（最常用）** |
 | Color/Text/900 | `#3D3D3D` | 強調內文 |
 | Color/Text/950 | `#262626` | 標題 / 最深 |
+
+---
+
+### Icon（圖示色）
+
+| Variable 名稱 | Hex 值 | 語意用途 |
+|---|---|---|
+| Color/Icon/Default | `#000000` | 一般 icon 預設黑色；實作以 `currentColor` / mask 由 `text-icon-default` 控制 |
 
 ---
 
@@ -247,7 +279,14 @@
 
 ## 陰影 (Shadows)
 
-> 目前 **無 Effect Style（陰影）定義**，元件無陰影 token。
+> 目前 **無 Figma Effect Style 定義**。Effect 不進 `Color/*` Variables，固定元件效果依 component 規範與當前 Figma 視覺套用。
+
+| Effect | 目前實作 | 規則 |
+|---|---|---|
+| Modal backdrop | `rgba(0, 0, 0, 0.4)` | 固定 modal 特規，見 `components/modal.md` / `progress.md` 決策 |
+| Mobile sidebar backdrop | `rgba(0, 0, 0, 0.28)` | 固定 mobile overlay 特規 |
+| Box shadow / drop-shadow | 元件 CSS 內保留 `rgba(...)` | 不轉成 color token；若 Figma component 有調整，依 component 更新 |
+| Chart translucent fill | 由 chart color + opacity 形成 | 優先以 `Color/Chart/*` 為底色，再於 Chart.js 設定透明度 |
 
 ---
 

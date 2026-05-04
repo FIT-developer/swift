@@ -14,6 +14,54 @@
 
 ---
 
+## Session 25 交接（2026-05-04）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者決策，確認 `bg-white` / `text-white` 可作為 `Color/Neutral/0` 的 Tailwind 應用層 alias，不強制改成 `neutral-0` 命名。
+- `specs/assets/tokens.md` 新增「Figma Variable 與 Tailwind 語意 alias 對照」：
+  - 底層仍以 Figma Variables 為來源。
+  - 實作可使用更好讀的 `white`、`bg-surface-default`、`text-text-default`、`text-icon-default` 等 alias。
+  - alias 必須在 tokens.md 有對照，不允許 agent 自行新增未記錄名稱。
+- 依使用者決策，Effect 不寫進 Figma Variables：
+  - `rgba(...)`、box-shadow、drop-shadow、modal backdrop 保留為固定元件效果。
+  - 這類效果依目前 Figma component 視覺與元件規範套用，不混入 `Color/*` token。
+  - scrollbar 維持 HTML/CSS 原生特規，不建立 token。
+- 依 icon 黑色處理建議，已在 Figma Semantic Variables 新增：
+  - `Color/Icon/Default = #000000`
+- `specs/assets/tokens.md` 已新增 `Color/Icon/Default` 與 `text-icon-default` / `--color-icon-default` 使用規則。
+- `preview/landing.html` 已新增：
+  - Tailwind alias：`text-icon-default`
+  - CSS variable：`--color-icon-default`
+  - `.icon-mask` utility，用 `currentColor` 控制 mask icon 顏色。
+- POS 入口 desktop / mobile 兩處 icon 已從 `<img>` 改為 mask icon，套用 `text-icon-default`，避免 SVG 內硬寫 black 直接決定畫面顏色。
+- `specs/icons.md` 已補充 icon 顏色規則：
+  - 一般黑色 icon 使用 `Color/Icon/Default`。
+  - 需要 CSS 控色時使用 `currentColor` 或 mask。
+  - `pos.svg`、`attached-link.svg` 已列入建議改 `currentColor`，目前 landing.html 已用 mask 套用。
+- 本地 ignored `specs/assets/figma-variables.json` 已同步補上 `Color/Icon/Default`，方便後續本機檢索對照。
+
+**進行中**:
+- 色彩來源規則已從「只看 hex 是否來自 Figma」推進為「Figma 底層 token + 實作語意 alias」雙層管理。
+
+**下一步應做**:
+- 做 browser visual smoke test：
+  - POS 入口 default / hover icon 是否仍為 Figma 指定黑色。
+  - POS hover fill 是否仍為 `#F2BEFD → #FFB6B6`。
+  - sidebar / modal / room booking 中 `bg-white` / `text-white` 視覺是否未受影響。
+- 後續若要繼續清 icon，優先把需要狀態變色的 SVG 改成 `currentColor` 或 mask；品牌/語意色 icon 保留原色。
+
+**重要決定**:
+- Tailwind 實作層可以用 `white` 這種更好讀的名稱，但必須能回查到 Figma Variable：`Color/Neutral/0`。
+- Effect 不進 Figma Variables；只有固定元件效果紀錄在規範中。
+- Scrollbar 是瀏覽器/DOM 原生特規，不建立 token。
+
+**未解問題**:
+- 尚未做瀏覽器視覺驗證。
+
+---
+
 ## Session 24 交接（2026-05-04）
 
 ### 本次進度交接
