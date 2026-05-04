@@ -14,6 +14,56 @@
 
 ---
 
+## Session 27 交接（2026-05-04）
+
+### 本次進度交接
+
+**已完成 / 使用者已確認**:
+- 單一 sidebar DOM 實測通過：
+  - desktop sidebar collapse / expand。
+  - mobile sidebar open / close。
+  - mobile sidebar 內 accordion、sub-item click。
+  - logout / switch modal。
+  - POS hover fill。
+  - mobile drawer spacing 與原視覺一致。
+- `preview/landing.html` 目前仍是單檔大型靜態 prototype；現階段會繼續長大，先列為提醒事項，不進行拆檔重構。
+- Effect 類樣式維持特規：
+  - Effect 不寫入 Figma Variables。
+  - 後續遇到 shadow、backdrop、blur、component-specific rgba 等 Effect 時，需透過 `figma-go` 讀取當前 Figma frame / section / component，依設計如實渲染。
+  - 此責任由使用者與執行 agent 共同注意；不得自行把 Effect 混入 `Color/*` token。
+- chartjs-diverging / doughnut 目前以 `preview/landing.html` 內 JS + HTML/CSS 能配合目前 prototype 為準；未來會由後端提供真實資料渲染，不要求現階段產出正式 component spec。
+- 部分 sub-page 仍為 placeholder 或待 Figma frame；未來資料內容會由後端渲染，現階段不由前端 prototype 補完。
+- 語意 alias 對照表需嚴格維護：
+  - 新增或使用 Tailwind / CSS alias 前，必須確認 `specs/assets/tokens.md` 已有 Figma Variable 對照。
+  - `start.md`、`progress.md`、`tokens.md` 是 agent 執行前必讀與對照來源。
+  - 不允許 agent 自行新增未記錄 alias 或跳過 token 對照。
+- `preview/room-booking.html` 已納入同一套 token 規則：
+  - 新增 Tailwind CDN `theme.extend.colors` semantic aliases。
+  - 新增 `:root --color-*` token 定義，來源對應 `specs/assets/tokens.md`。
+  - 將原本可見的 `text-[#...]`、`bg-[#...]`、`border-[#...]` 與 CSS hardcoded color 改為 semantic class / CSS variable。
+  - `#e5e5e5`、`#f0f0f0` 舊 border 色改用 `Color/Border/Default`；`#e8f1fb` 舊 active 淡藍背景改用 `Color/Bootstrap/focus-background`。
+  - 掃描結果：除 `:root` token 定義外，`room-booking.html` 已無 arbitrary hex color class 或裸 hex 色值。
+
+**提醒事項**:
+- `preview/landing.html` 單檔過大是已知維護風險；但在目前 prototype 快速增長階段，先不拆檔。
+- 單檔過大未來可能影響：
+  - 搜尋與局部修改成本。
+  - CSS/JS side effect 追蹤。
+  - component 重用與測試。
+  - 與後端 template 整合時的拆分成本。
+
+**歷史未解項補充說明**:
+- `room-booking.html` token 遷移已於本 session 補上；後續維護時仍需遵守 `tokens.md` / Tailwind semantic alias 規則，避免新增非 Figma 來源顏色。
+- 某些 function icons 對應 modal 尚未讀 Figma 補齊：
+  - 目前已處理並實測的重點是 landing 既有互動與 sidebar 結構。
+  - 尚未補齊者需在使用者指定對應 Figma frame / component 後，以 `figma-go` 讀取並如實渲染。
+  - 不應從其他 modal 或 icon 行為推測。
+
+**未解問題**:
+- 無需立即處理的新結構問題；目前主要剩下後續功能擴充時的規範遵守與逐步補齊。
+
+---
+
 ## Session 26 交接（2026-05-04）
 
 ### 本次進度交接

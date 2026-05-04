@@ -5,12 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>房間預訂</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Semantic colors mapped to CSS vars — see specs/assets/tokens.md.
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "text-default": "var(--color-text-default)",
+              "text-secondary": "var(--color-text-secondary)",
+              "text-inverse": "var(--color-text-inverse)",
+              "surface-hover": "var(--color-surface-hover)",
+              "border-default": "var(--color-border-default)",
+              "border-disabled": "var(--color-border-disabled)",
+              menu: "var(--color-menu)",
+              "radio-hover": "var(--color-radio-hover)",
+              "brand-100": "var(--color-brand-100)",
+              "brand-500": "var(--color-brand-500)",
+              "brand-active": "var(--color-brand-active)",
+              "status-negative": "var(--color-status-negative)",
+              "accent-light-green": "var(--color-accent-light-green)",
+              "accent-green": "var(--color-accent-green)",
+              "focus-background": "var(--color-focus-background)",
+            },
+          },
+        },
+      };
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
       rel="stylesheet"
     />
     <style>
+      :root {
+        --color-white: #ffffff;
+        --color-surface-hover: #f6fafd;
+        --color-border-default: #e1e1e0;
+        --color-border-disabled: #d1d1d1;
+        --color-text-secondary: #888888;
+        --color-text-default: #454545;
+        --color-text-inverse: #e1e1e0;
+        --color-menu: #2178cf;
+        --color-radio-hover: #3b78d5;
+        --color-brand-100: #fdebd7;
+        --color-brand-500: #ef6f25;
+        --color-brand-active: #e05216;
+        --color-status-negative: #e12129;
+        --color-accent-light-green: #bbf7d0;
+        --color-accent-green: #34c759;
+        --color-focus-background: #d3ebfd;
+      }
+
       body {
         font-family: "Noto Sans TC", sans-serif;
       }
@@ -21,7 +66,7 @@
       input:focus-visible,
       select:focus-visible,
       textarea:focus-visible {
-        outline: 2px solid #2178cf;
+        outline: 2px solid var(--color-menu);
         outline-offset: 2px;
       }
 
@@ -71,12 +116,12 @@
         font-size: 11px;
       }
       .calendar-day-active {
-        background: #3b78d5;
-        color: #fff;
+        background: var(--color-radio-hover);
+        color: var(--color-white);
         border-radius: 50%;
       }
       .calendar-day-past {
-        color: #888;
+        color: var(--color-text-secondary);
       }
       input[type="text"],
       select {
@@ -92,38 +137,38 @@
         cursor: pointer;
       }
       .tag-active {
-        background: #3b78d5;
-        color: #fff;
+        background: var(--color-radio-hover);
+        color: var(--color-white);
       }
       .tag-inactive {
-        background: #fff;
-        color: #454545;
-        border: 1px solid #d1d1d1;
+        background: var(--color-white);
+        color: var(--color-text-default);
+        border: 1px solid var(--color-border-disabled);
       }
     </style>
   </head>
-  <body class="bg-white text-[#454545] text-sm">
+  <body class="bg-white text-text-default text-sm">
     <!-- Layout wrapper -->
     <div class="flex min-h-screen">
       <!-- ===== SIDEBAR ===== -->
       <aside
         id="sidebar"
-        class="sidebar expanded flex-shrink-0 bg-white border-r border-[#e5e5e5] flex flex-col overflow-hidden"
+        class="sidebar expanded flex-shrink-0 bg-white border-r border-border-default flex flex-col overflow-hidden"
       >
         <!-- Logo + account -->
         <div class="px-3 pt-6 pb-2">
           <!-- Logo placeholder -->
           <div class="w-full flex justify-center mb-4">
             <div
-              class="w-[111px] h-[84px] bg-[#f6fafd] rounded flex items-center justify-center text-xs text-[#888]"
+              class="w-[111px] h-[84px] bg-surface-hover rounded flex items-center justify-center text-xs text-text-secondary"
             >
               LOGO
             </div>
           </div>
           <!-- Account -->
           <div class="flex items-center justify-center gap-1 mb-3">
-            <span class="sidebar-label text-xs text-[#454545]">xiaomi999</span>
-            <button class="sidebar-label ml-1 text-[#888] hover:text-[#454545]">
+            <span class="sidebar-label text-xs text-text-default">xiaomi999</span>
+            <button class="sidebar-label ml-1 text-text-secondary hover:text-text-default">
               <svg
                 class="w-4 h-4"
                 fill="none"
@@ -140,10 +185,10 @@
             </button>
           </div>
           <!-- Hotel selector -->
-          <div class="sidebar-label text-xs text-[#454545] mb-1 truncate">
+          <div class="sidebar-label text-xs text-text-default mb-1 truncate">
             188 ) 總部
           </div>
-          <div class="sidebar-label text-xs text-[#454545] mb-3 truncate">
+          <div class="sidebar-label text-xs text-text-default mb-3 truncate">
             199) 地球村美日語太平洋旅店
           </div>
         </div>
@@ -152,7 +197,7 @@
         <nav class="flex-1 overflow-y-auto px-2 space-y-1">
           <!-- Section: 系統操作 -->
           <div
-            class="sidebar-section-title text-[#454545] font-semibold text-xs px-2 py-1"
+            class="sidebar-section-title text-text-default font-semibold text-xs px-2 py-1"
           >
             系統操作
           </div>
@@ -160,7 +205,7 @@
           <!-- 主項目 一 > 前台作業 > 房間預訂 (active) -->
           <div>
             <button
-              class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#f6fafd] text-sm"
+              class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-surface-hover text-sm"
             >
               <svg
                 class="w-4 h-4 flex-shrink-0"
@@ -179,7 +224,7 @@
             </button>
             <div class="pl-6 space-y-0.5">
               <button
-                class="w-full flex items-center gap-2 px-2 py-1 rounded hover:bg-[#f6fafd] text-sm"
+                class="w-full flex items-center gap-2 px-2 py-1 rounded hover:bg-surface-hover text-sm"
               >
                 <svg
                   class="w-3 h-3 flex-shrink-0"
@@ -199,19 +244,19 @@
               <div class="pl-4 space-y-0.5">
                 <a
                   href="#"
-                  class="flex items-center gap-1 px-2 py-0.5 rounded text-xs text-[#2178cf] bg-[#e8f1fb]"
+                  class="flex items-center gap-1 px-2 py-0.5 rounded text-xs text-menu bg-focus-background"
                 >
                   <span class="sidebar-label">房間預訂</span>
                 </a>
                 <a
                   href="#"
-                  class="flex items-center gap-1 px-2 py-0.5 rounded text-xs text-[#2178cf]"
+                  class="flex items-center gap-1 px-2 py-0.5 rounded text-xs text-menu"
                 >
                   <span class="sidebar-label">子項目 二</span>
                 </a>
                 <a
                   href="#"
-                  class="flex items-center gap-1 px-2 py-0.5 rounded text-xs text-[#2178cf]"
+                  class="flex items-center gap-1 px-2 py-0.5 rounded text-xs text-menu"
                 >
                   <span class="sidebar-label">子項目 三</span>
                 </a>
@@ -219,7 +264,7 @@
             </div>
           </div>
           <button
-            class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#f6fafd] text-sm"
+            class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-surface-hover text-sm"
           >
             <svg
               class="w-4 h-4 flex-shrink-0"
@@ -236,7 +281,7 @@
             ><span class="sidebar-label">主項目 三</span>
           </button>
           <button
-            class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#f6fafd] text-sm"
+            class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-surface-hover text-sm"
           >
             <svg
               class="w-4 h-4 flex-shrink-0"
@@ -253,7 +298,7 @@
             ><span class="sidebar-label">主項目 四</span>
           </button>
           <button
-            class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#f6fafd] text-sm"
+            class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-surface-hover text-sm"
           >
             <svg
               class="w-4 h-4 flex-shrink-0"
@@ -270,7 +315,7 @@
             ><span class="sidebar-label">主項目 五</span>
           </button>
           <button
-            class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-[#f6fafd] text-sm"
+            class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-surface-hover text-sm"
           >
             <svg
               class="w-4 h-4 flex-shrink-0"
@@ -290,20 +335,20 @@
           <!-- 客服 -->
           <div class="mt-3">
             <div
-              class="sidebar-section-title text-[#454545] font-semibold text-xs px-2 py-1"
+              class="sidebar-section-title text-text-default font-semibold text-xs px-2 py-1"
             >
               客服
             </div>
-            <div class="sidebar-label px-2 text-xs text-[#888] mb-1">
+            <div class="sidebar-label px-2 text-xs text-text-secondary mb-1">
               平日 09:00~18:00
             </div>
             <div class="sidebar-label px-2 space-y-1 text-xs">
               <div class="flex justify-between">
-                <span class="text-[#454545]">電話</span
+                <span class="text-text-default">電話</span
                 ><span>02-2826-3881</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-[#454545]">傳真</span
+                <span class="text-text-default">傳真</span
                 ><span>02-2821-8289</span>
               </div>
               <div class="flex justify-between">
@@ -315,7 +360,7 @@
               <div class="flex justify-between">
                 <span>東客服</span><span>#22 Luka</span>
               </div>
-              <div class="text-[#888] text-[11px] mt-1">
+              <div class="text-text-secondary text-[11px] mt-1">
                 service@bbnet.gmail.com
               </div>
             </div>
@@ -324,18 +369,18 @@
           <!-- 檔案 -->
           <div class="mt-3">
             <div
-              class="sidebar-section-title text-[#454545] font-semibold text-xs px-2 py-1"
+              class="sidebar-section-title text-text-default font-semibold text-xs px-2 py-1"
             >
               檔案
             </div>
             <div class="sidebar-label px-2 space-y-1 text-xs">
               <div>
                 <div>教育訓練手冊</div>
-                <div class="text-[#888] text-[11px]">2018-09-06</div>
+                <div class="text-text-secondary text-[11px]">2018-09-06</div>
               </div>
               <div>
                 <div>套件</div>
-                <div class="text-[#888] text-[11px]">1.0.13</div>
+                <div class="text-text-secondary text-[11px]">1.0.13</div>
               </div>
             </div>
           </div>
@@ -346,13 +391,13 @@
       <div class="flex-1 flex flex-col min-w-0">
         <!-- Top bar -->
         <header
-          class="h-12 flex items-center justify-between px-4 border-b border-[#e5e5e5] bg-white sticky top-0 z-10"
+          class="h-12 flex items-center justify-between px-4 border-b border-border-default bg-white sticky top-0 z-10"
         >
           <div class="flex items-center gap-3">
             <!-- Sidebar toggle -->
-            <button id="sidebarToggle" class="p-1 rounded hover:bg-[#f6fafd]">
+            <button id="sidebarToggle" class="p-1 rounded hover:bg-surface-hover">
               <svg
-                class="w-5 h-5 text-[#454545]"
+                class="w-5 h-5 text-text-default"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -367,9 +412,9 @@
             </button>
             <!-- Breadcrumb -->
             <div class="flex items-center gap-2 text-sm">
-              <span class="text-[#888]">客服</span>
-              <span class="text-[#888]">/</span>
-              <span class="text-[#454545] font-medium">房間預訂</span>
+              <span class="text-text-secondary">客服</span>
+              <span class="text-text-secondary">/</span>
+              <span class="text-text-default font-medium">房間預訂</span>
             </div>
           </div>
           <!-- Function icons -->
@@ -377,7 +422,7 @@
             <!-- Bulletin -->
             <button class="relative p-1">
               <svg
-                class="w-5 h-5 text-[#454545]"
+                class="w-5 h-5 text-text-default"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -390,14 +435,14 @@
                 />
               </svg>
               <span
-                class="badge absolute -top-0.5 -right-0.5 bg-[#ef6f25] text-white rounded-full flex items-center justify-center font-medium px-1"
+                class="badge absolute -top-0.5 -right-0.5 bg-brand-500 text-white rounded-full flex items-center justify-center font-medium px-1"
                 >99</span
               >
             </button>
             <!-- Message -->
             <button class="relative p-1">
               <svg
-                class="w-5 h-5 text-[#454545]"
+                class="w-5 h-5 text-text-default"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -410,14 +455,14 @@
                 />
               </svg>
               <span
-                class="badge absolute -top-0.5 -right-0.5 bg-[#d1d1d1] text-white rounded-full flex items-center justify-center font-medium px-1"
+                class="badge absolute -top-0.5 -right-0.5 bg-border-disabled text-white rounded-full flex items-center justify-center font-medium px-1"
                 >0</span
               >
             </button>
             <!-- Person -->
             <button class="relative p-1">
               <svg
-                class="w-5 h-5 text-[#454545]"
+                class="w-5 h-5 text-text-default"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -430,14 +475,14 @@
                 />
               </svg>
               <span
-                class="badge absolute -top-0.5 -right-0.5 bg-[#ef6f25] text-white rounded-full flex items-center justify-center font-medium px-1"
+                class="badge absolute -top-0.5 -right-0.5 bg-brand-500 text-white rounded-full flex items-center justify-center font-medium px-1"
                 >99+</span
               >
             </button>
             <!-- System -->
             <button class="relative p-1">
               <svg
-                class="w-5 h-5 text-[#454545]"
+                class="w-5 h-5 text-text-default"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -458,29 +503,29 @@
                 />
               </svg>
               <span
-                class="badge absolute -top-0.5 -right-0.5 bg-[#ef6f25] text-white rounded-full flex items-center justify-center font-medium px-1"
+                class="badge absolute -top-0.5 -right-0.5 bg-brand-500 text-white rounded-full flex items-center justify-center font-medium px-1"
                 >99+</span
               >
             </button>
             <!-- User info -->
-            <span class="text-xs text-[#454545] ml-2">xxoo</span>
+            <span class="text-xs text-text-default ml-2">xxoo</span>
           </div>
         </header>
 
         <!-- Page content -->
         <main class="flex-1 p-4 space-y-4 bg-white overflow-x-auto">
           <!-- ===== ACCORDION: 空房與庫存查詢 ===== -->
-          <section class="bg-[#f6fafd] rounded-lg overflow-hidden">
+          <section class="bg-surface-hover rounded-lg overflow-hidden">
             <div
               class="accordion-header flex items-center justify-between px-5 py-2"
               onclick="toggleAccordion('acc1')"
             >
-              <span class="text-base font-normal text-[#454545]"
+              <span class="text-base font-normal text-text-default"
                 >空房與庫存查詢</span
               >
               <svg
                 id="acc1-icon"
-                class="w-5 h-5 text-[#454545] transition-transform"
+                class="w-5 h-5 text-text-default transition-transform"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -493,13 +538,13 @@
                 />
               </svg>
             </div>
-            <div id="acc1" class="border-t border-[#e5e5e5]">
+            <div id="acc1" class="border-t border-border-default">
               <div class="flex flex-col lg:flex-row gap-4 p-4">
                 <!-- Calendar -->
                 <div class="bg-white rounded-lg p-4 lg:w-[351px] flex-shrink-0">
                   <!-- Month nav -->
                   <div class="flex items-center justify-between mb-2">
-                    <button class="p-1 hover:bg-[#f6fafd] rounded">
+                    <button class="p-1 hover:bg-surface-hover rounded">
                       <svg
                         class="w-4 h-4"
                         fill="none"
@@ -515,7 +560,7 @@
                       </svg>
                     </button>
                     <span class="text-base font-normal">2026 年 01 月</span>
-                    <button class="p-1 hover:bg-[#f6fafd] rounded">
+                    <button class="p-1 hover:bg-surface-hover rounded">
                       <svg
                         class="w-4 h-4"
                         fill="none"
@@ -536,139 +581,139 @@
                     <span>已選</span>
                     <span class="font-semibold">0</span>
                     <span>天</span>
-                    <button class="ml-auto text-xs text-[#2178cf]">
+                    <button class="ml-auto text-xs text-menu">
                       今日 12
                     </button>
                   </div>
                   <!-- Day headers -->
                   <div class="grid grid-cols-7 text-center mb-1">
-                    <span class="text-xs text-[#888]">Mon</span
-                    ><span class="text-xs text-[#888]">Tue</span
-                    ><span class="text-xs text-[#888]">Wed</span
-                    ><span class="text-xs text-[#888]">Thu</span
-                    ><span class="text-xs text-[#888]">Fri</span
-                    ><span class="text-xs text-[#888]">Sat</span
-                    ><span class="text-xs text-[#888]">Sun</span>
+                    <span class="text-xs text-text-secondary">Mon</span
+                    ><span class="text-xs text-text-secondary">Tue</span
+                    ><span class="text-xs text-text-secondary">Wed</span
+                    ><span class="text-xs text-text-secondary">Thu</span
+                    ><span class="text-xs text-text-secondary">Fri</span
+                    ><span class="text-xs text-text-secondary">Sat</span
+                    ><span class="text-xs text-text-secondary">Sun</span>
                   </div>
                   <!-- Days grid (Jan 2026 starts on Thu) -->
                   <div class="grid grid-cols-7 text-center gap-y-1 text-base">
                     <span></span><span></span><span></span>
-                    <span class="text-[#888] text-sm py-1">01</span>
-                    <span class="text-[#888] text-sm py-1">02</span>
+                    <span class="text-text-secondary text-sm py-1">01</span>
+                    <span class="text-text-secondary text-sm py-1">02</span>
                     <span
                       class="calendar-day-active w-8 h-8 mx-auto flex items-center justify-center text-sm cursor-pointer"
                       >03</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >04</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >05</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >06</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >07</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >08</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >09</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >10</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >11</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >12</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >13</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >14</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >15</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >16</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >17</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >18</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >19</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >20</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >21</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >22</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >23</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >24</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >25</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >26</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >27</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >28</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >29</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >30</span
                     >
                     <span
-                      class="text-sm py-1 cursor-pointer hover:bg-[#f6fafd] rounded-full"
+                      class="text-sm py-1 cursor-pointer hover:bg-surface-hover rounded-full"
                       >31</span
                     >
                   </div>
@@ -705,7 +750,7 @@
                     </div>
                     <!-- Payment -->
                     <select
-                      class="border border-[#d1d1d1] rounded px-2 py-1 text-sm text-[#454545] bg-white ml-auto"
+                      class="border border-border-disabled rounded px-2 py-1 text-sm text-text-default bg-white ml-auto"
                     >
                       <option>支票</option>
                       <option>信用卡</option>
@@ -713,39 +758,39 @@
                     </select>
                   </div>
                   <!-- Date display -->
-                  <div class="text-base text-[#454545]">2026 / 02 / 15 四</div>
+                  <div class="text-base text-text-default">2026 / 02 / 15 四</div>
                   <!-- Room table -->
                   <div class="bg-white rounded overflow-x-auto">
                     <table class="w-full text-sm border-collapse">
                       <thead>
-                        <tr class="border-b border-[#e5e5e5] bg-[#f6fafd]">
+                        <tr class="border-b border-border-default bg-surface-hover">
                           <th
-                            class="text-left px-3 py-2 font-normal text-[#454545]"
+                            class="text-left px-3 py-2 font-normal text-text-default"
                           >
                             房型
                           </th>
                           <th
-                            class="text-right px-3 py-2 font-normal text-[#454545]"
+                            class="text-right px-3 py-2 font-normal text-text-default"
                           >
                             代號
                           </th>
                           <th
-                            class="text-right px-3 py-2 font-normal text-[#454545]"
+                            class="text-right px-3 py-2 font-normal text-text-default"
                           >
                             庫存總數
                           </th>
                           <th
-                            class="text-right px-3 py-2 font-normal text-[#454545]"
+                            class="text-right px-3 py-2 font-normal text-text-default"
                           >
                             可用庫存數
                           </th>
                           <th
-                            class="text-right px-3 py-2 font-normal text-[#454545]"
+                            class="text-right px-3 py-2 font-normal text-text-default"
                           >
                             保留房數
                           </th>
                           <th
-                            class="text-right px-3 py-2 font-normal text-[#454545]"
+                            class="text-right px-3 py-2 font-normal text-text-default"
                           >
                             分配數
                           </th>
@@ -753,21 +798,21 @@
                       </thead>
                       <tbody>
                         <tr
-                          class="border-b border-[#f0f0f0] hover:bg-[#f6fafd]"
+                          class="border-b border-border-default hover:bg-surface-hover"
                         >
                           <td class="px-3 py-2">義大利麵房</td>
                           <td class="px-3 py-2 text-right">XYZ</td>
                           <td class="px-3 py-2 text-right">200</td>
                           <td class="px-3 py-2 text-right">88</td>
                           <td
-                            class="px-3 py-2 text-right text-xs text-[#454545]"
+                            class="px-3 py-2 text-right text-xs text-text-default"
                           >
                             77
                           </td>
                           <td class="px-3 py-2 text-right">100</td>
                         </tr>
                         <tr
-                          class="border-b border-[#f0f0f0] hover:bg-[#f6fafd]"
+                          class="border-b border-border-default hover:bg-surface-hover"
                         >
                           <td class="px-3 py-2">香蕉船房</td>
                           <td class="px-3 py-2 text-right">—</td>
@@ -776,7 +821,7 @@
                           <td class="px-3 py-2 text-right">—</td>
                           <td class="px-3 py-2 text-right">—</td>
                         </tr>
-                        <tr class="bg-[#f6fafd]">
+                        <tr class="bg-surface-hover">
                           <td class="px-3 py-2 font-medium">總計</td>
                           <td
                             colspan="5"
@@ -790,14 +835,14 @@
                   </div>
                   <!-- 數量分配 row -->
                   <div class="flex items-center gap-3 py-2">
-                    <span class="text-sm text-[#454545]">數量分配</span>
+                    <span class="text-sm text-text-default">數量分配</span>
                     <button
-                      class="px-4 py-1.5 border border-[#d1d1d1] rounded text-sm hover:bg-[#f6fafd]"
+                      class="px-4 py-1.5 border border-border-disabled rounded text-sm hover:bg-surface-hover"
                     >
                       清除
                     </button>
                     <button
-                      class="px-4 py-1.5 bg-[#454545] text-[#e1e1e0] rounded text-sm opacity-60 cursor-not-allowed"
+                      class="px-4 py-1.5 bg-text-default text-text-inverse rounded text-sm opacity-60 cursor-not-allowed"
                       disabled
                     >
                       轉為訂單
@@ -811,7 +856,7 @@
           <!-- ===== MAIN BOOKING AREA ===== -->
           <div class="flex flex-col xl:flex-row gap-4">
             <!-- Left: booking form -->
-            <div class="flex-1 min-w-0 bg-[#f6fafd] rounded-lg p-4 space-y-4">
+            <div class="flex-1 min-w-0 bg-surface-hover rounded-lg p-4 space-y-4">
               <!-- Customer type tabs + view selector -->
               <div class="flex flex-wrap items-center gap-2">
                 <button class="tag-active px-3 py-2 rounded text-sm">
@@ -824,7 +869,7 @@
                   業務
                 </button>
                 <select
-                  class="ml-auto border border-[#d1d1d1] rounded px-2 py-1 text-sm bg-white text-[#454545]"
+                  class="ml-auto border border-border-disabled rounded px-2 py-1 text-sm bg-white text-text-default"
                 >
                   <option>全部</option>
                   <option>A 棟</option>
@@ -836,7 +881,7 @@
               <div class="bg-white rounded-lg overflow-x-auto">
                 <table class="w-full text-sm border-collapse min-w-[700px]">
                   <thead>
-                    <tr class="border-b border-[#e5e5e5] bg-[#f6fafd]">
+                    <tr class="border-b border-border-default bg-surface-hover">
                       <th class="text-left px-3 py-2 font-normal">入住日</th>
                       <th class="text-left px-3 py-2 font-normal">退房日</th>
                       <th class="text-left px-3 py-2 font-normal">專案</th>
@@ -849,32 +894,32 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="border-b border-[#f0f0f0]">
+                    <tr class="border-b border-border-default">
                       <td class="px-3 py-2">2026-02-28</td>
                       <td class="px-3 py-2">
                         2026-03-05
-                        <span class="ml-1 text-[#e05216] text-xs">5 夜</span>
+                        <span class="ml-1 text-brand-active text-xs">5 夜</span>
                       </td>
-                      <td class="px-3 py-2 text-xs text-[#454545]">
+                      <td class="px-3 py-2 text-xs text-text-default">
                         香蕉船不是船
                       </td>
                       <td class="px-3 py-2 text-xs">
                         <div>巴黎世家大套房</div>
-                        <div class="text-[#888]">團體：8</div>
+                        <div class="text-text-secondary">團體：8</div>
                       </td>
                       <td class="px-3 py-2 text-right">5</td>
                       <td class="px-3 py-2 text-right text-xs">
                         <div>19999</div>
-                        <div class="text-[#888]">2345678</div>
+                        <div class="text-text-secondary">2345678</div>
                       </td>
                       <td class="px-3 py-2 text-right text-xs">9911929</td>
                       <td class="px-3 py-2 text-center">
-                        <button class="text-[#2178cf] hover:underline text-xs">
+                        <button class="text-menu hover:underline text-xs">
                           +
                         </button>
                       </td>
                       <td class="px-3 py-2 text-center">
-                        <button class="text-[#888] hover:text-red-500 text-xs">
+                        <button class="text-text-secondary hover:text-status-negative text-xs">
                           ✕
                         </button>
                       </td>
@@ -884,56 +929,56 @@
               </div>
 
               <!-- 需求列表 -->
-              <div class="bg-[#f6fafd] rounded-lg p-3">
+              <div class="bg-surface-hover rounded-lg p-3">
                 <div class="flex items-center justify-between mb-2">
                   <span class="font-semibold text-base">需求列表</span>
-                  <button class="text-sm text-[#2178cf] hover:underline">
+                  <button class="text-sm text-menu hover:underline">
                     新增需求
                   </button>
                 </div>
                 <table class="w-full text-sm border-collapse">
                   <thead>
-                    <tr class="border-b border-[#e5e5e5]">
-                      <th class="text-left py-1 font-normal text-[#454545]">
+                    <tr class="border-b border-border-default">
+                      <th class="text-left py-1 font-normal text-text-default">
                         需求
                       </th>
-                      <th class="text-left py-1 font-normal text-[#454545]">
+                      <th class="text-left py-1 font-normal text-text-default">
                         處理回覆
                       </th>
-                      <th class="text-left py-1 font-normal text-[#454545]">
+                      <th class="text-left py-1 font-normal text-text-default">
                         處理狀態
                       </th>
                     </tr>
                   </thead>
                   <tbody class="text-xs">
-                    <tr class="border-b border-[#f0f0f0]">
+                    <tr class="border-b border-border-default">
                       <td class="py-1.5">需要瓦斯爐</td>
                       <td class="py-1.5">詢問值班主管</td>
                       <td class="py-1.5">
                         <span
-                          class="bg-[#fdebd7] text-[#e05216] px-2 py-0.5 rounded-full"
+                          class="bg-brand-100 text-brand-active px-2 py-0.5 rounded-full"
                           >未處理</span
                         >
                       </td>
                     </tr>
-                    <tr class="border-b border-[#f0f0f0]">
+                    <tr class="border-b border-border-default">
                       <td class="py-1.5">需要二個對外窗</td>
                       <td class="py-1.5">已安排對應房型</td>
                       <td class="py-1.5">
                         <span
-                          class="bg-[#bbf7d0] text-green-700 px-2 py-0.5 rounded-full"
+                          class="bg-accent-light-green text-accent-green px-2 py-0.5 rounded-full"
                           >完成</span
                         >
                       </td>
                     </tr>
                     <tr>
                       <td class="py-1.5">入住要鼓掌歡呼</td>
-                      <td class="py-1.5 text-[#888] max-w-[200px] truncate">
+                      <td class="py-1.5 text-text-secondary max-w-[200px] truncate">
                         必須跟阿拉斯加狂狂狂公園大廂要 8999292933 個人力來支援
                       </td>
                       <td class="py-1.5">
                         <span
-                          class="bg-[#d3ebfd] text-[#2178cf] px-2 py-0.5 rounded-full"
+                          class="bg-focus-background text-menu px-2 py-0.5 rounded-full"
                           >處理中</span
                         >
                       </td>
@@ -945,10 +990,10 @@
 
             <!-- Right: 訂單條件 -->
             <div
-              class="xl:w-[351px] flex-shrink-0 bg-[#f6fafd] rounded-lg p-4 space-y-3"
+              class="xl:w-[351px] flex-shrink-0 bg-surface-hover rounded-lg p-4 space-y-3"
             >
               <div
-                class="text-base font-normal text-[#454545] pb-1 border-b border-[#e5e5e5]"
+                class="text-base font-normal text-text-default pb-1 border-b border-border-default"
               >
                 訂單條件
               </div>
@@ -956,59 +1001,59 @@
               <!-- Fields -->
               <div class="space-y-2 text-sm">
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
-                  <span class="text-[#454545]">折扣</span>
-                  <span class="text-[#888]">無折扣</span>
+                  <span class="text-text-default">折扣</span>
+                  <span class="text-text-secondary">無折扣</span>
                 </div>
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
                   <span>人數</span>
                   <div class="flex items-center gap-2">
                     <span>1</span>
-                    <span class="text-xs text-[#888]">大</span>
-                    <span class="text-xs text-[#888]">小</span>
+                    <span class="text-xs text-text-secondary">大</span>
+                    <span class="text-xs text-text-secondary">小</span>
                   </div>
                 </div>
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
                   <span>加購項目併單</span>
-                  <span class="text-[#888]">併單</span>
+                  <span class="text-text-secondary">併單</span>
                 </div>
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
                   <span>預付百分比</span>
                   <span>100%</span>
                 </div>
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
                   <span>預付房價</span>
                   <span>1444</span>
                 </div>
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
                   <span>紅利折抵</span>
-                  <span class="text-xs text-[#888]">可用：1,933,444</span>
+                  <span class="text-xs text-text-secondary">可用：1,933,444</span>
                 </div>
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
                   <span>訂金移轉</span>
-                  <span class="text-xs text-[#888]">可用：11,044</span>
+                  <span class="text-xs text-text-secondary">可用：11,044</span>
                 </div>
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
                   <span>使用保留房</span>
                   <input type="checkbox" class="rounded" />
                 </div>
                 <div
-                  class="flex items-center justify-between py-1 border-b border-[#f0f0f0]"
+                  class="flex items-center justify-between py-1 border-b border-border-default"
                 >
                   <span>自加庫存</span>
                   <input type="checkbox" class="rounded" />
@@ -1023,7 +1068,7 @@
                   <span>1,444</span>
                 </div>
                 <div
-                  class="flex justify-between items-center pt-2 border-t border-[#e5e5e5]"
+                  class="flex justify-between items-center pt-2 border-t border-border-default"
                 >
                   <span class="text-base font-normal">總房價</span>
                   <span class="text-base font-semibold">$ 1,444</span>
@@ -1033,7 +1078,7 @@
           </div>
 
           <!-- ===== 會員搜尋 ===== -->
-          <section class="bg-[#f6fafd] rounded-lg p-4">
+          <section class="bg-surface-hover rounded-lg p-4">
             <div class="text-base font-normal mb-3">會員搜尋</div>
             <div class="bg-white rounded-lg p-4 space-y-4">
               <!-- Search fields -->
@@ -1041,56 +1086,56 @@
                 <div>
                   <label
                     for="member-search-name"
-                    class="text-xs text-[#888] block mb-1"
+                    class="text-xs text-text-secondary block mb-1"
                     >名稱</label
                   >
                   <input
                     id="member-search-name"
                     type="text"
                     placeholder="placeholder"
-                    class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-sm"
+                    class="w-full border border-border-disabled rounded px-2 py-1.5 text-sm"
                   />
                 </div>
                 <div>
                   <label
                     for="member-search-id"
-                    class="text-xs text-[#888] block mb-1"
+                    class="text-xs text-text-secondary block mb-1"
                     >身份證號</label
                   >
                   <input
                     id="member-search-id"
                     type="text"
-                    class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-sm"
+                    class="w-full border border-border-disabled rounded px-2 py-1.5 text-sm"
                   />
                 </div>
                 <div>
                   <label
                     for="member-search-passport"
-                    class="text-xs text-[#888] block mb-1"
+                    class="text-xs text-text-secondary block mb-1"
                     >護照號碼</label
                   >
                   <input
                     id="member-search-passport"
                     type="text"
-                    class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-sm"
+                    class="w-full border border-border-disabled rounded px-2 py-1.5 text-sm"
                   />
                 </div>
                 <div>
                   <label
                     for="member-search-phone"
-                    class="text-xs text-[#888] block mb-1"
+                    class="text-xs text-text-secondary block mb-1"
                     >行動電話</label
                   >
                   <input
                     id="member-search-phone"
                     type="text"
-                    class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-sm"
+                    class="w-full border border-border-disabled rounded px-2 py-1.5 text-sm"
                   />
                 </div>
               </div>
 
               <!-- Member info accordion -->
-              <div class="bg-[#f6fafd] rounded-lg overflow-hidden">
+              <div class="bg-surface-hover rounded-lg overflow-hidden">
                 <div
                   class="accordion-header flex items-center justify-between px-4 py-2"
                   onclick="toggleAccordion('acc2')"
@@ -1118,22 +1163,22 @@
                       <div class="font-semibold text-base mb-2">資格</div>
                       <div class="space-y-1.5">
                         <div class="flex justify-between">
-                          <span class="text-[#454545]">狀態</span
+                          <span class="text-text-default">狀態</span
                           ><span>正式</span>
                         </div>
                         <div class="flex justify-between">
-                          <span class="text-[#454545]">類別</span
+                          <span class="text-text-default">類別</span
                           ><span>一般 / 實體</span>
                         </div>
                         <div class="flex justify-between">
-                          <span class="text-[#454545]">來源</span
+                          <span class="text-text-default">來源</span
                           ><span>網路訂房</span>
                         </div>
                         <div class="flex justify-between">
-                          <span class="text-[#454545]">積分</span><span>—</span>
+                          <span class="text-text-default">積分</span><span>—</span>
                         </div>
                         <div class="flex justify-between">
-                          <span class="text-[#454545]">會員等級</span
+                          <span class="text-text-default">會員等級</span
                           ><span>宇宙金卡</span>
                         </div>
                       </div>
@@ -1175,12 +1220,12 @@
           </section>
 
           <!-- ===== 訂房資料 ===== -->
-          <section class="bg-[#f6fafd] rounded-lg p-4">
+          <section class="bg-surface-hover rounded-lg p-4">
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <span class="text-base font-normal">訂房資料</span>
                 <svg
-                  class="w-4 h-4 text-[#888]"
+                  class="w-4 h-4 text-text-secondary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1194,22 +1239,22 @@
                 </svg>
               </div>
               <div class="flex gap-1 text-xs">
-                <span class="text-[#888]">入住日：2026-02-28</span>
-                <span class="text-[#888]">｜</span>
-                <span class="text-[#888]">退房日：2026-03-05</span>
-                <span class="text-[#e05216] ml-1">5 夜</span>
+                <span class="text-text-secondary">入住日：2026-02-28</span>
+                <span class="text-text-secondary">｜</span>
+                <span class="text-text-secondary">退房日：2026-03-05</span>
+                <span class="text-brand-active ml-1">5 夜</span>
               </div>
             </div>
 
             <!-- Tabs -->
             <div class="flex gap-1 mb-3">
               <button
-                class="px-4 py-2 bg-white border border-[#d1d1d1] rounded text-sm"
+                class="px-4 py-2 bg-white border border-border-disabled rounded text-sm"
               >
                 訂房
               </button>
               <button
-                class="px-4 py-2 bg-[#d1d1d1] text-[#888] rounded text-sm"
+                class="px-4 py-2 bg-border-disabled text-text-secondary rounded text-sm"
               >
                 入住
               </button>
@@ -1239,47 +1284,47 @@
                   <div>
                     <label
                       for="booking-name"
-                      class="text-xs text-[#888] block mb-1"
+                      class="text-xs text-text-secondary block mb-1"
                       >姓名</label
                     >
                     <input
                       id="booking-name"
                       type="text"
                       value="王大頭"
-                      class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-[#888]"
+                      class="w-full border border-border-disabled rounded px-2 py-1.5 text-text-secondary"
                     />
                   </div>
                   <div>
                     <label
                       for="booking-id"
-                      class="text-xs text-[#888] block mb-1"
+                      class="text-xs text-text-secondary block mb-1"
                       >身份證 / 護照</label
                     >
                     <input
                       id="booking-id"
                       type="text"
                       value="X111333555"
-                      class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-[#888]"
+                      class="w-full border border-border-disabled rounded px-2 py-1.5 text-text-secondary"
                     />
                   </div>
                   <div>
                     <label
                       for="booking-birthday"
-                      class="text-xs text-[#888] block mb-1"
+                      class="text-xs text-text-secondary block mb-1"
                       >生日</label
                     >
                     <input
                       id="booking-birthday"
                       type="text"
                       value="2026-02-27"
-                      class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-[#888]"
+                      class="w-full border border-border-disabled rounded px-2 py-1.5 text-text-secondary"
                     />
                   </div>
                 </div>
                 <!-- Col 2 -->
                 <div class="space-y-2">
                   <div>
-                    <label class="text-xs text-[#888] block mb-1">國籍</label>
+                    <label class="text-xs text-text-secondary block mb-1">國籍</label>
                     <div class="flex gap-2">
                       <button class="tag-active px-3 py-1.5 rounded text-sm">
                         臺灣
@@ -1292,7 +1337,7 @@
                   <div>
                     <label
                       for="booking-address-city"
-                      class="text-xs text-[#888] block mb-1"
+                      class="text-xs text-text-secondary block mb-1"
                       >地址</label
                     >
                     <div class="flex gap-1">
@@ -1302,7 +1347,7 @@
                         placeholder="縣/市"
                         value="台中"
                         aria-label="縣/市"
-                        class="w-1/3 border border-[#d1d1d1] rounded px-2 py-1.5 text-xs text-[#888]"
+                        class="w-1/3 border border-border-disabled rounded px-2 py-1.5 text-xs text-text-secondary"
                       />
                       <input
                         id="booking-address-district"
@@ -1310,7 +1355,7 @@
                         placeholder="行政區"
                         value="北屯區"
                         aria-label="行政區"
-                        class="w-1/3 border border-[#d1d1d1] rounded px-2 py-1.5 text-xs text-[#888]"
+                        class="w-1/3 border border-border-disabled rounded px-2 py-1.5 text-xs text-text-secondary"
                       />
                       <input
                         id="booking-address-zip"
@@ -1318,7 +1363,7 @@
                         placeholder="406"
                         value="406"
                         aria-label="郵遞區號"
-                        class="w-1/3 border border-[#d1d1d1] rounded px-2 py-1.5 text-xs text-[#888]"
+                        class="w-1/3 border border-border-disabled rounded px-2 py-1.5 text-xs text-text-secondary"
                       />
                     </div>
                     <input
@@ -1327,11 +1372,11 @@
                       placeholder="街道"
                       value="0988777111"
                       aria-label="街道"
-                      class="w-full mt-1 border border-[#d1d1d1] rounded px-2 py-1.5 text-xs text-[#888]"
+                      class="w-full mt-1 border border-border-disabled rounded px-2 py-1.5 text-xs text-text-secondary"
                     />
                   </div>
                   <div>
-                    <label class="text-xs text-[#888] block mb-1">性別</label>
+                    <label class="text-xs text-text-secondary block mb-1">性別</label>
                     <div class="flex gap-2">
                       <button class="tag-active px-3 py-1.5 rounded text-sm">
                         男
@@ -1347,51 +1392,51 @@
                   <div>
                     <label
                       for="booking-email"
-                      class="text-xs text-[#888] block mb-1"
+                      class="text-xs text-text-secondary block mb-1"
                       >Email</label
                     >
                     <input
                       id="booking-email"
                       type="email"
                       value="xyz@hotmail.com.tw"
-                      class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-sm text-[#888]"
+                      class="w-full border border-border-disabled rounded px-2 py-1.5 text-sm text-text-secondary"
                     />
                   </div>
                   <div>
                     <label
                       for="booking-tel"
-                      class="text-xs text-[#888] block mb-1"
+                      class="text-xs text-text-secondary block mb-1"
                       >市話</label
                     >
                     <input
                       id="booking-tel"
                       type="text"
                       value="02-33331111"
-                      class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-sm text-[#888]"
+                      class="w-full border border-border-disabled rounded px-2 py-1.5 text-sm text-text-secondary"
                     />
                   </div>
                   <div>
                     <label
                       for="booking-phone"
-                      class="text-xs text-[#888] block mb-1"
+                      class="text-xs text-text-secondary block mb-1"
                       >行動電話</label
                     >
                     <input
                       id="booking-phone"
                       type="text"
-                      class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-sm"
+                      class="w-full border border-border-disabled rounded px-2 py-1.5 text-sm"
                     />
                   </div>
                   <div>
                     <label
                       for="booking-member-note"
-                      class="text-xs text-[#888] block mb-1"
+                      class="text-xs text-text-secondary block mb-1"
                       >會員備註</label
                     >
                     <textarea
                       id="booking-member-note"
                       rows="2"
-                      class="w-full border border-[#d1d1d1] rounded px-2 py-1.5 text-sm resize-none"
+                      class="w-full border border-border-disabled rounded px-2 py-1.5 text-sm resize-none"
                     ></textarea>
                   </div>
                 </div>
@@ -1402,7 +1447,7 @@
           <!-- ===== 產生訂單 button ===== -->
           <div class="flex justify-end">
             <button
-              class="px-6 py-2.5 bg-[#454545] text-[#e1e1e0] rounded text-base opacity-60 cursor-not-allowed"
+              class="px-6 py-2.5 bg-text-default text-text-inverse rounded text-base opacity-60 cursor-not-allowed"
               disabled
             >
               產生訂單
@@ -1410,17 +1455,17 @@
           </div>
 
           <!-- ===== ACCORDION: 正式單與候補單 (collapsed) ===== -->
-          <section class="bg-[#f6fafd] rounded-lg overflow-hidden">
+          <section class="bg-surface-hover rounded-lg overflow-hidden">
             <div
               class="accordion-header flex items-center justify-between px-5 py-2"
               onclick="toggleAccordion('acc3')"
             >
-              <span class="text-base font-normal text-[#454545]"
+              <span class="text-base font-normal text-text-default"
                 >正式單與候補單</span
               >
               <svg
                 id="acc3-icon"
-                class="w-5 h-5 text-[#454545] transition-transform rotate-180"
+                class="w-5 h-5 text-text-default transition-transform rotate-180"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1433,8 +1478,8 @@
                 />
               </svg>
             </div>
-            <div id="acc3" class="hidden border-t border-[#e5e5e5] p-4">
-              <div class="text-sm text-[#454545] space-y-2">
+            <div id="acc3" class="hidden border-t border-border-default p-4">
+              <div class="text-sm text-text-default space-y-2">
                 <div class="flex gap-3">
                   <span>訂單類型</span>
                   <button class="tag-inactive px-2 py-0.5 rounded text-xs">
@@ -1447,7 +1492,7 @@
                     候補單
                   </button>
                 </div>
-                <div class="text-base text-[#454545]">未設定</div>
+                <div class="text-base text-text-default">未設定</div>
               </div>
             </div>
           </section>
@@ -1457,14 +1502,14 @@
       <!-- Float AI button -->
       <div class="fixed bottom-6 right-6 flex flex-col items-center gap-1 z-20">
         <span
-          class="text-xs text-[#454545] bg-white shadow rounded-full px-2 py-0.5"
+          class="text-xs text-text-default bg-white shadow rounded-full px-2 py-0.5"
           >客服</span
         >
         <button
-          class="w-12 h-12 bg-[#f6fafd] rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
+          class="w-12 h-12 bg-surface-hover rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow"
         >
           <svg
-            class="w-6 h-6 text-[#2178cf]"
+            class="w-6 h-6 text-menu"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
