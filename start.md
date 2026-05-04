@@ -93,6 +93,7 @@ tokens → icons → components → sections → layout → 實作
 所有設計權威來源,優先順序由上到下:
 1. **specs/assets/tokens.md** — Design tokens (色彩/間距/圓角/字體)
    - 單一檔案,所有設計變數的唯一權威
+   - 顏色必須來自 Figma Variables；若 `specs/assets/figma-variables.json` 有新匯出內容，需如實轉換進 tokens.md 後才能在 HTML/CSS/JS 使用
 2. **specs/icons.md** + **preview/assets/icons/** — Icon 系統
    - icons.md 是 icon 語意對應表
    - 實體 SVG 放在 preview/assets/icons/
@@ -162,6 +163,8 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 絕對不要做的事:
 - ❌ 在 components / sections / layout 實作中寫死 hex 值
   → 一律用 tokens.md 定義的 token 名稱
+- ❌ 套用非 Figma Variables 來源的顏色
+  → Figma 沒有定義的顏色先停下來問使用者，不可用近似色或 Tailwind 預設色代替
 - ❌ 在 Figma 未定義的狀態下自己畫 hover / disabled / error
   → 標記「Figma 未定義」,問我要不要補
 - ❌ 產出內容時省略重複 (例如用 "其他卡片同上" 帶過)
@@ -218,5 +221,4 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 7. [ ] 等我確認 OK,才開始實際工作
 
 **不要跳過任何一步**。
-
 

@@ -14,6 +14,54 @@
 
 ---
 
+## Session 22 交接（2026-05-04）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者要求，將「顏色只能來自 Figma Variables」寫入規範：
+  - `specs/assets/tokens.md` 新增 Token 使用規則，要求 HTML / CSS / JS 顏色必須先對應本檔 token。
+  - `start.md` 新增禁區：不可套用非 Figma Variables 來源的顏色。
+- 以 `specs/assets/figma-variables.json` 為來源校正 `specs/assets/tokens.md`：
+  - `Color/Brand/Brand-950` 從 `#401406` 修正為 Figma 匯出的 `#40140A`。
+  - 同步日期更新為 `2026-05-04`。
+- `preview/landing.html` 補齊 `:root --color-*` 與 Tailwind CDN `theme.extend.colors` semantic aliases：
+  - text-muted / text-subtitle / text-emphasis / text-inverse
+  - surface-action / surface-brand / surface-brand-hover
+  - border-focus / border-plugin / border-plugin-invalid
+  - radio-hover / brand-500 / chart-green / chart-purple-red / tab-yellow
+- 將 `preview/landing.html` 內約 930 個 Tailwind arbitrary hex class 轉成 semantic class；目前只剩 1 個未轉：
+  - `text-[#e91e63]`（不在 Figma Variables，需使用者決定）
+- Chart.js 顏色改為透過 `getComputedStyle(document.documentElement)` 讀取 `:root --color-*`，避免 JS 直接寫 Figma hex。
+- 移除部分 Tailwind default gray 實作色：
+  - calendar dropdown border / hover / header / disabled 文字改用 Figma token 對應的 CSS variable。
+- `git diff --check` 通過。
+
+**進行中**:
+- `preview/landing.html` 的顏色 token 化正在收斂；大多數 class 已改為 semantic token，但仍有少數非 Figma 來源色需要決策。
+
+**下一步應做**:
+- 請使用者決定以下非 Figma Variables 顏色：
+  - `#e91e63`：庫存表「中秋連假」文字色，目前是唯一剩餘 arbitrary hex class。
+  - `#e376f9` / `#ff7878`：POS 入口外框 gradient，出現 2 次 inline style。
+  - `#ffb624` / `#3f930b`：客服 floating button 外框 gradient。
+  - `#d9d9d9`：scrollbar thumb；目前 `tokens.md` 標為 Color/Scrollbar/Default（非 Figma variable，歷史決策是 HTML 自動生成不需引用），但與新規則「不可用非 Figma 色」衝突，需重新決定是否進 Figma Variables。
+- 決策後再把剩餘色補進 Figma Variables / tokens.md，或改用現有 Figma token。
+- 需要做 browser visual smoke test，重點檢查：
+  - aside / mobile menu 顏色是否維持一致
+  - dashboard cards / modals / room-booking template
+  - Chart.js 圖表色是否正確讀到 CSS variables
+
+**重要決定**:
+- 這輪不再將 `specs/assets/figma-variables.json` 視為「可直接引用的 runtime 檔案」；它是匯出輸入，必須如實轉換到 `specs/assets/tokens.md` 和 `landing.html` 的 `:root` / Tailwind config。
+- 可 1:1 對應 Figma Variables 的顏色已直接替換；無 Figma 來源者不使用近似色硬改。
+
+**未解問題**:
+- 是否要把 `#e91e63`、兩組 gradient、`#d9d9d9` 加入 Figma Variables？
+- `bg-white` / `text-white` 目前仍使用 Tailwind built-in white；數值等於 `Color/Neutral/0`，但若要求「所有顏色都必須是 semantic class」，後續可再統一改成 `bg-white` alias 以外的 `bg-surface-white` / `text-white-token` 命名。
+
+---
+
 ## Session 21 交接（2026-05-04）
 
 ### 本次進度交接

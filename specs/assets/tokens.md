@@ -1,8 +1,19 @@
 # Design Tokens
 
 > 來源：Figma Variables（Collection: **Semantic**, Mode: **Mode 1**）  
+> 本地匯出參考：`specs/assets/figma-variables.json`（不進版控，內容需如實轉換到本檔）
 > Local Styles 全部為空，所有 token 皆來自 Variables。  
-> 上次同步：2026-04-21
+> 上次同步：2026-05-04
+
+## Token 使用規則
+
+- 專案不允許套用非 Figma Variables 來源的顏色。
+- HTML / CSS / JavaScript 中的顏色必須先在本檔有對應 token，再透過以下方式使用：
+  - `:root --color-*` CSS variable
+  - Tailwind CDN `theme.extend.colors` 的 semantic class，例如 `text-text-default`、`bg-surface-hover`
+  - JavaScript 讀取 `getComputedStyle(document.documentElement).getPropertyValue("--color-*")`
+- 如果 Figma 視覺稿出現本檔沒有的顏色，先更新 Figma Variables 或請使用者確認 token 名稱；不得直接寫 hex。
+- 若舊實作仍有 `text-[#...]`、`bg-[#...]`、`border-[#...]`，只能在能 1:1 對應本檔 token 時替換；無對應者需列入未解問題。
 
 ---
 
@@ -45,7 +56,7 @@
 | Color/Brand/Brand-700 | `#BA3D14` | `orange-700` |
 | Color/Brand/Brand-800 | `#943218` | `orange-800` |
 | Color/Brand/Brand-900 | `#772B17` | `orange-900` |
-| Color/Brand/Brand-950 | `#401406` | `orange-950` |
+| Color/Brand/Brand-950 | `#40140A` | `orange-950` |
 
 ---
 
