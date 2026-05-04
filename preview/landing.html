@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Swift — 今日總覽</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Semantic colors mapped to CSS vars — see :root in <style> below.
+      // tokens.md is the source of truth.
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "text-default": "var(--color-text-default)",
+              "text-secondary": "var(--color-text-secondary)",
+              "text-placeholder": "var(--color-text-placeholder)",
+              "surface-default": "var(--color-surface-default)",
+              "surface-hover": "var(--color-surface-hover)",
+              "border-default": "var(--color-border-default)",
+              "border-disabled": "var(--color-border-disabled)",
+              menu: "var(--color-menu)",
+              radio: "var(--color-radio)",
+              "subitem-selected": "var(--color-subitem-selected)",
+              "brand-400": "var(--color-brand-400)",
+              "brand-active": "var(--color-brand-active)",
+              "status-positive": "var(--color-status-positive)",
+              "status-negative": "var(--color-status-negative)",
+              "chart-blue": "var(--color-chart-blue)",
+              "accent-pink": "var(--color-accent-pink)",
+              "accent-light-green": "var(--color-accent-light-green)",
+              "accent-green": "var(--color-accent-green)",
+            },
+          },
+        },
+      };
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/isoWeek.js"></script>
@@ -13,12 +43,39 @@
       rel="stylesheet"
     />
     <style>
+      /* ── Design tokens (source: specs/assets/tokens.md) ──────────────── */
+      :root {
+        /* Neutral / surface */
+        --color-white: #ffffff;
+        --color-surface-default: #f6f6f6;        /* Neutral/50 */
+        --color-surface-hover: #f6fafd;          /* Neutral/75 · Modal/Hover */
+        --color-border-default: #e1e1e0;         /* Neutral/100 */
+        --color-border-disabled: #d1d1d1;        /* Neutral/200 */
+        --color-text-placeholder: #b0b0b0;       /* Neutral/300 */
+        --color-text-secondary: #888888;         /* Neutral/400 */
+        --color-text-default: #454545;           /* Neutral/800 — main body */
+        /* Brand & action */
+        --color-menu: #2178cf;                   /* MenuItem/Default */
+        --color-radio: #005fcc;                  /* Radio/Default */
+        --color-subitem-selected: #f7d275;       /* SubItem/Selected (yellow chip) */
+        --color-brand-400: #f28b45;              /* Brand-400 */
+        --color-brand-active: #e05216;           /* Brand-600 */
+        /* Status */
+        --color-status-positive: #2aca18;
+        --color-status-negative: #e12129;
+        /* Chart / accent */
+        --color-chart-blue: #86b7fe;
+        --color-accent-pink: #ffc0cb;
+        --color-accent-light-green: #bbf7d0;
+        --color-accent-green: #34c759;
+      }
+
       * {
         font-family: "Noto Sans TC", sans-serif;
         box-sizing: border-box;
       }
       body {
-        background: #f6f6f6;
+        background: var(--color-surface-default);
         min-width: 375px;
       }
 
@@ -28,7 +85,7 @@
       input:focus-visible,
       select:focus-visible,
       textarea:focus-visible {
-        outline: 2px solid #2178cf;
+        outline: 2px solid var(--color-menu);
         outline-offset: 2px;
       }
 
@@ -59,7 +116,7 @@
 
       /* Nav sub-item selected state — same bg as hover */
       .sub-item-selected {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
       /* Page tab chip */
       /* Page tab chip — inactive (default) and active states match Figma spec */
@@ -68,22 +125,22 @@
         align-items: center;
         gap: 6px;
         padding: 6px 12px;
-        background: #ffffff;
-        border: 1px solid #d1d1d1;
+        background: var(--color-white);
+        border: 1px solid var(--color-border-disabled);
         border-radius: 6px;
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
         white-space: nowrap;
         cursor: pointer;
         user-select: none;
         flex-shrink: 0;
       }
       .page-tab:hover {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
       .page-tab.active {
-        background: #f6fafd;
-        border-color: #86b7fe;
+        background: var(--color-surface-hover);
+        border-color: var(--color-chart-blue);
       }
       .page-tab-close {
         display: flex;
@@ -103,11 +160,11 @@
       }
       /* Menu category: parent trigger is neutral, children items are blue */
       .menu-category .accordion-trigger {
-        color: #454545;
+        color: var(--color-text-default);
       }
       .menu-category [id^="desk-acc-"] > div,
       .menu-category [id^="mob-acc-"] > div {
-        color: #2178cf;
+        color: var(--color-menu);
       }
 
       /* Mobile horizontal scroll */
@@ -134,8 +191,8 @@
 
       /* Section card */
       .section-card {
-        background: #fff;
-        border: 1px solid #d1d1d1;
+        background: var(--color-white);
+        border: 1px solid var(--color-border-disabled);
         border-radius: 6px;
         padding: 12px;
       }
@@ -146,13 +203,13 @@
         appearance: none;
         display: block;
         width: 100%;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         border-radius: 6px;
         padding: 6px 32px 6px 12px;
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
         cursor: pointer;
-        background-color: #fff;
+        background-color: var(--color-white);
         background-image: url("./assets/icons/down.svg");
         background-repeat: no-repeat;
         background-position: right 8px center;
@@ -161,7 +218,7 @@
       }
       .sidebar-select:focus {
         outline: none;
-        border-color: #2178cf;
+        border-color: var(--color-menu);
       }
 
       /* Desktop sidebar collapsed state — only hides at md+ so mobile hidden stays intact */
@@ -201,7 +258,7 @@
         width: min(320px, 80%);
         max-width: 320px;
         height: 100vh;
-        background: #fff;
+        background: var(--color-white);
         transform: translateX(-100%);
         transition: transform 0.25s ease;
         z-index: 50;
@@ -219,14 +276,14 @@
         justify-content: space-between;
         gap: 12px;
         padding: 16px;
-        border-bottom: 1px solid #e1e1e0;
+        border-bottom: 1px solid var(--color-border-default);
       }
       .mobile-sidebar-close {
         width: 32px;
         height: 32px;
         border: none;
         background: transparent;
-        color: #454545;
+        color: var(--color-text-default);
         font-size: 18px;
         line-height: 1;
         cursor: pointer;
@@ -254,8 +311,8 @@
         pointer-events: auto;
       }
       .modal-box {
-        background: #fff;
-        border: 1px solid #b0b0b0;
+        background: var(--color-white);
+        border: 1px solid var(--color-text-placeholder);
         border-radius: 8px;
         width: 320px;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
@@ -313,27 +370,27 @@
       .mode-toggle {
         display: inline-flex;
         align-self: flex-start;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         border-radius: 28px;
         overflow: hidden;
       }
       .mode-btn {
         height: 42px;
         padding: 0 24px;
-        background: #ffffff;
+        background: var(--color-white);
         border: none;
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
         cursor: pointer;
         text-align: center;
         white-space: nowrap;
       }
       .mode-btn.active {
-        background: #005fcc;
-        color: #ffffff;
+        background: var(--color-radio);
+        color: var(--color-white);
       }
       .mode-btn:not(.active):hover {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
 
       /* ── Payment method chip (正式單 panel) ───────────── */
@@ -344,25 +401,25 @@
         padding: 10px 16px;
         border-radius: 28px;
         background: transparent;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
         cursor: pointer;
         white-space: nowrap;
         flex-shrink: 0;
       }
       .rb-pay-chip:hover {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
       .rb-pay-chip.rb-pay-active {
-        background: #f7d275;
-        border-color: #f7d275;
-        color: #454545;
+        background: var(--color-subitem-selected);
+        border-color: var(--color-subitem-selected);
+        color: var(--color-text-default);
       }
 
       /* ── Nation radio (selected = 藍框) ───────────────── */
       .nation-radio {
-        accent-color: #2178cf;
+        accent-color: var(--color-menu);
       }
 
       /* ── Order data lock toggle ──────────────────────── */
@@ -383,8 +440,8 @@
       .order-panel.is-locked input:not([type="radio"]):not([type="checkbox"]),
       .order-panel.is-locked select,
       .order-panel.is-locked textarea {
-        background: #e1e1e0;
-        color: #888888;
+        background: var(--color-border-default);
+        color: var(--color-text-secondary);
         pointer-events: none;
       }
       .order-panel.is-locked input[type="radio"],
@@ -396,11 +453,11 @@
         cursor: default;
       }
       .order-panel.is-locked .rb-cal-cell {
-        background: #d1d1d1;
+        background: var(--color-border-disabled);
         pointer-events: none;
       }
       .order-panel.is-locked .rb-cal-cell .rb-cal-date {
-        color: #888888;
+        color: var(--color-text-secondary);
       }
 
       /* 訂房資料 panels：grid cell + flex children 都允許縮到 0，input 才能跟著螢幕寬度縮 */
@@ -418,9 +475,9 @@
         display: block;
         padding: 4px 0;
         border: 0;
-        border-bottom: 1px solid #d1d1d1;
+        border-bottom: 1px solid var(--color-border-disabled);
         background: transparent;
-        color: #454545;
+        color: var(--color-text-default);
         font-size: 16px;
         line-height: 22px;
       }
@@ -430,17 +487,17 @@
       .order-tab {
         height: 42px;
         padding: 10px 20px;
-        background: #d1d1d1;
-        border: 1px solid #e1e1e0;
+        background: var(--color-border-disabled);
+        border: 1px solid var(--color-border-default);
         border-bottom: none;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
         cursor: pointer;
       }
       .order-tab.order-tab-active {
-        background: #ffffff;
+        background: var(--color-white);
         position: relative;
         z-index: 1;
         margin-bottom: -1px;
@@ -450,7 +507,7 @@
       /* 視覺參考 mode-toggle（pill r:28），尺寸保持 Figma Frame 97 (176×42)：兩顆 88×42 */
       .customer-toggle {
         display: inline-flex;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         border-radius: 28px;
         overflow: hidden;
       }
@@ -458,20 +515,20 @@
         min-width: 88px;
         height: 42px;
         padding: 10px 12px;
-        background: #ffffff;
+        background: var(--color-white);
         border: none;
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
         cursor: pointer;
         text-align: center;
         white-space: nowrap;
       }
       .customer-btn.active {
-        background: #005fcc;
-        color: #ffffff;
+        background: var(--color-radio);
+        color: var(--color-white);
       }
       .customer-btn:not(.active):hover {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
 
       /* ── Merged input group (Bootstrap-style) ─────────── */
@@ -493,9 +550,9 @@
       }
       .input-group > * {
         height: 36px;
-        border: 1px solid #d1d1d1;
-        background: #ffffff;
-        color: #454545;
+        border: 1px solid var(--color-border-disabled);
+        background: var(--color-white);
+        color: var(--color-text-default);
         font-size: 16px;
         padding: 0 12px;
         margin: 0;
@@ -528,7 +585,7 @@
         display: none;
         position: fixed;
         z-index: 1000;
-        background: #ffffff;
+        background: var(--color-white);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         border: 1px solid #e5e7eb;
         border-radius: 0.5rem;
@@ -541,15 +598,15 @@
         background-color: #f3f4f6;
       }
       .calendar-day.selected {
-        background-color: #005fcc !important;
-        color: #ffffff !important;
+        background-color: var(--color-radio) !important;
+        color: var(--color-white) !important;
       }
       .calendar-day.today {
-        border: 1.5px solid #005fcc;
+        border: 1.5px solid var(--color-radio);
         font-weight: bold;
       }
       .title-highlight {
-        background-color: #ffc0cb !important;
+        background-color: var(--color-accent-pink) !important;
         border-radius: 4px;
       }
       .calendar-day:disabled {
@@ -570,7 +627,7 @@
         background-color: #f3f4f6;
       }
       .calendar-header-select:focus {
-        outline: 2px solid #005fcc;
+        outline: 2px solid var(--color-radio);
       }
 
       /* ── Stepper input (table 間數欄) ──────────────────── */
@@ -580,9 +637,9 @@
         align-items: center;
         width: 145px;
         height: 36px;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         border-radius: 6px;
-        background: #ffffff;
+        background: var(--color-white);
         overflow: hidden;
       }
       .stepper-btn {
@@ -592,11 +649,11 @@
         border: none;
         cursor: pointer;
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
         line-height: 1;
       }
       .stepper-btn:hover {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
       .stepper input {
         flex: 1;
@@ -606,7 +663,7 @@
         background: transparent;
         text-align: center;
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
         outline: none;
         padding: 0;
       }
@@ -621,19 +678,19 @@
         border-radius: 28px;
         font-size: 16px;
         cursor: pointer;
-        color: #454545;
+        color: var(--color-text-default);
         background: transparent;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         white-space: nowrap;
         flex-shrink: 0;
       }
       .rb-filter-tab:hover {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
       .rb-filter-tab.rb-active {
-        background: #f7d275;
-        border-color: #f7d275;
-        color: #454545;
+        background: var(--color-subitem-selected);
+        border-color: var(--color-subitem-selected);
+        color: var(--color-text-default);
       }
 
       /* ── Inventory metric toggle (訂/餘/保) ───────────── */
@@ -643,8 +700,8 @@
         height: 36px;
         border-radius: 4px;
         border: 1px solid var(--c);
-        background: #ffffff;
-        color: #454545;
+        background: var(--color-white);
+        color: var(--color-text-default);
         font-size: 16px;
         line-height: 1;
         display: inline-flex;
@@ -667,8 +724,8 @@
       .rb-cal-wrap {
         width: 351px;
         max-width: 100%;
-        background: #ffffff;
-        border: 1px solid #d1d1d1;
+        background: var(--color-white);
+        border: 1px solid var(--color-border-disabled);
         border-radius: 12px;
         padding: 12px;
       }
@@ -688,7 +745,7 @@
       }
       .rb-selected-count {
         font-size: 16px;
-        color: #454545;
+        color: var(--color-text-default);
       }
       .rb-cal-right-controls {
         display: flex;
@@ -697,30 +754,30 @@
       }
       .rb-today-btn {
         font-size: 16px;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         border-radius: 6px;
         width: 56px;
         height: 34px;
-        background: #ffffff;
-        color: #454545;
+        background: var(--color-white);
+        color: var(--color-text-default);
         cursor: pointer;
       }
       .rb-today-btn:hover {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
       .rb-interval-select {
         font-size: 14px;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         border-radius: 6px;
         width: 79px;
         height: 36px;
-        background: #ffffff;
-        color: #454545;
+        background: var(--color-white);
+        color: var(--color-text-default);
         cursor: pointer;
         padding: 0 6px;
       }
       .rb-interval-select:disabled {
-        background: #e1e1e0;
+        background: var(--color-border-default);
         opacity: 1;
         cursor: not-allowed;
       }
@@ -730,18 +787,18 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid #b0b0b0;
+        border: 1px solid var(--color-text-placeholder);
         border-radius: 4px;
-        background: #ffffff;
+        background: var(--color-white);
         cursor: pointer;
       }
       .rb-nav-btn:hover {
-        background: #f6fafd;
+        background: var(--color-surface-hover);
       }
       .rb-cal-title {
         font-size: 20px;
         font-weight: 600;
-        color: #454545;
+        color: var(--color-text-default);
         min-width: 125px;
         text-align: center;
       }
@@ -756,99 +813,99 @@
       .rb-cal-wrap .day {
         height: 55px;
         border-radius: 12px;
-        border: 1px solid #d1d1d1;
+        border: 1px solid var(--color-border-disabled);
         padding: 6px 4px;
         text-align: center;
-        background: #ffffff;
+        background: var(--color-white);
         cursor: pointer;
         user-select: none;
         -webkit-user-select: none;
         box-sizing: border-box;
       }
       .rb-cal-wrap .day:hover:not(.disabled) {
-        border-color: #b0b0b0;
-        background: #f6fafd;
+        border-color: var(--color-text-placeholder);
+        background: var(--color-surface-hover);
       }
       .rb-cal-wrap .day-wday {
         font-size: 12px;
-        color: #454545;
+        color: var(--color-text-default);
         margin-bottom: 2px;
       }
       .rb-cal-wrap .day-num {
         font-size: 16px;
         font-weight: 600;
-        color: #454545;
+        color: var(--color-text-default);
         line-height: 1.4;
       }
       /* outside month (type=future): no fill, #e1e1e0 border, #888888 text */
       .rb-cal-wrap .day.outside {
-        border-color: #e1e1e0;
+        border-color: var(--color-border-default);
       }
       .rb-cal-wrap .day.outside .day-wday,
       .rb-cal-wrap .day.outside .day-num {
-        color: #888888;
+        color: var(--color-text-secondary);
       }
       /* past/disabled (type=diasbled): #e1e1e0 fill+border, #888888 text */
       .rb-cal-wrap .day.disabled {
-        background: #e1e1e0 !important;
-        border-color: #e1e1e0 !important;
+        background: var(--color-border-default) !important;
+        border-color: var(--color-border-default) !important;
         cursor: not-allowed;
         pointer-events: none;
       }
       .rb-cal-wrap .day.disabled .day-wday,
       .rb-cal-wrap .day.disabled .day-num {
-        color: #888888 !important;
+        color: var(--color-text-secondary) !important;
       }
       /* today (type=today): #ffc0cb fill, white text */
       .rb-cal-wrap .day.today {
-        background: #ffc0cb !important;
-        border-color: #ffc0cb !important;
+        background: var(--color-accent-pink) !important;
+        border-color: var(--color-accent-pink) !important;
       }
       .rb-cal-wrap .day.today .day-wday,
       .rb-cal-wrap .day.today .day-num {
-        color: #ffffff !important;
+        color: var(--color-white) !important;
       }
       /* sel-start/end (type=focus): #86b7fe fill, #ffffff border, white text */
       .rb-cal-wrap .day.sel-start,
       .rb-cal-wrap .day.sel-end {
-        background: #86b7fe !important;
-        border-color: #ffffff !important;
+        background: var(--color-chart-blue) !important;
+        border-color: var(--color-white) !important;
       }
       .rb-cal-wrap .day.sel-start .day-wday,
       .rb-cal-wrap .day.sel-start .day-num,
       .rb-cal-wrap .day.sel-end .day-wday,
       .rb-cal-wrap .day.sel-end .day-num {
-        color: #ffffff !important;
+        color: var(--color-white) !important;
       }
       /* sel-mid (type=selected): #bbf7d0 fill, #454545 text */
       .rb-cal-wrap .day.sel-mid {
-        background: #bbf7d0 !important;
-        border-color: #bbf7d0 !important;
+        background: var(--color-accent-light-green) !important;
+        border-color: var(--color-accent-light-green) !important;
       }
       .rb-cal-wrap .day.sel-mid .day-wday,
       .rb-cal-wrap .day.sel-mid .day-num {
-        color: #454545 !important;
+        color: var(--color-text-default) !important;
       }
       /* today + sel-mid: green overrides pink */
       .rb-cal-wrap .day.today.sel-mid {
-        background: #bbf7d0 !important;
-        border-color: #bbf7d0 !important;
+        background: var(--color-accent-light-green) !important;
+        border-color: var(--color-accent-light-green) !important;
       }
       .rb-cal-wrap .day.today.sel-mid .day-wday,
       .rb-cal-wrap .day.today.sel-mid .day-num {
-        color: #454545 !important;
+        color: var(--color-text-default) !important;
       }
       /* today + sel-start/end: blue overrides pink */
       .rb-cal-wrap .day.today.sel-start,
       .rb-cal-wrap .day.today.sel-end {
-        background: #86b7fe !important;
-        border-color: #ffffff !important;
+        background: var(--color-chart-blue) !important;
+        border-color: var(--color-white) !important;
       }
       .rb-cal-wrap .day.today.sel-start .day-wday,
       .rb-cal-wrap .day.today.sel-start .day-num,
       .rb-cal-wrap .day.today.sel-end .day-wday,
       .rb-cal-wrap .day.today.sel-end .day-num {
-        color: #ffffff !important;
+        color: var(--color-white) !important;
       }
     </style>
   </head>
@@ -1941,28 +1998,28 @@
                     <div style="height: 240px; position: relative">
                       <canvas id="chartDiverging"></canvas>
                     </div>
-                    <p class="text-center text-xs mt-1" style="color: #888">
+                    <p class="text-center text-xs mt-1" style="color: var(--color-text-secondary)">
                       房間數量
                     </p>
                     <div class="flex justify-center gap-5 mt-2">
                       <div class="flex items-center gap-1">
                         <span
                           class="inline-block w-7 h-3 rounded"
-                          style="background: #e12129"
+                          style="background: var(--color-status-negative)"
                         ></span
                         ><span class="text-xs text-[#888]">已超賣</span>
                       </div>
                       <div class="flex items-center gap-1">
                         <span
                           class="inline-block w-7 h-3 rounded"
-                          style="background: #2aca18"
+                          style="background: var(--color-status-positive)"
                         ></span
                         ><span class="text-xs text-[#888]">已賣出</span>
                       </div>
                       <div class="flex items-center gap-1">
                         <span
                           class="inline-block w-7 h-3 rounded"
-                          style="background: #888888"
+                          style="background: var(--color-text-secondary)"
                         ></span
                         ><span class="text-xs text-[#888]">當日庫存</span>
                       </div>
@@ -1981,7 +2038,7 @@
                       >
                         <span
                           class="inline-block w-7 h-3.5 rounded"
-                          style="background: #005fcc"
+                          style="background: var(--color-radio)"
                         ></span
                         >OTA
                       </div>
@@ -1990,7 +2047,7 @@
                       >
                         <span
                           class="inline-block w-7 h-3.5 rounded"
-                          style="background: #34c759"
+                          style="background: var(--color-accent-green)"
                         ></span
                         >官網
                       </div>
@@ -1999,7 +2056,7 @@
                       >
                         <span
                           class="inline-block w-7 h-3.5 rounded"
-                          style="background: #b0b0b0"
+                          style="background: var(--color-text-placeholder)"
                         ></span
                         >電話/現場
                       </div>
@@ -5101,21 +5158,21 @@
                   <button
                     data-metric="ord"
                     class="inv-metric-btn rb-active"
-                    style="--c: #2aca18"
+                    style="--c: var(--color-status-positive)"
                   >
                     訂
                   </button>
                   <button
                     data-metric="rem"
                     class="inv-metric-btn rb-active"
-                    style="--c: #86b7fe"
+                    style="--c: var(--color-chart-blue)"
                   >
                     餘
                   </button>
                   <button
                     data-metric="rsv"
                     class="inv-metric-btn rb-active"
-                    style="--c: #f28b45"
+                    style="--c: var(--color-brand-400)"
                   >
                     保
                   </button>
@@ -5737,7 +5794,7 @@
                     max="10"
                     value="3"
                     class="rb-range flex-1 max-[1080px]:basis-full"
-                    style="accent-color: #2178cf"
+                    style="accent-color: var(--color-menu)"
                   />
                   <div
                     class="rb-range-val border border-[#e1e1e0] rounded-xl px-3 py-1 text-sm text-[#454545] shrink-0 min-w-[54px] text-center max-[1080px]:ml-auto"

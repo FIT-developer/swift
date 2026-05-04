@@ -14,6 +14,44 @@
 
 ---
 
+## Session 20 交接（2026-05-04）
+
+### 本次完成
+
+#### 顏色 Token 化基礎建設（landing.html）
+| 項目 | 說明 |
+|---|---|
+| `:root` CSS variables | 在 `<style>` 開頭新增 19 個 semantic token（對應 `specs/assets/tokens.md`）：white / surface-default / surface-hover / border-default / border-disabled / text-placeholder / text-secondary / text-default / menu / radio / subitem-selected / brand-400 / brand-active / status-positive / status-negative / chart-blue / accent-pink / accent-light-green / accent-green |
+| Tailwind CDN config | 加 `tailwind.config.theme.extend.colors`，把 19 個 token 對到 `var(--color-*)`，未來可直接用 `text-text-default`、`bg-status-positive` 等 semantic class 而非 arbitrary hex |
+| `<style>` 區塊 hex 全面遷移 | 用 `replace_all` 對 unique CSS rule patterns 做轉換（`color: #454545;` → `color: var(--color-text-default);` 等 17 種 pattern）；最終 143 個 var refs 在 file 裡 |
+| Inline `style="..."` attr 遷移 | 11 個 inline style hex（`style="--c: #2aca18"`、`style="background: #005fcc"` 等）一併轉成 `var(--color-*)` |
+
+剩餘 9 個 bare hex 在 `<style>` 內（保留有理由）：
+- 1 個 scrollbar `#d9d9d9`（tokens.md 標明不需 tokenize）
+- 4 個 chart cell 用的 Tailwind 預設灰（`#e5e7eb`、`#f3f4f6` × 2、`#374151`）— 非 Figma token
+- 1 個純黑 `#000000`
+- 4 個 Figma reference 註解內
+
+剩餘 705 個 Tailwind class string 形式（`text-[#xxx]`、`bg-[#xxx]`、`border-[#xxx]`）— **未來 incremental 遷移目標**，每次動到 component 時順手換成 semantic class（`text-text-default` 等）。
+
+#### 流程修正：tokens.md 強制綁定
+| 行為改變 | 說明 |
+|---|---|
+| 承認違反 start.md | L131（Token 檢查）、L163-164（禁區：實作中寫死 hex）、L169-170（禁區：沒讀 tokens.md 就實作）三條規則從 session 14 之前到 session 19 都違反了；累積 705+ 處 Tailwind class string hex |
+| 新增 memory `feedback_figma_color_must_lookup_token.md` | 規範：讀 Figma 顏色 → 先查 tokens.md → 用 token 名稱（var 或 semantic Tailwind class）寫；hex 不在 tokens.md 必停下來問使用者 |
+| 新增 memory `feedback_color_via_css_var.md` | 規範：寫顏色前先看 `:root --color-*`；新顏色先問使用者命名/值再寫 |
+| MEMORY.md 索引更新 | 兩條 memory 都加入索引；上游那條（讀 Figma 必先對照 token）放在前面 |
+
+### 待觀察 / 後續
+| 項目 | 說明 |
+|---|---|
+| 705 個 Tailwind class string hex | 不一次改，但每次動 component 時就近換掉。建議優先改高頻 `text-[#454545]`（378 處）、`text-[#2178CF]` 等 |
+| 視覺回歸 | 本次大量 `replace_all`，應該是純色值 1:1 替換（CSS var 解析回原 hex），但 commit 後使用者要做一次 visual smoke test 確認沒有顏色跑掉 |
+| `preview/room-booking.html` 未動 | 同樣含大量 hardcoded hex；建議下一個 session 套同一個 `:root` block + Tailwind config 做相同遷移 |
+| 自我驗證 checklist 沒做 | start.md L130-136 要求每完成一個 HTML 跑 Token / Icon / RWD / 狀態 / 文字內容 5 項檢查，**從來沒執行過**。下次接手要把這個變成 component 完成 → 強制執行 |
+
+---
+
 ## Session 19 交接（2026-05-04）
 
 ### 本次完成
