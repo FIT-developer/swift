@@ -149,6 +149,11 @@
 | Color/Accent/pink | `#FFC0CB` | 粉紅點綴 |
 | Color/Accent/light-green | `#BBF7D0` | 淡綠點綴 |
 | Color/Accent/Green | `#34C759` | 綠色標籤/chip（Input component Green variant） |
+| Color/Accent/celebration | `#F44DF4` | 節慶/特殊日期提示；同值來源：Color/Bootstrap/aside/Notification |
+| Color/Accent/linear-pos-left | `#E376F9` | POS 入口外框漸層起點 |
+| Color/Accent/linear-pos-right | `#FF7878` | POS 入口外框漸層終點 |
+| Color/Accent/float-circle-mixed-1 | `#FFB624` | Floating customer service circle 漸層起點 |
+| Color/Accent/float-circle-mixed-2 | `#3F930B` | Floating customer service circle 漸層終點 |
 
 ---
 
@@ -169,16 +174,6 @@
 | Color/Chart/blue | `#86B7FE` | 圖表藍色資料系列（與 Bootstrap/components/focus 同值，語意獨立） |
 | Color/Chart/purpleRed | `#FF0BD6` | 圖表紫紅色資料系列（折線圖） |
 | Color/Chart/green | `#34C759` | 圖表綠色資料系列（與 Accent/Green 同值，語意獨立） |
-
----
-
-### Scrollbar（捲動條）
-
-> 此色值出現於 Figma 視覺稿，但 HTML 捲動條由瀏覽器自動生成，實作時**不需直接引用**。
-
-| 名稱（非 Figma variable） | Hex 值 | 語意用途 |
-|---|---|---|
-| Color/Scrollbar/Default | `#D9D9D9` | 捲動條指示器顏色（Figma 視覺稿用） |
 
 ---
 

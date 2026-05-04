@@ -14,6 +14,52 @@
 
 ---
 
+## Session 23 交接（2026-05-04）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者指定的新版 Figma Variables 命名，同步新增 Accent tokens：
+  - `Color/Accent/celebration = #F44DF4`
+  - `Color/Accent/linear-pos-left = #E376F9`
+  - `Color/Accent/linear-pos-right = #FF7878`
+  - `Color/Accent/float-circle-mixed-1 = #FFB624`
+  - `Color/Accent/float-circle-mixed-2 = #3F930B`
+- `Color/Accent/celebration` 已註明同值來源：`Color/Bootstrap/aside/Notification = #F44DF4`。
+  - 前一輪沒有套用到「中秋連假」的原因：`tokens.md` 已有 Bootstrap token，但 `landing.html` 的 Tailwind semantic aliases 沒有建立可用 class，且該欄位當時使用的是 `#E91E63`，不是 Figma Variables 內的 `#F44DF4`。
+- `preview/landing.html` 已新增對應 `:root --color-*` 與 Tailwind CDN aliases：
+  - `accent-celebration`
+  - `accent-linear-pos-left`
+  - `accent-linear-pos-right`
+  - `accent-float-circle-mixed-1`
+  - `accent-float-circle-mixed-2`
+- 已套用到實作：
+  - 「中秋連假」：`text-[#e91e63]` → `text-accent-celebration`
+  - POS 入口外框 gradient：改用 `var(--color-accent-linear-pos-left/right)`
+  - Floating customer service circle gradient：改用 `var(--color-accent-float-circle-mixed-1/2)`
+- 依使用者決策，scrollbar thumb 保持 HTML/CSS 特規，不給予 token 定義；已從 `tokens.md` 移除 `Color/Scrollbar/Default` 區塊。
+- 本地 ignored `specs/assets/figma-variables.json` 也已補上上述 Accent keys，方便本機檢索對照；此檔仍不進版控。
+
+**進行中**:
+- `preview/landing.html` 顏色已基本收斂到 Figma Variables / tokens；剩餘 bare hex 主要是 `:root` token 定義、註解、以及 scrollbar 特規。
+
+**下一步應做**:
+- 做 browser visual smoke test：
+  - 「中秋連假」文字是否使用 `#F44DF4`
+  - POS 入口外框 gradient 是否維持 `#E376F9 → #FF7878`
+  - Floating customer service circle 是否維持 `#FFB624 → #3F930B`
+  - scrollbar thumb 仍維持特規 `#D9D9D9`
+- 若要求連 `bg-white` / `text-white` 也不得使用 Tailwind built-in，後續再新增 semantic aliases 並批次替換。
+
+**重要決定**:
+- Bootstrap namespace 的 `Color/Bootstrap/aside/Notification` 仍保留於 tokens.md，但 UI 實作用 `Color/Accent/celebration` 這個更貼近用途的 semantic alias。
+- Scrollbar thumb 不屬於設計 token 管理範圍，即使有實作色，也不新增 `Color/Scrollbar/*`。
+
+**未解問題**:
+- 尚未做瀏覽器視覺驗證。
+
+---
+
 ## Session 22 交接（2026-05-04）
 
 ### 本次進度交接

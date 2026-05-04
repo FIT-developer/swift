@@ -45,6 +45,13 @@
               "accent-pink": "var(--color-accent-pink)",
               "accent-light-green": "var(--color-accent-light-green)",
               "accent-green": "var(--color-accent-green)",
+              "accent-celebration": "var(--color-accent-celebration)",
+              "accent-linear-pos-left": "var(--color-accent-linear-pos-left)",
+              "accent-linear-pos-right": "var(--color-accent-linear-pos-right)",
+              "accent-float-circle-mixed-1":
+                "var(--color-accent-float-circle-mixed-1)",
+              "accent-float-circle-mixed-2":
+                "var(--color-accent-float-circle-mixed-2)",
               "tab-yellow": "var(--color-tab-yellow)",
             },
           },
@@ -99,6 +106,11 @@
         --color-accent-pink: #ffc0cb;
         --color-accent-light-green: #bbf7d0;
         --color-accent-green: #34c759;
+        --color-accent-celebration: #f44df4;
+        --color-accent-linear-pos-left: #e376f9;
+        --color-accent-linear-pos-right: #ff7878;
+        --color-accent-float-circle-mixed-1: #ffb624;
+        --color-accent-float-circle-mixed-2: #3f930b;
         --color-tab-yellow: #ffcc00;
       }
 
@@ -1557,7 +1569,7 @@
           <div class="mt-4 pos-entrance-btn">
             <div
               class="p-[3px] rounded-full"
-              style="background: linear-gradient(to right, #e376f9, #ff7878)"
+              style="background: linear-gradient(to right, var(--color-accent-linear-pos-left), var(--color-accent-linear-pos-right))"
             >
               <div
                 class="pos-entrance-inner grid grid-cols-3 items-center px-3 h-[33px] rounded-full cursor-pointer"
@@ -2743,7 +2755,7 @@
         <div class="mt-4 pos-entrance-btn">
           <div
             class="p-[3px] rounded-full"
-            style="background: linear-gradient(to right, #e376f9, #ff7878)"
+            style="background: linear-gradient(to right, var(--color-accent-linear-pos-left), var(--color-accent-linear-pos-right))"
           >
             <div
               class="pos-entrance-inner grid grid-cols-3 items-center px-3 h-[33px] rounded-full cursor-pointer"
@@ -3442,7 +3454,7 @@
       <div
         class="rounded-full p-[3px]"
         style="
-          background: linear-gradient(to bottom, #ffb624, #3f930b);
+          background: linear-gradient(to bottom, var(--color-accent-float-circle-mixed-1), var(--color-accent-float-circle-mixed-2));
           filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
         "
       >
@@ -5428,7 +5440,7 @@
                           可用庫存數
                         </th>
                         <td
-                          class="py-2 text-center text-[10px] text-[#e91e63] whitespace-nowrap"
+                          class="py-2 text-center text-[10px] text-accent-celebration whitespace-nowrap"
                         >
                           中秋連假
                         </td>
