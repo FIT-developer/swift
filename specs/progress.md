@@ -14,6 +14,52 @@
 
 ---
 
+## Session 21 交接（2026-05-04）
+
+### 本次進度交接
+
+**已完成**:
+- 檢查 `specs/assets/figma-variables.json` 與 `specs/assets/tokens.md`，確認 `preview/landing.html` 的 `:root --color-*` 與 Tailwind CDN `theme.extend.colors` 對應主要設計來源：
+  - Neutral/50、Neutral/75、Neutral/100、Neutral/200、Neutral/300、Neutral/400、Neutral/800
+  - MenuItem/Default、Radio/Default、SubItem/Selected
+  - Brand-50、Brand-400、Brand-600（以 `--color-brand-active` 使用）
+  - Surface/Status-Positive、Surface/Status-Negative
+  - Chart/blue、Accent/pink、Accent/light-green、Accent/Green
+- `preview/landing.html` 新增 `brand-50` semantic token，供「系統操作」收合按鈕使用 `bg-brand-50`，避免新增裸 hex。
+- 桌面與行動版側邊欄「系統操作」標題列新增「收合」按鈕：
+  - `.menu-collapse-all` 點擊後收合所有 `.accordion-trigger` 對應內容
+  - 同步移除 `.accordion-icon.open`
+- `[D] 訂房資料` lock 狀態補 `aria-pressed`：
+  - 初始 `aria-pressed="true"`
+  - JS `apply()` 依 `data-locked` 同步更新 `aria-pressed`
+- 更新 `.gitignore`，忽略本地 agent skill、Python 快取，以及本地 Figma variables 匯出檔：
+  - `.agents/skills/`
+  - `__pycache__/`
+  - `*.pyc`
+  - `specs/assets/figma-variables.json`
+- 已建立 commit：`86bb91a Add 系統操作 collapse-all + lock aria state`
+
+**進行中**:
+- `preview/landing.html` 仍是主要實作檔，持續以 incremental 方式把碰到的顏色改成 semantic token / Tailwind theme color。
+
+**下一步應做**:
+- 對本次新增的「收合」按鈕做 browser smoke test：
+  - 桌面側邊欄：展開多個 accordion → 點「收合」→ 全部內容 hidden、icon 回復未展開狀態
+  - 行動側邊欄：開啟 mobile menu → 展開多個 accordion → 點「收合」→ 全部內容 hidden、icon 回復未展開狀態
+- 對 `[D] 訂房資料` lock 做 a11y smoke test：點 lock 後確認 `aria-pressed` 與 unlocked/locked 狀態同步。
+- 後續若繼續改 `landing.html`，需先讀 `start.md`、`specs/assets/tokens.md`、`specs/icons.md`，並在完成後更新本檔。
+
+**重要決定**:
+- `specs/assets/figma-variables.json` 是設計來源匯出檔，但本 repo 已有正式權威文件 `specs/assets/tokens.md`；本輪決定將 JSON 匯出檔視為本地輔助輸入並加入 ignore，不進版控。
+- `.agents/skills/` 是本地 Codex/agent 輔助資料，不納入此專案版本控制。
+- 本次 commit 訊息沿用既有 Claude Code 語境：英文祈使句 + 必要中文區塊名。
+
+**未解問題**:
+- 本次尚未啟動 preview server 或瀏覽器實測；需在下一輪補做 smoke test。
+- `preview/landing.html` 仍有大量既存 Tailwind arbitrary hex class，依 Session 20 決策維持 incremental 遷移，不一次大改。
+
+---
+
 ## Session 20 交接（2026-05-04）
 
 ### 本次完成
