@@ -14,6 +14,38 @@
 
 ---
 
+## Session 24 交接（2026-05-04）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者在 Figma Variables 的新增命名，同步新增：
+  - `Color/Accent/float-circle-filled-1 = #F2BEFD`
+  - `Color/Accent/float-circle-filled-2 = #FFB6B6`
+- `specs/assets/tokens.md` 已新增上述兩個 Accent token，語意用途標為 POS 入口 hover fill 漸層起點/終點。
+- `preview/landing.html` 已新增對應 Tailwind CDN aliases 與 `:root --color-*`：
+  - `accent-float-circle-filled-1`
+  - `accent-float-circle-filled-2`
+- `.pos-entrance-btn:hover .pos-entrance-inner` 已從舊的 rgba 推定色，改為 Figma SVG 補讀出的 hover fill gradient：
+  - `var(--color-accent-float-circle-filled-1)`
+  - `var(--color-accent-float-circle-filled-2)`
+- 本地 ignored `specs/assets/figma-variables.json` 已同步補上上述 keys，方便後續檢索。
+
+**進行中**:
+- POS entrance component 的 default stroke gradient 與 hover fill gradient 已完成 token 化。
+
+**下一步應做**:
+- 做 browser visual smoke test：hover POS 入口時，內層 fill 應呈現 `#F2BEFD → #FFB6B6`。
+- 若要完全對齊 Figma SVG，另需確認 hover stroke `#FFFFFF`、文字 `#454545`、icon stroke `#000000` 是否都要改為 semantic aliases，而不是依 SVG/icon 檔自身顏色。
+
+**重要決定**:
+- 這次 hover fill token 來源不是 MCP 結構資料，而是 `save_screenshots(format: SVG)` 補讀 SVG `<defs>` 後確認。
+
+**未解問題**:
+- 尚未做瀏覽器視覺驗證。
+
+---
+
 ## Session 23 交接（2026-05-04）
 
 ### 本次進度交接

@@ -52,6 +52,10 @@
                 "var(--color-accent-float-circle-mixed-1)",
               "accent-float-circle-mixed-2":
                 "var(--color-accent-float-circle-mixed-2)",
+              "accent-float-circle-filled-1":
+                "var(--color-accent-float-circle-filled-1)",
+              "accent-float-circle-filled-2":
+                "var(--color-accent-float-circle-filled-2)",
               "tab-yellow": "var(--color-tab-yellow)",
             },
           },
@@ -111,6 +115,8 @@
         --color-accent-linear-pos-right: #ff7878;
         --color-accent-float-circle-mixed-1: #ffb624;
         --color-accent-float-circle-mixed-2: #3f930b;
+        --color-accent-float-circle-filled-1: #f2befd;
+        --color-accent-float-circle-filled-2: #ffb6b6;
         --color-tab-yellow: #ffcc00;
       }
 
@@ -228,8 +234,8 @@
       .pos-entrance-btn:hover .pos-entrance-inner {
         background: linear-gradient(
           to right,
-          rgba(252, 254, 192, 0.2),
-          rgba(248, 171, 251, 0.2)
+          var(--color-accent-float-circle-filled-1),
+          var(--color-accent-float-circle-filled-2)
         );
       }
 

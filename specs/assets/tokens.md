@@ -154,6 +154,8 @@
 | Color/Accent/linear-pos-right | `#FF7878` | POS 入口外框漸層終點 |
 | Color/Accent/float-circle-mixed-1 | `#FFB624` | Floating customer service circle 漸層起點 |
 | Color/Accent/float-circle-mixed-2 | `#3F930B` | Floating customer service circle 漸層終點 |
+| Color/Accent/float-circle-filled-1 | `#F2BEFD` | POS 入口 hover fill 漸層起點 |
+| Color/Accent/float-circle-filled-2 | `#FFB6B6` | POS 入口 hover fill 漸層終點 |
 
 ---
 
