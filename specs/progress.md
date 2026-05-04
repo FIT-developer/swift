@@ -14,6 +14,46 @@
 
 ---
 
+## Session 26 交接（2026-05-04）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者要求，將 sidebar 從「desktop source → mobile runtime clone」再收斂為真正單一 `<aside id="sidebar">`：
+  - desktop 時 `#sidebar` 是左側 flow sidebar。
+  - mobile 時同一個 `#sidebar` 透過 `mobile-open` class 變成 fixed drawer。
+  - mobile header、close button、function icons row 已移進同一個 `#sidebar`，不再有第二個 `#mobileSidebarPanel`。
+- mobile sidebar 內原本重複的帳號列、selects、系統操作 accordion、客服、檔案、POS 入口 HTML 已移除；目前靜態 DOM 只有一份 aside content。
+- Sidebar sub-item selected / click selector 改為 `.menu-category .accordion-trigger + div > div`，不再依賴 `desk-acc-*` / `mob-acc-*` 兩套 id prefix。
+- Accordion toggle / collapse-all 改用 `trigger.nextElementSibling` 找內容區；舊的 `desk-acc-*` / `mob-acc-*` id 與 `data-accordion-target` 已移除。
+- Logout / switch shared content 改用 `data-modal-open` 綁 modal，避免 desktop/mobile id 分流。
+- `node --check` 已通過兩個 inline script 的語法檢查。
+- `git diff --check` 通過。
+- 本次未保留 preview server；`curl -I http://127.0.0.1:8000/landing.html` 因本地 server 未啟動而無法連線。
+- 以 Python `HTMLParser` 檢查靜態 HTML：目前 `id_count = 73`、`duplicate_id_count = 0`。
+- `rg` 確認 `preview/landing.html` 已無 `desk-acc`、`mob-acc`、`data-accordion-target`、`[id^=...]` 舊 selector。
+- `rg` 確認已無 `mobileSidebarPanel`、`mobileSidebarContent`、`data-sidebar-shared-source`、`cloneNode`。
+
+**進行中**:
+- Sidebar 已改成單一 DOM；尚未做 browser visual / interaction smoke test。
+
+**下一步應做**:
+- 做 browser visual / interaction smoke test：
+  - desktop sidebar accordion 展開/收合、全收合。
+  - mobile menu 開啟後，同一個 `#sidebar` drawer 是否顯示完整。
+  - mobile sidebar accordion、sub-item click、role select、logout/switch modal。
+  - desktop fold / compact expand 是否仍正常。
+- 若 mobile drawer spacing 與原 mobile sidebar 視覺差距太大，再針對 `#sidebar` 的 mobile media query 加少量 override。
+
+**重要決定**:
+- 採用單一 `<aside id="sidebar">` 同時承擔 desktop flow 與 mobile drawer；這是目前可維護性最佳解。
+- 允許 shell 視覺在同一個 aside 內以 `md:hidden` / `hidden md:*` 區分，但主要內容不再有第二份 DOM。
+
+**未解問題**:
+- 尚未做瀏覽器互動實測；目前完成靜態 diff、JS 語法檢查與靜態 HTML 結構檢查。
+
+---
+
 ## Session 25 交接（2026-05-04）
 
 ### 本次進度交接
