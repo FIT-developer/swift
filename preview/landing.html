@@ -349,6 +349,7 @@
         color: #454545;
         cursor: pointer;
         white-space: nowrap;
+        flex-shrink: 0;
       }
       .rb-pay-chip:hover {
         background: #f6fafd;
@@ -624,6 +625,7 @@
         background: transparent;
         border: 1px solid #d1d1d1;
         white-space: nowrap;
+        flex-shrink: 0;
       }
       .rb-filter-tab:hover {
         background: #f6fafd;
@@ -969,12 +971,12 @@
                   <img
                     src="./assets/icons/down.svg"
                     alt="down"
-                    class="w-4 h-4 opacity-60 accordion-icon open"
+                    class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
                 <div
                   id="desk-acc-1"
-                  class="flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1"
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1"
                 >
                   <div
                     class="py-1 px-2 text-base text-[#454545] cursor-pointer hover:bg-[#F6FAFD] rounded"
@@ -2147,12 +2149,12 @@
                 <img
                   src="./assets/icons/down.svg"
                   alt="down"
-                  class="w-4 h-4 opacity-60 accordion-icon open"
+                  class="w-4 h-4 opacity-60 accordion-icon"
                 />
               </div>
               <div
                 id="mob-acc-1"
-                class="flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1"
+                class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-[#2178CF] mt-1"
               >
                 <div
                   class="py-1 px-2 text-base text-[#454545] rounded hover:bg-[#F6FAFD] cursor-pointer"
@@ -3966,6 +3968,7 @@
             var lockable = root.querySelectorAll(
               '.order-panel[data-panel="booking"], .order-panel[data-panel="checkin"]',
             );
+            var clearBtn = root.querySelector("#orderDataClear");
             function apply() {
               var locked = lock.dataset.locked === "true";
               lockable.forEach(function (p) {
@@ -3977,6 +3980,13 @@
                   el.disabled = locked;
                 });
               });
+              // 清除 button 連動：locked 時 disabled、解鎖時可用
+              if (clearBtn) {
+                clearBtn.disabled = locked;
+                clearBtn.classList.toggle("opacity-40", locked);
+                clearBtn.classList.toggle("cursor-not-allowed", locked);
+                clearBtn.classList.toggle("cursor-pointer", !locked);
+              }
             }
             lock.addEventListener("click", function () {
               lock.dataset.locked =
@@ -4002,10 +4012,13 @@
             });
           })();
           // 訂房資料 清除 button → reset inputs in active panel
+          // 只在 lock 為解鎖（綠）時生效；上鎖（紅）時 disabled 不作用
           (function () {
             var btn = root.querySelector("#orderDataClear");
             if (!btn) return;
             btn.addEventListener("click", function () {
+              var lock = root.querySelector("#orderDataLock");
+              if (lock && lock.dataset.locked === "true") return;
               var active = root.querySelector(".order-panel:not(.hidden)");
               if (!active) return;
               active
@@ -5073,40 +5086,39 @@
                   <button class="mode-btn active" id="btnRoom">空房查詢</button>
                   <button class="mode-btn" id="btnInventory">庫存表</button>
                 </div>
-                <!-- Filter row：棟別 chips（左）+ 訂餘保 toggle（右，僅庫存表模式顯示） -->
-                <div class="flex justify-between items-center gap-4">
-                  <div class="rb-filter-tabs flex gap-4 flex-wrap min-w-0">
-                    <button class="rb-filter-tab rb-active">全部</button>
-                    <button class="rb-filter-tab">A 棟</button>
-                    <button class="rb-filter-tab">B 棟</button>
-                    <button class="rb-filter-tab">C 棟</button>
-                  </div>
-                  <div
-                    id="invMetricToggle"
-                    class="hidden shrink-0 flex gap-[20px]"
+                <!-- 棟別 chips（橫向 scroll，no wrap） -->
+                <div class="rb-filter-tabs flex gap-4 flex-nowrap overflow-x-auto min-w-0">
+                  <button class="rb-filter-tab rb-active">全部</button>
+                  <button class="rb-filter-tab">A 棟</button>
+                  <button class="rb-filter-tab">B 棟</button>
+                  <button class="rb-filter-tab">C 棟</button>
+                </div>
+                <!-- 訂餘保 toggle（獨立一列，僅庫存表模式顯示） -->
+                <div
+                  id="invMetricToggle"
+                  class="hidden flex gap-[20px]"
+                >
+                  <button
+                    data-metric="ord"
+                    class="inv-metric-btn rb-active"
+                    style="--c: #2aca18"
                   >
-                    <button
-                      data-metric="ord"
-                      class="inv-metric-btn rb-active"
-                      style="--c: #2aca18"
-                    >
-                      訂
-                    </button>
-                    <button
-                      data-metric="rem"
-                      class="inv-metric-btn rb-active"
-                      style="--c: #86b7fe"
-                    >
-                      餘
-                    </button>
-                    <button
-                      data-metric="rsv"
-                      class="inv-metric-btn rb-active"
-                      style="--c: #f28b45"
-                    >
-                      保
-                    </button>
-                  </div>
+                    訂
+                  </button>
+                  <button
+                    data-metric="rem"
+                    class="inv-metric-btn rb-active"
+                    style="--c: #86b7fe"
+                  >
+                    餘
+                  </button>
+                  <button
+                    data-metric="rsv"
+                    class="inv-metric-btn rb-active"
+                    style="--c: #f28b45"
+                  >
+                    保
+                  </button>
                 </div>
                 <!-- Allocate table（空房查詢模式） -->
                 <div
@@ -5216,11 +5228,11 @@
                   id="tableInventory"
                   class="hidden border border-[#d1d1d1] rounded-xl p-3 overflow-x-auto"
                 >
-                  <div class="text-base font-semibold text-[#454545] mb-2">
+                  <div class="text-xl font-semibold text-[#454545] mb-2">
                     2026 / 02
                   </div>
                   <table
-                    class="text-xs text-[#454545] border-collapse"
+                    class="text-base text-[#454545] border-collapse"
                     style="min-width: 1240px"
                   >
                     <thead>
@@ -6588,7 +6600,7 @@
                     <input
                       type="text"
                       value="王大頭"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -6598,7 +6610,7 @@
                     <input
                       type="text"
                       value="X111333555"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -6608,7 +6620,7 @@
                     <input
                       type="text"
                       value="X111333555"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -6638,7 +6650,7 @@
                     <input
                       type="text"
                       value="0988777111"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                 </div>
@@ -6679,7 +6691,7 @@
                       >國家</span
                     >
                     <select
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     >
                       <option>英國</option>
                       <option>美國</option>
@@ -6735,7 +6747,7 @@
                     <input
                       type="text"
                       placeholder="住所"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                 </div>
@@ -6772,7 +6784,7 @@
                     <input
                       type="text"
                       value="xyz@hotmail.com.tw"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -6782,7 +6794,7 @@
                     <input
                       type="text"
                       value="0988777111"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -6792,7 +6804,7 @@
                     <input
                       type="text"
                       value="02-33331111"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex flex-col gap-2">
@@ -6870,7 +6882,7 @@
                     <input
                       type="text"
                       placeholder="placeholder"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -6880,7 +6892,7 @@
                     <input
                       type="text"
                       placeholder="placeholder"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -6890,7 +6902,7 @@
                     <input
                       type="text"
                       placeholder="placeholder"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -6920,7 +6932,7 @@
                     <input
                       type="text"
                       placeholder="placeholder"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                 </div>
@@ -6960,7 +6972,7 @@
                       >國家</span
                     >
                     <select
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     >
                       <option>英國</option>
                       <option>美國</option>
@@ -7014,7 +7026,7 @@
                     <input
                       type="text"
                       placeholder="住所"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                 </div>
@@ -7051,7 +7063,7 @@
                     <input
                       type="text"
                       placeholder="placeholder"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -7061,7 +7073,7 @@
                     <input
                       type="text"
                       placeholder="placeholder"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex items-center gap-3">
@@ -7071,7 +7083,7 @@
                     <input
                       type="text"
                       placeholder="placeholder"
-                      class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                      class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                     />
                   </div>
                   <div class="flex flex-col gap-2">
@@ -7300,7 +7312,7 @@
                 <!-- 正式單 → 8 顆付款 chip + 動態欄位 -->
                 <div data-order-type-panel="official" class="hidden">
                   <!-- payment chips -->
-                  <div id="paymentChips" class="flex flex-wrap gap-2 mb-5">
+                  <div id="paymentChips" class="flex flex-nowrap overflow-x-auto gap-2 mb-5 min-w-0">
                     <button
                       type="button"
                       class="rb-pay-chip rb-pay-active"
@@ -7348,7 +7360,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-center gap-3">
@@ -7357,7 +7369,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-center gap-3">
@@ -7366,7 +7378,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                     </div>
@@ -7381,7 +7393,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-center gap-3">
@@ -7390,7 +7402,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-center gap-3">
@@ -7399,7 +7411,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                     </div>
@@ -7414,7 +7426,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-center gap-3">
@@ -7423,7 +7435,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-start gap-3">
@@ -7433,7 +7445,7 @@
                         ><textarea
                           rows="3"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"
                         ></textarea>
                       </div>
                       <div class="flex justify-end gap-2 mt-1">
@@ -7462,7 +7474,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-center gap-3">
@@ -7471,7 +7483,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-start gap-3">
@@ -7481,7 +7493,7 @@
                         ><textarea
                           rows="3"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"
                         ></textarea>
                       </div>
                     </div>
@@ -7496,7 +7508,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-center gap-3">
@@ -7505,7 +7517,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-start gap-3">
@@ -7515,7 +7527,7 @@
                         ><textarea
                           rows="3"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"
                         ></textarea>
                       </div>
                     </div>
@@ -7530,7 +7542,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-center gap-3">
@@ -7539,7 +7551,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                       <div class="flex items-start gap-3">
@@ -7549,7 +7561,7 @@
                         ><textarea
                           rows="3"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base resize-none"
                         ></textarea>
                       </div>
                     </div>
@@ -7571,7 +7583,7 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                     </div>
@@ -7593,25 +7605,35 @@
                         ><input
                           type="text"
                           placeholder="placeholder"
-                          class="flex-1 border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
+                          class="flex-1 min-w-0 w-full border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 bg-white text-[#454545] text-base"
                         />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <!-- 候補單 → 暫無 Figma frame -->
+                <!-- 候補單 → 設為候補單 -->
                 <div
                   data-order-type-panel="substitute"
                   class="hidden min-h-[200px] flex items-center justify-center text-xl text-[#454545]"
                 >
-                  候補單內容（待 Figma frame 補齊）
+                  設為候補單
                 </div>
               </div>
             </div>
           </div>
         </div>
         <!-- end [D]+[E] grid -->
+      </div>
+
+      <!-- ===== 產生訂單 submit button (full width on mobile/tablet, 137px right-aligned on desktop) ===== -->
+      <div class="flex justify-end mt-5">
+        <button
+          type="submit"
+          class="w-full lg:w-[137px] h-[39px] bg-[#454545] text-[#e1e1e0] rounded text-base cursor-pointer hover:bg-[#333333]"
+        >
+          產生訂單
+        </button>
       </div>
     </div>
     <!-- ── end room-booking template ── -->

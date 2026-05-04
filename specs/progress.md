@@ -14,6 +14,55 @@
 
 ---
 
+## Session 19 交接（2026-05-04）
+
+### 本次完成
+
+#### Aside accordion
+| 變更 | 說明 |
+|---|---|
+| 13 類別預設全部收合 | desk-acc-1 / mob-acc-1 原本帶 `open` icon + 內容無 `hidden`，現皆收合；toggle 行為不變 |
+
+#### [D] 訂房資料：清除 button 連動 lock
+| 變更 | 說明 |
+|---|---|
+| `#orderDataClear` 跟 `#orderDataLock` 連動 | lock red (locked) → button `disabled` + `opacity-40 cursor-not-allowed`；lock green (unlocked) → 可清除 active panel 內所有 input / textarea / checkbox |
+| Click handler 內加 guard | `if (lock.dataset.locked === "true") return;` 即使外部強制觸發也不作用 |
+
+#### [D]+[E] inputs 寬度自適應
+| 變更 | 說明 |
+|---|---|
+| 全部 38 個 input / textarea 加 `min-w-0 w-full` | 原本 `flex-1` 因 input 預設 `size=20` 的 intrinsic min-width 無法 shrink；尤其 [E] 在 `xl:col-span-1` 容器內固定寬問題明顯。修完後皆隨容器伸縮 |
+
+#### [E] 正式單與候補單
+| 變更 | 說明 |
+|---|---|
+| 候補單 panel 內容 | 由 placeholder「候補單內容（待 Figma frame 補齊）」→ 純文字「設為候補單」（沿用 `text-xl text-[#454545]` 居中 style） |
+| 產生訂單 submit button | 新增於 [D]+[E] grid 之後；`flex justify-end mt-5`，按鈕 `w-full lg:w-[137px] h-[39px] bg-[#454545]`；mobile/tablet 100% 寬，lg+ 為 137px 右對齊；非 fixed/non-sticky |
+
+#### Chip rows：nowrap + 橫向 scroll
+| 變更 | 說明 |
+|---|---|
+| `.rb-filter-tabs` 容器 | `flex gap-4 flex-wrap min-w-0` → `flex gap-4 flex-nowrap overflow-x-auto min-w-0` |
+| `#paymentChips` 容器 | `flex flex-wrap gap-2 mb-5` → `flex flex-nowrap overflow-x-auto gap-2 mb-5 min-w-0` |
+| `.rb-filter-tab` / `.rb-pay-chip` CSS | 加 `flex-shrink: 0`，避免在 nowrap 容器內被擠壓，確保 overflow-x-auto 真的 scroll |
+| `#invMetricToggle` 抽出 | 原本與 chips 同在 `flex justify-between items-center gap-4` 內；現改為 chips row 之後的獨立 sibling block |
+
+#### `#tableInventory` 字級調整
+| 變更 | 說明 |
+|---|---|
+| 標題 `2026 / 02` | `text-base font-semibold` → `text-xl font-semibold`（20px）|
+| Table base | `text-xs` (12px) → `text-base` (16px)；棟別/房型/代號/可用庫存數/日期/星期 全部 16px |
+| 3-span 指標格子（訂/餘/保） | 保留原樣；inner span 已有 explicit `text-[10px]`，不受 table base 變更影響 |
+
+### 待觀察
+| 項目 | 說明 |
+|---|---|
+| `min-w-0 w-full` 全域影響 | 38 處改動含 [D] 與 [E] 兩 section；若 [D] 內某些短 input（如 6 碼、4 碼欄位）視覺上變太寬，再針對個別欄位加 `max-w-[...]` 收回 |
+| 產生訂單 mobile UX | mobile 為 100% 寬時等於底部全寬主按鈕；如果使用者後續要 sticky-bottom，可改 `sticky bottom-0` 加底部安全距 padding |
+
+---
+
 ## Session 18 交接（2026-05-03）
 
 ### 本次完成
