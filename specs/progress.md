@@ -54,13 +54,24 @@
 
 **歷史未解項補充說明**:
 - `room-booking.html` token 遷移已於本 session 補上；後續維護時仍需遵守 `tokens.md` / Tailwind semantic alias 規則，避免新增非 Figma 來源顏色。
-- 某些 function icons 對應 modal 尚未讀 Figma 補齊：
-  - 目前已處理並實測的重點是 landing 既有互動與 sidebar 結構。
-  - 尚未補齊者需在使用者指定對應 Figma frame / component 後，以 `figma-go` 讀取並如實渲染。
-  - 不應從其他 modal 或 icon 行為推測。
+- Function icons 對照目前狀態：
+  - `bulletin` 已對應 `components/bulletin-vendor.md`，目前開 `modalBulletinBackdrop`。
+  - `message` 已對應 `components/bulletin-administer.md`，目前開 `modalAdministerBackdrop`。
+  - `person-md` 已對應 `components/modal.md` 的會員安全管理 variants，目前開 `modalMemberBackdrop`。
+  - `person-md` 依目前產品行為不顯示數字 badge；舊 Figma 規格中的 `99+` badge 視為規格誤差。
+  - `system` 目前只有 function icon，尚未有對應內容，也不顯示數字 badge；使用者確認此功能屬於後續較晚階段，不在目前範圍。
+  - 後續補 `system` 時需先讀對應 Figma frame / section / component，不得從其他 modal 推測。
+- `components/function-icons.md` 已依使用者最新決策修正：
+  - 只有 `bulletin` / `message` 這兩個公告類 icon 顯示 badge。
+  - `message=0` 使用 empty badge（Neutral/200 背景、Text/800 文字）。
+  - `person-md` / `system` 不顯示 badge。
+- `preview/landing.html` 已同步修正：
+  - desktop / mobile `message` badge 改為 empty badge。
+  - mobile `person-md` / `system` badge 已移除。
 
 **未解問題**:
-- 無需立即處理的新結構問題；目前主要剩下後續功能擴充時的規範遵守與逐步補齊。
+- `system` function icon 點擊後內容尚未實作，列為後續未完成項目。
+- 後續若 Figma 仍顯示 `person-md` / `system` badge，需以本 session 使用者決策為準，或由使用者重新變更產品規則。
 
 ---
 
