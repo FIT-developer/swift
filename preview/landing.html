@@ -17,6 +17,7 @@
               "text-placeholder": "var(--color-text-placeholder)",
               "text-muted": "var(--color-text-muted)",
               "text-subtitle": "var(--color-text-subtitle)",
+              "text-supporting": "var(--color-text-supporting)",
               "text-emphasis": "var(--color-text-emphasis)",
               "text-inverse": "var(--color-text-inverse)",
               "icon-default": "var(--color-icon-default)",
@@ -82,6 +83,7 @@
         --color-text-placeholder: #b0b0b0;       /* Neutral/300 */
         --color-text-secondary: #888888;         /* Neutral/400 */
         --color-text-muted: #6d6d6d;             /* Text/500 */
+        --color-text-supporting: #5d5d5d;        /* Text/600 */
         --color-text-subtitle: #4f4f4f;          /* Text/700 */
         --color-text-default: #454545;           /* Neutral/800 — main body */
         --color-text-emphasis: #3d3d3d;          /* Text/900 */
@@ -414,16 +416,50 @@
         display: flex;
         flex-direction: column;
       }
+      #modalRoomIntroBackdrop .modal-box {
+        width: 100%;
+        max-width: 560px;
+        display: flex;
+        flex-direction: column;
+      }
+      #modalRoomEditBackdrop .modal-box {
+        width: min(calc(100vw - 24px), 646px);
+        max-height: calc(100vh - 24px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .room-edit-price-table tbody td {
+        padding-top: 4px;
+        padding-bottom: 4px;
+        vertical-align: middle;
+      }
+      .room-edit-price-table tbody tr:first-child td {
+        padding-top: 8px;
+      }
+      .room-edit-price-table tbody tr:last-child td {
+        padding-bottom: 8px;
+      }
+      .room-edit-price-table tbody tr:only-child td {
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
       @media (max-width: 639px) {
         #modalBulletinBackdrop,
-        #modalAdministerBackdrop {
+        #modalAdministerBackdrop,
+        #modalRoomIntroBackdrop,
+        #modalRoomEditBackdrop {
           align-items: stretch;
           justify-content: stretch;
           padding: 0;
         }
         #modalBulletinBackdrop .modal-box,
-        #modalAdministerBackdrop .modal-box {
+        #modalAdministerBackdrop .modal-box,
+        #modalRoomIntroBackdrop .modal-box,
+        #modalRoomEditBackdrop .modal-box {
+          width: 100%;
           max-width: 100%;
+          max-height: none;
           height: 100%;
           border-radius: 0;
           border: none;
@@ -2869,6 +2905,486 @@
     </div>
 
     <!-- ════════════════════════════════════
+         Modal F — 房型介紹
+    ════════════════════════════════════ -->
+    <div
+      id="modalRoomIntroBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalRoomIntroTitle"
+    >
+      <div class="modal-box mx-3">
+        <!-- Header -->
+        <div
+          class="flex-shrink-0 flex h-[51px] items-center justify-between border-b border-text-placeholder px-3"
+          style="box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2)"
+        >
+          <span
+            id="modalRoomIntroTitle"
+            class="text-xl font-semibold text-text-default"
+            >房型介紹</span
+          >
+          <button
+            class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+            data-modal="modalRoomIntroBackdrop"
+            aria-label="關閉"
+          >
+            <img src="./assets/icons/close.svg" alt="close" class="h-6 w-6" />
+          </button>
+        </div>
+
+        <!-- Room summary -->
+        <div class="flex-shrink-0">
+          <div class="px-3 pb-1 pt-2">
+            <span class="text-xl font-semibold text-text-default"
+              >義大利麵專屬房</span
+            >
+          </div>
+          <div class="px-3 py-2">
+            <div class="flex flex-wrap gap-5">
+              <div
+                class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+              >
+                <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                  <img
+                    src="./assets/icons/home.svg"
+                    alt="home"
+                    class="h-6 w-6"
+                  />
+                  <span class="text-base text-text-default">家庭房</span>
+                </div>
+              </div>
+              <div
+                class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+              >
+                <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                  <img src="./assets/icons/bed.svg" alt="bed" class="h-6 w-6" />
+                  <span class="text-base text-text-default">一大床</span>
+                </div>
+              </div>
+              <div
+                class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+              >
+                <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                  <img
+                    src="./assets/icons/door.svg"
+                    alt="door"
+                    class="h-6 w-6"
+                  />
+                  <span class="text-base text-text-default">間數：28</span>
+                </div>
+              </div>
+              <div
+                class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+              >
+                <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                  <img
+                    src="./assets/icons/price.svg"
+                    alt="price"
+                    class="h-6 w-6"
+                  />
+                  <span class="text-base text-text-default">售價：9,500</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="min-h-0 flex-1 px-3 py-2">
+          <textarea
+            class="block h-full min-h-[174px] w-full resize-none rounded-md border border-border-disabled bg-white px-3 py-1.5 text-xs leading-4 text-text-default outline-none focus:border-menu"
+            aria-label="房型介紹內容"
+          >我是 textarea
+- 內容
+- 內容</textarea>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex h-[58px] flex-shrink-0 items-center justify-end px-3">
+          <button
+            class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+            data-modal="modalRoomIntroBackdrop"
+          >
+            關閉
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         Modal G — 訂房明細編輯
+    ════════════════════════════════════ -->
+    <div
+      id="modalRoomEditBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalRoomEditTitle"
+    >
+      <div class="modal-box mx-3">
+        <!-- Header -->
+        <div
+          class="flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+          style="box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2)"
+        >
+          <div class="flex min-w-0 items-center gap-6">
+            <span
+              id="modalRoomEditTitle"
+              class="truncate text-xl font-semibold text-text-default"
+              >我是專案名稱</span
+            >
+            <span class="shrink-0 text-xl text-brand-500">鎖定</span>
+          </div>
+          <button
+            class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+            data-modal="modalRoomEditBackdrop"
+            aria-label="關閉"
+          >
+            <img src="./assets/icons/close.svg" alt="close" class="h-6 w-6" />
+          </button>
+        </div>
+
+        <div class="min-h-0 flex-1 overflow-y-auto">
+          <!-- Room summary -->
+          <div class="flex-shrink-0">
+            <div class="px-3 pb-1 pt-2">
+              <span class="text-xl font-semibold text-text-default"
+                >義大利麵專屬房</span
+              >
+            </div>
+            <div class="px-3 py-2">
+              <div class="flex flex-wrap gap-x-5 gap-y-3">
+                <div
+                  class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/night.svg"
+                      alt="night"
+                      class="h-6 w-6"
+                    />
+                    <span class="text-base text-text-default">天數：1 夜</span>
+                  </div>
+                </div>
+                <div
+                  class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/ranking.svg"
+                      alt="ranking"
+                      class="h-6 w-6"
+                    />
+                    <span class="text-base text-text-default"
+                      >會員：金鑽以上</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/door.svg"
+                      alt="door"
+                      class="h-6 w-6"
+                    />
+                    <span class="text-base text-text-default"
+                      >最少須訂間數：28</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/refund.svg"
+                      alt="refund"
+                      class="h-6 w-6"
+                    />
+                    <span class="text-base text-text-default">不可退款</span>
+                  </div>
+                </div>
+                <div
+                  class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/deposit.svg"
+                      alt="deposit"
+                      class="h-6 w-6"
+                    />
+                    <span class="text-base text-text-default">訂金：100%</span>
+                  </div>
+                </div>
+                <div
+                  class="inline-flex min-h-11 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/duration.svg"
+                      alt="duration"
+                      class="h-6 w-6"
+                    />
+                    <div class="text-xs leading-4 text-text-default">
+                      <div>開放期間：</div>
+                      <div>2026-01-01 ~ 長期</div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="inline-flex min-h-11 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/advertisement.svg"
+                      alt="advertisement"
+                      class="h-6 w-6"
+                    />
+                    <div class="text-xs leading-4 text-text-default">
+                      <div>熱賣期間：</div>
+                      <div>2026-01-01 ~ 2027-12-31</div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/payment-limited-time.svg"
+                      alt="payment-limited-time"
+                      class="h-6 w-6"
+                    />
+                    <span class="text-base text-text-default">1 天內付款</span>
+                  </div>
+                </div>
+                <div
+                  class="inline-flex h-9 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/inventory.svg"
+                      alt="inventory"
+                      class="h-6 w-6"
+                    />
+                    <span class="text-base text-text-default"
+                      >可用庫存數：5</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Date controller -->
+          <div class="px-3 py-4">
+            <div class="grid grid-cols-2 gap-5">
+              <div>
+                <div class="mb-2 text-base text-text-default">入住日：</div>
+                <div class="rb-cal-cell min-w-0">
+                  <button
+                    type="button"
+                    class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-2 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5"
+                  >
+                    <span
+                      class="rb-cal-date flex-1 text-left text-base text-text-default"
+                    ></span>
+                    <img
+                      src="./assets/icons/calendar.svg"
+                      alt="calendar"
+                      class="h-6 w-6"
+                    />
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div class="mb-2 text-base text-text-default">退房日：</div>
+                <div class="rb-cal-cell min-w-0">
+                  <button
+                    type="button"
+                    class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-2 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5"
+                  >
+                    <span
+                      class="rb-cal-date flex-1 text-left text-base text-text-default"
+                    ></span>
+                    <img
+                      src="./assets/icons/calendar.svg"
+                      alt="calendar"
+                      class="h-6 w-6"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4">
+              <div class="mb-2 flex items-center justify-between gap-3">
+                <span class="text-base text-text-default">訂房間數</span>
+                <span
+                  class="text-xs text-text-supporting"
+                  data-room-edit-quantity-hint
+                  >已達最低間數</span
+                >
+              </div>
+              <div
+                class="flex h-9 items-center rounded-md border border-border-disabled bg-white px-3 py-1"
+              >
+                <button
+                  type="button"
+                  class="flex h-7 w-6 items-center justify-center text-text-placeholder"
+                  data-room-edit-step="minus"
+                  aria-label="減少訂房間數"
+                >
+                  <span
+                    class="icon-mask h-6 w-6"
+                    style="-webkit-mask-image: url('./assets/icons/outline-minus.svg'); mask-image: url('./assets/icons/outline-minus.svg')"
+                  ></span>
+                </button>
+                <input
+                  type="text"
+                  class="mx-auto h-7 w-9 rounded-md border-0 bg-white px-3 py-1.5 text-center text-xs text-text-default outline-none"
+                  value="1"
+                  data-room-edit-quantity
+                  aria-label="訂房間數"
+                />
+                <button
+                  type="button"
+                  class="flex h-7 w-6 items-center justify-center text-text-default"
+                  data-room-edit-step="plus"
+                  aria-label="增加訂房間數"
+                >
+                  <span
+                    class="icon-mask h-6 w-6"
+                    style="-webkit-mask-image: url('./assets/icons/outline-plus.svg'); mask-image: url('./assets/icons/outline-plus.svg')"
+                  ></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price table -->
+          <div class="px-4 py-4">
+            <div class="mb-2 text-base text-text-default">價格</div>
+            <div class="overflow-x-auto">
+              <table
+                class="room-edit-price-table w-full min-w-[343px] table-fixed text-xs text-text-default"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      class="border-t border-b border-text-default px-3 py-3 text-left font-normal"
+                    >
+                      日期
+                    </th>
+                    <th
+                      class="border-t border-b border-text-default px-3 py-2 text-left font-normal"
+                    >
+                      <span class="inline-flex items-center gap-2">
+                        <span>定價調整</span>
+                        <button
+                          type="button"
+                          class="flex h-6 w-6 items-center justify-center text-brand-active"
+                          data-room-edit-lock-toggle
+                          data-locked="true"
+                          aria-label="鎖定 / 解鎖定價調整"
+                          aria-pressed="true"
+                        >
+                          <span
+                            class="icon-mask h-6 w-6"
+                            data-room-edit-lock-icon
+                            style="-webkit-mask-image: url('./assets/icons/lock.svg'); mask-image: url('./assets/icons/lock.svg')"
+                          ></span>
+                        </button>
+                      </span>
+                    </th>
+                    <th
+                      class="border-t border-b border-text-default px-3 py-3 text-left font-normal"
+                    >
+                      定價
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="px-3">2026-03-01</td>
+                    <td class="px-3">
+                      <input
+                        type="text"
+                        value="1999"
+                        disabled
+                        class="room-edit-price-input h-7 w-full rounded-md border border-border-disabled bg-border-default px-3 py-1.5 text-xs text-text-secondary outline-none"
+                        aria-label="2026-03-01 定價調整"
+                      />
+                    </td>
+                    <td class="px-3 text-center">1000</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3">2026-03-02</td>
+                    <td class="px-3">
+                      <input
+                        type="text"
+                        value="1999"
+                        disabled
+                        class="room-edit-price-input h-7 w-full rounded-md border border-border-disabled bg-border-default px-3 py-1.5 text-xs text-text-secondary outline-none"
+                        aria-label="2026-03-02 定價調整"
+                      />
+                    </td>
+                    <td class="px-3 text-center">1000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td class="border-t border-text-default px-3 py-2 text-center">
+                      總計
+                    </td>
+                    <td class="border-t border-text-default px-3 py-2 text-center">
+                      8888
+                    </td>
+                    <td class="border-t border-text-default px-3 py-2 text-center">
+                      9999
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="px-3 py-2">
+            <textarea
+              class="block min-h-[174px] w-full resize-none rounded-md border border-border-disabled bg-white px-3 py-1.5 text-xs leading-4 text-text-default outline-none focus:border-menu"
+              data-room-edit-textarea
+              aria-label="訂房明細備註"
+            >我是 textarea
+- 內容
+- 內容</textarea>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 px-3">
+          <button
+            type="button"
+            class="inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+            data-room-edit-clear
+          >
+            清除
+          </button>
+          <button
+            type="button"
+            class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+            data-modal="modalRoomEditBackdrop"
+          >
+            確定
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
          floatIcons/ai — 浮動客服按鈕
          fixed 右下角，40×70px，圓形 icon frame #f6fafd
     ════════════════════════════════════ -->
@@ -3228,48 +3744,55 @@
                 }
               });
             }
-            root.querySelectorAll(".rb-cal-cell").forEach(function (cell) {
-              if (cell.dataset.calInit) return;
-              cell.dataset.calInit = "1";
-              var btn = cell.querySelector(".rb-cal-btn");
-              var displayEl = cell.querySelector(".rb-cal-date");
-              if (!btn || !displayEl) return;
-              var variant = cell.dataset.calVariant; // undefined | 'birthday'
-              var allowPast = variant === "birthday"; // birthday 允許過去
-              var blockFuture = variant === "birthday"; // birthday 禁止未來（生日不可能未來）
-              var hasYMSelects = variant === "birthday"; // 生日：header 用 year/month select
-              var dropdown = document.createElement("div");
-              dropdown.className = "calendar-dropdown p-4";
-              var headerCenter = hasYMSelects
-                ? '<div class="flex gap-1">' +
-                  '<select class="year-select calendar-header-select"></select>' +
-                  '<select class="month-select calendar-header-select"></select>' +
-                  "</div>"
-                : '<span class="month-label font-bold text-text-emphasis text-sm"></span>';
-              dropdown.innerHTML =
-                '<div class="flex justify-between items-center mb-4">' +
-                '<button type="button" class="prev-month p-1 hover:bg-surface-hover rounded text-text-secondary">&lt;</button>' +
-                headerCenter +
-                '<button type="button" class="next-month p-1 hover:bg-surface-hover rounded text-text-secondary">&gt;</button>' +
-                "</div>" +
-                '<div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-text-secondary mb-2">' +
-                '<div class="title-highlight py-1">日</div>' +
-                '<div class="py-1">一</div>' +
-                '<div class="py-1">二</div>' +
-                '<div class="py-1">三</div>' +
-                '<div class="py-1">四</div>' +
-                '<div class="py-1">五</div>' +
-                '<div class="title-highlight py-1">六</div>' +
-                "</div>" +
-                '<div class="days-grid grid grid-cols-7 gap-1"></div>';
-              cell.appendChild(dropdown);
-              dropdown.addEventListener("click", function (e) {
-                e.stopPropagation();
-              });
-              var daysGrid = dropdown.querySelector(".days-grid");
-              var monthLabel = dropdown.querySelector(".month-label");
-              var yearSelect = dropdown.querySelector(".year-select");
-              var monthSelect = dropdown.querySelector(".month-select");
+            Array.prototype.slice
+              .call(root.querySelectorAll(".rb-cal-cell"))
+              .concat(
+                Array.prototype.slice.call(
+                  document.querySelectorAll("#modalRoomEditBackdrop .rb-cal-cell"),
+                ),
+              )
+              .forEach(function (cell) {
+                if (cell.dataset.calInit) return;
+                cell.dataset.calInit = "1";
+                var btn = cell.querySelector(".rb-cal-btn");
+                var displayEl = cell.querySelector(".rb-cal-date");
+                if (!btn || !displayEl) return;
+                var variant = cell.dataset.calVariant; // undefined | 'birthday'
+                var allowPast = variant === "birthday"; // birthday 允許過去
+                var blockFuture = variant === "birthday"; // birthday 禁止未來（生日不可能未來）
+                var hasYMSelects = variant === "birthday"; // 生日：header 用 year/month select
+                var dropdown = document.createElement("div");
+                dropdown.className = "calendar-dropdown p-4";
+                var headerCenter = hasYMSelects
+                  ? '<div class="flex gap-1">' +
+                    '<select class="year-select calendar-header-select"></select>' +
+                    '<select class="month-select calendar-header-select"></select>' +
+                    "</div>"
+                  : '<span class="month-label font-bold text-text-emphasis text-sm"></span>';
+                dropdown.innerHTML =
+                  '<div class="flex justify-between items-center mb-4">' +
+                  '<button type="button" class="prev-month p-1 hover:bg-surface-hover rounded text-text-secondary">&lt;</button>' +
+                  headerCenter +
+                  '<button type="button" class="next-month p-1 hover:bg-surface-hover rounded text-text-secondary">&gt;</button>' +
+                  "</div>" +
+                  '<div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-text-secondary mb-2">' +
+                  '<div class="title-highlight py-1">日</div>' +
+                  '<div class="py-1">一</div>' +
+                  '<div class="py-1">二</div>' +
+                  '<div class="py-1">三</div>' +
+                  '<div class="py-1">四</div>' +
+                  '<div class="py-1">五</div>' +
+                  '<div class="title-highlight py-1">六</div>' +
+                  "</div>" +
+                  '<div class="days-grid grid grid-cols-7 gap-1"></div>';
+                cell.appendChild(dropdown);
+                dropdown.addEventListener("click", function (e) {
+                  e.stopPropagation();
+                });
+                var daysGrid = dropdown.querySelector(".days-grid");
+                var monthLabel = dropdown.querySelector(".month-label");
+                var yearSelect = dropdown.querySelector(".year-select");
+                var monthSelect = dropdown.querySelector(".month-select");
               // Birthday variant：填年份（今年 → 1920，遞減）+ 月份（1–12）
               if (hasYMSelects) {
                 var thisYear = dayjs().year();
@@ -4217,6 +4740,7 @@
         function openModal(id) {
           var el = document.getElementById(id);
           if (!el) return;
+          if (id === "modalRoomEditBackdrop") resetRoomEditModal();
           el.classList.add("open");
           document.body.style.overflow = "hidden";
         }
@@ -4226,11 +4750,80 @@
           el.classList.remove("open");
           document.body.style.overflow = "";
         }
-
-        document.querySelectorAll("[data-modal-open]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            openModal(btn.dataset.modalOpen);
+        function setRoomEditLocked(locked) {
+          var modal = document.getElementById("modalRoomEditBackdrop");
+          if (!modal) return;
+          var toggle = modal.querySelector("[data-room-edit-lock-toggle]");
+          var icon = modal.querySelector("[data-room-edit-lock-icon]");
+          if (toggle) {
+            toggle.dataset.locked = locked ? "true" : "false";
+            toggle.setAttribute("aria-pressed", locked ? "true" : "false");
+            toggle.classList.toggle("text-brand-active", locked);
+            toggle.classList.toggle("text-status-positive", !locked);
+          }
+          if (icon) {
+            var iconPath = locked
+              ? "./assets/icons/lock.svg"
+              : "./assets/icons/unlock.svg";
+            icon.style.webkitMaskImage = "url('" + iconPath + "')";
+            icon.style.maskImage = "url('" + iconPath + "')";
+          }
+          modal.querySelectorAll(".room-edit-price-input").forEach(function (input) {
+            input.disabled = locked;
+            input.classList.toggle("bg-border-default", locked);
+            input.classList.toggle("text-text-secondary", locked);
+            input.classList.toggle("bg-white", !locked);
+            input.classList.toggle("text-text-default", !locked);
           });
+        }
+        function setRoomEditQuantity(value) {
+          var modal = document.getElementById("modalRoomEditBackdrop");
+          if (!modal) return;
+          var input = modal.querySelector("[data-room-edit-quantity]");
+          var hint = modal.querySelector("[data-room-edit-quantity-hint]");
+          var minus = modal.querySelector('[data-room-edit-step="minus"]');
+          var plus = modal.querySelector('[data-room-edit-step="plus"]');
+          var min = 1;
+          var max = 5;
+          var next = Math.max(min, Math.min(max, parseInt(value, 10) || min));
+          if (input) input.value = String(next);
+          if (hint) {
+            hint.textContent =
+              next === min ? "已達最低間數" : next === max ? "已達上限間數" : "";
+            hint.classList.toggle("text-text-supporting", next === min);
+            hint.classList.toggle("text-brand-active", next === max);
+          }
+          if (minus) {
+            minus.disabled = next === min;
+            minus.classList.toggle("text-text-placeholder", next === min);
+            minus.classList.toggle("text-text-default", next !== min);
+          }
+          if (plus) {
+            plus.disabled = next === max;
+            plus.classList.toggle("text-text-placeholder", next === max);
+            plus.classList.toggle("text-text-default", next !== max);
+          }
+        }
+        function resetRoomEditModal() {
+          var modal = document.getElementById("modalRoomEditBackdrop");
+          if (!modal) return;
+          setRoomEditLocked(true);
+          setRoomEditQuantity(1);
+          modal.querySelectorAll(".room-edit-price-input").forEach(function (input) {
+            input.value = "1999";
+          });
+          modal.querySelectorAll(".rb-cal-date").forEach(function (dateEl) {
+            dateEl.textContent = dayjs().format("YYYY-MM-DD");
+          });
+          var textarea = modal.querySelector("[data-room-edit-textarea]");
+          if (textarea) textarea.value = "我是 textarea\n- 內容\n- 內容";
+        }
+
+        document.addEventListener("click", function (e) {
+          var btn = e.target.closest("[data-modal-open]");
+          if (!btn) return;
+          e.preventDefault();
+          openModal(btn.dataset.modalOpen);
         });
 
         // Compact desktop triggers → Modal A/B
@@ -4288,6 +4881,8 @@
           "modalBulletinBackdrop",
           "modalAdministerBackdrop",
           "modalMemberBackdrop",
+          "modalRoomIntroBackdrop",
+          "modalRoomEditBackdrop",
         ].forEach(function (id) {
           var el = document.getElementById(id);
           el &&
@@ -4305,9 +4900,48 @@
               "modalBulletinBackdrop",
               "modalAdministerBackdrop",
               "modalMemberBackdrop",
+              "modalRoomIntroBackdrop",
+              "modalRoomEditBackdrop",
             ].forEach(closeModal);
           }
         });
+
+        // Room booking edit modal state
+        (function () {
+          var modal = document.getElementById("modalRoomEditBackdrop");
+          if (!modal) return;
+          var lock = modal.querySelector("[data-room-edit-lock-toggle]");
+          lock &&
+            lock.addEventListener("click", function () {
+              setRoomEditLocked(lock.dataset.locked !== "true");
+            });
+          modal.querySelectorAll("[data-room-edit-step]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              var input = modal.querySelector("[data-room-edit-quantity]");
+              var current = input ? parseInt(input.value, 10) || 1 : 1;
+              setRoomEditQuantity(
+                btn.dataset.roomEditStep === "plus" ? current + 1 : current - 1,
+              );
+            });
+          });
+          var quantity = modal.querySelector("[data-room-edit-quantity]");
+          quantity &&
+            quantity.addEventListener("input", function () {
+              setRoomEditQuantity(quantity.value);
+            });
+          var clear = modal.querySelector("[data-room-edit-clear]");
+          clear &&
+            clear.addEventListener("click", function () {
+              modal
+                .querySelectorAll(".room-edit-price-input:not(:disabled)")
+                .forEach(function (input) {
+                  input.value = "";
+                });
+              var textarea = modal.querySelector("[data-room-edit-textarea]");
+              if (textarea) textarea.value = "";
+            });
+          resetRoomEditModal();
+        })();
 
         // Member tab switching
         document.querySelectorAll(".member-tab").forEach(function (tab) {
@@ -5535,11 +6169,19 @@
                       >
                         <option>香蕉船不是船</option>
                       </select>
-                      <img
-                        src="./assets/icons/info.svg"
-                        alt="info"
-                        class="w-6 h-6 cursor-pointer shrink-0"
-                      />
+                      <button
+                        type="button"
+                        class="inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center"
+                        data-modal-open="modalRoomIntroBackdrop"
+                        aria-label="房型介紹"
+                      >
+                        <img
+                          src="./assets/icons/info.svg"
+                          alt=""
+                          class="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      </button>
                     </div>
                   </td>
                   <!-- 專案: select -->
@@ -5594,11 +6236,14 @@
                       <button
                         type="button"
                         class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                        data-modal-open="modalRoomEditBackdrop"
+                        aria-label="編輯訂房明細"
                       >
                         <img
                           src="./assets/icons/edit.svg"
-                          alt="edit"
+                          alt=""
                           class="w-6 h-6"
+                          aria-hidden="true"
                         />
                       </button>
                       <button
@@ -5673,11 +6318,19 @@
                       >
                         <option>香蕉船不是船</option>
                       </select>
-                      <img
-                        src="./assets/icons/info.svg"
-                        alt="info"
-                        class="w-6 h-6 cursor-pointer shrink-0"
-                      />
+                      <button
+                        type="button"
+                        class="inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center"
+                        data-modal-open="modalRoomIntroBackdrop"
+                        aria-label="房型介紹"
+                      >
+                        <img
+                          src="./assets/icons/info.svg"
+                          alt=""
+                          class="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      </button>
                     </div>
                   </td>
                   <td class="px-3 py-2 align-middle">
@@ -5717,11 +6370,14 @@
                       <button
                         type="button"
                         class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                        data-modal-open="modalRoomEditBackdrop"
+                        aria-label="編輯訂房明細"
                       >
                         <img
                           src="./assets/icons/edit.svg"
-                          alt="edit"
+                          alt=""
                           class="w-6 h-6"
+                          aria-hidden="true"
                         />
                       </button>
                       <button
@@ -5796,11 +6452,19 @@
                       >
                         <option>香蕉船不是船</option>
                       </select>
-                      <img
-                        src="./assets/icons/info.svg"
-                        alt="info"
-                        class="w-6 h-6 cursor-pointer shrink-0"
-                      />
+                      <button
+                        type="button"
+                        class="inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center"
+                        data-modal-open="modalRoomIntroBackdrop"
+                        aria-label="房型介紹"
+                      >
+                        <img
+                          src="./assets/icons/info.svg"
+                          alt=""
+                          class="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      </button>
                     </div>
                   </td>
                   <td class="px-3 py-2 align-middle">
@@ -5840,11 +6504,14 @@
                       <button
                         type="button"
                         class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                        data-modal-open="modalRoomEditBackdrop"
+                        aria-label="編輯訂房明細"
                       >
                         <img
                           src="./assets/icons/edit.svg"
-                          alt="edit"
+                          alt=""
                           class="w-6 h-6"
+                          aria-hidden="true"
                         />
                       </button>
                       <button

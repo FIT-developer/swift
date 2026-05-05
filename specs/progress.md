@@ -10,7 +10,150 @@
 
 **當前任務**：`preview/landing.html` 持續修正中，桌面與行動版皆在同一檔案。
 
-**Figma 當前頁面**：Function buttons Interactions - administer（`194:6726`）
+**Figma 當前頁面**：components（訂房明細 edit Modal `1272:27402` / `1272:27354` / `1272:27306`）
+
+---
+
+## Session 30 交接（2026-05-05）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者最新修正，重新對齊訂房明細 edit modal：
+  - info chips 不使用完整外框，也不使用 `::before` / `::after` 或 inner rail；一律用元素本身 `border-0 border-l-4 rounded-md`，只保留左側 4px border 並讓圓角自然裁切。
+  - 入住日 / 退房日不是純 UI，已改為套用 `components/calendar-simple.md` default variant。
+  - Calendar simple 日期 markup 不 hard-code 日期，開啟 edit modal 時由 JS 填入今日 `dayjs().format("YYYY-MM-DD")`。
+  - 價格區不使用 grid/full cell border 模擬表格，改回語意 `<table>`，保留 table 自身 padding 與 row border 寫法。
+  - 價格 table 的間距需求是 tbody cell 的垂直節奏：單列上下各 8px；多列第一列 top 8px、最後列 bottom 8px，列與列之間由 4px + 4px 組成 8px。
+- `components/modal.md` 已補強 `state=room booking edit` 規格：
+  - 明確要求 edit modal info chips 套用「單側 Border Info Item 規則」。
+  - 明確要求入住日 / 退房日套用 Calendar simple default。
+  - 明確禁止 hard-code 日期字串。
+  - 明確要求價格表使用語意 table 與 table padding。
+- `preview/landing.html` 已更新：
+  - edit modal 9 個 info chips 全部改為 left-border-only。
+  - 入住日 / 退房日改成 `.rb-cal-cell` / `.rb-cal-btn` / `.rb-cal-date` Calendar simple 結構。
+  - Calendar simple 初始化支援 edit modal 內的日期欄位。
+  - reset edit modal 時日期重設為今日。
+  - 價格區改為 `<table>`，左右 padding 保留 `px-3`。
+  - 移除 table 左右 `border-spacing` 與 `tr` 高度做法，新增 `.room-edit-price-table` CSS，以 `tbody tr:first-child / last-child / only-child td` 控制垂直 padding。
+
+**驗證**:
+- `node` inline script parse：通過，2 個 inline scripts 可解析。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 做 browser visual / interaction smoke test：
+  - 點 `edit.svg` 開啟 edit modal。
+  - 確認 9 個 info chips 只有左側 4px border，沒有完整外框或直線 rail。
+  - 確認入住日 / 退房日預設顯示今日，並可開啟 Calendar simple dropdown。
+  - 確認價格區是 table padding 視覺，不是 grid 格線。
+
+---
+
+## Session 29 交接（2026-05-05）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者決策修正 `start.md`：
+  - 375px 改為「最小支援 viewport / Figma mobile 參考寬度」。
+  - 明確禁止將 UI 固定寫死為 375px，後續需全響應式實作。
+- 透過 `figma-go` 讀完訂房明細 edit modal 三個 375px 狀態：
+  - `1272:27402`：預設，lock + 數量 1 + `已達最低間數`。
+  - `1272:27354`：lock + 數量 5 + `已達上限間數`。
+  - `1272:27306`：unlock + 定價調整 input 可編輯。
+- `components/modal.md` 已新增 `state=room booking edit` 規格，包含：
+  - `edit.svg` trigger。
+  - lock/unlock 只控制價格表「定價調整」input active / disabled，與訂房數量無關。
+  - 訂房數量只控制 +/- 與最低/最高提示。
+  - `最少須訂間數：28` 目前只渲染文字，不參與前端邏輯。
+  - 清除只清除非 disabled 的定價調整 input value 與 textarea。
+  - 375px 只作為最小參考，實作需全響應式。
+- `specs/assets/tokens.md` 新增 `text-text-supporting` / `--color-text-supporting` alias，對應 `Color/Text/600 / Color/Neutral/600`，用於 `已達最低間數`。
+- `preview/landing.html` 已新增 `modalRoomEditBackdrop`：
+  - 預設開啟為 lock + 數量 1 + `已達最低間數`。
+  - 三個訂房明細 row 的 `edit.svg` 都已接上 `data-modal-open="modalRoomEditBackdrop"`。
+  - lock toggle 會切換 `lock.svg` / `unlock.svg`，並切換價格調整 input disabled / active。
+  - stepper 支援 1 到 5，最低時 minus disabled，最高時 plus disabled。
+  - 清除按鈕會清除 active 的價格調整 input 與 textarea；disabled input 保持不動。
+  - modal body 可垂直 scroll，小螢幕滿版，desktop 使用響應式 max width。
+
+**驗證**:
+- `node` inline script parse：通過，2 個 inline scripts 可解析。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**進行中**:
+- 訂房明細 edit modal 目前為 prototype 靜態資料與前端 demo state；未接後端資料。
+
+**下一步應做**:
+- 做 browser visual / interaction smoke test：
+  - 進入「房間預定」sub-page。
+  - 點任一 row 的 `edit.svg`，確認 edit modal 開啟。
+  - 確認預設為 lock + 數量 1 + `已達最低間數`。
+  - 點 plus 到 5，確認 `已達上限間數` 與 plus disabled。
+  - 點 lock icon 解鎖，確認定價調整 input 變 active；點清除確認 active input 與 textarea 清空。
+  - 確認 close、backdrop click、Esc 關閉。
+  - 檢查 375px / desktop 寬度下 modal body scroll 與 chips flex-wrap。
+
+**重要決定**:
+- `lock` 不等於整個 modal 或數量 lock；只控制定價調整 input active / disabled。
+- `最少須訂間數：28` 是後端規則文字，目前前端只呈現，不參與 stepper min/max。
+- `edit.svg` 預設打開 `lock + 已達最低間數 + 數量 1`。
+- 375px 是最小支援 viewport 與 Figma mobile 參考寬度，不是固定 modal 寬度。
+
+**未解問題**:
+- edit modal 的資料來源、row 對應內容與真正 API 狀態尚未接入；目前依 Figma 靜態內容與使用者決策實作。
+
+---
+
+## Session 28 交接（2026-05-05）
+
+### 本次進度交接
+
+**已完成**:
+- 透過 `figma-go` 確認目前選取的 Figma node 為 `components` 頁面的房型介紹 Modal（`1272:27245`，560×390）。
+- `components/modal.md` 已補上 `state=room intro` 規格：
+  - 標題「房型介紹」。
+  - 房名「義大利麵專屬房」。
+  - home / bed / door / price 四個 info pill。
+  - textarea 內容區與 footer「關閉」按鈕。
+  - desktop 560px 置中、mobile 滿版。
+- `preview/landing.html` 已新增 `modalRoomIntroBackdrop`。
+- room-booking template 的 3 個房型 `info.svg` 已改為可點擊 button，點擊開啟房型介紹 Modal。
+- Modal open 行為改為事件委派，確保動態注入的 room-booking template 內容也能開啟 modal。
+- 依使用者重新指定與 `figma-go` / SVG 匯出確認，房型介紹 Modal 已修正：
+  - 四個 info item 維持 icon + text，但不再使用完整外框 border。
+  - item 僅左側保留 4px border，top/right/bottom border 為 0，並跟隨 6px 圓角自然裁切。
+  - item row 使用 `flex-wrap`，不使用 horizontal overflow。
+  - 下方內容區改為真正可輸入的 `<textarea>`。
+
+**進行中**:
+- 房型介紹 Modal 目前使用 Figma prototype 靜態內容；未接後端資料。
+
+**下一步應做**:
+- 做 browser smoke test：
+  - 進入「房間預定」sub-page。
+  - 點任一房型 info icon，確認房型介紹 Modal 開啟。
+  - 縮窄 viewport，確認四個 info item 會 wrap 而不是橫向捲動。
+  - 確認 textarea 可輸入文字。
+  - 測試 header close、footer「關閉」、backdrop click、Esc 關閉。
+  - 檢查 desktop 560px 與 mobile 滿版顯示。
+
+**重要決定**:
+- `figma-go` 讀到的房型介紹 Modal 歸入既有 `components/modal.md`，不新增獨立 component spec。
+- room-booking template 是 JS 動態注入，因此 modal open 需用事件委派，不使用只對初始 DOM 生效的一次性 listener。
+- Modal 內相似的 icon + text info item 統一使用 `components/modal.md` 的「單側 Border Info Item 規則」：
+  - 外層元素本身使用 `border-0 border-l-4 rounded-md`。
+  - 不用 pseudo element 或額外 inner rail/span 模擬左線。
+  - 讓 4px left border 跟隨 6px radius 自然裁切。
+
+**未解問題**:
+- 房型介紹 Modal 的資料來源與各房型對應內容未定；目前依 Figma 靜態內容呈現。
 
 ---
 

@@ -46,7 +46,7 @@ Figma/
 - 未來階段: 切換到 local Tailwind 並做客製化設定 (時機未定)
 - **當前不要**使用任何需要 build step 的特性
   (例如 @apply、plugin、custom utility)
-- **RWD 斷點**: 375px ~768px（小尺寸 mobile） / 769px 以上 ~ 1440px （desktop 尺寸）/ 最高 1440 px 開版
+- **RWD 斷點**: mobile 參考寬度，不可把 UI 寫死為固定 375px；實作需採全響應式寬度。375px ~768px（小尺寸 mobile） / 769px 以上 ~ 1440px（desktop 尺寸）/ 最高 1440px 開版
 **字體**: Noto Sans TC（全語系適用）
 **主色**: 尚未定案,採滾動式調整。
 實作時一律引用 tokens.md 的 `Color/Surface/Brand-500-Default`,
@@ -131,7 +131,7 @@ tokens → icons → components → sections → layout → 實作
 並在對話中用 checklist 形式報告結果:
 - [ ] **Token 檢查**: 所有顏色/間距/圓角都引用 tokens.md 的 token 名稱,沒有寫死 hex 或任意數值
 - [ ] **Icon 檢查**: 所有 icon 都從 `preview/assets/icons/` 引用,沒有自己畫 SVG 或用其他 icon library
-- [ ] **RWD 檢查**: 斷點符合 375/768/1440 的規範,且元件在各斷點的行為有實際測試過 (不只是 CSS 寫了就算)
+- [ ] **RWD 檢查**: 斷點符合 375/768/1440 的規範；375px 僅作為最小支援 viewport 與 Figma mobile 參考寬度，不得固定寫死，且元件在各斷點的行為有實際測試過 (不只是 CSS 寫了就算)
 - [ ] **狀態完整性**: Spec 裡定義的所有狀態 (hover/active/disabled/error 等) 都有實作,沒有漏掉
 - [ ] **文字內容**: 繁體中文內容跟 Figma 一致,沒有自動翻譯或改寫
 **任何一項不通過,必須修正後重新報告,直到全部通過**。
@@ -221,4 +221,3 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 7. [ ] 等我確認 OK,才開始實際工作
 
 **不要跳過任何一步**。
-

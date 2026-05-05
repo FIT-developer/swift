@@ -32,6 +32,7 @@
 | Color/Neutral/75 / Color/Modal/Hover | `bg-surface-hover`, `hover:bg-surface-hover`, `--color-surface-hover` | hover 背景、選單 hover |
 | Color/Text/800 / Color/Neutral/800 | `text-text-default`, `--color-text-default` | 主要文字 |
 | Color/Text/100 | `text-text-inverse`, `--color-text-inverse` | 深色 tooltip / badge 上的反白文字；若視覺稿明確為純白，使用 `text-white` |
+| Color/Text/600 / Color/Neutral/600 | `text-text-supporting`, `--color-text-supporting` | 次標題、低強度提示文字 |
 | Color/Icon/Default | `text-icon-default`, `--color-icon-default` | 可用 `currentColor` 或 mask 控色的一般黑色 icon |
 | Color/Surface/Brand-Default | `bg-brand-500`, `bg-surface-brand`, `--color-surface-brand` | 主品牌色、主按鈕、重要 badge |
 | Color/Surface/Brand-Hover | `hover:bg-surface-brand-hover`, `--color-surface-brand-hover` | 主品牌 hover |
