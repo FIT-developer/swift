@@ -179,7 +179,7 @@ Modal (560×390px)
 │       ├── icons/door + "間數：28"
 │       └── icons/price + "售價：9,500"
 ├── Frame 449 (560×190px)
-│   └── Input textarea (536×174px)
+│   └── Static input content (536×174px)
 │       └── "我是 textarea\n- 內容\n- 內容"
 └── Footer Frame 11 (560×58px)
     └── Button Y/N — "關閉"
@@ -196,8 +196,8 @@ Modal (560×390px)
 | Info item row | padding 8px 12px, gap 20px, flex-wrap | `Spacing/8`, `Spacing/12`, 固定 20px gap；不使用 horizontal overflow |
 | Info item | h 36px, radius 6, white bg, icon + text | `Radius/6`, `Color/Neutral/0` |
 | Info item 左側 border | only left side, 4px；top/right/bottom border width = 0；跟隨 item `Radius/6` 自然裁切圓角 | `Spacing/4`, `Radius/6`, `Color/Neutral/200` |
-| Textarea frame | padding 8px 12px | `Spacing/8`, `Spacing/12` |
-| Textarea input | 536×174px, radius 6, padding 6px 12px, border `#d1d1d1`，可輸入文字 | `Radius/6`, `Spacing/6`, `Spacing/12`, `Color/Neutral/200` |
+| Static input frame | padding 8px 12px | `Spacing/8`, `Spacing/12` |
+| Static input content | 536×174px, radius 6, padding 6px 12px, border `#d1d1d1`，白底一般狀態；不可編輯，不套 disabled 灰底樣式 | `Radius/6`, `Spacing/6`, `Spacing/12`, `Color/Neutral/200` |
 | Footer | h 58px, padding 12px, button right aligned | `Spacing/12` |
 
 ### Typography / Colors
@@ -207,7 +207,7 @@ Modal (560×390px)
 | Header title | 20px SemiBold 600 | `Color/Text/800` |
 | 房名 | 20px SemiBold 600 | `Color/Text/800` |
 | Pill text | 16px Regular 400 | `Color/Text/800` |
-| Textarea text | 12px Regular 400 | `Color/Text/800` |
+| Static input text | 12px Regular 400 | `Color/Text/800` |
 | Icon fill | black | `Color/Icon/Default` |
 | Close button bg | `#454545` | `Color/Neutral/800` |
 | Close button text | `#e1e1e0` | `Color/Text/100` |
@@ -218,7 +218,7 @@ Modal (560×390px)
 - Mobile：與大型 bulletin modal 相同，採滿版 modal（100% width / 100% height），避免 560px 內容在 375px viewport 被壓縮。
 - 點擊 `icons/info` 開啟；點 header close、footer「關閉」、backdrop 或 Esc 關閉。
 - 四個 info item 保持 flex-wrap，不因 mobile 或窄寬度改成 horizontal overflow。
-- 房型資料目前為 prototype 靜態內容；textarea 可輸入，未來由後端資料渲染。
+- 房型資料目前為 prototype 靜態內容；內容區為不可修改的靜態 input-like 區塊，未來由後端資料渲染。
 
 ---
 

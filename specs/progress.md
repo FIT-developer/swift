@@ -14,6 +14,57 @@
 
 ---
 
+## Session 32 交接（2026-05-05）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者確認，更新 `start.md` 工作規則：
+  - 375px 改為「目前 Figma mobile 參考稿寬度」，不代表產品最小支援寬度；實作需全響應式，QA viewport 依任務指定。
+  - 新增 `figma-go` 三階段流程：Read → Spec checkpoint → Write + implement。
+  - 明確規定「只讀 / 不寫 code / 還沒讀完」時不可寫 spec 或實作。
+  - 新對話啟動由 `AGENTS.md` 控制簡化摘要，避免重複完整開工 checklist。
+  - token 讀取改為 usage rules + 相關章節；只有使用者說 Figma Variables 變動時才全量同步。
+  - `Claude` 文案改為通用 `AI agent / Codex`。
+  - progress 同步規則改為新增 Session 交接格式。
+  - 使用者提出的 HTML/CSS 方向若技術上不可靠，需先停下說明，不可硬做一版。
+  - 新增 inline style / hard-coded design value 限制：例外需先報告、取得同意，並寫入 spec 或 progress。
+  - 新增 Full Start Checklist / Light Task Checklist 分級，避免小修漏必要流程。
+
+**進行中**:
+- 房型介紹 modal static input-like 修正已完成但尚未 commit。
+- `start.md` 規則更新已完成但尚未 commit。
+
+**下一步應做**:
+- 跑文件/HTML 基礎檢查。
+- 若使用者同意，將本次 `start.md` 規則更新與房型介紹 modal 修正一起 commit，或拆成兩個 commit。
+
+**重要決定**:
+- `figma-go` 不再等同「讀完立刻寫檔」；預設需先 checkpoint，除非使用者明確要求直接實作。
+- 小修不跑完整開工 checklist，但仍需查 spec、查相關 token、更新 progress、跑必要驗證。
+
+---
+
+## Session 31 交接（2026-05-05）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者修正，房型介紹 modal（`info.svg` 開啟）內容區不再使用可編輯 textarea。
+- `preview/landing.html` 已將 `modalRoomIntroBackdrop` 的內容區改為 static input-like display：
+  - 使用白底、一般 border、12px 文字的 input 視覺。
+  - 不可修改。
+  - 不套 disabled 灰底樣式。
+  - 保留多行文字與後端渲染空間。
+- `components/modal.md` 已同步更新 `state=room intro`：
+  - `Input textarea` 改為 `Static input content`。
+  - 明確記錄內容區不可編輯、未來由後端資料渲染。
+
+**下一步應做**:
+- 做 browser smoke test，確認點 `info.svg` 開啟後內容區不可輸入，且視覺仍維持一般白底 input 樣式。
+
+---
+
 ## Session 30 交接（2026-05-05）
 
 ### 本次進度交接
