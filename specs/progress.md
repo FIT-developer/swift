@@ -4,6 +4,466 @@
 
 ---
 
+## Session 54 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 完成 order summary `未付款` modal 內 `轉正式單` accordion 的最新存檔：
+  - layout 以 Figma latest selection `Accordion 10` 為來源：外層淡藍 `bg-surface-hover`、內層 white card、header 無灰底與 underline。
+  - chip 順序為 `轉帳`, `傳真刷卡`, `票券`, `前台自付`, `信用交易`, `支票`, `訂金`, `紅利`。
+  - default selected chip 已確認並修回第一個 `轉帳`；`resetOrderSummaryModal()` 重設為 `setOrderSummaryTransferPay("transfer")`。
+  - `票券`只是用來讀取特規 layout 的 active selection，不是 default state；票券內容保留為兩個 input + inline `檢查` + `備註` single-line input。
+- 補強 workflow 長期規則：
+  - `start.md` 已新增 `figma-go` 後必須整理 implementation contract。
+  - 實作前必須做「舊 HTML/spec vs Figma contract」差異 checkpoint。
+  - Figma selection 的 active visual state 不可自動推論為 default；若可能只是為了讀取 variant/layout，必須先問使用者。
+- `components/modal.md` 已同步記錄 `轉正式單` 的 layout、default chip、票券特規與最後一個 chip `紅利`。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 若繼續檢查此 modal，先用 browser / screenshot 做 desktop 視覺 QA，尤其是 `轉正式單` accordion 在 `未付款` modal 中的寬度、chip row、票券 two-input row 與底部 action 對齊。
+- 後續任何 `figma-go` 實作都要先輸出 contract + 舊 HTML/spec 差異 checkpoint，再進入寫檔。
+
+**重要決定**:
+- 舊 HTML/spec 只能當既有實作參考；已確認 Figma contract 與使用者確認事項才是當輪實作來源。
+- 目前 `轉正式單` default chip 是 `轉帳`，不可再因 Figma selection 顯示票券 active 而改成票券。
+
+## Session 53 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 重新讀取 Figma 目前 selection `Accordion 10`（轉正式單 accordion），並以使用者確認後的 selection 作為來源修正 order summary `轉正式單` section：
+  - 外層 section 改為 `bg-surface-hover` 淡藍底、`border-border-disabled`、`rounded-xl`、`p-5`。
+  - header 移除灰底與 underline，改為 Figma 的 20px / 27px 文字列與右側 down icon。
+  - 內層 content 改為 white card、`rounded-xl`、`p-5`。
+  - chip gap 改為 16px；chip 順序確認為 `轉帳`, `傳真刷卡`, `票券`, `前台自付`, `信用交易`, `支票`, `訂金`, `紅利`。
+  - default active chip 維持第一個 `轉帳`，`resetOrderSummaryModal()` 重設為 `transfer`。
+  - `票券` 欄位改為 `支付金額` / `票券號碼` two inputs + inline `檢查` / `備註` single-line input。
+- 已更新 `components/modal.md` 記錄 latest selection 規則，並註明最後一個 chip 是 `紅利`，Figma 先前 duplicate `傳真刷卡` 是誤植。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**重要決定**:
+- 本輪以 2026-05-06 latest Figma selection `Accordion 10` 為準讀取 `轉正式單` layout；但 selection active 在 `票券` 是為了檢查票券特規 layout，不代表 default state。`轉正式單` default selected chip 仍為第一個 `轉帳`。
+- 本輪發現風險：讀過 Figma 整頁後，如果沒有先固化 implementation contract，後續實作容易混用舊 HTML/spec 與最新 Figma selection，造成差異沒有被指出。已補入 `start.md` 長期規則：`figma-go` 後必須先列 contract，實作前做舊 HTML/spec vs Figma contract 差異 checkpoint；舊 HTML 只能當參考，不能覆蓋已確認的 Figma contract。
+- 重要補充：Figma selection 的 currently selected / active visual state 不可自動推論為 default。若 active state 只是為了讀取某個 variant 或特規 layout，必須先列為疑點詢問使用者。
+
+## Session 52 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 order summary `轉正式單` section：
+  - 從 static section title 改為 functional accordion button。
+  - 加入 `aria-expanded="true"` / `aria-controls="orderSummaryTransferContent"`。
+  - content 使用 `data-order-summary-accordion-content`，沿用既有 `setOrderSummaryAccordion()`。
+  - icon 使用 `down.svg` / `up.svg`，開啟 order summary modal 時會 reset expanded。
+- 修正 `轉正式單` 底部 action button 文字垂直偏下：
+  - `清除` / `改為正式單` 都改為 `inline-flex h-auto min-h-[34px] items-center justify-center`。
+- 已更新 `components/modal.md` 記錄 `轉正式單` 是 accordion section。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- 靜態檢查：`轉正式單` header 是 `button`，含 `aria-controls="orderSummaryTransferContent"` / `data-order-summary-accordion-toggle`；底部 `清除` / `改為正式單` 都含 `inline-flex h-auto min-h-[34px] items-center justify-center`。
+
+**重要決定**:
+- order summary 內凡有 down/up icon 的 section 都必須是真正 accordion；`轉正式單` 與 `訂房與入住人資訊` 使用同一套 accordion handler。
+
+## Session 51 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 order summary `轉正式單` section 初始 active chip：
+  - 初始 selected 從 `票券` 改回第一個 chip `轉帳`。
+  - 初始顯示 `轉帳` 欄位組：支付金額 / 收款帳號 / 客支付帳號。
+  - `resetOrderSummaryModal()` 改為重設 `setOrderSummaryTransferPay("transfer")`。
+  - `票券` 仍保留特規：點選後才顯示支付金額 / 票券號碼 / 備註 + inline `檢查`。
+- 已更新 `components/modal.md` 記錄 default selected chip is `轉帳`。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- 靜態檢查：`轉帳` chip 有 `.rb-pay-active`；`transfer` 欄位組初始可見；`ticket` 欄位組初始 hidden；`resetOrderSummaryModal()` 呼叫 `setOrderSummaryTransferPay("transfer")`。
+
+**重要決定**:
+- `轉正式單` section 的初始 active chip 跟頁面右側 `[E] 正式單` panel 一致，使用第一個 chip `轉帳`；`票券` 只是點選後的 special case。
+
+## Session 50 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 補完 order summary `轉正式單` section 的 chip 切換功能：
+  - 新增 `data-order-summary-transfer-pay` / `data-order-summary-transfer-fields` contract。
+  - 點擊 chip 會切換 `.rb-pay-active`，並顯示對應欄位組。
+  - 8 種欄位沿用 `[E] 正式單` 已確認規則：
+    - `轉帳`：支付金額 / 收款帳號 / 客支付帳號。
+    - `傳真刷卡`：支付金額 / 卡號 / 授權碼。
+    - `票券`：支付金額 / 票券號碼 / 備註，且保留 inline `檢查` 特規。
+    - `前台自付` / `信用交易` / `支票`：支付金額 / 內容 / 備註。
+    - `訂金`：訂金餘額 / 支付金額。
+    - `紅利`：紅利餘額 / 支付金額。
+  - `resetOrderSummaryModal()` 會重設 `轉正式單` section 為 `票券` active。
+- 修正 `檢查` 按鈕文字偏下：
+  - 改為 `inline-flex h-auto min-h-[34px] items-center justify-center`。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- 靜態檢查：`data-order-summary-transfer-pay` 共 8 個、`data-order-summary-transfer-fields` 共 8 個，key 皆為 `transfer,fax,ticket,frontdesk,credit,check,deposit,bonus`；`檢查` 按鈕含 `inline-flex h-auto min-h-[34px] items-center justify-center`。
+
+**重要決定**:
+- `轉正式單` section 的 payment fields 與頁面右側 `[E] 正式單` panel 使用相同欄位規則，但使用獨立 data attributes，避免共用 `#paymentChips` / `#paymentFields` id。
+
+## Session 49 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 補上 order summary `未付款` modal 漏掉的 `轉正式單` section：
+  - 放在 `付款與帳戶` 後、`訂單明細` 前。
+  - 包含 8 個付款 chips：`轉帳` / `傳真刷卡` / `票券` / `前台自付` / `信用交易` / `支票` / `訂金` / `紅利`。
+  - `票券` chip 預設 selected，使用既有 `.rb-pay-chip.rb-pay-active` / `Color/SubItem/Selected`。
+  - 欄位包含 `支付金額`、`票券號碼`、`備註`。
+  - `檢查` 按鈕放在 `票券號碼` input 同列右側，使用 `Color/Surface/Accent` / `bg-surface-accent`。
+  - section actions 為 `清除` / `改為正式單`。
+- `setOrderSummaryVariant()` 新增 `showTransferOfficial` 控制：
+  - `unpaid` 顯示 `轉正式單`。
+  - `paid` / `waitlist` 隱藏 `轉正式單`。
+- 已更新 `components/modal.md` 記錄 `轉正式單` section 內容與顯示規則。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- 靜態檢查：`data-order-summary-transfer-section` 位於 `付款與帳戶` 後方；`showTransferOfficial` 只在 `unpaid` 為 true；`檢查` 使用 `bg-surface-accent`。
+
+**重要決定**:
+- `轉正式單` 是 order summary `未付款` variant 內容，不與 page 右側 `[E] 正式單與候補單` panel 共用 DOM；但 chip token 與欄位規則沿用已記錄的 Figma history。
+
+## Session 48 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 order summary `付款與帳戶` 的右側欄位流：
+  - 右側序列改為 `應付訂金` → `已付金額` → `訂房總金額` → `尚欠金額` → `修改人員`。
+  - `訂房總金額` 不再落到左側欄位；用 `.order-summary-grid-spacer` 補足左側空位，讓它顯示在 `已付金額` 下方的右側欄。
+  - mobile 下 `.order-summary-grid-spacer` 隱藏，維持單欄 label/value 連續排列。
+- 已更新 `components/modal.md` 記錄 `付款與帳戶` 右側欄位順序。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- 靜態檢查：`已付金額` 後方有 2 個 `.order-summary-grid-spacer`，接著是 `訂房總金額`；mobile media query 會隱藏 spacer。
+
+**重要決定**:
+- `付款與帳戶` 右側有空位時，用 DOM spacer 保持 grid 欄位語意，不把右側欄位移到左側補空。
+
+## Session 47 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 修正上一輪對 `無設定` radio 的誤解：
+  - 恢復 `無設定` radio 預設 `checked`。
+  - 預設 `無設定` checked 時，點擊 `產生訂單` 會開啟 `未付款` modal。
+  - 切換到 `正式單` / `候補單` 後，點擊 `產生訂單` 分別開啟 `已付款` / `候補單` variant。
+- 修正 `產生訂單` 無法開 modal 的實際原因：
+  - `data-order-summary-submit` button 位於 script 之後，原本用 `querySelectorAll` 綁定時 DOM 尚未存在。
+  - 改為 document-level delegated click handler，與既有 generic modal open pattern 一致。
+- 已更新 `components/modal.md`，移除 no-selection rule，記錄 `無設定` 是預設 checked 並映射到 default unpaid modal。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- 靜態檢查：`無設定` radio 保留 `checked`；`data-order-summary-submit` 由 document-level delegated handler 接住並呼叫 `openModal("modalOrderSummaryBackdrop")`。
+
+**重要決定**:
+- `無設定` 是預設選取狀態，並且是有效 submit 狀態；它會產生 `未付款` modal。
+
+## Session 46 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 `正式單與候補單` radio 未選取時的 submit 行為：
+  - 移除 `無設定` radio 的預設 `checked`。
+  - 沒有任何 `rb-order-type` radio 被選中時，`產生訂單` 不開啟 order summary modal。
+  - `無設定` 必須由使用者實際選中，才會映射到 `未付款` modal。
+  - 初始沒有選取時，`orderTypeContent` 內三個 panel 全部 hidden。
+- 已更新 `components/modal.md` 記錄 no-selection submit 不開 modal 的規則。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- 靜態檢查：`rb-order-type value="none"` 已無 `checked`；`!checked` 時回傳空字串，submit 不呼叫 `openModal`。
+
+**重要決定**:
+- `無設定` 是 explicit radio value，不是沒有選取時的 fallback。
+
+## Session 45 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 接上 `正式單與候補單` radio 與 `產生訂單` 的 order summary modal variant 分流：
+  - `無設定` → 開啟目前完成的 `未付款` modal。
+  - `正式單` → 開啟 `已付款` variant；top pill / copy / `基本資訊 > 訂單狀態` 顯示 `已付款`，使用 `Color/Surface/Status-Positive`。
+  - `候補單` → 開啟 `候補單` variant；top pill 顯示 `候補單`，copy 顯示 `此訂單尚為候補單`，使用 `Color/Surface/Brand-Active`；`基本資訊 > 訂單狀態` 仍保持 payment status `未付款`。
+- `產生訂單` button 從 generic `data-modal-open` 改為 `data-order-summary-submit`，避免直接跳過 variant 判斷。
+- 已更新 `components/modal.md` 記錄 radio-to-modal variant mapping。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- 靜態檢查：`產生訂單` 已移除 `data-modal-open="modalOrderSummaryBackdrop"`，改用 `data-order-summary-submit`；variant mapping `none → unpaid`、`official → paid`、`substitute → waitlist` 存在。
+
+**重要決定**:
+- 三種 order summary 狀態先共用同一份 modal DOM，以 JS 更新狀態文字與 token class；不複製整份 modal markup。
+
+## Session 44 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者指定修正 order summary head title + table 的上緣線：
+  - 新增 `.order-summary-table--after-title` modifier。
+  - `訂單明細` / `加購明細` / `訂單總額` 的 table 套用該 modifier，移除 `thead th` 的 top border。
+  - 保留 `.order-summary-table thead th` 的預設 top border，供沒有 `.order-summary-section-title` 在上方的 table 使用。
+- 已更新 `components/modal.md`，記錄 section title 後方 table 需使用 `.order-summary-table--after-title`，不可讓 `thead` top border 形成 title underline。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**重要決定**:
+- head title + table 的 section title 不加 underline；緊接其後的 table 也不得用 `thead` top border 補出上緣線，只保留 `thead` bottom border。
+
+## Session 43 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 order summary section title underline：
+  - 改為 opt-in class `.order-summary-section-title--underlined`，只套在 `基本資訊` 這類只有 head title row 的 section。
+  - `訂單明細` / `加購明細` / `訂單總額` 這類 head title + table 的 section，不在 title 上加 underline。
+- 修正 section title 與 table 相鄰時的邊線歸屬：
+  - table `thead` top border 恢復顯示，作為設計稿中的 table 上緣線。
+  - `訂單明細` / `加購明細` / `訂單總額` 的 table wrapper 需緊貼 head title，不加額外 top margin。
+  - 避免 title bottom border 與 table top border 同時存在造成雙線；head title + table 的唯一邊界線由 table `thead` 提供。
+- 修正 order summary tables 的 body row borderline：
+  - 將 row separator 從 `.order-summary-table tbody tr` 改為 `.order-summary-table tbody td`。
+  - 讓 `訂單明細` / `加購明細` / `訂單總額` 的 tbody 分隔線可靠顯示，符合 Figma table row border intent。
+- 已更新 `components/modal.md` 記錄 table body row border 實作規則。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**重要決定**:
+- Figma table row stroke 在 HTML table 內以 cell-level border 實作，避免瀏覽器對 `tr` border rendering 不一致。
+
+## Session 42 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者規則修正 order summary accordion：
+  - `訂房與入住人資訊` header 從 static div 改為 button。
+  - 加入 `aria-expanded` / `aria-controls`。
+  - 點擊 header 會 hide/show content。
+  - icon 在 `down.svg` / `up.svg` 之間切換。
+  - 開啟 `modalOrderSummaryBackdrop` 時重設為 expanded。
+- 已更新 `components/modal.md`：
+  - 凡 order summary section header 顯示 `icons/down` 或 `icons/up`，必須實作 accordion function，不可只是裝飾。
+  - 記錄 `訂房與入住人資訊` accordion 行為。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=2`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 跑 CLI / HTTP 驗證。
+
+**重要決定**:
+- Down/up icon is treated as an interaction affordance in order summary modal.
+
+## Session 41 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 `訂單明細` table 的 `專案` 欄位副文字：
+  - 新增 `.order-summary-project-subtitle`。
+  - 副文字改為 `width: 100%` / `max-width: 100%` / `white-space: normal` / `overflow-wrap: anywhere`。
+  - 避免 `我是專案介紹介紹介紹介介紹紹介紹介紹介紹` 這種無空格長字串撐開 table。
+- 已更新 `components/modal.md` 記錄 `專案` 副文字需為 full-width wrapping block。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=2`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 跑 CLI / HTTP 驗證。
+
+**重要決定**:
+- `訂單明細` table 寬度被撐開時，先檢查 cell 內無空格長字串；副文字用 scoped class 約束在欄位內換行。
+
+## Session 40 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 order summary table 金額 / 小計對齊 specificity：
+  - 新增 `.order-summary-table .order-summary-number`，覆蓋 `.order-summary-table th, td { text-align: left; }`。
+  - 確保所有 table 內標記為 `order-summary-number` 的 `小計` header/cell 與金額 cell 都實際靠右對齊。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=2`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 跑 CLI / HTTP 驗證。
+
+**重要決定**:
+- order summary table 的右對齊不可只靠低 specificity utility class；需用 scoped table selector 覆蓋 base table cell alignment。
+
+## Session 39 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者回饋與 Figma node re-read 修正 order summary table layout：
+  - `加購明細` 與 `訂單總額` 改為同一個 row-direction container。
+  - `加購明細` 使用 Figma 內容寬度約 615px，section 約 655px。
+  - `訂單總額` 使用 Figma 內容寬度約 275.67px，section 約 315.67px。
+  - 兩個 section 之間使用 24px gap；mobile 下改為垂直堆疊。
+  - `訂單總額` section/header/table 改為 `Color/Brand/Brand-50` 背景，section title 使用 `Color/Surface/Action-Default`。
+  - `加購明細` 的 `數量`、`單價`、`小計` header/cells 改為右對齊；`小計` 金額與 `加購總計` 金額右對齊。
+- 已更新 `components/modal.md`，記錄 add-on / order-total row container、Figma widths、right-align 與 color rules。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=2`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 跑 CLI / HTTP 驗證。
+- Browser visual / click smoke test 仍待補，特別是 desktop 下 `加購明細` + `訂單總額` 是否同列。
+
+**重要決定**:
+- 後續 table 設計若有不清楚處，先回 Figma node 或詢問使用者，不自行用 generic table style 補齊。
+
+## Session 38 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者回饋修正 `modalOrderSummaryBackdrop` default unpaid modal：
+  - `訂單明細` table 的 `間數`、`單價`、`小計` header/cell 改為 nowrap。
+  - `入住日期` 兩個日期各自用獨立 `<span>` 包起來，並套 nowrap，避免日期文字斷行。
+  - 金額顯示改為 `$` 與數字同一組 inline-flex，保持中間視覺 gap 並不可斷開。
+  - 有金額數字的欄位改為預設向右對齊。
+  - `飯店資料` 改回 Figma 結構：置中 `旅宿 e 管家 DEMO` band + 4 rows，每 row 2 組 `Title` / `Content`。
+  - `訂房須知` 內容改為 textarea-like block，維持 `min-height: 199px`。
+- 已更新 `components/modal.md` 的 order summary layout 規則，記錄 nowrap、金額對齊、飯店資料與訂房須知 textarea 規則。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=2`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 跑 CLI / HTTP 驗證。
+- Browser visual / click smoke test 仍待補。
+
+**重要決定**:
+- 訂單 summary 的金額欄位用 `.order-summary-number` 統一右對齊與 nowrap。
+- 金額 `$` 與數字使用 `.order-summary-money` 包成不可斷行的 inline group。
+
+## Session 37 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者確認，將 `產生訂單` button 接上訂單內容 default modal：
+  - 新增 `modalOrderSummaryBackdrop`。
+  - 點擊 `產生訂單` 開啟 default unpaid 訂單內容 modal。
+  - modal 支援 header/footer 固定、body scroll；mobile 滿版，長 table 保持水平 scroll。
+- 依已讀 Figma frames 更新 `components/modal.md`：
+  - `state=order summary / default unpaid`：`1411:20866`，1019×2911。
+  - `state=order summary / paid`：`1437:44343`，1019×2506，文案記錄為使用者已修正的 `此訂單已付款`。
+  - `state=order summary / waitlist`：`1437:45408`，1019×2506；top status `候補單` 與 payment status `未付款` 分離。
+  - `state=order summary / transfer official`：`1437:46152`，1019×2935；`轉正式單` section 有自己的 `清除` / `改為正式單` action area。
+- 匯出訂單內容 modal 使用的 Figma icons：
+  - `preview/assets/icons/order-summary-message-share.svg`
+  - `preview/assets/icons/order-summary-print.svg`
+  - SVG fill/stroke 已改為 `currentColor`。
+- 補上 token alias 記錄與 HTML 變數：
+  - `Color/Surface/Accent` → `bg-surface-accent` / `--color-surface-accent`（`#42EBE9`）。
+  - `Color/SubItem/Selected` → `bg-subitem-selected` / `--color-subitem-selected`（`#F7D275`，原本 HTML 已有變數，tokens alias 表補記錄）。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=2`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- Browser visual / click smoke test 尚未執行：本輪只做 CLI / HTTP 結構檢查。
+
+**下一步應做**:
+- 在 browser 進入 room-booking template，點 `產生訂單`，檢查 default unpaid 訂單內容 modal：
+  - header `訂單內容`、top title `訂單明細`、actions `簡訊` / `列印`。
+  - top status `未付款`、copy `此訂單尚未付款`。
+  - 各 section：`基本資訊`、`付款與帳戶`、`訂單明細`、`加購明細`、`訂單總額`、`飯店資料`、`訂房與入住人資訊`、`訂房須知`。
+  - desktop / mobile scroll 與 table overflow。
+- 使用者後續新增狀態按鈕後，再接 paid / waitlist / transfer official variants；production 由 backend transaction status 決定顯示內容。
+
+**重要決定**:
+- 目前 `產生訂單` 只開啟 default unpaid modal；paid / waitlist / transfer official 不在本輪直接開啟。
+- `候補單` 是 transaction/order category status；`基本資訊 > 訂單狀態` 仍可保持 payment status `未付款`。
+- `#42EBE9` 對應 `Color/Surface/Accent`，`#F7D275` 對應 `Color/SubItem/Selected`，不可當作未命名 hex 使用。
+
 ## Session 36 交接（2026-05-06）
 
 ### 本次進度交接

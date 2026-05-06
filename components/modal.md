@@ -29,6 +29,10 @@
 | `state=purchase add-on / desktop` | `1392:17122` | 1194×893px | 加購 modal；desktop RWD reference |
 | `state=purchase add-on / tablet` | `1393:18281` | 768×1959px | 加購 modal；tablet RWD reference |
 | `state=purchase add-on / mobile` | `1393:19196` | 375×3139px | 加購 modal；mobile RWD reference |
+| `state=order summary / default unpaid` | `1411:20866` | 1019×2911px | `產生訂單` 後顯示的預設訂單內容 modal |
+| `state=order summary / paid` | `1437:44343` | 1019×2506px | 已付款交易狀態；目前不由 `產生訂單` 直接開啟 |
+| `state=order summary / waitlist` | `1437:45408` | 1019×2506px | 候補單交易狀態；上方狀態與基本資訊付款狀態分離 |
+| `state=order summary / transfer official` | `1437:46152` | 1019×2935px | 候補轉正式單交易狀態，含 `轉正式單` section action area |
 
 ---
 
@@ -469,6 +473,125 @@ Modal
 | Time toggle | 點擊切換該 card 的 hour/minute selects disabled / active status；disabled 時 select 不可修改 |
 | Cost input | 可編輯 prototype local state；right cart total 依目前 cost × quantity 計算 |
 | Cart details | 購物車明細未來與 backend 協作；目前 prototype 由前端 local state 呈現 |
+
+---
+
+## state=order summary（訂單內容 / 訂單明細）
+
+**使用位置**：`preview/landing.html` 的 room-booking template，點擊 `產生訂單` 按鈕開啟。
+**Figma 讀取日期**：2026-05-06。
+**目前 implementation 範圍**：`state=order summary / default unpaid` 已完成；`正式單與候補單` radio 會在點擊 `產生訂單` 時切換 modal variant。
+
+### Figma 狀態來源
+
+| 狀態 | Node ID | 尺寸 | 說明 |
+|---|---|---|---|
+| Default unpaid | `1411:20866` | 1019×2911px | 預設訂單內容；top pill `未付款`，文案 `此訂單尚未付款` |
+| Paid | `1437:44343` | 1019×2506px | top pill `已付款`；Figma 已由使用者修正文案為 `此訂單已付款` |
+| Waitlist | `1437:45408` | 1019×2506px | top pill `候補單`，文案 `此訂單尚為候補單`；`基本資訊 > 訂單狀態` 仍顯示 `未付款` |
+| Transfer official | `1437:46152` | 1019×2935px | 含 `轉正式單` accordion section，section 內有自己的 `清除` / `改為正式單` actions |
+
+### Default unpaid 結構
+
+```
+Modal (1019px wide reference)
+├── Header Frame 10
+│   ├── "訂單內容"
+│   └── icons/close
+├── Content swap
+│   ├── Title row: "訂單明細" + actions "簡訊" / "列印"
+│   ├── Status row: pill "未付款" + "此訂單尚未付款" + print date
+│   ├── 基本資訊
+│   ├── 付款與帳戶
+│   ├── 轉正式單
+│   ├── 訂單明細
+│   ├── 加購明細
+│   ├── 訂單總額
+│   ├── 飯店資料
+│   ├── 訂房與入住人資訊
+│   └── 訂房須知
+└── Footer
+    ├── 取消
+    └── 確定
+```
+
+### 固定文字內容（default unpaid）
+
+| 區塊 | 內容 |
+|---|---|
+| Header title | `訂單內容` |
+| Main title | `訂單明細` |
+| Header actions | `簡訊`, `列印`，使用 `order-summary-message-share.svg` / `order-summary-print.svg` |
+| Top status | `未付款`, `此訂單尚未付款`, `列印日期：2026-04-26 14：49` |
+| 基本資訊 | `訂單編號 BBBXXXYYY12345`, `訂單狀態 未付款`, `訂單類別 一般會員`, `訂單來源 現場`, `訂購日期 2031-01-31 14：25：25`, `繳款期限 2031-01-31 14：25：25` |
+| 付款與帳戶 | `付款方式 ATM`, `應付訂金 $ 10,000`, `帳戶 玉山銀行\n分行：\n戶名：`, `已付金額 $ 999`, `訂房總金額 $ 999`, `尚欠金額 $ 999`, `訂單人員 Money`, `修改人員 Punchi` |
+| 轉正式單 | accordion section; outer card uses `Color/Neutral/75` / `bg-surface-hover`, inner content card uses `Color/Neutral/0` / white; chips `轉帳`, `傳真刷卡`, `票券`, `前台自付`, `信用交易`, `支票`, `訂金`, `紅利`; default selected chip is first chip `轉帳`; clicking a chip swaps its field group; `票券` is the special case with fields `支付金額`, `票券號碼` two equal-width inputs + inline action `檢查`, and `備註` as a single-line input; section actions `清除`, `改為正式單` |
+| 訂單明細 | table columns `#`, `房型`, `專案`, `入住日期`, `間數`, `單價`, `小計`；prototype 2 rows + `訂單總計 $ 888,011` |
+| 加購明細 | table columns `#`, `加購項目`, `備註`, `數量`, `單價`, `小計`；prototype 2 rows + `加購總計 $ 888,011` |
+| 訂單總額 | `訂單明細 888`, `加購明細 888`, `訂單總計 $ 888,011` |
+| 飯店資料 | Figma placeholder content：top centered band `旅宿 e 管家 DEMO`，below 4 rows，每列 2 組 `Title` / `Content` |
+| 訂房與入住人資訊 | `訂房人` / `住房人` groups with `姓名`, `ID`, `電話`, `Email`, `性別`, `生日`, `手機`, `地址` |
+| 訂房須知 | `（ntd-套用 xyz）`, textarea-like content `我是內容`，保持固定最小高度 |
+| Footer | `取消`, `確定` |
+
+### Variant rules
+
+| Variant | 規則 |
+|---|---|
+| Default unpaid | `正式單與候補單` radio 預設選中 `無設定`；點擊 `產生訂單` 開啟 default unpaid variant；top pill `未付款`; shows `轉正式單` section below `付款與帳戶` |
+| Paid | `正式單與候補單` radio = `正式單` 時，點擊 `產生訂單` 開啟；top pill `已付款` uses `Color/Surface/Status-Positive`; supporting copy is corrected to `此訂單已付款`; `基本資訊 > 訂單狀態` also displays `已付款` |
+| Waitlist | `正式單與候補單` radio = `候補單` 時，點擊 `產生訂單` 開啟；top pill `候補單` uses `Color/Surface/Brand-Active`; `基本資訊 > 訂單狀態` remains payment status `未付款` using `Color/Surface/Status-Negative` |
+| Transfer official | Adds `轉正式單` accordion based on current Figma selection `Accordion 10`; default selected chip remains first chip `轉帳`; `票券` selection was used only to inspect its special layout, not as default state; last chip is `紅利`（Figma earlier duplicate `傳真刷卡` was an error corrected by user）；ticket-number row uses two inputs plus inline `檢查` button with `Color/Surface/Accent` fill and `Color/Neutral/75` stroke; section-level actions are `清除` and `改為正式單` |
+
+### Layout / RWD
+
+| 區塊 | 規格 |
+|---|---|
+| Modal width | desktop max follows 1019px reference; viewport narrower than reference uses `calc(100vw - 24px)` |
+| Modal height | content taller than viewport 時，header / footer fixed，body scroll |
+| Mobile | modal fills viewport width / height，body scroll；tables keep horizontal scroll instead of forcing columns to collapse |
+| Basic/payment info | desktop uses two label/value pairs per row; mobile stacks to one label/value pair per row |
+| Payment/account right column | `付款與帳戶` desktop right-side sequence is `應付訂金` → `已付金額` → `訂房總金額` → `尚欠金額` → `修改人員`; if left side has no paired field for that row, use hidden grid spacer items rather than moving the right-side field into the left column |
+| Section title underline | if a section has only a head title row, such as `基本資訊`, the title uses a single solid underline with `Color/Text/800` |
+| Head title + table border | if a section title is followed by a table, the title has no underline; the table uses the `order-summary-table--after-title` modifier so `thead` has no top border and only keeps its bottom border |
+| Long tables | semantic `<table>` with `min-width` and overflow-x wrapper |
+| Add-on / order-total row | `加購明細` and `訂單總額` are siblings in one row-direction container; Figma widths are approximately 655px / 315.67px with 24px gap |
+| Add-on table | table width follows Figma 615px content area; `數量` / `單價` / `小計` values right aligned; `小計` amount and `加購總計` amount right aligned |
+| Order total table | table width follows Figma 275.67px content area; container/header/table use `Color/Brand/Brand-50`; section title uses `Color/Surface/Action-Default` |
+| Table row borders | body row separators must render with `Color/Neutral/200` / `border-border-disabled`; implement the HTML table border on `tbody td` so the Figma row line is visible across the row |
+| Date cells | `入住日期` 的兩個日期必須各自包在獨立 `<span>`，並保持 nowrap，不可讓 `2026-04-24（四）` 斷行 |
+| Project subtitle | `專案` 欄位副文字需為 full-width wrapping block，避免無空格長字串撐開 `訂單明細` table |
+| Count / price / subtotal cells | `間數`、`單價`、`小計` header/cells must be nowrap |
+| Amount alignment | 有金額數字的欄位預設向右對齊；`$` 與數字需作為同一組 inline content，不可斷開，但 `$` 與數字之間保留視覺 gap |
+| Hotel data | follows Figma table structure: section title, centered hotel name band, then 4 bordered rows with two title/content pairs per row |
+| Booking rules content | `訂房須知` content uses textarea-like block with minimum height matching Figma content area |
+| Down/up icon sections | Any order summary section header that displays `icons/down` or `icons/up` must be implemented as a functional accordion, not static decoration |
+
+### Typography / Colors
+
+| 元素 | 規格 | Token |
+|---|---|---|
+| Header title | 20px SemiBold 600 | `Color/Text/800` |
+| Main title | 24px SemiBold 600 | `Color/Text/800` |
+| Action buttons bg | `#FDEBD7` | `Color/Brand/Brand-100` |
+| Default unpaid pill | `#E12129` | `Color/Surface/Status-Negative` |
+| Paid pill | `#2ACA18` | `Color/Surface/Status-Positive` |
+| Waitlist pill | `#E05216` | `Color/Surface/Brand-Active` |
+| Section header bg | `#F6F6F6` | `Color/Surface/Default` |
+| Section panel bg | `#FFFFFF` | `Color/Neutral/0` |
+| Section border | `#D1D1D1` | `Color/Neutral/200` |
+| Transfer selected method | `#F7D275` | `Color/SubItem/Selected` |
+| Transfer inline `檢查` | `#42EBE9` | `Color/Surface/Accent` |
+
+### Interaction
+
+| 行為 | 規則 |
+|---|---|
+| 開啟 | `產生訂單` click → read `rb-order-type` radio and open `modalOrderSummaryBackdrop` with mapped variant: `無設定` → default unpaid, `正式單` → paid, `候補單` → waitlist |
+| 關閉 | header close、footer `取消` / `確定`、backdrop、Esc 關閉 |
+| Header actions | `簡訊` / `列印` currently visual prototype only，尚未接後端或瀏覽器 print API |
+| Accordion sections | `訂房與入住人資訊` header toggles its content open/closed; icon switches between `down.svg` and `up.svg`; modal open resets to expanded |
+| Other status details | 尚未接入；使用者會後續建立狀態按鈕，production 由 backend transaction status 決定 |
 
 ---
 

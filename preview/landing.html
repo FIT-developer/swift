@@ -24,6 +24,7 @@
               "surface-default": "var(--color-surface-default)",
               "surface-hover": "var(--color-surface-hover)",
               "surface-action": "var(--color-surface-action)",
+              "surface-accent": "var(--color-surface-accent)",
               "surface-brand": "var(--color-surface-brand)",
               "surface-brand-hover": "var(--color-surface-brand-hover)",
               "bootstrap-focus-background":
@@ -104,6 +105,7 @@
         --color-brand-500: #ef6f25;              /* Brand-500 / Surface Brand-Default */
         --color-brand-active: #e05216;           /* Brand-600 */
         --color-surface-action: #005fcc;         /* Surface/Action-Default */
+        --color-surface-accent: #42ebe9;         /* Surface/Accent */
         --color-surface-brand: #ef6f25;          /* Surface/Brand-Default */
         --color-surface-brand-hover: #f28b45;    /* Surface/Brand-Hover */
         --color-border-focus: #b0b0b0;           /* Border/Focus */
@@ -443,6 +445,161 @@
         flex-direction: column;
         overflow: hidden;
       }
+      #modalOrderSummaryBackdrop .modal-box {
+        width: min(calc(100vw - 24px), 1019px);
+        max-height: calc(100vh - 24px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .order-summary-shell {
+        border: 1px solid var(--color-border-disabled);
+        border-radius: 8px;
+        background: var(--color-white);
+        padding: 12px;
+      }
+      .order-summary-section {
+        border: 1px solid var(--color-border-disabled);
+        border-radius: 8px;
+        background: var(--color-white);
+        padding: 20px;
+      }
+      .order-summary-section-title {
+        background: var(--color-surface-default);
+        padding: 8px 12px;
+        font-size: 20px;
+        line-height: 27px;
+        color: var(--color-text-default);
+      }
+      .order-summary-section-title--underlined {
+        border-bottom: 1px solid var(--color-text-default);
+      }
+      .order-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px 20px;
+        padding-top: 4px;
+      }
+      .order-summary-label {
+        padding: 3px 12px;
+        font-size: 16px;
+        line-height: 22px;
+        color: var(--color-text-muted);
+      }
+      .order-summary-value {
+        padding: 3px 12px;
+        font-size: 16px;
+        line-height: 22px;
+        color: var(--color-text-default);
+      }
+      .order-summary-grid-spacer {
+        min-height: 1px;
+      }
+      .order-summary-table {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+        font-size: 16px;
+        color: var(--color-text-default);
+      }
+      .order-summary-table th,
+      .order-summary-table td {
+        padding: 8px 12px;
+        text-align: left;
+        vertical-align: top;
+        font-weight: 400;
+      }
+      .order-summary-table thead th {
+        border-top: 1px solid var(--color-text-default);
+        border-bottom: 1px solid var(--color-text-default);
+        background: var(--color-surface-hover);
+      }
+      .order-summary-table--after-title thead th {
+        border-top: 0;
+      }
+      .order-summary-table tbody td {
+        border-bottom: 1px solid var(--color-border-disabled);
+      }
+      .order-summary-table tfoot td {
+        border-top: 1px solid var(--color-text-default);
+      }
+      .order-summary-number {
+        text-align: right;
+        white-space: nowrap;
+      }
+      .order-summary-table .order-summary-number {
+        text-align: right;
+        white-space: nowrap;
+      }
+      .order-summary-project-subtitle {
+        width: 100%;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+      .order-summary-money {
+        display: inline-flex;
+        gap: 4px;
+        white-space: nowrap;
+      }
+      .order-summary-inline-row {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+      }
+      .order-summary-addons-section {
+        flex: 1 1 655px;
+        min-width: 0;
+      }
+      .order-summary-total-section {
+        flex: 0 0 315.67px;
+        min-width: 0;
+        background: var(--color-brand-50);
+      }
+      .order-summary-total-section .order-summary-section-title {
+        background: var(--color-brand-50);
+        color: var(--color-surface-action);
+      }
+      .order-summary-addons-table {
+        min-width: 615px;
+      }
+      .order-summary-total-table {
+        min-width: 275.67px;
+        background: var(--color-brand-50);
+      }
+      .order-summary-total-table thead th {
+        background: var(--color-brand-50);
+      }
+      .order-summary-hotel-name {
+        background: var(--color-surface-hover);
+        padding: 4px 12px;
+        text-align: center;
+        font-size: 16px;
+        line-height: 22px;
+        color: var(--color-text-default);
+      }
+      .order-summary-hotel-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        border-bottom: 1px solid var(--color-border-disabled);
+        padding: 4px 0;
+      }
+      .order-summary-hotel-pair {
+        display: grid;
+        grid-template-columns: minmax(120px, 147px) minmax(0, 1fr);
+        min-width: 0;
+      }
+      .order-summary-person-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 24px;
+      }
+      .order-summary-person-row {
+        display: grid;
+        grid-template-columns: 140px minmax(0, 1fr);
+        border-bottom: 1px solid var(--color-border-disabled);
+        padding: 4px 0;
+      }
       .purchase-addon-layout {
         display: flex;
         gap: 20px;
@@ -565,7 +722,8 @@
         #modalAdministerBackdrop,
         #modalRoomIntroBackdrop,
         #modalRoomEditBackdrop,
-        #modalPurchaseAddonBackdrop {
+        #modalPurchaseAddonBackdrop,
+        #modalOrderSummaryBackdrop {
           align-items: stretch;
           justify-content: stretch;
           padding: 0;
@@ -574,7 +732,8 @@
         #modalAdministerBackdrop .modal-box,
         #modalRoomIntroBackdrop .modal-box,
         #modalRoomEditBackdrop .modal-box,
-        #modalPurchaseAddonBackdrop .modal-box {
+        #modalPurchaseAddonBackdrop .modal-box,
+        #modalOrderSummaryBackdrop .modal-box {
           width: 100%;
           max-width: 100%;
           max-height: none;
@@ -583,6 +742,30 @@
           border: none;
           box-shadow: none;
           margin: 0;
+        }
+        .order-summary-grid {
+          grid-template-columns: 112px minmax(0, 1fr);
+          gap: 4px 0;
+        }
+        .order-summary-grid-spacer {
+          display: none;
+        }
+        .order-summary-person-grid {
+          grid-template-columns: 1fr;
+        }
+        .order-summary-hotel-row {
+          grid-template-columns: 1fr;
+        }
+        .order-summary-inline-row {
+          flex-direction: column;
+        }
+        .order-summary-addons-section,
+        .order-summary-total-section {
+          width: 100%;
+          flex-basis: auto;
+        }
+        .order-summary-person-row {
+          grid-template-columns: 104px minmax(0, 1fr);
         }
       }
       /* ── Room-booking: mode toggle (calendar JS managed) ─── */
@@ -3703,6 +3886,626 @@
     </div>
 
     <!-- ════════════════════════════════════
+         Modal I — 訂單內容 / 訂單明細
+    ════════════════════════════════════ -->
+    <div
+      id="modalOrderSummaryBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalOrderSummaryTitle"
+    >
+      <div class="modal-box mx-3">
+        <!-- Header -->
+        <div
+          class="flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3 shadow-[0_1px_0_rgba(0,0,0,0.2)]"
+        >
+          <span
+            id="modalOrderSummaryTitle"
+            class="text-xl font-semibold text-text-default"
+            >訂單內容</span
+          >
+          <button
+            type="button"
+            class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+            data-modal="modalOrderSummaryBackdrop"
+            aria-label="關閉"
+          >
+            <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+          </button>
+        </div>
+
+        <div class="min-h-0 flex-1 overflow-y-auto bg-white p-3">
+          <div class="order-summary-shell">
+            <div class="mb-6">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <h2 class="text-2xl font-semibold text-text-default">
+                  訂單明細
+                </h2>
+                <div class="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    class="inline-flex h-[39px] items-center gap-2 rounded-md bg-brand-50 px-3 py-1.5 text-xl font-semibold text-text-default"
+                  >
+                    <img
+                      src="./assets/icons/order-summary-message-share.svg"
+                      alt=""
+                      class="h-6 w-6 text-icon-default"
+                    />
+                    <span>簡訊</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex h-[39px] items-center gap-2 rounded-md bg-brand-50 px-3 py-1.5 text-xl font-semibold text-text-default"
+                  >
+                    <img
+                      src="./assets/icons/order-summary-print.svg"
+                      alt=""
+                      class="h-6 w-6 text-icon-default"
+                    />
+                    <span>列印</span>
+                  </button>
+                </div>
+              </div>
+              <div class="mt-5 flex flex-wrap items-center gap-x-9 gap-y-2">
+                <div class="flex items-center gap-5">
+                  <span
+                    data-order-summary-status-pill
+                    class="inline-flex h-[42px] items-center rounded-[44px] bg-status-negative px-3 py-2.5 text-base text-white"
+                    >未付款</span
+                  >
+                  <span
+                    class="text-xs text-text-default"
+                    data-order-summary-status-copy
+                    >此訂單尚未付款</span
+                  >
+                </div>
+                <span class="text-xs text-text-default"
+                  >列印日期：2026-04-26 14：49</span
+                >
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <section class="order-summary-section">
+                <h3 class="order-summary-section-title order-summary-section-title--underlined">基本資訊</h3>
+                <div class="order-summary-grid">
+                  <div class="order-summary-label">訂單編號</div>
+                  <div class="order-summary-value">BBBXXXYYY12345</div>
+                  <div class="order-summary-label">訂單狀態</div>
+                  <div
+                    class="order-summary-value text-status-negative"
+                    data-order-summary-basic-status
+                  >
+                    未付款
+                  </div>
+                  <div class="order-summary-label">訂單類別</div>
+                  <div class="order-summary-value">一般會員</div>
+                  <div class="order-summary-label">訂單來源</div>
+                  <div class="order-summary-value">現場</div>
+                  <div class="order-summary-label">訂購日期</div>
+                  <div class="order-summary-value">2031-01-31 14：25：25</div>
+                  <div class="order-summary-label">繳款期限</div>
+                  <div class="order-summary-value">2031-01-31 14：25：25</div>
+                </div>
+              </section>
+
+              <section class="order-summary-section">
+                <h3 class="order-summary-section-title order-summary-section-title--underlined">付款與帳戶</h3>
+                <div class="order-summary-grid">
+                  <div class="order-summary-label">付款方式</div>
+                  <div class="order-summary-value">ATM</div>
+                  <div class="order-summary-label">應付訂金</div>
+                  <div class="order-summary-value order-summary-number">
+                    <span class="order-summary-money"><span>$</span><span>10,000</span></span>
+                  </div>
+                  <div class="order-summary-label">帳戶</div>
+                  <div class="order-summary-value whitespace-pre-line">玉山銀行
+分行：
+戶名：</div>
+                  <div class="order-summary-label">已付金額</div>
+                  <div class="order-summary-value order-summary-number">
+                    <span class="order-summary-money"><span>$</span><span>999</span></span>
+                  </div>
+                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
+                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
+                  <div class="order-summary-label">訂房總金額</div>
+                  <div class="order-summary-value order-summary-number">
+                    <span class="order-summary-money"><span>$</span><span>999</span></span>
+                  </div>
+                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
+                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
+                  <div class="order-summary-label">尚欠金額</div>
+                  <div class="order-summary-value order-summary-number font-semibold">
+                    <span class="order-summary-money"><span>$</span><span>999</span></span>
+                  </div>
+                  <div class="order-summary-label">訂單人員</div>
+                  <div class="order-summary-value">Money</div>
+                  <div class="order-summary-label">修改人員</div>
+                  <div class="order-summary-value">Punchi</div>
+                </div>
+              </section>
+
+              <section
+                class="rounded-xl border border-border-disabled bg-surface-hover p-5"
+                data-order-summary-transfer-section
+              >
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between text-left text-xl leading-[27px] text-text-default"
+                  aria-expanded="true"
+                  aria-controls="orderSummaryTransferContent"
+                  data-order-summary-accordion-toggle
+                >
+                  <span>轉正式單</span>
+                  <img
+                    src="./assets/icons/down.svg"
+                    alt=""
+                    class="h-6 w-6"
+                    data-order-summary-accordion-icon
+                  />
+                </button>
+                <div
+                  id="orderSummaryTransferContent"
+                  class="mt-4 rounded-xl bg-white p-5"
+                  data-order-summary-accordion-content
+                >
+                  <div class="flex flex-nowrap gap-4 overflow-x-auto">
+                    <button type="button" class="rb-pay-chip rb-pay-active" data-order-summary-transfer-pay="transfer">轉帳</button>
+                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="fax">傳真刷卡</button>
+                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="ticket">票券</button>
+                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="frontdesk">前台自付</button>
+                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="credit">信用交易</button>
+                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="check">支票</button>
+                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="deposit">訂金</button>
+                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="bonus">紅利</button>
+                  </div>
+                  <div class="mt-5 space-y-5" data-order-summary-transfer-fields="transfer">
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">收款帳號</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">客支付帳號</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                  </div>
+                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="fax">
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">卡號</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">授權碼</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                  </div>
+                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="ticket">
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 sm:flex-nowrap">
+                      <span class="w-24 shrink-0 text-base text-text-default">票券號碼</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                      <button
+                        type="button"
+                        class="inline-flex h-auto min-h-[34px] shrink-0 items-center justify-center rounded-md border border-surface-hover bg-surface-accent px-3 py-1.5 text-base text-text-default"
+                      >
+                        檢查
+                      </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">備註</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                  </div>
+                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="frontdesk">
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">內容</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-start gap-3">
+                      <span class="w-24 shrink-0 pt-1.5 text-base text-text-default">備註</span>
+                      <textarea rows="3" placeholder="placeholder" class="min-w-0 flex-1 resize-none rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"></textarea>
+                    </div>
+                  </div>
+                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="credit">
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">內容</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-start gap-3">
+                      <span class="w-24 shrink-0 pt-1.5 text-base text-text-default">備註</span>
+                      <textarea rows="3" placeholder="placeholder" class="min-w-0 flex-1 resize-none rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"></textarea>
+                    </div>
+                  </div>
+                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="check">
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">內容</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                    <div class="flex items-start gap-3">
+                      <span class="w-24 shrink-0 pt-1.5 text-base text-text-default">備註</span>
+                      <textarea rows="3" placeholder="placeholder" class="min-w-0 flex-1 resize-none rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"></textarea>
+                    </div>
+                  </div>
+                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="deposit">
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">訂金餘額</span>
+                      <span class="min-w-0 flex-1 text-base text-text-default">可用：11,044</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                  </div>
+                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="bonus">
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">紅利餘額</span>
+                      <span class="min-w-0 flex-1 text-base text-text-default">可用：11,044</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
+                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                    </div>
+                  </div>
+                  <div class="mt-5 flex justify-end gap-2">
+                    <button
+                      type="button"
+                      class="inline-flex h-auto min-h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default"
+                    >
+                      清除
+                    </button>
+                    <button
+                      type="button"
+                      class="inline-flex h-auto min-h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse"
+                    >
+                      改為正式單
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="order-summary-section">
+                <h3 class="order-summary-section-title">訂單明細</h3>
+                <div class="overflow-x-auto">
+                  <table class="order-summary-table order-summary-table--after-title">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>房型</th>
+                        <th>專案</th>
+                        <th>入住日期</th>
+                        <th class="whitespace-nowrap">間數</th>
+                        <th class="whitespace-nowrap order-summary-number">單價</th>
+                        <th class="whitespace-nowrap order-summary-number">小計</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>超複雜超優惠超划房型 111222 333</td>
+                        <td>
+                          <div>冬天 Punchi 專案</div>
+                          <div class="order-summary-project-subtitle mt-1 text-xs">我是專案介紹介紹介紹介介紹紹介紹介紹介紹</div>
+                        </td>
+                        <td>
+                          <span class="block whitespace-nowrap">2026-04-24（四）</span>
+                          <span class="block whitespace-nowrap">2026-04-25（五）</span>
+                        </td>
+                        <td class="whitespace-nowrap">111</td>
+                        <td class="order-summary-number">999</td>
+                        <td class="order-summary-number">888</td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>超複雜超優惠超划房型 111222 333</td>
+                        <td>
+                          <div>冬天 Punchi 專案</div>
+                          <div class="order-summary-project-subtitle mt-1 text-xs">我是專案介紹介紹介紹介介紹紹介紹介紹介紹</div>
+                        </td>
+                        <td>
+                          <span class="block whitespace-nowrap">2026-04-24（四）</span>
+                          <span class="block whitespace-nowrap">2026-04-25（五）</span>
+                        </td>
+                        <td class="whitespace-nowrap">111</td>
+                        <td class="order-summary-number">999</td>
+                        <td class="order-summary-number">888</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="6" class="text-right">訂單總計</td>
+                        <td class="order-summary-number">
+                          <span class="order-summary-money"><span>$</span><span>888,011</span></span>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </section>
+
+              <div class="order-summary-inline-row">
+                <section class="order-summary-section order-summary-addons-section">
+                  <h3 class="order-summary-section-title">加購明細</h3>
+                  <div class="overflow-x-auto">
+                    <table class="order-summary-table order-summary-table--after-title order-summary-addons-table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>加購項目</th>
+                          <th>備註</th>
+                          <th class="whitespace-nowrap order-summary-number">數量</th>
+                          <th class="whitespace-nowrap order-summary-number">單價</th>
+                          <th class="whitespace-nowrap order-summary-number">小計</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td>(777) 超耐用陽傘</td>
+                          <td>讚</td>
+                          <td class="order-summary-number">1222</td>
+                          <td class="order-summary-number">999</td>
+                          <td class="order-summary-number">888</td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>(777) 超耐用陽傘</td>
+                          <td>讚</td>
+                          <td class="order-summary-number">1222</td>
+                          <td class="order-summary-number">999</td>
+                          <td class="order-summary-number">888</td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="5" class="text-right">加購總計</td>
+                          <td class="order-summary-number">
+                            <span class="order-summary-money"><span>$</span><span>888,011</span></span>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </section>
+
+                <section class="order-summary-section order-summary-total-section">
+                  <h3 class="order-summary-section-title">訂單總額</h3>
+                  <div class="overflow-x-auto">
+                    <table class="order-summary-table order-summary-table--after-title order-summary-total-table">
+                      <thead>
+                        <tr>
+                          <th>類型</th>
+                          <th class="whitespace-nowrap order-summary-number">小計</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>訂單明細</td>
+                          <td class="order-summary-number">888</td>
+                        </tr>
+                        <tr>
+                          <td>加購明細</td>
+                          <td class="order-summary-number">888</td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td class="text-right">訂單總計</td>
+                          <td class="order-summary-number">
+                            <span class="order-summary-money"><span>$</span><span>888,011</span></span>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </section>
+              </div>
+
+              <section class="order-summary-section">
+                <h3 class="order-summary-section-title order-summary-section-title--underlined">飯店資料</h3>
+                <div>
+                  <div class="order-summary-hotel-name">旅宿 e 管家 DEMO</div>
+                  <div class="order-summary-hotel-row">
+                    <div class="order-summary-hotel-pair">
+                      <div class="order-summary-label text-right">Title</div>
+                      <div class="order-summary-value">Content</div>
+                    </div>
+                    <div class="order-summary-hotel-pair">
+                      <div class="order-summary-label text-right">Title</div>
+                      <div class="order-summary-value">Content</div>
+                    </div>
+                  </div>
+                  <div class="order-summary-hotel-row">
+                    <div class="order-summary-hotel-pair">
+                      <div class="order-summary-label text-right">Title</div>
+                      <div class="order-summary-value">Content</div>
+                    </div>
+                    <div class="order-summary-hotel-pair">
+                      <div class="order-summary-label text-right">Title</div>
+                      <div class="order-summary-value">Content</div>
+                    </div>
+                  </div>
+                  <div class="order-summary-hotel-row">
+                    <div class="order-summary-hotel-pair">
+                      <div class="order-summary-label text-right">Title</div>
+                      <div class="order-summary-value">Content</div>
+                    </div>
+                    <div class="order-summary-hotel-pair">
+                      <div class="order-summary-label text-right">Title</div>
+                      <div class="order-summary-value">Content</div>
+                    </div>
+                  </div>
+                  <div class="order-summary-hotel-row">
+                    <div class="order-summary-hotel-pair">
+                      <div class="order-summary-label text-right">Title</div>
+                      <div class="order-summary-value">Content</div>
+                    </div>
+                    <div class="order-summary-hotel-pair">
+                      <div class="order-summary-label text-right">Title</div>
+                      <div class="order-summary-value">Content</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="rounded-xl border border-border-disabled bg-surface-hover p-5">
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between text-left"
+                  aria-expanded="true"
+                  aria-controls="orderSummaryGuestsContent"
+                  data-order-summary-accordion-toggle
+                >
+                  <h3 class="text-xl text-text-default">訂房與入住人資訊</h3>
+                  <img
+                    src="./assets/icons/down.svg"
+                    alt=""
+                    class="h-6 w-6"
+                    data-order-summary-accordion-icon
+                  />
+                </button>
+                <div
+                  id="orderSummaryGuestsContent"
+                  class="mt-5 rounded-xl bg-white p-5"
+                  data-order-summary-accordion-content
+                >
+                  <div class="mb-4 bg-surface-hover py-1 text-center text-base text-text-default">
+                    訂房人
+                  </div>
+                  <div class="order-summary-person-grid">
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">姓名</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">ID</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">電話</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">Email</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">性別</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">生日</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">手機</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">地址</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                  </div>
+                  <div class="mb-4 mt-6 bg-surface-hover py-1 text-center text-base text-text-default">
+                    住房人
+                  </div>
+                  <div class="order-summary-person-grid">
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">姓名</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">ID</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">電話</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">Email</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">性別</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">生日</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">手機</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                    <div class="order-summary-person-row">
+                      <span class="order-summary-label text-right">地址</span>
+                      <span class="order-summary-value">XYZ</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="order-summary-section">
+                <h3 class="order-summary-section-title order-summary-section-title--underlined">訂房須知</h3>
+                <div class="mt-0 bg-surface-hover py-1 text-center text-base text-text-default">
+                  （ntd-套用 xyz）
+                </div>
+                <textarea
+                  class="mt-2 block min-h-[199px] w-full resize-none rounded-lg border border-border-disabled bg-white px-3 py-2 text-base leading-6 text-text-default outline-none"
+                  readonly
+                  aria-label="訂房須知內容"
+                >我是內容</textarea>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 px-3">
+          <button
+            type="button"
+            class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+            data-modal="modalOrderSummaryBackdrop"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+            data-modal="modalOrderSummaryBackdrop"
+          >
+            確定
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
          floatIcons/ai — 浮動客服按鈕
          fixed 右下角，40×70px，圓形 icon frame #f6fafd
     ════════════════════════════════════ -->
@@ -4284,7 +5087,7 @@
               var checked = root.querySelector(
                 'input[name="rb-order-type"]:checked',
               );
-              var key = checked ? checked.value : "none";
+              var key = checked ? checked.value : "";
               contentArea
                 .querySelectorAll("[data-order-type-panel]")
                 .forEach(function (p) {
@@ -5060,6 +5863,7 @@
           if (!el) return;
           if (id === "modalRoomEditBackdrop") resetRoomEditModal();
           if (id === "modalPurchaseAddonBackdrop") resetPurchaseAddonModal();
+          if (id === "modalOrderSummaryBackdrop") resetOrderSummaryModal();
           el.classList.add("open");
           document.body.style.overflow = "hidden";
         }
@@ -5136,6 +5940,124 @@
           });
           var textarea = modal.querySelector("[data-room-edit-textarea]");
           if (textarea) textarea.value = "我是 textarea\n- 內容\n- 內容";
+        }
+        function setOrderSummaryAccordion(toggle, expanded) {
+          if (!toggle) return;
+          var contentId = toggle.getAttribute("aria-controls");
+          var content = contentId ? document.getElementById(contentId) : null;
+          var icon = toggle.querySelector("[data-order-summary-accordion-icon]");
+          toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+          if (content) content.hidden = !expanded;
+          if (icon) {
+            icon.src = expanded
+              ? "./assets/icons/down.svg"
+              : "./assets/icons/up.svg";
+          }
+        }
+        function resetOrderSummaryModal() {
+          var modal = document.getElementById("modalOrderSummaryBackdrop");
+          if (!modal) return;
+          modal
+            .querySelectorAll("[data-order-summary-accordion-toggle]")
+            .forEach(function (toggle) {
+              setOrderSummaryAccordion(toggle, true);
+            });
+          setOrderSummaryTransferPay("transfer");
+        }
+        function setOrderSummaryTransferPay(payKey) {
+          var modal = document.getElementById("modalOrderSummaryBackdrop");
+          if (!modal) return;
+          var section = modal.querySelector("[data-order-summary-transfer-section]");
+          if (!section) return;
+          section
+            .querySelectorAll("[data-order-summary-transfer-pay]")
+            .forEach(function (chip) {
+              chip.classList.toggle(
+                "rb-pay-active",
+                chip.dataset.orderSummaryTransferPay === payKey,
+              );
+            });
+          section
+            .querySelectorAll("[data-order-summary-transfer-fields]")
+            .forEach(function (fields) {
+              fields.classList.toggle(
+                "hidden",
+                fields.dataset.orderSummaryTransferFields !== payKey,
+              );
+            });
+        }
+        function setOrderSummaryVariant(variant) {
+          var modal = document.getElementById("modalOrderSummaryBackdrop");
+          if (!modal) return;
+          var variants = {
+            unpaid: {
+              pill: "未付款",
+              copy: "此訂單尚未付款",
+              pillClass: "bg-status-negative",
+              basicStatus: "未付款",
+              basicStatusClass: "text-status-negative",
+              showTransferOfficial: true,
+            },
+            paid: {
+              pill: "已付款",
+              copy: "此訂單已付款",
+              pillClass: "bg-status-positive",
+              basicStatus: "已付款",
+              basicStatusClass: "text-status-positive",
+              showTransferOfficial: false,
+            },
+            waitlist: {
+              pill: "候補單",
+              copy: "此訂單尚為候補單",
+              pillClass: "bg-brand-active",
+              basicStatus: "未付款",
+              basicStatusClass: "text-status-negative",
+              showTransferOfficial: false,
+            },
+          };
+          var state = variants[variant] || variants.unpaid;
+          if (!variants[variant]) return false;
+          var pill = modal.querySelector("[data-order-summary-status-pill]");
+          var copy = modal.querySelector("[data-order-summary-status-copy]");
+          var basicStatus = modal.querySelector(
+            "[data-order-summary-basic-status]",
+          );
+          var transferSection = modal.querySelector(
+            "[data-order-summary-transfer-section]",
+          );
+          modal.dataset.orderSummaryVariant = variant || "unpaid";
+          if (pill) {
+            pill.textContent = state.pill;
+            pill.classList.remove(
+              "bg-status-negative",
+              "bg-status-positive",
+              "bg-brand-active",
+            );
+            pill.classList.add(state.pillClass);
+          }
+          if (copy) copy.textContent = state.copy;
+          if (basicStatus) {
+            basicStatus.textContent = state.basicStatus;
+            basicStatus.classList.remove(
+              "text-status-negative",
+              "text-status-positive",
+            );
+            basicStatus.classList.add(state.basicStatusClass);
+          }
+          if (transferSection) {
+            transferSection.hidden = !state.showTransferOfficial;
+          }
+          return true;
+        }
+        function getOrderSummaryVariantFromOrderType() {
+          var checked = document.querySelector(
+            'input[name="rb-order-type"]:checked',
+          );
+          if (!checked) return "";
+          if (checked.value === "none") return "unpaid";
+          if (checked.value === "official") return "paid";
+          if (checked.value === "substitute") return "waitlist";
+          return "";
         }
         var purchaseAddonProducts = [
           {
@@ -5659,6 +6581,26 @@
         }
 
         document.addEventListener("click", function (e) {
+          var transferPayChip = e.target.closest(
+            "[data-order-summary-transfer-pay]",
+          );
+          if (transferPayChip) {
+            e.preventDefault();
+            setOrderSummaryTransferPay(
+              transferPayChip.dataset.orderSummaryTransferPay,
+            );
+            return;
+          }
+          var orderSummarySubmit = e.target.closest(
+            "[data-order-summary-submit]",
+          );
+          if (orderSummarySubmit) {
+            e.preventDefault();
+            var variant = getOrderSummaryVariantFromOrderType();
+            if (!setOrderSummaryVariant(variant)) return;
+            openModal("modalOrderSummaryBackdrop");
+            return;
+          }
           var btn = e.target.closest("[data-modal-open]");
           if (!btn) return;
           e.preventDefault();
@@ -5713,6 +6655,17 @@
           });
         });
 
+        document
+          .querySelectorAll("[data-order-summary-accordion-toggle]")
+          .forEach(function (toggle) {
+            toggle.addEventListener("click", function () {
+              setOrderSummaryAccordion(
+                toggle,
+                toggle.getAttribute("aria-expanded") !== "true",
+              );
+            });
+          });
+
         // Backdrop click
         [
           "modalLogoutBackdrop",
@@ -5723,6 +6676,7 @@
           "modalRoomIntroBackdrop",
           "modalRoomEditBackdrop",
           "modalPurchaseAddonBackdrop",
+          "modalOrderSummaryBackdrop",
         ].forEach(function (id) {
           var el = document.getElementById(id);
           el &&
@@ -5743,6 +6697,7 @@
               "modalRoomIntroBackdrop",
               "modalRoomEditBackdrop",
               "modalPurchaseAddonBackdrop",
+              "modalOrderSummaryBackdrop",
             ].forEach(closeModal);
           }
         });
@@ -8826,7 +9781,8 @@
       <!-- ===== 產生訂單 submit button (full width on mobile/tablet, 137px right-aligned on desktop) ===== -->
       <div class="flex justify-end mt-5">
         <button
-          type="submit"
+          type="button"
+          data-order-summary-submit
           class="w-full lg:w-[137px] h-[39px] bg-text-default text-text-inverse rounded text-base cursor-pointer hover:bg-text-emphasis"
         >
           產生訂單

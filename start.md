@@ -72,6 +72,18 @@ tokens → icons → components → sections → layout → 實作
 - 若使用者明確說「只讀」「不要寫 code」「還沒讀完」，只可讀取與回報，不可寫 spec 或實作。
 - 若使用者明確說「figma-go 然後實作」「照這個 plan 做」或已提供明確實作 plan，才可讀完後補 spec 並實作。
 - 不可用記憶或推測實作 Figma 來源內容；必須以當前 Figma node 與已確認 spec 為來源。
+- 讀完 Figma 後，必須先整理一份 **implementation contract**，至少列出：
+  - node id / node name / frame size
+  - 內容順序、文字、active/default state
+  - layout 結構、主要 spacing、border、radius、typography、color token
+  - 特規互動、hidden/variant state、疑點與未定義項目
+- 實作前必須做 **舊 HTML/spec vs Figma contract 差異 checkpoint**：
+  - 明確列出「沿用」、「以 Figma 覆蓋」、「衝突 / 需使用者確認」。
+  - 舊 HTML 只能作為現有實作參考，不可覆蓋已確認的 Figma contract。
+  - 若 Figma 沒有覆蓋某段內容，而需要沿用舊 HTML/spec，必須先明講沿用範圍與原因。
+  - 若舊 HTML/spec 和 Figma contract 衝突，先停下來回報，不可直接用舊 HTML 補齊。
+- Figma selection 中的 currently selected / active visual state 不可自動推論為 default state；如果 active state 可能只是為了展示、檢查某個 variant、或讀取特規 layout，必須列為疑點並詢問使用者。
+- 實作後的驗證必須包含 contract-specific checks；不可只跑 script parse / duplicate id / diff check。
 - 需要寫檔時：
   - component → `components/{name}.md`
   - section → `sections/{name}.md`

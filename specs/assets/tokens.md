@@ -36,8 +36,10 @@
 | Color/Icon/Default | `text-icon-default`, `--color-icon-default` | 可用 `currentColor` 或 mask 控色的一般黑色 icon |
 | Color/Surface/Brand-Default | `bg-brand-500`, `bg-surface-brand`, `--color-surface-brand` | 主品牌色、主按鈕、重要 badge |
 | Color/Surface/Brand-Hover | `hover:bg-surface-brand-hover`, `--color-surface-brand-hover` | 主品牌 hover |
+| Color/Surface/Accent | `bg-surface-accent`, `--color-surface-accent` | 訂單轉正式單區塊內的強調 action |
 | Color/Border/Default | `border-border-default`, `--color-border-default` | 一般分隔線與邊框 |
 | Color/Border/Plugin-Default | `border-border-plugin`, `--color-border-plugin` | 表單輸入框預設邊框 |
+| Color/SubItem/Selected | `bg-subitem-selected`, `--color-subitem-selected` | 子項目 / payment chip selected |
 | Color/Accent/* | `text-accent-*`, `bg-accent-*`, `--color-accent-*` | 節慶、POS 入口、浮動客服等點綴色 |
 
 ---
