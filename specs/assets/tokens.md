@@ -182,6 +182,8 @@
 | Color/Accent/pink | `#FFC0CB` | 粉紅點綴 |
 | Color/Accent/light-green | `#BBF7D0` | 淡綠點綴 |
 | Color/Accent/Green | `#34C759` | 綠色標籤/chip（Input component Green variant） |
+| Color/Accent/cart-date | `#BDFFF6` | 加購 cart date chip 背景 |
+| Color/Accent/cart-time | `#EAFFC5` | 加購 cart time chip 背景 |
 | Color/Accent/celebration | `#F44DF4` | 節慶/特殊日期提示；同值來源：Color/Bootstrap/aside/Notification |
 | Color/Accent/linear-pos-left | `#E376F9` | POS 入口外框漸層起點 |
 | Color/Accent/linear-pos-right | `#FF7878` | POS 入口外框漸層終點 |

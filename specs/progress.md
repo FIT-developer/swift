@@ -4,13 +4,225 @@
 
 ---
 
+## Session 36 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者再次 `figma-go` 讀取 large-width `Frame 410`：
+  - Node：`I1392:17122;73:678;1392:16946`
+  - 尺寸：`571×760`
+  - large card：`507×172`，內部是 3 欄水平排列 `140 / 140 / 155`，gap 20。
+- 已將 add-on product card content layout 改為 3 種 style：
+  - large：3 欄水平排列。
+  - medium：2 欄上排 + 第三欄下排。
+  - narrow：單欄垂直堆疊。
+  - implementation 使用 `Frame 410` container query 控制，不固定外層 width。
+- 修正 cost / quantity column：
+  - 移除 `space-y-10`，改用 `h-[140px] flex flex-col justify-between` 對齊 Figma 第三欄高度。
+  - 不額外渲染 `訂房間數` label，只保留 DatePicker/stepper visual。
+- 依使用者修正 add-on calendar date text：
+  - Add-on product card 內的 date `<span>` 使用 scoped `.purchase-addon-date-text { font-size: 14px; }`。
+  - 原 16px 在 140px 欄寬內會溢出，此為 `state=purchase add-on` 的 special rule。
+- 補正 calendar default date 規則：
+  - 所有 calendar default date 都必須是 today，由 JS 使用 `dayjs().format("YYYY-MM-DD")` 初始化。
+  - Figma 樣本文字 `2026-02-27` 不作為 implementation default。
+- 依使用者 Figma Variables 更新，新增並實作 cart chip tokens：
+  - `Color/Accent/cart-date` = `#BDFFF6`
+  - `Color/Accent/cart-time` = `#EAFFC5`
+  - 已寫入 `specs/assets/tokens.md`、`preview/landing.html` Tailwind aliases / CSS variables，並套用到 right cart date/time chips。
+- 修正 add-on time picker 格式：
+  - hour / minute select option 一律顯示兩位數，例如 `01`, `04`, `22`, `44`。
+  - right cart time chip 也使用相同兩位數格式。
+- 修正 add-on left menu accordion：
+  - `分類` icon 只在 down / up 之間切換；collapsed 不再 rotate 成 right direction。
+  - collapse 狀態改為同時設定 `hidden` attribute 與 `is-collapsed` class，避免只靠 class 導致收合未生效。
+  - 開啟 add-on modal 時 reset 為 expanded。
+- 修正 add-on middle content accordion：
+  - `加購項目` header 改為獨立 button，控制 product list collapse / expand。
+  - 狀態獨立於左側 `分類` accordion；只影響 middle product list，不影響 right cart。
+  - icon 同樣只在 down / up 之間切換。
+- 依使用者追加修正：
+  - `Frame 410` implementation width 改為 100% 填滿 container，不再以 fixed 397px 限制寬度。
+  - Add-on product card 日期欄位改為可開啟的 `Calendar simple` dropdown function，不再只是 static button。
+  - 備註 textarea 改為 `resize-y` + min height，可由使用者拖曳高度。
+  - Time toggle 為 false 時，右側 cart card 不顯示 `未啟用時間` 這類替代文字；直接省略 time chip。
+- 依使用者 `figma-go` 重新讀取目前選取的 add-on content source：
+  - Page：`components`
+  - Node：`I1393:18281;73:678;1393:18099`
+  - 名稱：`Frame 410`
+  - 尺寸：`397×1143`
+- 確認 `Frame 410` 是內部 content frame，尺寸不同於 outer modal RWD frames；不可拿它覆蓋外層 modal 寬高。
+- `components/modal.md` 已更新 `state=purchase add-on` 規格：
+  - `Frame 410` 改為完整 product card content。
+  - 補上 title / sub-title 規則，明確不可用數量文字取代 sub-title。
+  - 補上 notice textarea、date/calendar control、hour/minute selects、time toggle active/disabled、cost input、inventory、booking quantity stepper。
+  - 補上 selected content source node 與 RWD source frame 的尺寸分工。
+- `preview/landing.html` 已更新 `modalPurchaseAddonBackdrop` 的 middle `Frame 410`：
+  - Header 固定顯示 `加購項目`。
+  - Product card 改為 title + subtitle、備註 textarea、日期 control、時/分 selects、toggle、價格/庫存/費用 input、訂房間數 stepper。
+  - Time toggle 會切換該卡片 hour/minute select 的 disabled / active status。
+  - Cost input 會即時影響右側 cart total。
+  - Right cart card 改為顯示 title + sub-title，不再顯示「0 個」這種數量副標。
+  - Delete card 仍會同步將該商品訂房間數歸 0。
+
+**驗證**:
+- `node` inline script parse：通過，1 個 inline script 可解析。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- Browser visual / interaction smoke test 尚未執行：workspace 沒有可用的 Playwright / Puppeteer runtime。
+
+**下一步應做**:
+- 用 browser 做 visual / interaction smoke test：
+  - 點 `purchase-item.svg` 開啟 `加購` modal。
+  - 確認 middle `Frame 410` product cards 顯示 title / sub-title、備註、日期、時分、toggle、費用、庫存、訂房間數。
+  - 測試 time toggle 是否讓 hour/minute selects disabled / active。
+  - 測試 cost input 是否更新右側 total。
+  - 測試 stepper 與 trash delete 是否同步右側 card。
+  - 檢查 desktop / tablet / mobile 下 outer modal RWD 仍符合既有三個 RWD frame。
+
+**重要決定**:
+- `Frame 410` 的 397×1143 是 middle content source，不是 modal outer size；outer RWD 仍以 `1392:17122` / `1393:18281` / `1393:19196` 為準。
+- Cart date/time chip colors are no longer token gaps after Figma Variables added `Color/Accent/cart-date` and `Color/Accent/cart-time`.
+- Figma `#D9D9D9` toggle track 未在 tokens.md 內，implementation 使用 token-backed `Color/Neutral/200` / `bg-border-disabled`，不硬寫該 hex。
+
+## Session 35 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者修正，重新對齊加購 modal 結構：
+  - 左側是 menu list。
+  - 預設 selected 第一個 list item「所有」。
+  - menu list icon 本身保持透明，不使用帶背景的 `fill` icon。
+  - 點擊左側 menu list item 會切換 selected / focus style。
+  - 左側 `分類` 有 accordion collapse / expand 功能。
+  - 中間是 `Frame 410` content，依左側 category button 顯示對應內容。
+  - 右側是 result / cart，middle stepper click 後產生 brief transaction card。
+  - 右側 card delete button 會刪除該 card，並同步 middle stepper 數量歸零。
+  - cart details 未來與 backend 協作；目前 prototype 用前端 local state 呈現。
+- `components/modal.md` 已更新 `state=purchase add-on` 規格：
+  - 修正為 left / middle `Frame 410` / right 三區結構。
+  - 補上 accordion、category selected/focus、stepper、delete card、backend collaboration 規則。
+- `preview/landing.html` 已更新 `modalPurchaseAddonBackdrop`：
+  - 三欄 responsive layout：desktop left/middle/right，tablet middle/right 依可用寬度重排，mobile 單欄。
+  - 左側 category 全部改用 `menu-list-*-none-fill.svg`。
+  - 新增 purchase add-on JS state：category switching、accordion、stepper、cart card render/delete。
+
+**驗證**:
+- `node` inline script parse：通過，2 個 inline scripts 可解析。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 做 browser visual / interaction smoke test：
+  - 點 `purchase-item.svg` 開啟 `加購` modal。
+  - 確認左側 icon 無背景色，selected style 只在被點擊的 category item 上。
+  - 點 `分類` header 確認 menu list collapse / expand。
+  - 點不同 category，確認中間 `Frame 410` content 切換。
+  - 點 middle stepper plus/minus，確認右側 card 新增/更新。
+  - 點右側 trash icon，確認 card 刪除且 middle stepper 數量回到 0。
+
+**重要決定**:
+- 右側 cart backend collaboration 尚未實作；目前只做 prototype local state，不建立資料提交流程。
+
+---
+
+## Session 34 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者分次 `figma-go` 指示讀取加購 modal 三個 RWD frame：
+  - Desktop：`1392:17122`，`1194×893`
+  - Tablet：`1393:18281`，`768×1959`
+  - Mobile：`1393:19196`，`375×3139`
+- 確認觸發來源：room-booking 訂房明細表「加購」欄位的 `purchase-item.svg` click。
+- `components/modal.md` 已新增 `state=purchase add-on（加購項目）`：
+  - 記錄三個 RWD source nodes。
+  - 記錄 header / body / footer 結構。
+  - 記錄 category list、menu-list icon set、cart summary、footer button。
+  - 記錄 RWD 規則：desktop 並排、tablet 變高、mobile 單欄堆疊。
+  - 記錄 token gap：Figma tag bg `#BDFFF6` / `#EAFFC5` 尚無 tokens，不可硬寫。
+- `preview/landing.html` 已實作 `modalPurchaseAddonBackdrop`：
+  - Header：`加購` + close icon。
+  - Body：分類 panel + 加購項目 / 購物車內容。
+  - Category item 使用 `menu-list-*` icons。
+  - Footer：`取消` / `確定加購`。
+  - Modal 加入既有 backdrop click、Esc、close button 關閉流程。
+  - 第一列 `purchase-item.svg` button 已接上 `data-modal-open="modalPurchaseAddonBackdrop"`。
+- 新增 `Color/Bootstrap/focus-background` 的 HTML alias：
+  - `--color-bootstrap-focus-background`
+  - Tailwind `bg-bootstrap-focus-background`
+
+**驗證**:
+- `node` inline script parse：通過，2 個 inline scripts 可解析。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+**下一步應做**:
+- 做 browser visual / interaction smoke test：
+  - 進入「房間預定」sub-page。
+  - 點第一列加購欄位的 `purchase-item.svg`。
+  - 確認 `加購` modal 開啟。
+  - 檢查 desktop / tablet / mobile 下 header / footer 固定、body 可 scroll、分類與內容 RWD 變化。
+  - 測試 close、取消、確定加購、backdrop click、Esc 關閉。
+- 若 Figma Variables 後續補上 `#BDFFF6` / `#EAFFC5` 對應 token，再回補 exact tag colors；目前 implementation 使用 token-backed placeholder colors，沒有硬寫這兩個 hex。
+
+**重要決定**:
+- `purchase-item.svg` 只開啟加購 modal；購物車刪除 icon 目前是 visual prototype，因 Figma 未定義刪除行為，不加 JS 行為。
+- 375px 只作為 Figma mobile 參考，implementation 保持流動寬度與 mobile fullscreen modal 行為。
+
+---
+
+## Session 33 交接（2026-05-06）
+
+### 本次進度交接
+
+**已完成**:
+- 依使用者 `figma-go` 指示讀取目前 Figma selection：
+  - Page：`components`
+  - Node：`1295:13763`
+  - 名稱：`svg`
+  - 類型：`FRAME`
+  - 尺寸：`317×614`
+- 確認此 selection 是稍後 menu list（非 aside）會使用的 icon library。
+- 已從 Figma 匯出 12 組 menu list icon、共 24 個 SVG：
+  - `menu-list-{name}-fill.svg`
+  - `menu-list-{name}-none-fill.svg`
+  - 存放位置：`preview/assets/icons/`
+- 已將這批 SVG 的 `stroke="black"` 改為 `stroke="currentColor"`，讓後續可用 `Color/Icon/Default` / `text-icon-default` 控色。
+- 已更新 `specs/icons.md`：
+  - 新增 `Menu List Icon Set（非 aside）` 專區。
+  - 記錄 Figma node 來源、用途、命名規則、fill / none-fill variant 規則。
+  - 記錄狀態背景色對應 token：
+    - `#D3EBFD` → `Color/Bootstrap/focus-background`
+    - `#F6F6F6` → `Color/Neutral/50` / `Color/Surface/Default`
+
+**驗證**:
+- Figma SVG export：24/24 成功。
+- 已檢查匯出檔案色值；stroke 已改為 `currentColor`，fill variant 只保留 Figma 狀態背景參考色。
+
+**下一步應做**:
+- 使用者切到 menu list 對應 Figma frame 後，再用 `figma-go` 讀取 menu list 版型本身。
+- 實作 menu list 時優先使用 `menu-list-*-none-fill.svg`，背景與狀態用 tokens.md 的 token 控制；不要直接使用硬寫背景色做 HTML/CSS 狀態。
+
+**重要決定**:
+- 這批 icon 使用 `menu-list-` 前綴，避免與既有共用 icon（如 `bed.svg`、`service.svg`）衝突。
+- `fill` variant 保留作 Figma 匯出參考；實作首選是 `none-fill` icon + token 背景容器。
+
+---
+
 ## 當前狀態
 
 **階段**：實作進行中（specs ✅ → landing.html 🔄）
 
 **當前任務**：`preview/landing.html` 持續修正中，桌面與行動版皆在同一檔案。
 
-**Figma 當前頁面**：components（訂房明細 edit Modal `1272:27402` / `1272:27354` / `1272:27306`）
+**Figma 當前頁面**：components（加購 modal RWD `1392:17122` / `1393:18281` / `1393:19196`；menu list icon frame `1295:13763`；訂房明細 edit Modal `1272:27402` / `1272:27354` / `1272:27306`）
 
 ---
 

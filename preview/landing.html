@@ -26,6 +26,8 @@
               "surface-action": "var(--color-surface-action)",
               "surface-brand": "var(--color-surface-brand)",
               "surface-brand-hover": "var(--color-surface-brand-hover)",
+              "bootstrap-focus-background":
+                "var(--color-bootstrap-focus-background)",
               "border-default": "var(--color-border-default)",
               "border-disabled": "var(--color-border-disabled)",
               "border-focus": "var(--color-border-focus)",
@@ -47,6 +49,8 @@
               "accent-pink": "var(--color-accent-pink)",
               "accent-light-green": "var(--color-accent-light-green)",
               "accent-green": "var(--color-accent-green)",
+              "accent-cart-date": "var(--color-accent-cart-date)",
+              "accent-cart-time": "var(--color-accent-cart-time)",
               "accent-celebration": "var(--color-accent-celebration)",
               "accent-linear-pos-left": "var(--color-accent-linear-pos-left)",
               "accent-linear-pos-right": "var(--color-accent-linear-pos-right)",
@@ -78,6 +82,7 @@
         --color-white: #ffffff;
         --color-surface-default: #f6f6f6;        /* Neutral/50 */
         --color-surface-hover: #f6fafd;          /* Neutral/75 · Modal/Hover */
+        --color-bootstrap-focus-background: #d3ebfd; /* Bootstrap/focus-background */
         --color-border-default: #e1e1e0;         /* Neutral/100 */
         --color-border-disabled: #d1d1d1;        /* Neutral/200 */
         --color-text-placeholder: #b0b0b0;       /* Neutral/300 */
@@ -114,6 +119,8 @@
         --color-accent-pink: #ffc0cb;
         --color-accent-light-green: #bbf7d0;
         --color-accent-green: #34c759;
+        --color-accent-cart-date: #bdfff6;
+        --color-accent-cart-time: #eaffc5;
         --color-accent-celebration: #f44df4;
         --color-accent-linear-pos-left: #e376f9;
         --color-accent-linear-pos-right: #ff7878;
@@ -429,6 +436,115 @@
         flex-direction: column;
         overflow: hidden;
       }
+      #modalPurchaseAddonBackdrop .modal-box {
+        width: min(calc(100vw - 24px), 1194px);
+        max-height: calc(100vh - 24px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .purchase-addon-layout {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .purchase-addon-main {
+        display: flex;
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 20px;
+      }
+      .purchase-addon-menu {
+        flex: 0 0 240px;
+      }
+      .purchase-addon-frame410 {
+        flex: 1 1 0;
+        width: 100%;
+        min-width: 0;
+        container-type: inline-size;
+      }
+      .purchase-addon-result {
+        flex: 0 0 327px;
+      }
+      .purchase-addon-products {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+      }
+      .purchase-addon-product-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 140px) minmax(0, 140px) minmax(0, 155px);
+        gap: 20px;
+      }
+      .purchase-addon-product-grid .rb-cal-cell {
+        min-width: 0;
+      }
+      .purchase-addon-date-text {
+        font-size: 14px;
+      }
+      .purchase-addon-time-toggle[aria-pressed="true"] .toggle-knob {
+        transform: translateX(12px);
+        border-color: var(--color-status-positive);
+      }
+      .purchase-addon-time-toggle[aria-pressed="false"] .toggle-knob {
+        transform: translateX(2px);
+        border-color: var(--color-text-secondary);
+      }
+      .purchase-category-btn[aria-pressed="true"] {
+        background: var(--color-white);
+      }
+      .purchase-category-btn[aria-pressed="true"] .purchase-category-count {
+        background: var(--color-bootstrap-focus-background);
+      }
+      .purchase-addon-category-list.is-collapsed {
+        display: none;
+      }
+      .purchase-addon-category-toggle[aria-expanded="false"] img {
+        transform: rotate(180deg);
+      }
+      .purchase-addon-content-toggle[aria-expanded="false"] img {
+        transform: rotate(180deg);
+      }
+      .purchase-addon-products.is-collapsed {
+        display: none;
+      }
+      @container (max-width: 500px) {
+        .purchase-addon-product-grid {
+          grid-template-columns: minmax(0, 140px) minmax(0, 140px);
+        }
+      }
+      @container (max-width: 330px) {
+        .purchase-addon-product-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      @media (max-width: 1023px) {
+        .purchase-addon-layout {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(295px, 327px);
+          align-items: start;
+        }
+        .purchase-addon-main {
+          flex-direction: column;
+        }
+        .purchase-addon-menu,
+        .purchase-addon-result {
+          width: 100%;
+          flex-basis: auto;
+        }
+      }
+      @media (max-width: 639px) {
+        .purchase-addon-layout {
+          display: flex;
+          flex-direction: column;
+        }
+        .purchase-addon-main,
+        .purchase-addon-frame410,
+        .purchase-addon-result {
+          width: 100%;
+          flex-basis: auto;
+        }
+      }
       .room-edit-price-table tbody td {
         padding-top: 4px;
         padding-bottom: 4px;
@@ -448,7 +564,8 @@
         #modalBulletinBackdrop,
         #modalAdministerBackdrop,
         #modalRoomIntroBackdrop,
-        #modalRoomEditBackdrop {
+        #modalRoomEditBackdrop,
+        #modalPurchaseAddonBackdrop {
           align-items: stretch;
           justify-content: stretch;
           padding: 0;
@@ -456,7 +573,8 @@
         #modalBulletinBackdrop .modal-box,
         #modalAdministerBackdrop .modal-box,
         #modalRoomIntroBackdrop .modal-box,
-        #modalRoomEditBackdrop .modal-box {
+        #modalRoomEditBackdrop .modal-box,
+        #modalPurchaseAddonBackdrop .modal-box {
           width: 100%;
           max-width: 100%;
           max-height: none;
@@ -3385,6 +3503,206 @@
     </div>
 
     <!-- ════════════════════════════════════
+         Modal H — 加購項目
+    ════════════════════════════════════ -->
+    <div
+      id="modalPurchaseAddonBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalPurchaseAddonTitle"
+    >
+      <div class="modal-box mx-3">
+        <!-- Header -->
+        <div
+          class="flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3 shadow-[0_1px_0_rgba(0,0,0,0.2)]"
+        >
+          <span
+            id="modalPurchaseAddonTitle"
+            class="text-xl font-semibold text-text-default"
+            >加購</span
+          >
+          <button
+            type="button"
+            class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+            data-modal="modalPurchaseAddonBackdrop"
+            aria-label="關閉"
+          >
+            <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+          </button>
+        </div>
+
+        <div class="min-h-0 flex-1 overflow-y-auto bg-surface-default p-3">
+          <div class="purchase-addon-layout">
+            <div class="purchase-addon-main">
+              <!-- Left: menu list -->
+              <section
+                class="purchase-addon-menu rounded-lg border border-border-disabled bg-surface-hover p-5"
+                aria-labelledby="purchaseAddonCategoryTitle"
+              >
+              <button
+                type="button"
+                class="purchase-addon-category-toggle mb-4 flex h-[27px] w-full items-center justify-between text-left"
+                aria-expanded="true"
+                aria-controls="purchaseAddonCategoryList"
+                data-purchase-category-toggle
+              >
+                <span
+                  id="purchaseAddonCategoryTitle"
+                  class="text-xl font-semibold text-text-default"
+                  >分類</span
+                >
+                <img
+                  src="./assets/icons/down.svg"
+                  alt=""
+                  class="h-6 w-6 transition-transform"
+                />
+              </button>
+              <div
+                id="purchaseAddonCategoryList"
+                class="purchase-addon-category-list space-y-3"
+                data-purchase-category-list
+              >
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="all" aria-pressed="true">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-all-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">所有</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="dining" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-dining-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">餐飲</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="tickets" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-tickets-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">票券</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="coffee" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-coffee-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">飲品</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="tool" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-tool-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">設備租借</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="bed" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-bed-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">加床</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="promotion" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-promotion-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">優惠促銷</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="wellness" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-wellness-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">藍染</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="gift" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-gift-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">伴手禮</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="flight" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-flight-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">住宿</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="tailetries" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-tailetries-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">盥洗用品</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+                <button type="button" class="purchase-category-btn flex h-[38px] w-full items-center justify-between rounded bg-surface-default pr-2 text-left" data-purchase-category="service" aria-pressed="false">
+                  <span class="inline-flex items-center gap-2"><img src="./assets/icons/menu-list-service-none-fill.svg" alt="" class="h-[38px] w-[38px]" /><span class="text-base font-semibold text-text-default">會議服務</span></span>
+                  <span class="purchase-category-count inline-flex h-6 min-w-[38px] items-center justify-center rounded-[44px] px-3 py-1 text-xs text-text-default">12</span>
+                </button>
+              </div>
+              </section>
+
+              <!-- Middle: Frame 410 content -->
+              <section
+                class="purchase-addon-frame410 rounded-lg border border-border-disabled bg-surface-hover p-5"
+                aria-labelledby="purchaseAddonContentTitle"
+              >
+                <button
+                  type="button"
+                  class="purchase-addon-content-toggle mb-5 flex h-[27px] w-full items-center justify-between text-left"
+                  aria-expanded="true"
+                  aria-controls="purchaseAddonProductList"
+                  data-purchase-content-toggle
+                >
+                  <h3
+                    id="purchaseAddonContentTitle"
+                    class="text-xl font-semibold text-text-default"
+                  >
+                    加購項目
+                  </h3>
+                  <img
+                    src="./assets/icons/down.svg"
+                    alt=""
+                    class="h-6 w-6 transition-transform"
+                  />
+                </button>
+                <div
+                  id="purchaseAddonProductList"
+                  class="purchase-addon-products"
+                  data-purchase-products
+                ></div>
+              </section>
+            </div>
+
+            <!-- Right: result cart -->
+            <section
+              class="purchase-addon-result min-w-0 rounded-lg border border-border-disabled bg-surface-hover p-5"
+              aria-labelledby="purchaseAddonCartTitle"
+            >
+              <div class="space-y-3" data-purchase-cart-cards>
+                <p class="text-base text-text-supporting">尚未選擇加購項目</p>
+              </div>
+
+              <div class="mt-5 rounded-lg border border-border-disabled bg-white py-4">
+                <h3
+                  id="purchaseAddonCartTitle"
+                  class="px-3 text-xl text-text-default"
+                >
+                  購物車明細
+                </h3>
+                <div
+                  class="mt-5 space-y-5 px-3"
+                  data-purchase-cart-details
+                >
+                  <p class="text-base text-text-supporting">尚未選擇加購項目</p>
+                </div>
+                <div class="my-5 border-t border-text-placeholder"></div>
+                <div class="flex items-center justify-between gap-4 px-3">
+                  <span class="text-xl text-text-default">總價</span>
+                  <span
+                    class="text-base font-semibold text-text-default"
+                    data-purchase-cart-total
+                    >$ 0</span
+                  >
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 px-3">
+          <button
+            type="button"
+            class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+            data-modal="modalPurchaseAddonBackdrop"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+            data-modal="modalPurchaseAddonBackdrop"
+          >
+            確定加購
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
          floatIcons/ai — 浮動客服按鈕
          fixed 右下角，40×70px，圓形 icon frame #f6fafd
     ════════════════════════════════════ -->
@@ -4741,6 +5059,7 @@
           var el = document.getElementById(id);
           if (!el) return;
           if (id === "modalRoomEditBackdrop") resetRoomEditModal();
+          if (id === "modalPurchaseAddonBackdrop") resetPurchaseAddonModal();
           el.classList.add("open");
           document.body.style.overflow = "hidden";
         }
@@ -4818,6 +5137,526 @@
           var textarea = modal.querySelector("[data-room-edit-textarea]");
           if (textarea) textarea.value = "我是 textarea\n- 內容\n- 內容";
         }
+        var purchaseAddonProducts = [
+          {
+            id: "breakfast",
+            category: "dining",
+            title: "早餐",
+            subtitle: "套餐組合 a、b 、c",
+            notice: "placeholder",
+            date: null,
+            hour: "1",
+            minute: "0",
+            timeEnabled: true,
+            originalPrice: 1999,
+            originalPriceMuted: true,
+            inventory: 8,
+            cost: 9988,
+            defaultQuantity: 2,
+          },
+          {
+            id: "breakfast-disabled-time",
+            category: "dining",
+            title: "早餐",
+            subtitle: "套餐組合 a、b 、c",
+            notice: "placeholder",
+            date: null,
+            hour: "1",
+            minute: "0",
+            timeEnabled: false,
+            originalPrice: 1999,
+            originalPriceMuted: true,
+            inventory: 8,
+            cost: 9988,
+            defaultQuantity: 2,
+          },
+          {
+            id: "baby-supplies",
+            category: "tailetries",
+            title: "嬰兒用品",
+            subtitle: "餐具　安全椅",
+            notice: "placeholder",
+            date: null,
+            hour: "1",
+            minute: "0",
+            timeEnabled: false,
+            originalPrice: 1999,
+            originalPriceMuted: false,
+            inventory: 8,
+            cost: 9988,
+            defaultQuantity: 1,
+          },
+        ];
+        var purchaseAddonCategoryLabels = {
+          all: "所有",
+          dining: "餐飲",
+          tickets: "票券",
+          coffee: "飲品",
+          tool: "設備租借",
+          bed: "加床",
+          promotion: "優惠促銷",
+          wellness: "藍染",
+          gift: "伴手禮",
+          flight: "住宿",
+          tailetries: "盥洗用品",
+          service: "會議服務",
+        };
+        var purchaseAddonState = { category: "all", items: {} };
+        function getPurchaseDefaults(item) {
+          return {
+            notice: item.notice,
+            date: item.date || dayjs().format("YYYY-MM-DD"),
+            hour: item.hour,
+            minute: item.minute,
+            timeEnabled: item.timeEnabled,
+            cost: item.cost,
+            quantity: item.defaultQuantity,
+          };
+        }
+        function resetPurchaseAddonItems() {
+          purchaseAddonState.items = {};
+          purchaseAddonProducts.forEach(function (item) {
+            purchaseAddonState.items[item.id] = getPurchaseDefaults(item);
+          });
+        }
+        function getPurchaseItemState(item) {
+          if (!purchaseAddonState.items[item.id]) {
+            purchaseAddonState.items[item.id] = getPurchaseDefaults(item);
+          }
+          return purchaseAddonState.items[item.id];
+        }
+        function formatPurchaseAmount(value) {
+          return "$ " + value.toLocaleString("en-US");
+        }
+        function formatPurchaseTimePart(value) {
+          return String(value).padStart(2, "0");
+        }
+        function renderPurchaseNumberOptions(start, end, selected) {
+          var selectedValue = formatPurchaseTimePart(selected);
+          var options = [];
+          for (var i = start; i <= end; i += 1) {
+            var value = formatPurchaseTimePart(i);
+            options.push(
+              '<option value="' +
+                value +
+                '"' +
+                (value === selectedValue ? " selected" : "") +
+                ">" +
+                value +
+                "</option>",
+            );
+          }
+          return options.join("");
+        }
+        function initPurchaseAddonCalendars(root) {
+          if (typeof window.activeSimpleCalendar === "undefined") {
+            window.activeSimpleCalendar = null;
+            document.addEventListener("click", function () {
+              if (window.activeSimpleCalendar) {
+                window.activeSimpleCalendar.classList.remove("active");
+                window.activeSimpleCalendar = null;
+              }
+            });
+          }
+          root.querySelectorAll("[data-purchase-calendar-cell]").forEach(function (cell) {
+            if (cell.dataset.calInit) return;
+            cell.dataset.calInit = "1";
+            var btn = cell.querySelector(".rb-cal-btn");
+            var displayEl = cell.querySelector(".rb-cal-date");
+            if (!btn || !displayEl) return;
+            var dropdown = document.createElement("div");
+            dropdown.className = "calendar-dropdown p-4";
+            dropdown.innerHTML =
+              '<div class="mb-4 flex items-center justify-between">' +
+              '<button type="button" class="prev-month rounded p-1 text-text-secondary hover:bg-surface-hover">&lt;</button>' +
+              '<span class="month-label text-sm font-bold text-text-emphasis"></span>' +
+              '<button type="button" class="next-month rounded p-1 text-text-secondary hover:bg-surface-hover">&gt;</button>' +
+              "</div>" +
+              '<div class="mb-2 grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-text-secondary">' +
+              '<div class="title-highlight py-1">日</div><div class="py-1">一</div><div class="py-1">二</div><div class="py-1">三</div><div class="py-1">四</div><div class="py-1">五</div><div class="title-highlight py-1">六</div>' +
+              "</div>" +
+              '<div class="days-grid grid grid-cols-7 gap-1"></div>';
+            cell.appendChild(dropdown);
+            dropdown.addEventListener("click", function (e) {
+              e.stopPropagation();
+            });
+            var daysGrid = dropdown.querySelector(".days-grid");
+            var monthLabel = dropdown.querySelector(".month-label");
+            var viewingDate = dayjs(displayEl.textContent.trim());
+            function render() {
+              daysGrid.innerHTML = "";
+              monthLabel.textContent = viewingDate.format("YYYY年 MM月");
+              var today = dayjs().startOf("day");
+              var selectedStr = displayEl.textContent.trim();
+              var startDay = viewingDate.startOf("month").day();
+              var daysInMonth = viewingDate.daysInMonth();
+              for (var i = 0; i < startDay; i += 1) {
+                daysGrid.appendChild(document.createElement("div"));
+              }
+              for (var d = 1; d <= daysInMonth; d += 1) {
+                var current = viewingDate.date(d);
+                var dateStr = current.format("YYYY-MM-DD");
+                var dayBtn = document.createElement("button");
+                dayBtn.type = "button";
+                dayBtn.textContent = d;
+                dayBtn.className =
+                  "calendar-day flex h-8 w-8 items-center justify-center rounded-full text-xs transition-all";
+                if (dateStr === today.format("YYYY-MM-DD")) {
+                  dayBtn.classList.add("today");
+                }
+                if (current.isBefore(today)) {
+                  dayBtn.disabled = true;
+                } else {
+                  (function (ds) {
+                    dayBtn.addEventListener("click", function (ev) {
+                      ev.stopPropagation();
+                      displayEl.textContent = ds;
+                      var product = purchaseAddonProducts.find(function (item) {
+                        return item.id === cell.dataset.purchaseItem;
+                      });
+                      if (product) getPurchaseItemState(product).date = ds;
+                      dropdown.classList.remove("active");
+                      window.activeSimpleCalendar = null;
+                      renderPurchaseAddonCart();
+                    });
+                  })(dateStr);
+                  if (dateStr === selectedStr) dayBtn.classList.add("selected");
+                }
+                daysGrid.appendChild(dayBtn);
+              }
+            }
+            function positionDropdown() {
+              var r = btn.getBoundingClientRect();
+              var gutter = 8;
+              var dw = dropdown.offsetWidth || 280;
+              var dh = dropdown.offsetHeight || 340;
+              var left = Math.min(Math.max(r.left, gutter), window.innerWidth - dw - gutter);
+              var top = r.bottom + gutter;
+              if (top + dh + gutter > window.innerHeight) {
+                top = Math.max(gutter, r.top - dh - gutter);
+              }
+              dropdown.style.left = left + "px";
+              dropdown.style.top = top + "px";
+            }
+            btn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              if (
+                window.activeSimpleCalendar &&
+                window.activeSimpleCalendar !== dropdown
+              ) {
+                window.activeSimpleCalendar.classList.remove("active");
+              }
+              var cur = displayEl.textContent.trim();
+              if (/^\d{4}-\d{2}-\d{2}$/.test(cur)) viewingDate = dayjs(cur);
+              dropdown.classList.toggle("active");
+              window.activeSimpleCalendar = dropdown.classList.contains("active")
+                ? dropdown
+                : null;
+              if (window.activeSimpleCalendar) {
+                positionDropdown();
+                render();
+              }
+            });
+            dropdown.querySelector(".prev-month").addEventListener("click", function (e) {
+              e.stopPropagation();
+              viewingDate = viewingDate.subtract(1, "month");
+              render();
+            });
+            dropdown.querySelector(".next-month").addEventListener("click", function (e) {
+              e.stopPropagation();
+              viewingDate = viewingDate.add(1, "month");
+              render();
+            });
+          });
+        }
+        function getPurchaseItemsForCategory(category) {
+          return category === "all"
+            ? purchaseAddonProducts
+            : purchaseAddonProducts.filter(function (item) {
+                return item.category === category;
+              });
+        }
+        function renderPurchaseAddonProducts() {
+          var modal = document.getElementById("modalPurchaseAddonBackdrop");
+          if (!modal) return;
+          var list = modal.querySelector("[data-purchase-products]");
+          if (!list) return;
+          var items = getPurchaseItemsForCategory(purchaseAddonState.category);
+          if (!items.length) {
+            list.innerHTML =
+              '<p class="rounded-lg border border-border-default bg-white p-4 text-base text-text-supporting">尚無加購項目</p>';
+            return;
+          }
+          list.innerHTML = items
+            .map(function (item) {
+              var itemState = getPurchaseItemState(item);
+              var quantity = itemState.quantity || 0;
+              var disabled = !itemState.timeEnabled;
+              var selectClass = disabled
+                ? "bg-border-disabled text-text-secondary"
+                : "bg-white text-text-default";
+              var originalPriceClass = item.originalPriceMuted
+                ? "text-text-placeholder line-through"
+                : "font-semibold text-text-default";
+              return (
+                '<article class="rounded-lg border border-border-default bg-white p-4">' +
+                '<div class="purchase-addon-product-grid">' +
+                '<div class="space-y-9">' +
+                "<div>" +
+                '<div class="text-base text-text-default">' +
+                item.title +
+                "</div>" +
+                '<div class="mt-1 text-xs text-text-default">' +
+                item.subtitle +
+                "</div>" +
+                "</div>" +
+                "<div>" +
+                '<label class="block text-base text-text-default" for="purchase-note-' +
+                item.id +
+                '">備註</label>' +
+                '<textarea id="purchase-note-' +
+                item.id +
+                '" class="mt-1 block min-h-[34px] w-full resize-y rounded-md border border-border-disabled bg-white px-3 py-1.5 text-xs text-text-default outline-none focus:border-menu" data-purchase-field="notice" data-purchase-item="' +
+                item.id +
+                '">' +
+                itemState.notice +
+                "</textarea>" +
+                "</div>" +
+                "</div>" +
+                '<div class="space-y-4">' +
+                "<div>" +
+                '<div class="text-base text-text-default">日期</div>' +
+                '<div class="rb-cal-cell mt-1 min-w-0" data-purchase-calendar-cell data-purchase-item="' +
+                item.id +
+                '">' +
+                '<button type="button" class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-2 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default">' +
+                '<span class="rb-cal-date purchase-addon-date-text flex-1 text-left">' +
+                itemState.date +
+                "</span>" +
+                '<img src="./assets/icons/calendar.svg" alt="" class="h-6 w-6" />' +
+                "</button>" +
+                "</div>" +
+                "</div>" +
+                "<div>" +
+                '<div class="mb-1 flex items-center justify-between">' +
+                '<span class="text-base text-text-default">時 / 分</span>' +
+                '<button type="button" class="purchase-addon-time-toggle relative h-5 w-8 rounded-full bg-border-disabled" data-purchase-time-toggle="' +
+                item.id +
+                '" aria-pressed="' +
+                (itemState.timeEnabled ? "true" : "false") +
+                '" aria-label="切換時分欄位狀態">' +
+                '<span class="toggle-knob absolute left-0 top-[3px] h-3.5 w-3.5 rounded-full border bg-white transition-transform"></span>' +
+                "</button>" +
+                "</div>" +
+                '<div class="flex gap-3">' +
+                '<select class="h-9 w-16 rounded-md border border-border-disabled px-3 py-1.5 text-base outline-none ' +
+                selectClass +
+                '" data-purchase-field="hour" data-purchase-item="' +
+                item.id +
+                '"' +
+                (disabled ? " disabled" : "") +
+                ">" +
+                renderPurchaseNumberOptions(0, 23, itemState.hour) +
+                "</select>" +
+                '<select class="h-9 w-16 rounded-md border border-border-disabled px-3 py-1.5 text-base outline-none ' +
+                selectClass +
+                '" data-purchase-field="minute" data-purchase-item="' +
+                item.id +
+                '"' +
+                (disabled ? " disabled" : "") +
+                ">" +
+                renderPurchaseNumberOptions(0, 59, itemState.minute) +
+                "</select>" +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                '<div class="flex h-[140px] flex-col justify-between">' +
+                "<div>" +
+                '<div class="mb-1 flex items-center gap-3">' +
+                '<span class="text-base ' +
+                originalPriceClass +
+                '">' +
+                formatPurchaseAmount(item.originalPrice) +
+                "</span>" +
+                '<span class="text-xs text-text-default">庫存：' +
+                item.inventory +
+                "</span>" +
+                "</div>" +
+                '<label class="flex h-9 w-full items-center rounded-md border border-border-disabled bg-white py-1.5 pl-1 pr-3">' +
+                '<img src="./assets/icons/dollar.svg" alt="" class="h-6 w-6" />' +
+                '<input type="number" min="0" class="min-w-0 flex-1 bg-transparent text-base text-text-default outline-none" value="' +
+                itemState.cost +
+                '" data-purchase-field="cost" data-purchase-item="' +
+                item.id +
+                '" aria-label="' +
+                item.title +
+                '費用" />' +
+                "</label>" +
+                "</div>" +
+                "<div>" +
+                '<div class="flex h-9 items-center rounded-md bg-tab-yellow px-3 py-1">' +
+                '<button type="button" class="flex h-6 w-6 items-center justify-center ' +
+                (quantity <= 0 ? "opacity-40" : "") +
+                '" data-purchase-step="minus" data-purchase-item="' +
+                item.id +
+                '" aria-label="減少' +
+                item.title +
+                '">' +
+                '<img src="./assets/icons/outline-minus.svg" alt="" class="h-6 w-6" />' +
+                "</button>" +
+                '<span class="mx-auto inline-flex h-7 min-w-[33px] items-center justify-center rounded-md bg-tab-yellow px-3 py-1.5 text-xs text-text-default" data-purchase-quantity="' +
+                item.id +
+                '">' +
+                quantity +
+                "</span>" +
+                '<button type="button" class="flex h-6 w-6 items-center justify-center" data-purchase-step="plus" data-purchase-item="' +
+                item.id +
+                '" aria-label="增加' +
+                item.title +
+                '">' +
+                '<img src="./assets/icons/outline-plus.svg" alt="" class="h-6 w-6" />' +
+                "</button>" +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                "</article>"
+              );
+            })
+            .join("");
+          initPurchaseAddonCalendars(modal);
+        }
+        function renderPurchaseAddonCart() {
+          var modal = document.getElementById("modalPurchaseAddonBackdrop");
+          if (!modal) return;
+          var cards = modal.querySelector("[data-purchase-cart-cards]");
+          var details = modal.querySelector("[data-purchase-cart-details]");
+          var totalEl = modal.querySelector("[data-purchase-cart-total]");
+          if (!cards) return;
+          var selected = purchaseAddonProducts.filter(function (item) {
+            return (getPurchaseItemState(item).quantity || 0) > 0;
+          });
+          if (!selected.length) {
+            cards.innerHTML =
+              '<p class="text-base text-text-supporting">尚未選擇加購項目</p>';
+            if (details) {
+              details.innerHTML =
+                '<p class="text-base text-text-supporting">尚未選擇加購項目</p>';
+            }
+            if (totalEl) totalEl.textContent = "$ 0";
+            return;
+          }
+          var total = selected.reduce(function (sum, item) {
+            var itemState = getPurchaseItemState(item);
+            return sum + Number(itemState.cost || 0) * itemState.quantity;
+          }, 0);
+          cards.innerHTML = selected
+            .map(function (item) {
+              var itemState = getPurchaseItemState(item);
+              var quantity = itemState.quantity;
+              var timeChip = itemState.timeEnabled
+                ? '<span class="inline-flex h-6 items-center rounded-[40px] bg-accent-cart-time px-2 py-1 text-xs text-text-emphasis">' +
+                  formatPurchaseTimePart(itemState.hour) +
+                  "：" +
+                  formatPurchaseTimePart(itemState.minute) +
+                  "</span>"
+                : "";
+              return (
+                '<article class="rounded-lg border border-border-default bg-white p-4">' +
+                '<div class="mb-3 flex items-start justify-between gap-4">' +
+                "<div>" +
+                '<div class="text-base text-text-default">' +
+                item.title +
+                "</div>" +
+                '<div class="mt-1 text-xs text-text-default">' +
+                item.subtitle +
+                "</div>" +
+                "</div>" +
+                '<button type="button" class="flex h-6 w-6 items-center justify-center" data-purchase-remove="' +
+                item.id +
+                '" aria-label="刪除' +
+                item.title +
+                '">' +
+                '<img src="./assets/icons/trash-can.svg" alt="" class="h-6 w-6" />' +
+                "</button>" +
+                "</div>" +
+                '<div class="flex flex-wrap items-center gap-2">' +
+                '<span class="inline-flex h-6 items-center rounded-[40px] bg-accent-cart-date px-2 py-1 text-xs text-text-emphasis">' +
+                itemState.date +
+                "</span>" +
+                timeChip +
+                '<span class="ml-auto text-base font-semibold text-text-default">' +
+                formatPurchaseAmount(Number(itemState.cost || 0) * quantity) +
+                "</span>" +
+                "</div>" +
+                "</article>"
+              );
+            })
+            .join("");
+          if (details) {
+            details.innerHTML = selected
+              .map(function (item) {
+                var itemState = getPurchaseItemState(item);
+                var quantity = itemState.quantity;
+                return (
+                  '<div class="flex items-center justify-between gap-3">' +
+                  '<div class="inline-flex min-w-0 items-center gap-3 text-base text-text-default">' +
+                  '<span class="truncate">' +
+                  item.title +
+                  "</span>" +
+                  "<span>x " +
+                  quantity +
+                  "</span>" +
+                  "</div>" +
+                  '<span class="shrink-0 text-base text-text-default">' +
+                  (Number(itemState.cost || 0) * quantity).toLocaleString("en-US") +
+                  "</span>" +
+                  "</div>"
+                );
+              })
+              .join("");
+          }
+          if (totalEl) totalEl.textContent = formatPurchaseAmount(total);
+        }
+        function setPurchaseAddonCategory(category) {
+          var modal = document.getElementById("modalPurchaseAddonBackdrop");
+          if (!modal) return;
+          purchaseAddonState.category = category;
+          modal.querySelectorAll("[data-purchase-category]").forEach(function (btn) {
+            btn.setAttribute(
+              "aria-pressed",
+              btn.dataset.purchaseCategory === category ? "true" : "false",
+            );
+          });
+          renderPurchaseAddonProducts();
+        }
+        function renderPurchaseAddon() {
+          renderPurchaseAddonProducts();
+          renderPurchaseAddonCart();
+        }
+        function resetPurchaseAddonModal() {
+          purchaseAddonState.category = "all";
+          resetPurchaseAddonItems();
+          setPurchaseAddonCategory("all");
+          var modal = document.getElementById("modalPurchaseAddonBackdrop");
+          if (modal) {
+            var toggle = modal.querySelector("[data-purchase-category-toggle]");
+            var list = modal.querySelector("[data-purchase-category-list]");
+            if (toggle) toggle.setAttribute("aria-expanded", "true");
+            if (list) {
+              list.hidden = false;
+              list.classList.remove("is-collapsed");
+            }
+            var contentToggle = modal.querySelector("[data-purchase-content-toggle]");
+            var productList = modal.querySelector("[data-purchase-products]");
+            if (contentToggle) contentToggle.setAttribute("aria-expanded", "true");
+            if (productList) {
+              productList.hidden = false;
+              productList.classList.remove("is-collapsed");
+            }
+          }
+          renderPurchaseAddonCart();
+        }
 
         document.addEventListener("click", function (e) {
           var btn = e.target.closest("[data-modal-open]");
@@ -4883,6 +5722,7 @@
           "modalMemberBackdrop",
           "modalRoomIntroBackdrop",
           "modalRoomEditBackdrop",
+          "modalPurchaseAddonBackdrop",
         ].forEach(function (id) {
           var el = document.getElementById(id);
           el &&
@@ -4902,6 +5742,7 @@
               "modalMemberBackdrop",
               "modalRoomIntroBackdrop",
               "modalRoomEditBackdrop",
+              "modalPurchaseAddonBackdrop",
             ].forEach(closeModal);
           }
         });
@@ -4941,6 +5782,118 @@
               if (textarea) textarea.value = "";
             });
           resetRoomEditModal();
+        })();
+
+        // Purchase add-on modal state
+        (function () {
+          var modal = document.getElementById("modalPurchaseAddonBackdrop");
+          if (!modal) return;
+          var categoryToggle = modal.querySelector("[data-purchase-category-toggle]");
+          var categoryList = modal.querySelector("[data-purchase-category-list]");
+          var contentToggle = modal.querySelector("[data-purchase-content-toggle]");
+          var productList = modal.querySelector("[data-purchase-products]");
+
+          categoryToggle &&
+            categoryToggle.addEventListener("click", function () {
+              var willCollapse =
+                categoryToggle.getAttribute("aria-expanded") !== "false";
+              categoryToggle.setAttribute(
+                "aria-expanded",
+                willCollapse ? "false" : "true",
+              );
+              if (categoryList) {
+                categoryList.hidden = willCollapse;
+                categoryList.classList.toggle("is-collapsed", willCollapse);
+              }
+            });
+
+          contentToggle &&
+            contentToggle.addEventListener("click", function () {
+              var willCollapse =
+                contentToggle.getAttribute("aria-expanded") !== "false";
+              contentToggle.setAttribute(
+                "aria-expanded",
+                willCollapse ? "false" : "true",
+              );
+              if (productList) {
+                productList.hidden = willCollapse;
+                productList.classList.toggle("is-collapsed", willCollapse);
+              }
+            });
+
+          modal.querySelectorAll("[data-purchase-category]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              setPurchaseAddonCategory(btn.dataset.purchaseCategory);
+            });
+          });
+
+          modal.addEventListener("click", function (e) {
+            var step = e.target.closest("[data-purchase-step]");
+            if (step) {
+              var id = step.dataset.purchaseItem;
+              var product = purchaseAddonProducts.find(function (item) {
+                return item.id === id;
+              });
+              if (!product) return;
+              var itemState = getPurchaseItemState(product);
+              var current = itemState.quantity || 0;
+              var next =
+                step.dataset.purchaseStep === "plus" ? current + 1 : current - 1;
+              itemState.quantity = Math.max(0, next);
+              renderPurchaseAddon();
+              return;
+            }
+
+            var remove = e.target.closest("[data-purchase-remove]");
+            if (remove) {
+              var removeProduct = purchaseAddonProducts.find(function (item) {
+                return item.id === remove.dataset.purchaseRemove;
+              });
+              if (removeProduct) {
+                getPurchaseItemState(removeProduct).quantity = 0;
+              }
+              renderPurchaseAddon();
+              return;
+            }
+
+            var timeToggle = e.target.closest("[data-purchase-time-toggle]");
+            if (timeToggle) {
+              var toggleProduct = purchaseAddonProducts.find(function (item) {
+                return item.id === timeToggle.dataset.purchaseTimeToggle;
+              });
+              if (toggleProduct) {
+                var toggleState = getPurchaseItemState(toggleProduct);
+                toggleState.timeEnabled = !toggleState.timeEnabled;
+              }
+              renderPurchaseAddon();
+            }
+          });
+
+          modal.addEventListener("input", function (e) {
+            var field = e.target.closest("[data-purchase-field]");
+            if (!field) return;
+            var product = purchaseAddonProducts.find(function (item) {
+              return item.id === field.dataset.purchaseItem;
+            });
+            if (!product) return;
+            var itemState = getPurchaseItemState(product);
+            itemState[field.dataset.purchaseField] = field.value;
+            if (field.dataset.purchaseField === "cost") renderPurchaseAddonCart();
+          });
+
+          modal.addEventListener("change", function (e) {
+            var field = e.target.closest("[data-purchase-field]");
+            if (!field) return;
+            var product = purchaseAddonProducts.find(function (item) {
+              return item.id === field.dataset.purchaseItem;
+            });
+            if (!product) return;
+            getPurchaseItemState(product)[field.dataset.purchaseField] = field.value;
+            renderPurchaseAddonCart();
+          });
+
+          resetPurchaseAddonItems();
+          renderPurchaseAddon();
         })();
 
         // Member tab switching
@@ -6222,11 +7175,14 @@
                     <button
                       type="button"
                       class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                      data-modal-open="modalPurchaseAddonBackdrop"
+                      aria-label="開啟加購項目"
                     >
                       <img
                         src="./assets/icons/purchase-item.svg"
-                        alt="purchase-item"
+                        alt=""
                         class="w-6 h-6"
+                        aria-hidden="true"
                       />
                     </button>
                   </td>

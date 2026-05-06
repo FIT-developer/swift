@@ -8,7 +8,7 @@
 
 ## 概述
 
-`Modal` 是全站對話框元件。基礎 component set 共有 **5 個 320px variants**（屬性 `state`），另有房型介紹用的 560px modal frame，以及訂房明細 edit icon 使用的房間編輯 modal。
+`Modal` 是全站對話框元件。基礎 component set 共有 **5 個 320px variants**（屬性 `state`），另有房型介紹用的 560px modal frame、訂房明細 edit icon 使用的房間編輯 modal，以及加購項目 modal。
 共用結構：Header（標題 + 關閉）+ Content + Footer（取消/確定）。
 
 ---
@@ -26,6 +26,9 @@
 | `state=room booking edit / min locked` | `1272:27402` | 375×1004px | 訂房明細 edit modal；預設狀態，lock + 已達最低間數 |
 | `state=room booking edit / max locked` | `1272:27354` | 375×1004px | 訂房明細 edit modal；lock + 已達上限間數 |
 | `state=room booking edit / max editable` | `1272:27306` | 375×1004px | 訂房明細 edit modal；unlock + 價格調整可編輯 |
+| `state=purchase add-on / desktop` | `1392:17122` | 1194×893px | 加購 modal；desktop RWD reference |
+| `state=purchase add-on / tablet` | `1393:18281` | 768×1959px | 加購 modal；tablet RWD reference |
+| `state=purchase add-on / mobile` | `1393:19196` | 375×3139px | 加購 modal；mobile RWD reference |
 
 ---
 
@@ -319,6 +322,153 @@ Modal (375×1004px reference)
 | Lock icon | — | `Color/Brand/Brand-600` |
 | Disabled input bg | — | `Color/Neutral/100` |
 | Disabled input text | — | `Color/Text/400` |
+
+---
+
+## state=purchase add-on（加購項目）
+
+**使用位置**：`preview/landing.html` 的 room-booking template，訂房明細表「加購」欄位的 `icons/purchase-item`。
+**觸發**：點擊 `purchase-item.svg` icon 開啟。
+**Figma 讀取日期**：2026-05-06。
+
+此 modal 以 375px 作為 Figma mobile 參考寬度；實作不可固定寫死 375px，需保持流動寬度。Desktop / tablet / mobile 皆保留 Header + scrollable body + Footer 結構。
+
+### Figma RWD 來源
+
+| 斷點參考 | Node ID | 尺寸 | 說明 |
+|---|---|---|---|
+| Desktop | `1392:17122` | 1194×893px | `left menu list + middle Frame 410` 為同一個 flex group；right result cart 是外側 sibling |
+| Tablet | `1393:18281` | 768×1959px | 左側 menu list + middle `Frame 410` 的 flex group 改為 `flex-col`；right result cart 保持在可用寬度中的優先位置 |
+| Mobile | `1393:19196` | 375×3139px | 單欄垂直堆疊：menu list → `Frame 410` content → result cart |
+| Content frame | `I1393:18281;73:678;1393:18099` | 397×1143px | 內部 `Frame 410` content source；尺寸不同於外層 RWD modal frame，不可拿來覆蓋 outer modal 寬高 |
+
+### 結構
+
+```
+Modal
+├── Header Frame 10
+│   ├── "加購"
+│   └── icons/close
+├── Body
+│   ├── Main flex group（left + middle）
+│   │   ├── Left: Category menu list
+│   │   │   ├── Header "分類" + icons/down
+│   │   │   └── 12 個 menu list category item（default selected = 第一項 "所有"）
+│   │   └── Middle: Frame 410 content
+│   │       ├── Header "加購項目" + icons/down
+│   │       └── Product cards
+│   │           ├── title + sub-title
+│   │           ├── notice textarea
+│   │           ├── date / calendar component
+│   │           ├── hour + minute selects controlled by toggle
+│   │           ├── original price + inventory + cost input
+│   │           └── booking quantity stepper
+│   └── Right: Result / cart panel
+│       ├── middle stepper 產生的 brief transaction cards
+│       └── 獨立白底購物車明細 block / 總價（未來與 backend 協作）
+└── Footer
+    ├── 取消
+    └── 確定加購
+```
+
+### 固定文字內容
+
+| 區塊 | 內容 |
+|---|---|
+| Header title | `加購` |
+| Category title | `分類` |
+| Category items | `所有`, `餐飲`, `票券`, `飲品`, `設備租借`, `加床`, `優惠促銷`, `藍染`, `伴手禮`, `住宿`, `盥洗用品`, `會議服務` |
+| Category count | prototype 一律顯示 `12` |
+| Content frame title | `加購項目` |
+| Product card 1 | title `早餐`、sub-title `套餐組合 a、b 、c` |
+| Product card 2 | title `早餐`、sub-title `套餐組合 a、b 、c` |
+| Product card 3 | title `嬰兒用品`、sub-title `餐具`, `安全椅` |
+| Notice label | `備註`，textarea placeholder `placeholder` |
+| Date label | `日期`，calendar/select control visual content `2026-02-27` |
+| Time label | `時 / 分`，hour / minute select values always render as two digits (`01`, `04`, `22`, `44`)；toggle controls active / disabled state |
+| Price / inventory / cost | original price `$ 1,999`、inventory `庫存：8`、cost input `9988` with `icons/dollar` |
+| Quantity stepper | DatePicker/stepper visual value examples `2`, `1`；implementation 不額外渲染 `訂房間數` label |
+| Cart title | `購物車明細` |
+| Cart rows | prototype uses selected product cards and booking quantity; exact backend rows are not implemented |
+| Total | `總價` / calculated from selected card cost × booking quantity |
+| Footer | `取消`, `確定加購` |
+
+### Layout / RWD
+
+| 區塊 | 規格 |
+|---|---|
+| Header | h 51px, padding 12px，title left、close right |
+| Footer | h 58px, padding 12px，buttons right aligned |
+| Modal desktop | max width follows 1194px reference; content may cap to viewport minus 24px |
+| Modal body | content higher than viewport 時，body 垂直 scroll；header / footer 保持可見 |
+| Desktop layout | body 內是兩個主要 sibling：`main group(left menu + Frame 410)` / `right result cart`；main group 內 left + middle 橫向 flex |
+| Tablet layout | content swap 寬 744px 參考：main group 約 397px，right result 約 327px，中間 gap 20px；main group 內 left + middle 改為 `flex-col` |
+| Mobile layout | 整體改單欄垂直堆疊；category panel 在上，`Frame 410` content 居中，result cart 在下 |
+| Left menu accordion | `分類` header 可 collapse / expand 自身 menu list；collapse 不關閉 modal；icon 只在 down / up 之間切換，不使用 right direction |
+| Middle content accordion | `加購項目` header 是獨立 accordion button，可 collapse / expand product list；icon 只在 down / up 之間切換，不影響左側 category list 或右側 cart |
+| Category item | height 38px，icon 38×38，文字 16px SemiBold，count pill 24px high |
+| Category default selected | 第一項 `所有` 預設 selected / focus style |
+| Category focus style | click 後切換 selected style；只有被選取 item 有 focus/on 狀態 |
+| Menu list icons | 一律使用 `specs/icons.md` 的 `menu-list-*-none-fill.svg`；icon 本身透明，不帶背景色 |
+| Middle `Frame 410` | 依左側 category button 顯示對應加購項目；source node 是 internal 397×1143 content frame，不是 outer modal RWD frame；implementation width 為 100% 填滿其 container，不固定為 397px |
+| Product card | white bg、radius 8、border `Color/Border/Default`、padding 16px；card content 有 3 種 responsive layout style |
+| Product card / large | source `I1392:17122;73:678;1392:16946`，`Frame 410` 571×760；card 507×172，內部 3 欄水平排列：140 / 140 / 155，gap 20 |
+| Product card / medium | source `I1393:18281;73:678;1393:18099`，`Frame 410` 397×1143；card 333×332，前兩欄 140 / 140 在上，第三欄 155 在下一列 |
+| Product card / narrow | mobile content 寬度不足時，三欄改單欄垂直堆疊，保持各欄內容順序：title/notice → date/time → cost/quantity |
+| Title / sub-title | 左上：title 16px、sub-title 12px；不可用數量文字取代 sub-title |
+| Notice textarea | label `備註` + textarea-like Input，34px min height，placeholder `placeholder`，可輸入 prototype local state；height 可由使用者拖曳調整，不固定高度 |
+| Date calendar | label `日期` + `Calendar simple` dropdown function；Figma 樣本文字 `2026-02-27` 不作為實作 default，所有 calendar default date 一律由 JS 初始化為 today (`dayjs().format("YYYY-MM-DD")`) |
+| Date text special rule | Add-on product card date `<span>` 使用 14px；若套 16px 會在 140px 欄寬內溢出 |
+| Time controls | label `時 / 分` + toggle；toggle on 時 hour/minute selects active，toggle off 時 hour/minute selects disabled and use disabled bg/text tokens；toggle off 時 cart card 不顯示時間 chip，也不顯示替代文案 |
+| Time format | hour / minute values must be `padStart(2, "0")`; cart time chip follows the same two-digit format |
+| Cost / inventory | original price + inventory on first row；below is cost input with `icons/dollar` and numeric value |
+| Booking quantity | DatePicker/stepper visual：minus, selected number bg `Color/Tab/yellow`, plus；不額外顯示 `訂房間數` label |
+| Right result panel | middle stepper click 後，上方產生 / 更新 brief transaction cards；delete button 刪除該 card |
+| Cart detail block | right panel 下方的白底區塊；顯示 `購物車明細` rows、分隔線、總價；未來資料與 backend 協作 |
+| Product/cart card | radius 8，border `Color/Border/Default`，white background，padding 16px |
+
+### Typography / Colors
+
+| 元素 | 規格 | Token |
+|---|---|---|
+| Header / category title | 20px SemiBold 600 | `Color/Text/800` |
+| Category label | 16px SemiBold 600 | `Color/Text/800` |
+| Body text | 16px Regular | `Color/Text/800` |
+| Sub-title / placeholder / inventory | 12px Regular | `Color/Text/800` / disabled uses `Color/Text/400` |
+| Product price | 16px SemiBold 600 | `Color/Text/800` |
+| Disabled time select | fill `#D1D1D1` + text `#888888` | `Color/Neutral/200`, `Color/Text/400` |
+| Active time select | fill `#FFFFFF` + stroke `#D1D1D1` | `Color/Neutral/0`, `Color/Neutral/200` |
+| Quantity active value bg | `#FFCC00` | `Color/Tab/yellow` |
+| Cart date chip bg | `#BDFFF6` | `Color/Accent/cart-date` |
+| Cart time chip bg | `#EAFFC5` | `Color/Accent/cart-time` |
+| Count pill text | 12px Regular | `Color/Text/800` |
+| Active category count bg | `#D3EBFD` | `Color/Bootstrap/focus-background` |
+| Modal body bg | `#F6F6F6` | `Color/Surface/Default` |
+| Content panel bg | `#F6FAFD` | `Color/Modal/Hover` / `Color/Neutral/75` |
+| Card border | `#E1E1E0` | `Color/Border/Default` |
+| Footer cancel bg | `#D1D1D1` | `Color/Neutral/200` |
+| Footer confirm bg | `#454545` | `Color/Text/800` |
+
+### Token gaps / unresolved
+
+- None for cart date/time chips as of 2026-05-06. `Color/Accent/cart-date` and `Color/Accent/cart-time` were added to Figma Variables and recorded in `specs/assets/tokens.md`.
+
+### Interaction
+
+| 行為 | 規則 |
+|---|---|
+| 開啟 | `purchase-item.svg` click → open `modalPurchaseAddonBackdrop` |
+| 關閉 | header close、footer `取消`、backdrop、Esc 關閉 |
+| 確定加購 | prototype 目前只關閉 modal；未接資料提交 |
+| Category click | 左側 menu list item 切換 selected/focus style，並更新 middle `Frame 410` content |
+| Category 展開/收合 | `分類` header click collapse / expand 左側 menu list |
+| Middle stepper | plus / minus 改變該加購項目數量；數量 > 0 時於右側 result panel 顯示 brief transaction card |
+| 刪除商品 | 右側 card trash click 刪除該 card，並同步 middle stepper 數量歸零 |
+| Notice textarea | 可編輯 prototype local state；未接 backend |
+| Date calendar | prototype default date = today；使用者選取後更新 local state，未接 backend |
+| Time toggle | 點擊切換該 card 的 hour/minute selects disabled / active status；disabled 時 select 不可修改 |
+| Cost input | 可編輯 prototype local state；right cart total 依目前 cost × quantity 計算 |
+| Cart details | 購物車明細未來與 backend 協作；目前 prototype 由前端 local state 呈現 |
 
 ---
 

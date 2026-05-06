@@ -104,6 +104,43 @@
 
 ---
 
+## Menu List Icon Set（非 aside）
+
+> 來源：Figma `components` page，selection frame `1295:13763` / `svg`，尺寸 `317×614`。
+> 用途：稍後用於 menu list（另一區塊，不是 aside）。
+> 匯出日期：2026-05-06。
+
+### 使用規則
+
+- 檔名一律加 `menu-list-` 前綴，避免覆蓋既有共用 icon（例如既有 `bed.svg`、`service.svg`）。
+- 每個 icon 有兩個 variant：
+  - `*-none-fill.svg`：只有 icon vector，建議作為 HTML 實作首選，外層容器背景用 token 控制。
+  - `*-fill.svg`：保留 Figma 匯出的 38×38 狀態容器背景，作為視覺對照或需要直接貼圖時使用。
+- SVG stroke 已改為 `currentColor`，實作時用 `Color/Icon/Default` alias：`text-icon-default` / `--color-icon-default`。
+- `fill` variant 的容器背景來自 Figma：
+  - `all=fill`：`#D3EBFD`，對應 `Color/Bootstrap/focus-background`。
+  - 其他 `*=fill`：`#F6F6F6`，對應 `Color/Neutral/50` / `Color/Surface/Default`。
+- menu list 實作時不得把上述背景色硬寫在 HTML/CSS；應引用 tokens.md 的語意 token。
+
+### 清單
+
+| 名稱 | Fill 檔案 | None-fill 檔案 | 尺寸 | 語意用途 | Figma variant |
+|---|---|---|---|---|---|
+| menu-list-all | assets/icons/menu-list-all-fill.svg | assets/icons/menu-list-all-none-fill.svg | 38×38 | 全部分類 | all=fill / all=none-fill |
+| menu-list-coffee | assets/icons/menu-list-coffee-fill.svg | assets/icons/menu-list-coffee-none-fill.svg | 38×38 | 咖啡/飲品 | coffee=fill / coffee=none-fill |
+| menu-list-dining | assets/icons/menu-list-dining-fill.svg | assets/icons/menu-list-dining-none-fill.svg | 38×38 | 餐飲 | dining=fill / dining=none-fill |
+| menu-list-flight | assets/icons/menu-list-flight-fill.svg | assets/icons/menu-list-flight-none-fill.svg | 38×38 | 航班/飛行 | flight=fill / flight=none-fill |
+| menu-list-bed | assets/icons/menu-list-bed-fill.svg | assets/icons/menu-list-bed-none-fill.svg | 38×38 | 床型/住宿 | bed=fill / bed=none-fill |
+| menu-list-tailetries | assets/icons/menu-list-tailetries-fill.svg | assets/icons/menu-list-tailetries-none-fill.svg | 38×38 | 盥洗用品 | tailetries=fill / tailetries=none-fill |
+| menu-list-tool | assets/icons/menu-list-tool-fill.svg | assets/icons/menu-list-tool-none-fill.svg | 38×38 | 工具/維修 | tool=fill / tool=none-fill |
+| menu-list-gift | assets/icons/menu-list-gift-fill.svg | assets/icons/menu-list-gift-none-fill.svg | 38×38 | 贈品/禮物 | gift=fill / gift=none-fill |
+| menu-list-tickets | assets/icons/menu-list-tickets-fill.svg | assets/icons/menu-list-tickets-none-fill.svg | 38×38 | 票券 | tickets=fill / tickets=none-fill |
+| menu-list-service | assets/icons/menu-list-service-fill.svg | assets/icons/menu-list-service-none-fill.svg | 38×38 | 服務 | service=fill / service=none-fill |
+| menu-list-wellness | assets/icons/menu-list-wellness-fill.svg | assets/icons/menu-list-wellness-none-fill.svg | 38×38 | 健康/療癒 | wellness=fill / wellness=none-fill |
+| menu-list-promotion | assets/icons/menu-list-promotion-fill.svg | assets/icons/menu-list-promotion-none-fill.svg | 38×38 | 促銷/折扣 | promotion=fill / promotion=none-fill |
+
+---
+
 ## 分類索引
 
 ### 導航類
@@ -162,6 +199,12 @@
 | `attached-link-moved.svg` | `stroke="#E1E1E0"` 淺灰硬寫 | 邊框色應由 CSS 控制，改 `currentColor` |
 | `direction-left.svg` | `stroke="#306CFE"` + `#344054` | 雙色造型，確認是否為有意設計 |
 
+### Menu list 狀態背景參考
+| 檔名 | 色值 | token 對應 | 處理方式 |
+|---|---|---|---|
+| `menu-list-all-fill.svg` | `#D3EBFD` | `Color/Bootstrap/focus-background` | 保留作 Figma 匯出參考；HTML 實作優先用 `menu-list-all-none-fill.svg` + token 背景 |
+| `menu-list-*-fill.svg`（除 all） | `#F6F6F6` | `Color/Neutral/50` / `Color/Surface/Default` | 保留作 Figma 匯出參考；HTML 實作優先用 `*-none-fill.svg` + token 背景 |
+
 ---
 
 ## 尺寸非標準 24×24 的圖示
@@ -175,6 +218,7 @@
 | `hotel` | 31×24 | 非正方形，使用時注意對齊 |
 | `transit`, `direction-left` | 25×25 | 略大於標準，注意排版 |
 | `submit` | 15×16 | 非正方形，注意對齊 |
+| `menu-list-*` | 38×38 | 含 10px padding 與 4px radius 的 menu list icon 容器；不是純 24×24 共用 icon |
 
 ---
 
@@ -195,4 +239,4 @@
 
 ---
 
-*Generated from Figma components page · 87 icons exported · Updated 2026-05-04*
+*Generated from Figma components page · 111 icons exported · Updated 2026-05-06*
