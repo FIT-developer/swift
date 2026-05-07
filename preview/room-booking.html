@@ -6,26 +6,28 @@
     <title>房間預訂</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Semantic colors mapped to CSS vars — see specs/assets/tokens.md.
+      // Tailwind class names map to strict Figma-path CSS vars in base.css.
+      // Class keys (left) are convenience labels; CSS-var values (right) are the
+      // canonical Figma path. base.css is the single source of truth.
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              "text-default": "var(--color-text-default)",
-              "text-secondary": "var(--color-text-secondary)",
-              "text-inverse": "var(--color-text-inverse)",
-              "surface-hover": "var(--color-surface-hover)",
+              "text-default": "var(--color-text-800)",
+              "text-secondary": "var(--color-text-400)",
+              "text-inverse": "var(--color-text-100)",
+              "surface-hover": "var(--color-modal-hover)",
               "border-default": "var(--color-border-default)",
-              "border-disabled": "var(--color-border-disabled)",
-              menu: "var(--color-menu)",
+              "border-disabled": "var(--color-neutral-200)",
+              menu: "var(--color-menuitem-default)",
               "radio-hover": "var(--color-radio-hover)",
               "brand-100": "var(--color-brand-100)",
               "brand-500": "var(--color-brand-500)",
-              "brand-active": "var(--color-brand-active)",
-              "status-negative": "var(--color-status-negative)",
+              "brand-active": "var(--color-surface-brand-active)",
+              "status-negative": "var(--color-surface-status-negative)",
               "accent-light-green": "var(--color-accent-light-green)",
               "accent-green": "var(--color-accent-green)",
-              "focus-background": "var(--color-focus-background)",
+              "focus-background": "var(--color-bootstrap-focus-background)",
             },
           },
         },
@@ -36,52 +38,8 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="./assets/css/base.css" />
     <style>
-      :root {
-        --color-white: #ffffff;
-        --color-surface-hover: #f6fafd;
-        --color-border-default: #e1e1e0;
-        --color-border-disabled: #d1d1d1;
-        --color-text-secondary: #888888;
-        --color-text-default: #454545;
-        --color-text-inverse: #e1e1e0;
-        --color-menu: #2178cf;
-        --color-radio-hover: #3b78d5;
-        --color-brand-100: #fdebd7;
-        --color-brand-500: #ef6f25;
-        --color-brand-active: #e05216;
-        --color-status-negative: #e12129;
-        --color-accent-light-green: #bbf7d0;
-        --color-accent-green: #34c759;
-        --color-focus-background: #d3ebfd;
-      }
-
-      body {
-        font-family: "Noto Sans TC", sans-serif;
-      }
-
-      /* Issue 3: Focus states */
-      button:focus-visible,
-      a:focus-visible,
-      input:focus-visible,
-      select:focus-visible,
-      textarea:focus-visible {
-        outline: 2px solid var(--color-menu);
-        outline-offset: 2px;
-      }
-
-      /* Issue 4: prefers-reduced-motion */
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-          scroll-behavior: auto !important;
-        }
-      }
-
       .sidebar {
         transition: width 0.2s ease;
       }
@@ -117,11 +75,11 @@
       }
       .calendar-day-active {
         background: var(--color-radio-hover);
-        color: var(--color-white);
+        color: var(--color-neutral-0);
         border-radius: 50%;
       }
       .calendar-day-past {
-        color: var(--color-text-secondary);
+        color: var(--color-text-400);
       }
       input[type="text"],
       select {
@@ -138,12 +96,12 @@
       }
       .tag-active {
         background: var(--color-radio-hover);
-        color: var(--color-white);
+        color: var(--color-neutral-0);
       }
       .tag-inactive {
-        background: var(--color-white);
-        color: var(--color-text-default);
-        border: 1px solid var(--color-border-disabled);
+        background: var(--color-neutral-0);
+        color: var(--color-text-800);
+        border: 1px solid var(--color-neutral-200);
       }
     </style>
   </head>

@@ -6,44 +6,45 @@
     <title>Swift — 今日總覽</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Semantic colors mapped to CSS vars — see preview/assets/css/base.css.
-      // tokens.md is the source of truth.
+      // Tailwind class names map to strict Figma-path CSS vars in base.css.
+      // Class keys (left) are convenience labels; CSS-var values (right) are the
+      // canonical Figma path. base.css is the single source of truth.
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              "text-default": "var(--color-text-default)",
-              "text-secondary": "var(--color-text-secondary)",
-              "text-placeholder": "var(--color-text-placeholder)",
-              "text-muted": "var(--color-text-muted)",
-              "text-subtitle": "var(--color-text-subtitle)",
-              "text-supporting": "var(--color-text-supporting)",
-              "text-emphasis": "var(--color-text-emphasis)",
-              "text-inverse": "var(--color-text-inverse)",
+              "text-default": "var(--color-text-800)",
+              "text-secondary": "var(--color-text-400)",
+              "text-placeholder": "var(--color-text-300)",
+              "text-muted": "var(--color-text-500)",
+              "text-subtitle": "var(--color-text-700)",
+              "text-supporting": "var(--color-text-600)",
+              "text-emphasis": "var(--color-text-900)",
+              "text-inverse": "var(--color-text-100)",
               "icon-default": "var(--color-icon-default)",
               "surface-default": "var(--color-surface-default)",
-              "surface-hover": "var(--color-surface-hover)",
-              "surface-action": "var(--color-surface-action)",
+              "surface-hover": "var(--color-modal-hover)",
+              "surface-action": "var(--color-surface-action-default)",
               "surface-accent": "var(--color-surface-accent)",
-              "surface-brand": "var(--color-surface-brand)",
+              "surface-brand": "var(--color-surface-brand-default)",
               "surface-brand-hover": "var(--color-surface-brand-hover)",
               "bootstrap-focus-background":
                 "var(--color-bootstrap-focus-background)",
               "border-default": "var(--color-border-default)",
-              "border-disabled": "var(--color-border-disabled)",
+              "border-disabled": "var(--color-neutral-200)",
               "border-focus": "var(--color-border-focus)",
-              "border-plugin": "var(--color-border-plugin)",
+              "border-plugin": "var(--color-border-plugin-default)",
               "border-plugin-invalid": "var(--color-border-plugin-invalid)",
-              menu: "var(--color-menu)",
-              radio: "var(--color-radio)",
+              menu: "var(--color-menuitem-default)",
+              radio: "var(--color-radio-default)",
               "radio-hover": "var(--color-radio-hover)",
               "subitem-selected": "var(--color-subitem-selected)",
               "brand-50": "var(--color-brand-50)",
               "brand-400": "var(--color-brand-400)",
               "brand-500": "var(--color-brand-500)",
-              "brand-active": "var(--color-brand-active)",
-              "status-positive": "var(--color-status-positive)",
-              "status-negative": "var(--color-status-negative)",
+              "brand-active": "var(--color-brand-600)",
+              "status-positive": "var(--color-surface-status-positive)",
+              "status-negative": "var(--color-surface-status-negative)",
               "chart-blue": "var(--color-chart-blue)",
               "chart-green": "var(--color-chart-green)",
               "chart-purple-red": "var(--color-chart-purple-red)",
@@ -1247,28 +1248,28 @@
                     <div style="height: 240px; position: relative">
                       <canvas id="chartDiverging"></canvas>
                     </div>
-                    <p class="text-center text-xs mt-1" style="color: var(--color-text-secondary)">
+                    <p class="text-center text-xs mt-1" style="color: var(--color-text-400)">
                       房間數量
                     </p>
                     <div class="flex justify-center gap-5 mt-2">
                       <div class="flex items-center gap-1">
                         <span
                           class="inline-block w-7 h-3 rounded"
-                          style="background: var(--color-status-negative)"
+                          style="background: var(--color-surface-status-negative)"
                         ></span
                         ><span class="text-xs text-text-secondary">已超賣</span>
                       </div>
                       <div class="flex items-center gap-1">
                         <span
                           class="inline-block w-7 h-3 rounded"
-                          style="background: var(--color-status-positive)"
+                          style="background: var(--color-surface-status-positive)"
                         ></span
                         ><span class="text-xs text-text-secondary">已賣出</span>
                       </div>
                       <div class="flex items-center gap-1">
                         <span
                           class="inline-block w-7 h-3 rounded"
-                          style="background: var(--color-text-secondary)"
+                          style="background: var(--color-text-400)"
                         ></span
                         ><span class="text-xs text-text-secondary">當日庫存</span>
                       </div>
@@ -1287,7 +1288,7 @@
                       >
                         <span
                           class="inline-block w-7 h-3.5 rounded"
-                          style="background: var(--color-radio)"
+                          style="background: var(--color-radio-default)"
                         ></span
                         >OTA
                       </div>
@@ -1305,7 +1306,7 @@
                       >
                         <span
                           class="inline-block w-7 h-3.5 rounded"
-                          style="background: var(--color-text-placeholder)"
+                          style="background: var(--color-text-300)"
                         ></span
                         >電話/現場
                       </div>
@@ -5982,7 +5983,7 @@
       }
       Chart.defaults.font.family = FONT;
       Chart.defaults.font.size = 12;
-      Chart.defaults.color = token("--color-text-default");
+      Chart.defaults.color = token("--color-text-800");
 
       // ── 1. Bar chart ─────────────────────────────────────────────────
       new Chart(document.getElementById("chartBar"), {
@@ -6010,19 +6011,19 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: token("--color-text-subtitle"),
+              backgroundColor: token("--color-text-700"),
               callbacks: { label: (ctx) => `可住 ${ctx.parsed.y} 間` },
             },
           },
           scales: {
             x: {
-              ticks: { color: token("--color-text-default"), font: { size: 11 } },
+              ticks: { color: token("--color-text-800"), font: { size: 11 } },
               grid: { display: false },
               border: { display: false },
             },
             y: {
               min: 0,
-              ticks: { color: token("--color-text-default"), stepSize: 5 },
+              ticks: { color: token("--color-text-800"), stepSize: 5 },
               grid: { color: token("--color-border-default") },
               border: { display: false },
             },
@@ -6054,16 +6055,16 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: { backgroundColor: token("--color-text-subtitle") },
+            tooltip: { backgroundColor: token("--color-text-700") },
           },
           scales: {
             x: {
-              ticks: { color: token("--color-text-default"), font: { size: 11 } },
+              ticks: { color: token("--color-text-800"), font: { size: 11 } },
               grid: { display: false },
               border: { display: false },
             },
             y: {
-              ticks: { color: token("--color-text-default") },
+              ticks: { color: token("--color-text-800") },
               grid: { color: token("--color-border-default") },
               border: { display: false },
             },
@@ -6086,19 +6087,19 @@
             {
               label: "當日庫存",
               data: [10, 7, 12, 6, 3],
-              backgroundColor: token("--color-text-secondary"),
+              backgroundColor: token("--color-text-400"),
               borderRadius: 2,
             },
             {
               label: "已賣出",
               data: [-10, null, -8, -5, null],
-              backgroundColor: token("--color-status-positive"),
+              backgroundColor: token("--color-surface-status-positive"),
               borderRadius: 2,
             },
             {
               label: "已超賣",
               data: [null, -9, null, null, null],
-              backgroundColor: token("--color-status-negative"),
+              backgroundColor: token("--color-surface-status-negative"),
               borderRadius: 2,
             },
           ],
@@ -6110,7 +6111,7 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: token("--color-text-subtitle"),
+              backgroundColor: token("--color-text-700"),
               displayColors: false,
               callbacks: {
                 title: (items) =>
@@ -6127,16 +6128,16 @@
               reverse: true,
               min: -10,
               max: 15,
-              ticks: { color: token("--color-text-default"), stepSize: 5, callback: (v) => v },
+              ticks: { color: token("--color-text-800"), stepSize: 5, callback: (v) => v },
               grid: {
-                color: (ctx) => (ctx.tick?.value === 0 ? token("--color-text-placeholder") : token("--color-border-default")),
+                color: (ctx) => (ctx.tick?.value === 0 ? token("--color-text-300") : token("--color-border-default")),
                 lineWidth: (ctx) => (ctx.tick?.value === 0 ? 1.5 : 1),
               },
               border: { display: false },
             },
             y: {
               stacked: true,
-              ticks: { color: token("--color-text-default"), font: { size: 11 } },
+              ticks: { color: token("--color-text-800"), font: { size: 11 } },
               grid: { display: false },
               border: { display: false },
             },
@@ -6153,14 +6154,14 @@
             {
               data: [302, 138, 110],
               backgroundColor: [
-                token("--color-radio"),
+                token("--color-radio-default"),
                 token("--color-accent-green"),
-                token("--color-text-placeholder"),
+                token("--color-text-300"),
               ],
               hoverBackgroundColor: [
                 token("--color-radio-hover"),
                 token("--color-accent-green"),
-                token("--color-text-secondary"),
+                token("--color-text-400"),
               ],
               borderWidth: 0,
             },
@@ -6173,7 +6174,7 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: token("--color-text-subtitle"),
+              backgroundColor: token("--color-text-700"),
               displayColors: false,
               callbacks: { label: (ctx) => `${ctx.label}：${ctx.raw} 筆` },
             },
@@ -6271,7 +6272,7 @@
                   <button
                     data-metric="ord"
                     class="inv-metric-btn rb-active"
-                    style="--c: var(--color-status-positive)"
+                    style="--c: var(--color-surface-status-positive)"
                   >
                     訂
                   </button>
@@ -6907,7 +6908,7 @@
                     max="10"
                     value="3"
                     class="rb-range flex-1 max-[1080px]:basis-full"
-                    style="accent-color: var(--color-menu)"
+                    style="accent-color: var(--color-menuitem-default)"
                   />
                   <div
                     class="rb-range-val border border-border-default rounded-xl px-3 py-1 text-sm text-text-default shrink-0 min-w-[54px] text-center max-[1080px]:ml-auto"

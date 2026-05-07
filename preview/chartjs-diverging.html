@@ -8,27 +8,26 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/base.css">
   <style>
-    body { font-family: 'Noto Sans TC', 'Noto Sans', sans-serif; }
-
     /* Card variants */
-    .card { background: #fff; border: 1px solid #e1e1e0; border-radius: 12px; overflow: hidden; }
+    .card { background: var(--color-neutral-0); border: 1px solid var(--color-border-default); border-radius: 12px; overflow: hidden; }
 
     /* Legend swatch */
     .swatch { display: inline-block; width: 32px; height: 14px; border-radius: 2px; }
 
     /* State tabs */
     .tab-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
-    .tab { padding: 6px 14px; border-radius: 9999px; border: 1px solid #d1d1d1;
-           cursor: pointer; font-size: 13px; color: #454545; background: #fff; }
-    .tab.active { background: #454545; color: #fff; border-color: #454545; }
+    .tab { padding: 6px 14px; border-radius: 9999px; border: 1px solid var(--color-neutral-200);
+           cursor: pointer; font-size: 13px; color: var(--color-text-800); background: var(--color-neutral-0); }
+    .tab.active { background: var(--color-text-800); color: var(--color-neutral-0); border-color: var(--color-text-800); }
 
-    /* Tooltip custom style */
+    /* Tooltip custom style — bg/border-color use a chart-local rgba (no Figma token); see base.css note. */
     .chart-tooltip {
       position: absolute;
       pointer-events: none;
       background: rgba(50,50,50,0.92);
-      color: #fff;
+      color: var(--color-neutral-0);
       border-radius: 8px;
       padding: 8px 12px;
       font-size: 12px;
@@ -67,7 +66,7 @@
   <div id="card-wrapper">
     <div class="card" id="chart-card" style="width:525px; padding: 20px 20px 16px 20px;">
       <!-- Title -->
-      <p id="chart-title" class="text-center text-xs mb-3" style="color:#454545;">
+      <p id="chart-title" class="text-center text-xs mb-3" style="color: var(--color-text-800);">
         2026-01-31 今日超賣管理
       </p>
 
@@ -96,21 +95,21 @@
       </div>
 
       <!-- X-axis unit label -->
-      <p class="text-center text-xs mt-2" style="color:#888888;">房間數量</p>
+      <p class="text-center text-xs mt-2" style="color: var(--color-text-400);">房間數量</p>
 
       <!-- Legend -->
       <div class="flex justify-center gap-6 mt-3" id="legend">
         <div class="flex items-center gap-2">
-          <span class="swatch" style="background:#e12129;"></span>
-          <span class="text-xs" style="color:#454545;">已超賣</span>
+          <span class="swatch" style="background: var(--color-surface-status-negative);"></span>
+          <span class="text-xs" style="color: var(--color-text-800);">已超賣</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="swatch" style="background:#2aca18;"></span>
-          <span class="text-xs" style="color:#454545;">已賣出</span>
+          <span class="swatch" style="background: var(--color-surface-status-positive);"></span>
+          <span class="text-xs" style="color: var(--color-text-800);">已賣出</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="swatch" style="background:#888888;"></span>
-          <span class="text-xs" style="color:#454545;">當日庫存</span>
+          <span class="swatch" style="background: var(--color-text-400);"></span>
+          <span class="text-xs" style="color: var(--color-text-800);">當日庫存</span>
         </div>
       </div>
     </div>
@@ -128,14 +127,16 @@
     oversold:  [null, -9, null, null, null], // 已超賣
   };
 
+  // Pull from base.css token vars so token rename / hex change propagates to Chart.js.
+  const cs = getComputedStyle(document.documentElement);
   const COLORS = {
-    stock:    '#888888',
-    sold:     '#2aca18',
-    oversold: '#e12129',
-    grid:     '#e1e1e0',
-    zeroLine: '#b0b0b0',
-    text:     '#454545',
-    subtext:  '#888888',
+    stock:    cs.getPropertyValue('--color-text-400').trim(),
+    sold:     cs.getPropertyValue('--color-surface-status-positive').trim(),
+    oversold: cs.getPropertyValue('--color-surface-status-negative').trim(),
+    grid:     cs.getPropertyValue('--color-border-default').trim(),
+    zeroLine: cs.getPropertyValue('--color-text-300').trim(),
+    text:     cs.getPropertyValue('--color-text-800').trim(),
+    subtext:  cs.getPropertyValue('--color-text-400').trim(),
   };
 
   const X_MIN = -10, X_MAX = 15;

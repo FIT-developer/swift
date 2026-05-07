@@ -3,27 +3,27 @@
 > 來源：Figma Variables（Collection: **Semantic**, Mode: **Mode 1**）  
 > 本地匯出參考：`specs/assets/figma-variables.json`（不進版控，內容需如實轉換到本檔）
 > Local Styles 全部為空，所有 token 皆來自 Variables。  
-> 上次同步：2026-05-04
+> 上次同步：2026-05-07
 
-## Token 使用規則
+## Token 使用規則（Strict Mirror）
 
-- 專案不允許套用非 Figma Variables 來源的顏色。
-- HTML / CSS / JavaScript 中的顏色必須先在本檔有對應 token，再透過以下方式使用：
-  - `:root --color-*` CSS variable
-  - Tailwind CDN `theme.extend.colors` 的 semantic class，例如 `text-text-default`、`bg-surface-hover`
-  - JavaScript 讀取 `getComputedStyle(document.documentElement).getPropertyValue("--color-*")`
-- 如果 Figma 視覺稿出現本檔沒有的顏色，先更新 Figma Variables 或請使用者確認 token 名稱；不得直接寫 hex。
+- **base.css `:root` 嚴格鏡像 Figma Variables**：CSS variable 命名直接走 Figma 路徑（`Color/Group/Key` → `--color-{group}-{key}` 全小寫 kebab）。實作時優先使用 strict 名稱，不再走「語意 alias」過渡層。
+- 專案不允許套用非 Figma Variables 來源的顏色（`rgba(...)` / box-shadow / drop-shadow / modal backdrop 等 Effect 例外，但仍須命名 CSS var 管理）。
+- HTML / CSS / JavaScript 中的顏色必須對應到 Figma Variable，再透過以下方式使用：
+  - CSS：`var(--color-{group}-{key})`，名稱與 Figma 路徑 1:1 對應
+  - Tailwind CDN `theme.extend.colors`：值必須指向 strict CSS var；class 名可保留語意 label（例 `text-text-default` → `var(--color-text-800)`），便於 markup 不大改
+  - JavaScript：`getComputedStyle(document.documentElement).getPropertyValue("--color-{group}-{key}")`
+- 如果 Figma 視覺稿出現本檔沒有的顏色，先更新 Figma Variables 並同步 `figma-variables.json` + `base.css` + 本檔；不得直接寫 hex。
 - 若舊實作仍有 `text-[#...]`、`bg-[#...]`、`border-[#...]`，只能在能 1:1 對應本檔 token 時替換；無對應者需列入未解問題。
-- Figma Variables 是底層來源；HTML/Tailwind 實作可使用更符合場景的語意 alias。alias 必須在本檔有對照，不可自行新增未記錄名稱。
-- `white` / `bg-white` / `text-white` 可視為 `Color/Neutral/0` 的授權 Tailwind alias；使用時以「白色表面」或「深色背景反白文字」為語意，不需強制改成 `neutral-0`。
-- `rgba(...)`、box-shadow、drop-shadow、modal backdrop 等 Effect 不納入 Figma Variables 色彩 token，但實作不可散落 raw value；需以命名 CSS variable 管理，並記錄在元件規範或本檔 Effect 章節。
-- scrollbar 為 HTML/CSS 原生特規；實作使用既有中性色 token alias，不新增非 Figma Variables 色彩。
+- Figma key 拼字若有 typo（例如 `Color/Modal/Text-hightlight`）保留為 strict 鏡像，不在實作層修正。
+- scrollbar 為 HTML/CSS 原生特規；實作使用既有中性色 token，不新增非 Figma Variables 色彩。
 
 ---
 
-## Figma Variable 與 Tailwind 語意 alias 對照
+## Figma Variable 與 Tailwind class 對照（語意 label，僅供參考）
 
-> 讀取 Figma 時先確認底層 Variable；實作時優先使用右欄較符合場景的 Tailwind / CSS 名稱。
+> 實作優先使用 strict CSS var（`--color-{group}-{key}`，與 Figma 路徑 1:1 對應）。
+> 下表記錄專案歷史上既有的 Tailwind class label，方便 markup 閱讀；class **值** 一律指向 strict CSS var，不允許再導入新的 alias 命名。
 
 | Figma Variable | 實作 alias | 使用情境 |
 |---|---|---|

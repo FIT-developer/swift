@@ -7,12 +7,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/base.css">
   <style>
-    * { font-family: 'Noto Sans TC', 'Noto Sans', sans-serif; }
-
     .card {
-      background: #fff;
-      border: 1px solid #d1d1d1;
+      background: var(--color-neutral-0);
+      border: 1px solid var(--color-neutral-200);
       border-radius: 8px;
       width: 367px;
       padding: 12px;
@@ -21,14 +20,14 @@
 
     /* Legend */
     .legend { display: flex; align-items: center; gap: 16px; justify-content: center; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #888; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-400); }
     .legend-swatch { width: 28px; height: 14px; border-radius: 2px; flex-shrink: 0; }
 
     /* Tooltip */
     .chart-tooltip {
       position: absolute;
-      background: #4f4f4f;
-      color: #e1e1e0;
+      background: var(--color-text-700);
+      color: var(--color-text-100);
       border-radius: 6px;
       padding: 2px 12px;
       font-size: 12px;
@@ -50,17 +49,17 @@
       transform: translateY(-50%);
       border-width: 5px 0 5px 6px;
       border-style: solid;
-      border-color: transparent transparent transparent #4f4f4f;
+      border-color: transparent transparent transparent var(--color-text-700);
     }
 
     /* State tabs */
     .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
     .tab {
       padding: 5px 14px; border-radius: 9999px;
-      border: 1px solid #d1d1d1; background: #fff;
-      font-size: 13px; color: #454545; cursor: pointer;
+      border: 1px solid var(--color-neutral-200); background: var(--color-neutral-0);
+      font-size: 13px; color: var(--color-text-800); cursor: pointer;
     }
-    .tab.active { background: #454545; color: #fff; border-color: #454545; }
+    .tab.active { background: var(--color-text-800); color: var(--color-neutral-0); border-color: var(--color-text-800); }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-10">
@@ -74,18 +73,18 @@
 
   <div class="card" id="card">
     <!-- Title -->
-    <p class="text-center text-xs mb-2" style="color:#454545;">今日訂單來源分佈</p>
+    <p class="text-center text-xs mb-2" style="color: var(--color-text-800);">今日訂單來源分佈</p>
 
     <!-- Legend -->
     <div class="legend mb-3">
       <div class="legend-item">
-        <span class="legend-swatch" style="background:#005fcc;"></span>OTA
+        <span class="legend-swatch" style="background: var(--color-radio-default);"></span>OTA
       </div>
       <div class="legend-item">
-        <span class="legend-swatch" style="background:#34c759;"></span>官網
+        <span class="legend-swatch" style="background: var(--color-chart-green);"></span>官網
       </div>
       <div class="legend-item">
-        <span class="legend-swatch" style="background:#b0b0b0;"></span>電話/現場
+        <span class="legend-swatch" style="background: var(--color-text-300);"></span>電話/現場
       </div>
     </div>
 
@@ -104,7 +103,14 @@
   // ── Data ──────────────────────────────────────────────────────────────────────
   const LABELS = ['OTA', '官網', '電話/現場'];
   const VALUES = [302, 138, 110];          // total ≈ 550
-  const COLORS = ['#005fcc', '#34c759', '#b0b0b0'];
+  // Base segment colors pulled from base.css token vars so a token rename / hex change propagates here.
+  const cs = getComputedStyle(document.documentElement);
+  const COLORS = [
+    cs.getPropertyValue('--color-radio-default').trim(),
+    cs.getPropertyValue('--color-chart-green').trim(),
+    cs.getPropertyValue('--color-text-300').trim(),
+  ];
+  // Hover variants are visual derivations (no Figma source); kept local on purpose so base.css stays Figma-mirrored.
   const HOVER_COLORS = ['#0052b3', '#28b34e', '#969696'];
 
   // ── Chart ─────────────────────────────────────────────────────────────────────

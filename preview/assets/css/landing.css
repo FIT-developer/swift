@@ -2,7 +2,7 @@
 
 /* Nav sub-item selected state — same bg as hover */
 .sub-item-selected {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 /* Page tab chip */
 /* Page tab chip — inactive (default) and active states match Figma spec */
@@ -11,21 +11,21 @@
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: var(--color-white);
-  border: 1px solid var(--color-border-disabled);
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 6px;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
   flex-shrink: 0;
 }
 .page-tab:hover {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 .page-tab.active {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
   border-color: var(--color-chart-blue);
 }
 .page-tab-close {
@@ -46,10 +46,10 @@
 }
 /* Menu category: parent trigger is neutral, children items are blue */
 .menu-category .accordion-trigger {
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 .menu-category .accordion-trigger + div > div {
-  color: var(--color-menu);
+  color: var(--color-menuitem-default);
 }
 
 /* Mobile horizontal scroll */
@@ -63,7 +63,7 @@
 
 /* POS entrance button hover fill */
 .pos-entrance-inner {
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   transition: background 0.2s;
 }
 .pos-entrance-btn:hover .pos-entrance-inner {
@@ -75,8 +75,8 @@
 }
 /* Section card */
 .section-card {
-  background: var(--color-white);
-  border: 1px solid var(--color-border-disabled);
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 6px;
   padding: 12px;
 }
@@ -87,14 +87,14 @@
   appearance: none;
   display: block;
   width: 100%;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 6px;
   padding: 6px 32px 6px 12px;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   cursor: pointer;
-  background-color: var(--color-white);
-  background-image: url("./assets/icons/down.svg");
+  background-color: var(--color-neutral-0);
+  background-image: url("../icons/down.svg");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 16px 16px;
@@ -102,7 +102,7 @@
 }
 .sidebar-select:focus {
   outline: none;
-  border-color: var(--color-menu);
+  border-color: var(--color-menuitem-default);
 }
 
 /* Desktop sidebar collapsed state — only hides at md+; mobile uses drawer state */
@@ -171,7 +171,7 @@
   height: 32px;
   border: none;
   background: transparent;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
@@ -247,7 +247,7 @@ body.mobile-sidebar-open {
   overflow: hidden;
 }
 .sms-modal-content {
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   padding: 12px;
 }
 .sms-form-row {
@@ -266,7 +266,7 @@ body.mobile-sidebar-open {
   min-width: 584px;
   border-collapse: collapse;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 .sms-table th,
 .sms-table td {
@@ -277,10 +277,10 @@ body.mobile-sidebar-open {
   vertical-align: middle;
 }
 .sms-table thead th {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 .sms-table tbody td {
-  border-bottom: 1px solid var(--color-border-disabled);
+  border-bottom: 1px solid var(--color-neutral-200);
 }
 .sms-table .sms-table-number {
   text-align: center;
@@ -290,15 +290,15 @@ body.mobile-sidebar-open {
   text-align: right;
 }
 .order-summary-shell {
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 8px;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   padding: 12px;
 }
 .order-summary-section {
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 8px;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   padding: 20px;
 }
 .order-summary-section-title {
@@ -306,10 +306,10 @@ body.mobile-sidebar-open {
   padding: 8px 12px;
   font-size: 20px;
   line-height: 27px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 .order-summary-section-title--underlined {
-  border-bottom: 1px solid var(--color-text-default);
+  border-bottom: 1px solid var(--color-text-800);
 }
 .order-summary-grid {
   display: grid;
@@ -321,13 +321,13 @@ body.mobile-sidebar-open {
   padding: 3px 12px;
   font-size: 16px;
   line-height: 22px;
-  color: var(--color-text-muted);
+  color: var(--color-text-500);
 }
 .order-summary-value {
   padding: 3px 12px;
   font-size: 16px;
   line-height: 22px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 .order-summary-grid-spacer {
   min-height: 1px;
@@ -337,7 +337,7 @@ body.mobile-sidebar-open {
   min-width: 900px;
   border-collapse: collapse;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 .order-summary-table th,
 .order-summary-table td {
@@ -347,18 +347,18 @@ body.mobile-sidebar-open {
   font-weight: 400;
 }
 .order-summary-table thead th {
-  border-top: 1px solid var(--color-text-default);
-  border-bottom: 1px solid var(--color-text-default);
-  background: var(--color-surface-hover);
+  border-top: 1px solid var(--color-text-800);
+  border-bottom: 1px solid var(--color-text-800);
+  background: var(--color-modal-hover);
 }
 .order-summary-table--after-title thead th {
   border-top: 0;
 }
 .order-summary-table tbody td {
-  border-bottom: 1px solid var(--color-border-disabled);
+  border-bottom: 1px solid var(--color-neutral-200);
 }
 .order-summary-table tfoot td {
-  border-top: 1px solid var(--color-text-default);
+  border-top: 1px solid var(--color-text-800);
 }
 .order-summary-number {
   text-align: right;
@@ -395,7 +395,7 @@ body.mobile-sidebar-open {
 }
 .order-summary-total-section .order-summary-section-title {
   background: var(--color-brand-50);
-  color: var(--color-surface-action);
+  color: var(--color-surface-action-default);
 }
 .order-summary-addons-table {
   min-width: 615px;
@@ -408,17 +408,17 @@ body.mobile-sidebar-open {
   background: var(--color-brand-50);
 }
 .order-summary-hotel-name {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
   padding: 4px 12px;
   text-align: center;
   font-size: 16px;
   line-height: 22px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 .order-summary-hotel-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  border-bottom: 1px solid var(--color-border-disabled);
+  border-bottom: 1px solid var(--color-neutral-200);
   padding: 4px 0;
 }
 .order-summary-hotel-pair {
@@ -434,7 +434,7 @@ body.mobile-sidebar-open {
 .order-summary-person-row {
   display: grid;
   grid-template-columns: 140px minmax(0, 1fr);
-  border-bottom: 1px solid var(--color-border-disabled);
+  border-bottom: 1px solid var(--color-neutral-200);
   padding: 4px 0;
 }
 .purchase-addon-layout {
@@ -478,14 +478,14 @@ body.mobile-sidebar-open {
 }
 .purchase-addon-time-toggle[aria-pressed="true"] .toggle-knob {
   transform: translateX(12px);
-  border-color: var(--color-status-positive);
+  border-color: var(--color-surface-status-positive);
 }
 .purchase-addon-time-toggle[aria-pressed="false"] .toggle-knob {
   transform: translateX(2px);
-  border-color: var(--color-text-secondary);
+  border-color: var(--color-text-400);
 }
 .purchase-category-btn[aria-pressed="true"] {
-  background: var(--color-white);
+  background: var(--color-neutral-0);
 }
 .purchase-category-btn[aria-pressed="true"] .purchase-category-count {
   background: var(--color-bootstrap-focus-background);
@@ -619,27 +619,27 @@ body.mobile-sidebar-open {
 .mode-toggle {
   display: inline-flex;
   align-self: flex-start;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 28px;
   overflow: hidden;
 }
 .mode-btn {
   height: 42px;
   padding: 0 24px;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   border: none;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
 }
 .mode-btn.active {
-  background: var(--color-radio);
-  color: var(--color-white);
+  background: var(--color-radio-default);
+  color: var(--color-neutral-0);
 }
 .mode-btn:not(.active):hover {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 
 /* ── Payment method chip (正式單 panel) ───────────── */
@@ -650,25 +650,25 @@ body.mobile-sidebar-open {
   padding: 10px 16px;
   border-radius: 28px;
   background: transparent;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
 }
 .rb-pay-chip:hover {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 .rb-pay-chip.rb-pay-active {
   background: var(--color-subitem-selected);
   border-color: var(--color-subitem-selected);
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 
 /* ── Nation radio (selected = 藍框) ───────────────── */
 .nation-radio {
-  accent-color: var(--color-menu);
+  accent-color: var(--color-menuitem-default);
 }
 
 /* ── Order data lock toggle ──────────────────────── */
@@ -690,7 +690,7 @@ body.mobile-sidebar-open {
 .order-panel.is-locked select,
 .order-panel.is-locked textarea {
   background: var(--color-border-default);
-  color: var(--color-text-secondary);
+  color: var(--color-text-400);
   pointer-events: none;
 }
 .order-panel.is-locked input[type="radio"],
@@ -702,11 +702,11 @@ body.mobile-sidebar-open {
   cursor: default;
 }
 .order-panel.is-locked .rb-cal-cell {
-  background: var(--color-border-disabled);
+  background: var(--color-neutral-200);
   pointer-events: none;
 }
 .order-panel.is-locked .rb-cal-cell .rb-cal-date {
-  color: var(--color-text-secondary);
+  color: var(--color-text-400);
 }
 
 /* 訂房資料 panels：grid cell + flex children 都允許縮到 0，input 才能跟著螢幕寬度縮 */
@@ -724,9 +724,9 @@ body.mobile-sidebar-open {
   display: block;
   padding: 4px 0;
   border: 0;
-  border-bottom: 1px solid var(--color-border-disabled);
+  border-bottom: 1px solid var(--color-neutral-200);
   background: transparent;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   font-size: 16px;
   line-height: 22px;
 }
@@ -736,17 +736,17 @@ body.mobile-sidebar-open {
 .order-tab {
   height: 42px;
   padding: 10px 20px;
-  background: var(--color-border-disabled);
+  background: var(--color-neutral-200);
   border: 1px solid var(--color-border-default);
   border-bottom: none;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   cursor: pointer;
 }
 .order-tab.order-tab-active {
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   position: relative;
   z-index: 1;
   margin-bottom: -1px;
@@ -756,7 +756,7 @@ body.mobile-sidebar-open {
 /* 視覺參考 mode-toggle（pill r:28），尺寸保持 Figma Frame 97 (176×42)：兩顆 88×42 */
 .customer-toggle {
   display: inline-flex;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 28px;
   overflow: hidden;
 }
@@ -764,20 +764,20 @@ body.mobile-sidebar-open {
   min-width: 88px;
   height: 42px;
   padding: 10px 12px;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   border: none;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
 }
 .customer-btn.active {
-  background: var(--color-radio);
-  color: var(--color-white);
+  background: var(--color-radio-default);
+  color: var(--color-neutral-0);
 }
 .customer-btn:not(.active):hover {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 
 /* ── Merged input group (Bootstrap-style) ─────────── */
@@ -799,9 +799,9 @@ body.mobile-sidebar-open {
 }
 .input-group > * {
   height: 36px;
-  border: 1px solid var(--color-border-disabled);
-  background: var(--color-white);
-  color: var(--color-text-default);
+  border: 1px solid var(--color-neutral-200);
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
   font-size: 16px;
   padding: 0 12px;
   margin: 0;
@@ -831,9 +831,9 @@ body.mobile-sidebar-open {
   align-items: center;
   width: 145px;
   height: 36px;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 6px;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   overflow: hidden;
 }
 .stepper-btn {
@@ -843,11 +843,11 @@ body.mobile-sidebar-open {
   border: none;
   cursor: pointer;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   line-height: 1;
 }
 .stepper-btn:hover {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 .stepper input {
   flex: 1;
@@ -857,7 +857,7 @@ body.mobile-sidebar-open {
   background: transparent;
   text-align: center;
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   outline: none;
   padding: 0;
 }
@@ -872,19 +872,19 @@ body.mobile-sidebar-open {
   border-radius: 28px;
   font-size: 16px;
   cursor: pointer;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   background: transparent;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   white-space: nowrap;
   flex-shrink: 0;
 }
 .rb-filter-tab:hover {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 .rb-filter-tab.rb-active {
   background: var(--color-subitem-selected);
   border-color: var(--color-subitem-selected);
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 
 /* ── Inventory metric toggle (訂/餘/保) ───────────── */
@@ -894,8 +894,8 @@ body.mobile-sidebar-open {
   height: 36px;
   border-radius: 4px;
   border: 1px solid var(--c);
-  background: var(--color-white);
-  color: var(--color-text-default);
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
   font-size: 16px;
   line-height: 1;
   display: inline-flex;
@@ -918,8 +918,8 @@ body.mobile-sidebar-open {
 .rb-cal-wrap {
   width: 351px;
   max-width: 100%;
-  background: var(--color-white);
-  border: 1px solid var(--color-border-disabled);
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 12px;
   padding: 12px;
 }
@@ -939,7 +939,7 @@ body.mobile-sidebar-open {
 }
 .rb-selected-count {
   font-size: 16px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
 }
 .rb-cal-right-controls {
   display: flex;
@@ -948,25 +948,25 @@ body.mobile-sidebar-open {
 }
 .rb-today-btn {
   font-size: 16px;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 6px;
   width: 56px;
   height: 34px;
-  background: var(--color-white);
-  color: var(--color-text-default);
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
   cursor: pointer;
 }
 .rb-today-btn:hover {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 .rb-interval-select {
   font-size: 14px;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 6px;
   width: 79px;
   height: 36px;
-  background: var(--color-white);
-  color: var(--color-text-default);
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
   cursor: pointer;
   padding: 0 6px;
 }
@@ -981,18 +981,18 @@ body.mobile-sidebar-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-text-placeholder);
+  border: 1px solid var(--color-text-300);
   border-radius: 4px;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   cursor: pointer;
 }
 .rb-nav-btn:hover {
-  background: var(--color-surface-hover);
+  background: var(--color-modal-hover);
 }
 .rb-cal-title {
   font-size: 20px;
   font-weight: 600;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   min-width: 125px;
   text-align: center;
 }
@@ -1007,28 +1007,28 @@ body.mobile-sidebar-open {
 .rb-cal-wrap .day {
   height: 55px;
   border-radius: 12px;
-  border: 1px solid var(--color-border-disabled);
+  border: 1px solid var(--color-neutral-200);
   padding: 6px 4px;
   text-align: center;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
   box-sizing: border-box;
 }
 .rb-cal-wrap .day:hover:not(.disabled) {
-  border-color: var(--color-text-placeholder);
-  background: var(--color-surface-hover);
+  border-color: var(--color-text-300);
+  background: var(--color-modal-hover);
 }
 .rb-cal-wrap .day-wday {
   font-size: 12px;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   margin-bottom: 2px;
 }
 .rb-cal-wrap .day-num {
   font-size: 16px;
   font-weight: 600;
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   line-height: 1.4;
 }
 /* outside month (type=future): no fill, Neutral/100 border, Neutral/400 text */
@@ -1037,7 +1037,7 @@ body.mobile-sidebar-open {
 }
 .rb-cal-wrap .day.outside .day-wday,
 .rb-cal-wrap .day.outside .day-num {
-  color: var(--color-text-secondary);
+  color: var(--color-text-400);
 }
 /* past/disabled (type=diasbled): Neutral/100 fill+border, Neutral/400 text */
 .rb-cal-wrap .day.disabled {
@@ -1048,7 +1048,7 @@ body.mobile-sidebar-open {
 }
 .rb-cal-wrap .day.disabled .day-wday,
 .rb-cal-wrap .day.disabled .day-num {
-  color: var(--color-text-secondary) !important;
+  color: var(--color-text-400) !important;
 }
 /* today (type=today): Accent/Pink fill, white text */
 .rb-cal-wrap .day.today {
@@ -1057,19 +1057,19 @@ body.mobile-sidebar-open {
 }
 .rb-cal-wrap .day.today .day-wday,
 .rb-cal-wrap .day.today .day-num {
-  color: var(--color-white) !important;
+  color: var(--color-neutral-0) !important;
 }
 /* sel-start/end (type=focus): Chart/Blue fill, Neutral/0 border, white text */
 .rb-cal-wrap .day.sel-start,
 .rb-cal-wrap .day.sel-end {
   background: var(--color-chart-blue) !important;
-  border-color: var(--color-white) !important;
+  border-color: var(--color-neutral-0) !important;
 }
 .rb-cal-wrap .day.sel-start .day-wday,
 .rb-cal-wrap .day.sel-start .day-num,
 .rb-cal-wrap .day.sel-end .day-wday,
 .rb-cal-wrap .day.sel-end .day-num {
-  color: var(--color-white) !important;
+  color: var(--color-neutral-0) !important;
 }
 /* sel-mid (type=selected): Accent/Light Green fill, Text/800 text */
 .rb-cal-wrap .day.sel-mid {
@@ -1078,7 +1078,7 @@ body.mobile-sidebar-open {
 }
 .rb-cal-wrap .day.sel-mid .day-wday,
 .rb-cal-wrap .day.sel-mid .day-num {
-  color: var(--color-text-default) !important;
+  color: var(--color-text-800) !important;
 }
 /* today + sel-mid: green overrides pink */
 .rb-cal-wrap .day.today.sel-mid {
@@ -1087,17 +1087,17 @@ body.mobile-sidebar-open {
 }
 .rb-cal-wrap .day.today.sel-mid .day-wday,
 .rb-cal-wrap .day.today.sel-mid .day-num {
-  color: var(--color-text-default) !important;
+  color: var(--color-text-800) !important;
 }
 /* today + sel-start/end: blue overrides pink */
 .rb-cal-wrap .day.today.sel-start,
 .rb-cal-wrap .day.today.sel-end {
   background: var(--color-chart-blue) !important;
-  border-color: var(--color-white) !important;
+  border-color: var(--color-neutral-0) !important;
 }
 .rb-cal-wrap .day.today.sel-start .day-wday,
 .rb-cal-wrap .day.today.sel-start .day-num,
 .rb-cal-wrap .day.today.sel-end .day-wday,
 .rb-cal-wrap .day.today.sel-end .day-num {
-  color: var(--color-white) !important;
+  color: var(--color-neutral-0) !important;
 }

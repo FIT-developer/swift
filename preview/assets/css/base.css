@@ -1,64 +1,171 @@
 /* Global tokens and browser-level rules shared by preview pages.
-   Page-specific layout/component CSS stays in each preview file unless promoted explicitly. */
+   Page-specific layout/component CSS stays in each preview file unless promoted explicitly.
+
+   :root structure:
+   1. Strict Figma mirror — token name = lowercase kebab of Figma path; raw hex tokens
+      hold values, derived/alias tokens use var() to reference canonical paths.
+      Source of truth: specs/assets/figma-variables.json + specs/assets/tokens.md.
+   2. Effect / z-index variables — no Figma source; project-local conventions.
+*/
 
 :root {
-  /* Neutral / surface */
-  --color-white: #ffffff;
-  --color-surface-default: #f6f6f6; /* Neutral/50 */
-  --color-surface-hover: #f6fafd; /* Neutral/75 · Modal/Hover */
-  --color-bootstrap-focus-background: #d3ebfd; /* Bootstrap/focus-background */
-  --color-border-default: #e1e1e0; /* Neutral/100 */
-  --color-border-disabled: #d1d1d1; /* Neutral/200 */
-  --color-text-placeholder: #b0b0b0; /* Neutral/300 */
-  --color-text-secondary: #888888; /* Neutral/400 */
-  --color-text-muted: #6d6d6d; /* Text/500 */
-  --color-text-supporting: #5d5d5d; /* Text/600 */
-  --color-text-subtitle: #4f4f4f; /* Text/700 */
-  --color-text-default: #454545; /* Neutral/800 */
-  --color-text-emphasis: #3d3d3d; /* Text/900 */
-  --color-text-inverse: #e1e1e0; /* Text/100 */
-  --color-icon-default: #000000; /* Icon/Default */
+  /* ════════════════════════════════════════════════════════════════════════════
+     1. STRICT FIGMA MIRROR (specs/assets/figma-variables.json · synced 2026-05-07)
+     ════════════════════════════════════════════════════════════════════════════ */
 
-  /* Brand & action */
-  --color-menu: #2178cf; /* MenuItem/Default */
-  --color-radio: #005fcc; /* Radio/Default */
-  --color-radio-hover: #3b78d5; /* Radio/Hover */
-  --color-subitem-selected: #f7d275; /* SubItem/Selected */
-  --color-brand-50: #fef6ee; /* Brand-50 */
-  --color-brand-400: #f28b45; /* Brand-400 */
-  --color-brand-500: #ef6f25; /* Brand-500 / Surface Brand-Default */
-  --color-brand-active: #e05216; /* Brand-600 */
-  --color-surface-action: #005fcc; /* Surface/Action-Default */
-  --color-surface-accent: #42ebe9; /* Surface/Accent */
-  --color-surface-brand: #ef6f25; /* Surface/Brand-Default */
-  --color-surface-brand-hover: #f28b45; /* Surface/Brand-Hover */
-  --color-border-focus: #b0b0b0; /* Border/Focus */
-  --color-border-plugin: #6d6d6d; /* Border/Plugin-Default */
-  --color-border-plugin-invalid: #d90000; /* Border/Plugin-Invalid */
+  /* Color/Neutral — full grayscale ramp */
+  --color-neutral-0:   #ffffff;
+  --color-neutral-50:  #f6f6f6;
+  --color-neutral-75:  #f6fafd;
+  --color-neutral-100: #e1e1e0;
+  --color-neutral-200: #d1d1d1;
+  --color-neutral-300: #b0b0b0;
+  --color-neutral-400: #888888;
+  --color-neutral-450: #6b6b6b;
+  --color-neutral-500: #6d6d6d;
+  --color-neutral-600: #5d5d5d;
+  --color-neutral-700: #4f4f4f;
+  --color-neutral-800: #454545;
+  --color-neutral-900: #3d3d3d;
+  --color-neutral-950: #262626;
 
-  /* Status */
-  --color-status-positive: #2aca18;
-  --color-status-negative: #e12129;
+  /* Color/Brand — orange ramp */
+  --color-brand-50:  #fef6ee;
+  --color-brand-100: #fdebd7;
+  --color-brand-200: #fad4ae;
+  --color-brand-300: #f7b57a;
+  --color-brand-400: #f28b45;
+  --color-brand-500: #ef6f25;
+  --color-brand-600: #e05216;
+  --color-brand-700: #ba3d14;
+  --color-brand-800: #943218;
+  --color-brand-900: #772b17;
+  --color-brand-950: #40140a;
 
-  /* Chart / accent */
-  --color-chart-blue: #86b7fe;
-  --color-chart-green: #34c759;
-  --color-chart-purple-red: #ff0bd6;
-  --color-accent-pink: #ffc0cb;
-  --color-accent-light-green: #bbf7d0;
-  --color-accent-green: #34c759;
-  --color-accent-cart-date: #bdfff6;
-  --color-accent-cart-time: #eaffc5;
-  --color-accent-celebration: #f44df4;
-  --color-accent-linear-pos-left: #e376f9;
-  --color-accent-linear-pos-right: #ff7878;
-  --color-accent-float-circle-mixed-1: #ffb624;
-  --color-accent-float-circle-mixed-2: #3f930b;
+  /* Color/Bootstrap */
+  --color-bootstrap-focus-background:   #d3ebfd;
+  --color-bootstrap-components-focus:   #86b7fe;
+  --color-bootstrap-aside-notification: #f44df4;
+
+  /* Color/Accent */
+  --color-accent-pink:                  #ffc0cb;
+  --color-accent-light-green:           #bbf7d0;
+  --color-accent-green:                 #34c759;
+  --color-accent-cart-date:             #bdfff6;
+  --color-accent-cart-time:             #eaffc5;
+  --color-accent-celebration:           #f44df4;
+  --color-accent-linear-pos-left:       #e376f9;
+  --color-accent-linear-pos-right:      #ff7878;
+  --color-accent-float-circle-mixed-1:  #ffb624;
+  --color-accent-float-circle-mixed-2:  #3f930b;
   --color-accent-float-circle-filled-1: #f2befd;
   --color-accent-float-circle-filled-2: #ffb6b6;
+
+  /* Color/Icon */
+  --color-icon-default: #000000;
+
+  /* Color/Tab */
   --color-tab-yellow: #ffcc00;
 
-  /* Overlay / effect variables */
+  /* Color/SubItem */
+  --color-subitem-selected: #f7d275;
+
+  /* Color/Chart — separate semantic from Bootstrap/Accent even when hex overlaps */
+  --color-chart-blue:        #86b7fe;
+  --color-chart-purple-red:  #ff0bd6;
+  --color-chart-green:       #34c759;
+
+  /* Color/Text — TEXT_FILL scope; full ramp parallel to Neutral */
+  --color-text-50:  #f6f6f6;
+  --color-text-75:  #f6fafd;
+  --color-text-100: #e1e1e0;
+  --color-text-200: #d1d1d1;
+  --color-text-300: #b0b0b0;
+  --color-text-400: #888888;
+  --color-text-450: #6b6b6b;
+  --color-text-500: #6d6d6d;
+  --color-text-600: #5d5d5d;
+  --color-text-700: #4f4f4f;
+  --color-text-800: #454545;
+  --color-text-900: #3d3d3d;
+  --color-text-950: #262626;
+
+  /* Color/Surface — semantic surfaces; some derived from Brand ramp */
+  --color-surface-default:         var(--color-neutral-50);
+  --color-surface-brand-default:   var(--color-brand-500);
+  --color-surface-brand-hover:     var(--color-brand-400);
+  --color-surface-brand-active:    var(--color-brand-600);
+  --color-surface-secondary:       #f9e616;
+  --color-surface-accent:          #42ebe9;
+  --color-surface-status-negative: #e12129;
+  --color-surface-status-positive: #2aca18;
+  --color-surface-action-default:  #005fcc;
+
+  /* Color/Border */
+  --color-border-default:        var(--color-neutral-100);
+  --color-border-focus:          var(--color-neutral-300);
+  --color-border-plugin-default: var(--color-neutral-500);
+  --color-border-plugin-focus:   var(--color-surface-brand-default);
+  --color-border-plugin-invalid: #d90000;
+
+  /* Color/Modal — Figma key "Text-hightlight" preserved verbatim (typo in source) */
+  --color-modal-default-today:   var(--color-neutral-500);
+  --color-modal-text-hightlight: var(--color-surface-brand-default);
+  --color-modal-hover:           var(--color-neutral-75);
+
+  /* Color/MenuItem */
+  --color-menuitem-default: #2178cf;
+
+  /* Color/Radio */
+  --color-radio-default: #005fcc;
+  --color-radio-hover:   #3b78d5;
+
+  /* Spacing */
+  --spacing-0:   0;
+  --spacing-2:   2px;
+  --spacing-4:   4px;
+  --spacing-6:   6px;
+  --spacing-8:   8px;
+  --spacing-12:  12px;
+  --spacing-16:  16px;
+  --spacing-18:  18px;
+  --spacing-20:  20px;
+  --spacing-24:  24px;
+  --spacing-28:  28px;
+  --spacing-32:  32px;
+  --spacing-36:  36px;
+  --spacing-40:  40px;
+  --spacing-44:  44px;
+  --spacing-56:  56px;
+  --spacing-60:  60px;
+  --spacing-72:  72px;
+  --spacing-76:  76px;
+  --spacing-80:  80px;
+  --spacing-100: 100px;
+
+  /* Radius — alias of Spacing per tokens.md, only up to 72 */
+  --radius-0:  var(--spacing-0);
+  --radius-2:  var(--spacing-2);
+  --radius-4:  var(--spacing-4);
+  --radius-6:  var(--spacing-6);
+  --radius-8:  var(--spacing-8);
+  --radius-12: var(--spacing-12);
+  --radius-16: var(--spacing-16);
+  --radius-20: var(--spacing-20);
+  --radius-24: var(--spacing-24);
+  --radius-28: var(--spacing-28);
+  --radius-32: var(--spacing-32);
+  --radius-36: var(--spacing-36);
+  --radius-40: var(--spacing-40);
+  --radius-44: var(--spacing-44);
+  --radius-56: var(--spacing-56);
+  --radius-60: var(--spacing-60);
+  --radius-72: var(--spacing-72);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+     2. EFFECT / Z-INDEX (no Figma source; project-local)
+     ════════════════════════════════════════════════════════════════════════════ */
+
   --z-popover: 30;
   --z-mobile-sidebar-backdrop: 40;
   --z-mobile-sidebar: 50;
@@ -91,7 +198,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid var(--color-menu);
+  outline: 2px solid var(--color-menuitem-default);
   outline-offset: 2px;
 }
 
@@ -117,7 +224,7 @@ textarea:focus-visible {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;
-  background: var(--color-border-disabled);
+  background: var(--color-neutral-200);
 }
 
 /* Shared component utilities */
@@ -163,9 +270,9 @@ textarea:focus-visible {
 
 .modal-box {
   width: 320px;
-  border: 1px solid var(--color-text-placeholder);
+  border: 1px solid var(--color-text-300);
   border-radius: 8px;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   box-shadow: var(--effect-modal-shadow);
 }
 
@@ -183,7 +290,7 @@ textarea:focus-visible {
   width: 280px;
   border: 1px solid var(--color-border-default);
   border-radius: 0.5rem;
-  background: var(--color-white);
+  background: var(--color-neutral-0);
   box-shadow: var(--effect-calendar-shadow);
 }
 
@@ -192,16 +299,16 @@ textarea:focus-visible {
 }
 
 .calendar-day:hover:not(:disabled) {
-  background-color: var(--color-surface-hover);
+  background-color: var(--color-modal-hover);
 }
 
 .calendar-day.selected {
-  background-color: var(--color-radio) !important;
-  color: var(--color-white) !important;
+  background-color: var(--color-radio-default) !important;
+  color: var(--color-neutral-0) !important;
 }
 
 .calendar-day.today {
-  border: 1.5px solid var(--color-radio);
+  border: 1.5px solid var(--color-radio-default);
   font-weight: bold;
 }
 
@@ -211,7 +318,7 @@ textarea:focus-visible {
 }
 
 .calendar-day:disabled {
-  color: var(--color-text-default);
+  color: var(--color-text-800);
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -220,16 +327,16 @@ textarea:focus-visible {
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: var(--color-text-emphasis);
+  color: var(--color-text-800);
   font-weight: bold;
   cursor: pointer;
   padding: 2px 4px;
 }
 
 .calendar-header-select:hover {
-  background-color: var(--color-surface-hover);
+  background-color: var(--color-modal-hover);
 }
 
 .calendar-header-select:focus {
-  outline: 2px solid var(--color-radio);
+  outline: 2px solid var(--color-radio-default);
 }

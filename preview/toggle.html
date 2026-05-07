@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Toggle Switch</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./assets/css/base.css">
 </head>
 <body class="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-10 px-4">
 
@@ -39,7 +40,7 @@
         aria-checked="true"
         data-toggle
         class="relative inline-flex shrink-0 w-16 h-7 p-0.5 rounded-full transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-        style="background-color: #34c759;"
+        style="background-color: var(--color-accent-green);"
       >
         <span
           data-knob
@@ -56,8 +57,9 @@
   <div id="status" class="text-sm text-gray-400">點擊任一 Toggle 切換狀態</div>
 
   <script>
+    // OFF_BG is iOS reference grey (no Figma token); kept local on purpose so base.css stays Figma-mirrored.
     const OFF_BG = 'rgba(60,60,67,0.30)';
-    const ON_BG  = '#34c759';
+    const ON_BG  = getComputedStyle(document.documentElement).getPropertyValue('--color-accent-green').trim();
     const TRAVEL = 21; // 64 - 39 - 2*2 = 21px
 
     document.querySelectorAll('[data-toggle]').forEach(btn => {

@@ -4,6 +4,161 @@
 
 ---
 
+## Session 61 交接（2026-05-07）
+
+### Consumer 遷移完成 + base.css alias 區整段刪除
+
+**已完成**:
+- 對「上一步 1. Consumer 遷移」全範圍實作：
+  - `preview/landing.html`：
+    - `tailwind.config.theme.extend.colors` 24 個 key 的值改指 strict CSS var（class 名保留以維持 markup 不動，例 `text-text-default` 仍可用，但底層解析到 `var(--color-text-800)`）。
+    - body 內 inline `var(--color-X)` alias 全部替換為 strict（含 `--color-text-default → --color-text-800`、`--color-text-secondary → --color-text-400`、`--color-text-placeholder → --color-text-300`、`--color-white → --color-neutral-0`、`--color-border-default → --color-neutral-100`、`--color-radio → --color-radio-default`、`--color-status-positive → --color-surface-status-positive`、`--color-status-negative → --color-surface-status-negative`、`--color-surface-hover → --color-modal-hover`、`--color-text-emphasis → --color-text-800`）。
+    - JS 內 `token("--color-X")` 字串呼叫（chart 配色用）也一併改為 strict 名，這是第一輪正則 `var()` replace 漏掉、reload 後 chart 顏色錯亂才補抓出來的。
+  - `preview/assets/css/landing.css`：11 個 alias pattern 全替換（33 處 `--color-text-default`、25 處 `--color-white`、其餘各 N 處）。
+  - `preview/chartjs-doughnut.html` / `preview/chartjs-diverging.html`：CSS var + JS getComputedStyle 字串都遷移；hover variants 與 tooltip rgba 仍保 raw（無 Figma 來源）。
+  - `preview/toggle.html`：CSS var + JS getComputedStyle 字串遷移；iOS off bg `rgba(60,60,67,0.30)` 保 raw。
+- 從 `preview/assets/css/base.css` `:root` 內**整段刪除 deprecated semantic aliases 區**（Session 60 上次保留作過渡的 19 個 alias）。base.css `:root` 現只剩 (1) Strict Figma mirror 與 (2) Effect/z-index 兩段。
+- Visual QA：landing.html (chart 紅綠 bar / 三色 donut 正確) / chartjs-doughnut.html / chartjs-diverging.html / toggle.html 四檔最終截圖存 `specs/qa-screenshots/session-61/final-strict-*.png`，視覺與遷移前一致；console 無新錯誤（仍只有 tailwind CDN production warning）。
+
+**重要決策**:
+- Tailwind config 不改 class 名（保留 `text-text-default` 等別名 class）以避免 markup 大改；只改 colors map 的值指向 strict var，等於保留語意層的「翻譯」但 source of truth 完全鎖在 strict tokens。
+- JS-string token 引用（getComputedStyle / token() helper）需獨立於 CSS `var()` 之外做一輪掃描，不能只跑 `var(--color-X)` regex。
+
+### Strict-mirror 收尾：base.css utilities + room-booking + tokens.md
+
+**已完成**:
+- **base.css 內部 utilities 遷移**：把底部 component utility 段 9 條 alias 死引用全改 strict：`--color-menu → --color-menuitem-default`、`--color-border-disabled → --color-neutral-200`、`--color-text-placeholder → --color-text-300`、`--color-white → --color-neutral-0`（×3）、`--color-surface-hover → --color-modal-hover`（×2）、`--color-radio → --color-radio-default`（×3）、`--color-text-default → --color-text-800`、`--color-text-emphasis → --color-text-800`。base.css 完全無 alias 殘留。
+- **`room-booking.html` 遷移**：刪 fork `:root`（16 個 alias 變數）、刪頁內重複的 `:focus-visible` outline + `prefers-reduced-motion` block（已由 base.css 提供）、加 `<link rel="stylesheet" href="./assets/css/base.css">`、`tailwind.config.theme.extend.colors` 全部改指 strict CSS var（含 `--color-focus-background` → `--color-bootstrap-focus-background`）、頁內 inline `var(--color-X)` alias 6 處改 strict（calendar-day-active / calendar-day-past / tag-active / tag-inactive）。
+- **`tokens.md` 文案重寫**：L1–L20 token 使用規則由「實作優先用語意 alias」改為「**Strict Mirror**：實作優先使用 strict CSS var（`--color-{group}-{key}`）」；對照表標題與導引語句相應修正；`上次同步` 推進到 2026-05-07。
+- **Visual QA**：room-booking.html @1440 截圖（`post-strict-room-booking.png`）對齊原版視覺（sidebar / 房間預訂 active 藍 chip / 日曆藍底白字 / 一般客戶 active orange chip / 紅綠黃 status badge）；landing.html 開 room-edit modal 並驗證 base.css 各 calendar 計算樣式（`.calendar-day.selected` bg `#005FCC` / color `#FFFFFF`、`.calendar-day.today` border `#005FCC`、`.calendar-header-select` color `#454545`）；console 無新錯誤。
+
+**未解問題**:
+- 本輪所有變更已準備 commit（看下方）。
+- modal 互動 QA（chip / accordion / focus return / cart 計算）仍未做，建下一輪做。
+- form input id/name + password 包 form 兩條 a11y 缺口仍未處理，等使用者裁示。
+
+---
+
+### Browser visual QA 跑完 + 抓到並修一個 CSS regression
+
+**已完成**:
+- 啟用 chrome-devtools MCP，對 `preview/landing.html` 跑完整 visual QA：
+  - viewport 截圖：375 / 768 / 1440 各 1 張，存於 `specs/qa-screenshots/session-61/landing-{375,768,1440}.png`（本地產出，已 gitignore，未進 repo）。
+  - modal 截圖 7 張：order summary 三變體（unpaid / paid / waitlist）+ purchase add-on + SMS + room edit + room booking（room intro），存於同目錄 `modal-*.png`（同上：本地產出，未進 repo）。
+  - 跑 `list_console_messages` + `list_network_requests`，比對是否還有 CSS / 資源錯誤。
+  - 注意：本輪 QA 只做「靜態渲染」截圖 + console 檢查，**沒驗任何互動行為**（chip 切換、accordion、calendar、lock toggle、customer toggle linkage、focus return、cart 計算等都未驗），下一輪需排 functional QA。
+- 修一個 Session 58 CSS 拆分時的 regression：
+  - `preview/assets/css/landing.css:97` `background-image: url("./assets/icons/down.svg")` 因 CSS 改放於 `assets/css/`，瀏覽器解析成 `/assets/css/assets/icons/down.svg` → 404，造成 `.sidebar-select` chevron 不見。
+  - 改為 `url("../icons/down.svg")` 以相對 CSS 檔位置正確指向 `/assets/icons/down.svg`。
+  - reload 後 `.sidebar-select` 下拉箭頭恢復；console 僅剩 `favicon.ico` 404（瀏覽器 default 行為，非 regression）。
+- 比對 1440 / 768 / 375 三個 viewport 截圖，與 modal 七張截圖：
+  - 排版、色票、icon、chart 均正常。
+  - 三變體 order summary pill / status text 顏色（紅/綠/黃）與 transferSection 顯隱皆符合 `setOrderSummaryVariant` 預期。
+
+**重要決定 / 觀察**:
+- Visual QA 流程目前以「只開 modal、不互動」為基線。modal 內部的 chip / accordion / calendar 互動需要另開一輪細項驗證，這輪不做，避免 scope 暴增。
+- 目前 console 還是會打：
+  - `cdn.tailwindcss.com should not be used in production`（CDN 警告，預期）
+  - `A form field element should have an id or name attribute`（issue：form 內 input 缺 id/name 共 100 個）
+  - `Password field is not contained in a form`（4 處 password input 未包在 `<form>`）
+  - `favicon.ico 404`
+  - 都不是視覺 regression；id/name 與 password 包 form 是既有 a11y / browser hint 缺口，要不要補請使用者裁示。
+
+### Inline color residue 清理（chart / toggle preview）
+
+**已完成**:
+- 對 `preview/*.html` 跑全域 inline color scan，確認主檔（landing.html / landing.css / base.css）已 100% 走 token；殘留集中在三個 reference page：`chartjs-doughnut.html` / `chartjs-diverging.html` / `toggle.html`。
+- 三檔 import `./assets/css/base.css`，把 hex / rgba 改用既有 token：
+  - `#fff` → `var(--color-white)`
+  - `#d1d1d1` → `var(--color-border-disabled)`
+  - `#888 / #888888` → `var(--color-text-secondary)`
+  - `#4f4f4f` → `var(--color-text-subtitle)`
+  - `#e1e1e0` → `var(--color-border-default)` / `var(--color-text-inverse)`（依語意）
+  - `#454545` → `var(--color-text-default)`
+  - `#005fcc` → `var(--color-radio)`
+  - `#34c759` → `var(--color-chart-green)`（chart）/ `var(--color-accent-green)`（toggle）
+  - `#b0b0b0` → `var(--color-text-placeholder)`
+  - `#e12129` → `var(--color-status-negative)`
+  - `#2aca18` → `var(--color-status-positive)`（已存在 base.css）
+- JS 內 chart 配色從 `getComputedStyle(document.documentElement).getPropertyValue('--color-*')` 讀取，token 改名 / 改色會自動同步到 Chart.js。
+- 三檔 visual QA 截圖：`refactor-chartjs-doughnut.png` / `refactor-chartjs-diverging.png` / `refactor-toggle.png`，視覺與替換前一致。
+
+**刻意保留的 raw color**（無 Figma 來源，不可進 base.css）:
+- `chartjs-doughnut.html:114` `HOVER_COLORS = ['#0052b3', '#28b34e', '#969696']` — chart 區段 hover 視覺派生
+- `chartjs-diverging.html:29,47` `rgba(50,50,50,0.92)` — chart tooltip bg / arrow border
+- `toggle.html:24,61` `rgba(60,60,67,0.30)` — iOS 風格 toggle off bg（系統色）
+- 全部都附 inline 註解標明「no Figma token source / kept local on purpose」
+
+**重要決策**:
+- base.css 嚴格鏡像 Figma Variables：非 Figma 來源色不得寫進 `:root`，這條紅線本輪確認執行。
+- 已存 memory：`feedback_visual_qa_eyeball_only.md`（Visual QA 不建 baseline diff，肉眼掃 + console 即可）。
+
+### base.css `:root` 重寫為嚴格 Figma 鏡像
+
+**已完成**:
+- 對照 `specs/assets/figma-variables.json` + `tokens.md`，發現 base.css `:root` 過去長期偏離鏡像規則：缺 7 個 Brand 色階、2 個 Neutral 色階、Surface/Secondary、3 個 Border/Modal 衍生 alias、全部 Spacing / Radius，外加 Bootstrap 子群組語意丟失。
+- 把 `figma-variables.json` 缺的 `Color/Accent/cart-date #BDFFF6`、`Color/Accent/cart-time #EAFFC5` 補進 JSON（Figma 端有，僅是本地 export 沒同步），`lastSyncedAt` 推進到 2026-05-07。
+- 重寫 `preview/assets/css/base.css` `:root` 結構成三段：
+  1. **Strict Figma mirror** — 命名直接走 Figma 路徑（`--color-{group}-{key}`），衍生 token 用 `var()` 引用 canonical token；總計 ~115 個 token（color + spacing + radius）。
+  2. **Deprecated semantic aliases** — 既有 `--color-text-default / -secondary / -placeholder / -inverse / -muted / -supporting / -subtitle / -emphasis / --color-white / --color-menu / --color-radio / --color-brand-active / --color-surface-action / --color-surface-brand / --color-surface-hover / --color-border-disabled / --color-border-plugin / --color-status-positive / --color-status-negative` 全部改為 `var()` 引用 strict token，**保留可運作以避免破壞既有 consumer**；下一步遷移 consumer 後刪除整段。
+  3. **Effect / z-index** — 不變。
+- Visual QA：landing.html (1440) / chartjs-doughnut.html / toggle.html 三檔截圖在 alias chain 解析後視覺零差異，JS `getComputedStyle('--color-radio')` 也能透過 alias 解到 `#005FCC`。
+
+**重要決策**:
+- 「base.css = Figma Variables 嚴格鏡像」這條紅線正式啟用；之前用 semantic alias 為主的方向廢除，alias 區僅作遷移過渡。
+- Bootstrap 子群組分流：`--color-bootstrap-components-focus` (#86B7FE) 與 `--color-chart-blue` 同 hex 但分開存；`--color-bootstrap-aside-notification` (#F44DF4) 與 `--color-accent-celebration` 同上。
+- Figma key 拼字「`Color/Modal/Text-hightlight`」（typo）保留為 `--color-modal-text-hightlight`，嚴格鏡像不修正。
+- Spacing / Radius 進 `:root` 但目前無 consumer，等下一步 consumer 改寫時開始套用。
+
+**下一步（單獨一輪做）**:
+1. **Consumer 遷移**：把 `preview/landing.html` / `landing.css` / `chartjs-*.html` / `toggle.html` 內所有 `var(--color-text-default)` 之類 alias，改寫為 strict 名稱（`var(--color-text-800)` 或 `var(--color-neutral-800)`）；同時更新 `landing.html` 內 `tailwind.config.theme.extend.colors` mapping；最後刪 base.css alias 區整段。
+2. **`room-booking.html` 遷移**：刪 fork `:root` + import base.css + 命名統一（特別是 `--color-focus-background` → `--color-bootstrap-focus-background`）。
+3. **`tokens.md` 文案更新**：目前 tokens.md 寫「實作優先用語意 alias」（line 16），這條與新策略衝突，要改為「實作直接用 Figma 路徑名稱」。
+
+**未解問題（前面繼承的）**:
+1. 本輪變更未 commit（landing.css icon path fix + .gitignore + chartjs-* + toggle.html + base.css :root + figma-variables.json + progress.md）。等使用者指示。
+2. 是否補 form input id/name 與 password 包 form：本輪未動，等使用者決定要不要進 a11y 第二輪。
+3. modal 互動 QA（calendar dropdown、chip 切換、accordion、focus return）尚未做，可作為下一輪細項。
+
+---
+
+## Session 60 交接（2026-05-07）
+
+### Commit + 安裝 chrome-devtools MCP
+
+**已完成**:
+- 將 Session 58–59 的 spec 清理 + landing CSS 拆分一次落盤：
+  - Commit `47d61c3` — `Clean up spec color examples and split landing CSS`
+  - 62 files changed, +2826 / −2161
+  - 新增 `preview/assets/css/base.css`、`preview/assets/css/landing.css`
+  - 工作樹乾淨，**未 push**（等使用者明確指示才推）
+- 安裝 chrome-devtools MCP，補上之前缺的 browser visual QA 能力：
+  - 指令：`claude mcp add --scope user chrome-devtools -- npx -y chrome-devtools-mcp@latest`
+  - 寫入位置：`~/.claude.json`（user scope，所有專案可用）
+  - 連線檢查：`claude mcp list` 顯示 `chrome-devtools: ✓ Connected`
+  - npm package: `chrome-devtools-mcp@0.25.0`
+
+**重要決定**:
+- 選 user scope 而非 local：browser visual QA 是通用工具，不該綁死在 Figma repo。
+- 未把 chrome-devtools-mcp 加進專案 `.mcp.json`，避免污染 repo。
+
+**下一步應做**（給下一輪 session）:
+1. 進來後先確認工具列表內有 `mcp__chrome-devtools__*`（navigate_page / take_screenshot / click / evaluate_script / list_console_messages / resize_page 等）。
+2. 若沒有，跑 `claude mcp list` 確認 chrome-devtools 仍 Connected；若連線失敗可能是 npx 第一次跑卡住，重試一次。
+3. 啟動 preview server：`python3 -m http.server 8000 --directory preview`（背景）。
+4. 對 `preview/landing.html` 跑 visual QA：
+   - viewport 375 / 768 / 1440 各截一張
+   - 五大 modal 各截一張：order summary 三變體（無設定 / 正式單 / 候補單）/ purchase add-on / SMS / room edit / room booking
+   - `list_console_messages` 抓 CSS 載入錯誤 / JS error
+5. 重點驗證 Session 58 CSS 拆分（base.css + landing.css 取代 1615 行 inline `<style>`）後視覺是否一致。
+6. 若有 regression，回頭比對 commit `47d61c3` 之前的 inline `<style>` 段落（git show fbea831:preview/landing.html）。
+
+**未解問題**:
+- 尚未 push commit `47d61c3` 到 remote — 等使用者指示。
+- visual QA 沒有 baseline 截圖可比對，只能靠規格 + 使用者目視。
+
+---
+
 ## Session 59 交接（2026-05-07）
 
 ### 舊 spec hard-coded color / inline style 清理
