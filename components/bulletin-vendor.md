@@ -30,7 +30,7 @@
 | 尺寸 | `681×379px`（Default） | — |
 | Padding | top `8px`，其餘 `12px` | — |
 | Corner radius | `8px` | `Radius/8` |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 | Background | 無（透明） | — |
 
 ---
@@ -46,7 +46,7 @@
 │   ├── Group 1 — 分類篩選 tab 列 (657×34px)
 │   │   ├── Input "全部"（165.23px）
 │   │   ├── Input "全部"（165.23px）
-│   │   ├── Input "提醒"（165.23px，fill #ffcc00 = 選中）
+│   │   ├── Input "提醒"（165.23px，fill Color/Tab/yellow = 選中）
 │   │   ├── Input "總部訊息"（165.23px）
 │   │   └── Input "交班訊息"（165.23px）
 │   ├── Input — 搜尋列（124×36px）："主題搜尋" + icons/search
@@ -65,7 +65,7 @@
 | 元素 | 規格 |
 |---|---|
 | Icon | `icons/bulletin`（24×24） |
-| 文字 | `"管理訊息"`，20px Regular，`#454545` |
+| 文字 | `"管理訊息"`，20px Regular，`Color/Neutral/800` |
 | 關閉 | `icons/close`（24×24，右側） |
 
 > 標題使用 **Regular 400**（非 SemiBold），與其他 section Title 不同。
@@ -78,11 +78,11 @@
 
 | Tab | 文字 | 背景 | 說明 |
 |---|---|---|---|
-| 1 | `"全部"` | `#ffffff` | Default 狀態 |
-| 2 | `"全部"` | `#ffffff` | Hover 狀態（同一 tab 的兩種狀態並排展示） |
-| 3 | `"提醒"` | `#ffcc00` | **選中狀態**（黃底） |
-| 4 | `"總部訊息"` | `#ffffff` | 未選中 |
-| 5 | `"交班訊息"` | `#ffffff` | 未選中 |
+| 1 | `"全部"` | `Color/Neutral/0` | Default 狀態 |
+| 2 | `"全部"` | `Color/Neutral/0` | Hover 狀態（同一 tab 的兩種狀態並排展示） |
+| 3 | `"提醒"` | `Color/Tab/yellow` | **選中狀態**（黃底） |
+| 4 | `"總部訊息"` | `Color/Neutral/0` | 未選中 |
+| 5 | `"交班訊息"` | `Color/Neutral/0` | 未選中 |
 
 > Tab 1 與 Tab 2 均為「全部」tab，分別代表 default 與 hover 兩種狀態，為 component set 並排展示慣例。  
 > ⚠️ 各 tab 之間存在因 padding 造成的間距斷層，為已知設計問題，暫不處理。
@@ -96,8 +96,8 @@
 | 尺寸 | 124×36px |
 | placeholder | `"主題搜尋"` |
 | 右側 icon | `icons/search` |
-| Background | `#ffffff` |
-| Border | `#d1d1d1` |
+| Background | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` |
 | Corner radius | `6px` |
 
 ---
@@ -106,8 +106,8 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#fef6ee` | `Color/Surface/Brand-50` |
-| Border | `#888888` | `Color/Neutral/400` |
+| 背景 | `Color/Brand/Brand-50` | `Color/Surface/Brand-50` |
+| Border | `Color/Neutral/400` | `Color/Neutral/400` |
 | 文字字重 | **SemiBold 600** | — |
 
 欄位配置：
@@ -127,7 +127,7 @@
 
 ## 資料列
 
-每列 657×34px，Regular 400，`#454545`：
+每列 657×34px，Regular 400，`Color/Neutral/800`：
 
 | 列 | # | 分類 | 主題 | 來源 | 日期 |
 |---|---|---|---|---|---|
@@ -139,7 +139,7 @@
 ## status=hover（第一列 hover）
 
 與 Default 相同，差異：
-- 第一列（Frame 3）背景色變為 `#e1e1e0`（`Color/Neutral/100`）— 補上的色差
+- 第一列（Frame 3）背景色變為 `Color/Neutral/100`（`Color/Neutral/100`）— 補上的色差
 - 疊加 `icons/cursor`（24×24）於第一列上
 
 ---
@@ -152,7 +152,7 @@
 展開內容（第一列）:
 「即時掌握房屋狀態，整合入住、退房、維修與清潔資訊，
 清楚呈現空房與使用情形，提升管理效率與營運透明度。」
-16px  Regular  #454545
+16px  Regular  Color/Neutral/800
 ```
 
 ---
@@ -161,13 +161,13 @@
 
 | 元素 | 規格 |
 |---|---|
-| 筆數文字 | `"共 61 筆"`，base 16px，`#454545` |
+| 筆數文字 | `"共 61 筆"`，base 16px，`Color/Neutral/800` |
 | Pagination | 320×46px instance，見 `components/pagination.md` |
 
 ### Pagination 預覽（內嵌）
 
-icons/left → `1` → `2`（current，bg `#b0b0b0`）→ `...` → `4` → `5` → icons/right  
-各頁碼 Input 50.4×34px，current page fill `#b0b0b0`
+icons/left → `1` → `2`（current，bg `Color/Neutral/300`）→ `...` → `4` → `5` → icons/right
+各頁碼 Input 50.4×34px，current page fill `Color/Neutral/300`
 
 ---
 
@@ -175,12 +175,12 @@ icons/left → `1` → `2`（current，bg `#b0b0b0`）→ `...` → `4` → `5` 
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| 表頭背景 | `#fef6ee` | `Color/Surface/Brand-50` |
-| 表頭邊框 | `#888888` | `Color/Neutral/400` |
-| 選中 Tab 背景 | `#ffcc00` | `Color/Tab/Yellow` |
-| Current page | `#b0b0b0` | `Color/Neutral/300` |
-| 文字 | `#454545` | `Color/Neutral/800` |
-| 邊框 | `#d1d1d1` | `Color/Neutral/200` |
+| 表頭背景 | `Color/Brand/Brand-50` | `Color/Surface/Brand-50` |
+| 表頭邊框 | `Color/Neutral/400` | `Color/Neutral/400` |
+| 選中 Tab 背景 | `Color/Tab/yellow` | `Color/Tab/Yellow` |
+| Current page | `Color/Neutral/300` | `Color/Neutral/300` |
+| 文字 | `Color/Neutral/800` | `Color/Neutral/800` |
+| 邊框 | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 

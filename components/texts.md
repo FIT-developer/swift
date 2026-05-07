@@ -9,7 +9,7 @@
 ## 概述
 
 `Texts` 是全站通用文字元件，提供 6 個字號 × Regular/Bold 共 **12 個 variants**。  
-所有 variant 預設文字色為 `#454545`，在 instance 使用時依情境 swap 顏色。  
+所有 variant 預設文字色為 `Color/Neutral/800`，在 instance 使用時依情境 swap 顏色。
 字體統一為 **Noto Sans**。
 
 ---
@@ -40,8 +40,8 @@
 | 屬性 | 值 | Token |
 |---|---|---|
 | 字體 | Noto Sans | — |
-| 預設文字色 | `#454545` | `Color/Neutral/800` |
-| 背景 | `#ffffff`（透明底） | — |
+| 預設文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
+| 背景 | `Color/Neutral/0`（透明底） | — |
 | Padding | 無（0px） | — |
 | 對齊 | LEFT | — |
 
@@ -64,7 +64,7 @@
 
 | 元件 | 使用 variant | 說明 |
 |---|---|---|
-| Order | `base`（16px Regular） | 訂單類型標籤（#4F4F4F） |
+| Order | `base`（16px Regular） | 訂單類型標籤（Color/Neutral/700） |
 | Order | `sm`（12px Regular） | Badge 數字 |
 | System notifications | `base` / `sm` | 通知內文、chip 文字 |
 | Revenue trends Title | `md Bold`（20px SemiBold） | Section 標題 |
@@ -83,19 +83,19 @@
 
 ```html
 <!-- sm Regular -->
-<span class="text-xs font-normal text-[#454545]">...</span>
+<span class="text-xs font-normal text-text-default">...</span>
 
 <!-- base Regular -->
-<span class="text-base font-normal text-[#454545]">...</span>
+<span class="text-base font-normal text-text-default">...</span>
 
 <!-- md Bold (Section Title 用) -->
-<span class="text-xl font-semibold text-[#454545]">...</span>
+<span class="text-xl font-semibold text-text-default">...</span>
 
 <!-- xxl Bold (Display SemiBold) -->
-<span class="text-[32px] font-semibold text-[#454545]">...</span>
+<span class="text-[32px] font-semibold text-text-default">...</span>
 ```
 
-> 文字色依情境覆蓋，不鎖定在 `#454545`。
+> 文字色依情境覆蓋，不鎖定在 `Color/Neutral/800`。
 
 ---
 

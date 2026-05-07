@@ -22,7 +22,7 @@
 | Padding | top/bottom `12px`、left/right `24px` | `Spacing/12`、`Spacing/24` |
 | Corner radius | `8px` | `Radius/8` |
 | Background | 無（透明） | — |
-| Border (stroke) | `#D1D1D1` | `Color/Neutral/200` |
+| Border (stroke) | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -66,12 +66,12 @@
 
 | 區域 | 元素 | 樣式 |
 |---|---|---|
-| 標籤 | `Texts` md 20px Regular | `#454545` `Color/Neutral/800` |
+| 標籤 | `Texts` md 20px Regular | `Color/Neutral/800` `Color/Neutral/800` |
 | 連結 chip | `Input` 白底灰框 | 見下方 Link Chip 規格 |
-| 數值 | `Texts` lg 24px SemiBold | `#454545` `Color/Neutral/800` |
-| 趨勢 icon | `icons/trend-up-red` | stroke `#E12129` `Color/Surface/Negative` |
-| 趨勢值 | `Texts` base 16px Regular | `#E12129` `Color/Surface/Negative` |
-| 比較基準 | `Texts` sm 12px Regular | `#454545` `Color/Neutral/800` |
+| 數值 | `Texts` lg 24px SemiBold | `Color/Neutral/800` `Color/Neutral/800` |
+| 趨勢 icon | `icons/trend-up-red` | stroke `Color/Surface/Negative` `Color/Surface/Negative` |
+| 趨勢值 | `Texts` base 16px Regular | `Color/Surface/Negative` `Color/Surface/Negative` |
+| 比較基準 | `Texts` sm 12px Regular | `Color/Neutral/800` `Color/Neutral/800` |
 
 ---
 
@@ -81,9 +81,9 @@
 
 | 變化區域 | Default | Hover |
 |---|---|---|
-| Link chip 背景 | `#FFFFFF` | `#454545` `Color/Neutral/800` |
-| Link chip 文字色 | `#454545` | `#E1E1E0` `Color/Neutral/100` |
-| Link chip icon | `icons/attached-link`（黑色） | `icons/attached-link-moved`（fill+stroke `#E1E1E0`） |
+| Link chip 背景 | `Color/Neutral/0` | `Color/Neutral/800` `Color/Neutral/800` |
+| Link chip 文字色 | `Color/Neutral/800` | `Color/Neutral/100` `Color/Neutral/100` |
+| Link chip icon | `icons/attached-link`（黑色） | `icons/attached-link-moved`（fill+stroke `Color/Neutral/100`） |
 | cursor icon | 無 | `icons/cursor`（24×24）出現於 chip 右側 |
 
 > `icons/cursor` 定位：x:174, y:40.32，疊加在 card 右上角，模擬游標懸停效果。
@@ -94,12 +94,12 @@
 
 | 區域 | 元素 | 樣式 |
 |---|---|---|
-| 標籤 | `Texts` md 20px Regular | `#454545` `Color/Neutral/800` |
+| 標籤 | `Texts` md 20px Regular | `Color/Neutral/800` `Color/Neutral/800` |
 | 連結 chip | **無** | — |
-| 數值 | `Texts` lg 24px SemiBold | `#454545` `Color/Neutral/800` |
-| 趨勢 icon | `icons/trend-down-green` | stroke `#2ACA18` `Color/Surface/Positive` |
-| 趨勢值 | `Texts` base 16px Regular | `#2ACA18` `Color/Surface/Positive` |
-| 比較基準 | `Texts` sm 12px Regular | `#454545` `Color/Neutral/800` |
+| 數值 | `Texts` lg 24px SemiBold | `Color/Neutral/800` `Color/Neutral/800` |
+| 趨勢 icon | `icons/trend-down-green` | stroke `Color/Surface/Positive` `Color/Surface/Positive` |
+| 趨勢值 | `Texts` base 16px Regular | `Color/Surface/Positive` `Color/Surface/Positive` |
+| 比較基準 | `Texts` sm 12px Regular | `Color/Neutral/800` `Color/Neutral/800` |
 
 ---
 
@@ -107,12 +107,12 @@
 
 | 區域 | 元素 | 樣式 |
 |---|---|---|
-| 標籤 | `Texts` md 20px Regular | **`#E05216`** `Color/Surface/Brand-600-Active` ← 警告橙 |
+| 標籤 | `Texts` md 20px Regular | **`Color/Brand/Brand-600`** `Color/Surface/Brand-600-Active` ← 警告橙 |
 | 連結 chip | **無** | — |
-| 數值 | `Texts` lg 24px SemiBold | `#454545` `Color/Neutral/800` |
-| 趨勢 icon | `icons/warning-orange` | fill `#E05216` `Color/Surface/Brand-600-Active` |
-| 趨勢值 | `Texts` base 16px Regular | `#E05216` `Color/Surface/Brand-600-Active` |
-| 比較基準 | `Texts` sm 12px Regular | `#454545` `Color/Neutral/800` |
+| 數值 | `Texts` lg 24px SemiBold | `Color/Neutral/800` `Color/Neutral/800` |
+| 趨勢 icon | `icons/warning-orange` | fill `Color/Brand/Brand-600` `Color/Surface/Brand-600-Active` |
+| 趨勢值 | `Texts` base 16px Regular | `Color/Brand/Brand-600` `Color/Surface/Brand-600-Active` |
+| 比較基準 | `Texts` sm 12px Regular | `Color/Neutral/800` `Color/Neutral/800` |
 
 ---
 
@@ -124,22 +124,22 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#FFFFFF` | `Color/Neutral/0` |
-| 邊框 | `#D1D1D1` | `Color/Neutral/200` |
+| 背景 | `Color/Neutral/0` | `Color/Neutral/0` |
+| 邊框 | `Color/Neutral/200` | `Color/Neutral/200` |
 | Corner radius | `6px` | `Radius/6` |
 | Padding | top/bottom `4px`、left/right `8px` | `Spacing/4`、`Spacing/8` |
 | 高度 | `32px` | — |
-| 文字 | sm 12px Regular `#454545` | `Color/Neutral/800` |
+| 文字 | sm 12px Regular `Color/Neutral/800` | `Color/Neutral/800` |
 | Icon | `icons/attached-link`（24×24）stroke 黑色 | — |
 
 ### Hover
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#454545` | `Color/Neutral/800` |
-| 邊框 | `#D1D1D1` | `Color/Neutral/200` |
-| 文字 | sm 12px Regular `#E1E1E0` | `Color/Neutral/100` |
-| Icon | `icons/attached-link-moved`（24×24）fill+stroke `#E1E1E0` | — |
+| 背景 | `Color/Neutral/800` | `Color/Neutral/800` |
+| 邊框 | `Color/Neutral/200` | `Color/Neutral/200` |
+| 文字 | sm 12px Regular `Color/Neutral/100` | `Color/Neutral/100` |
+| Icon | `icons/attached-link-moved`（24×24）fill+stroke `Color/Neutral/100` | — |
 
 ---
 
@@ -158,9 +158,9 @@
 
 | Variant | Icon | 色值 | Token |
 |---|---|---|---|
-| tend up / tend up hover | `icons/trend-up-red` | stroke `#E12129` | `Color/Surface/Negative` |
-| trend down | `icons/trend-down-green` | stroke `#2ACA18` | `Color/Surface/Positive` |
-| over sold | `icons/warning-orange` | fill `#E05216` | `Color/Surface/Brand-600-Active` |
+| tend up / tend up hover | `icons/trend-up-red` | stroke `Color/Surface/Negative` | `Color/Surface/Negative` |
+| trend down | `icons/trend-down-green` | stroke `Color/Surface/Positive` | `Color/Surface/Positive` |
+| over sold | `icons/warning-orange` | fill `Color/Brand/Brand-600` | `Color/Surface/Brand-600-Active` |
 
 ---
 

@@ -33,6 +33,7 @@
 | `state=order summary / paid` | `1437:44343` | 1019×2506px | 已付款交易狀態；目前不由 `產生訂單` 直接開啟 |
 | `state=order summary / waitlist` | `1437:45408` | 1019×2506px | 候補單交易狀態；上方狀態與基本資訊付款狀態分離 |
 | `state=order summary / transfer official` | `1437:46152` | 1019×2935px | 候補轉正式單交易狀態，含 `轉正式單` section action area |
+| `state=sms / order summary` | `1436:43555` | 648×1161px | Order summary header `簡訊` action opens this SMS modal |
 
 ---
 
@@ -42,12 +43,21 @@
 
 | 屬性 | 值 | 說明 |
 |---|---|---|
-| HTML 實作 | `rgba(0, 0, 0, 0.4)` | 半透明黑色遮罩，全站統一 |
-| z-index | `60`（高於 mobile sidebar `50`） | — |
+| HTML 實作 | `--effect-modal-backdrop` | 半透明黑色遮罩，全站統一；effect value 由 CSS variable 管理 |
+| z-index | `--z-modal`（目前 60；高於 mobile sidebar 50） | — |
 | 定位 | `position: fixed; inset: 0` | 全屏覆蓋 |
 | 關閉行為 | 點擊 backdrop 關閉 Modal | — |
 
-> **Figma 設計稿說明**：設計稿中以全屏 `#d9d9d9` 矩形（Rectangle 3）+ `Subtract` Boolean Operation 表示遮罩示意，**純粹用於 UI 設計稿交付展示**，不對應 HTML 的實際色值，實作時以上方 `rgba(0, 0, 0, 0.4)` 為準。
+> **Figma 設計稿說明**：設計稿中以全屏 Neutral/200 矩形（Rectangle 3）+ `Subtract` Boolean Operation 表示遮罩示意，**純粹用於 UI 設計稿交付展示**，不對應 HTML 的實際色值，實作時以上方 `--effect-modal-backdrop` 為準。
+
+## 共用 Interaction
+
+| 行為 | 規格 |
+|---|---|
+| 開啟後 scroll | 每次 open 都將 backdrop、`.modal-box`、以及 modal 內所有 `.overflow-y-auto` scroller 重設為 top |
+| 開啟後 focus | 不主動 focus modal 內表單、標題或第一個控制項；避免使用者瀏覽位置被自動移動 |
+| 關閉後 focus | 還原到開啟 modal 的原觸發元素；若元素已移除或 disabled，則不還原 |
+| 關閉方式 | header close、footer close action、backdrop click、Esc，依各 variant 定義 |
 
 ---
 
@@ -56,9 +66,9 @@
 | 屬性 | 值 | Token |
 |---|---|---|
 | 寬度 | `320px` | — |
-| Background | `#ffffff` | `Color/Neutral/0` |
+| Background | `Color/Neutral/0` / `bg-white` | `Color/Neutral/0` |
 | Corner radius | `8px` | `Radius/8` |
-| Border | `#b0b0b0` | `Color/Neutral/300` |
+| Border | `Color/Neutral/300` | `Color/Neutral/300` |
 
 ---
 
@@ -66,7 +76,7 @@
 
 ```
 Frame 10 (320×51px)
-├── Texts md Bold → 標題文字  20px  SemiBold 600  #454545  (x:12, y:12)
+├── Texts md Bold → 標題文字  20px  SemiBold 600  Color/Text/800  (x:12, y:12)
 └── icons/close (24×24, x:284, y:13.5)
 ```
 
@@ -74,7 +84,7 @@ Frame 10 (320×51px)
 |---|---|---|
 | 高度 | `51px` | — |
 | Padding | `12px` all sides | `Spacing/12` |
-| 下邊框 | `#b0b0b0` + `#00000033`（雙層） | `Color/Neutral/300` |
+| 下邊框 | `Color/Neutral/300` + `--effect-modal-header-shadow`（雙層） | `Color/Neutral/300` + Effect variable |
 | 標題字號 | `20px` SemiBold 600 | — |
 | 關閉 icon | `icons/close`，x:284（靠右） | — |
 
@@ -84,8 +94,8 @@ Frame 10 (320×51px)
 
 ```
 Frame 11 (320×58px, padding 12px)
-├── Button Y/N cancel（取消） (56×34px, x:188)  → bg #d1d1d1
-└── Button Y/N 確定 (56×34px, x:252)  → bg #454545
+├── Button Y/N cancel（取消） (56×34px, x:188)  → bg Color/Neutral/200
+└── Button Y/N 確定 (56×34px, x:252)  → bg Color/Text/800
 ```
 
 | 屬性 | 值 |
@@ -121,11 +131,11 @@ Frame 11 (320×58px, padding 12px)
 | 圓角 | 6px | `Radius/6`, `rounded-md` |
 | 背景 | white | `Color/Neutral/0`, `bg-white` |
 | Border | only left side, 4px | `border-0 border-l-4` |
-| Border color | `#d1d1d1` | `Color/Neutral/200`, `border-border-disabled` |
+| Border color | `Color/Neutral/200` | `Color/Neutral/200`, `border-border-disabled` |
 | 內容 padding | 6px 12px | `Spacing/6`, `Spacing/12` |
 | icon | 24×24 | 來自 `preview/assets/icons/` |
 | icon/text gap | 8px | `Spacing/8` |
-| 文字 | 16px Regular, `#454545` | `Color/Text/800` |
+| 文字 | 16px Regular, `Color/Text/800` | `Color/Text/800` |
 
 ### 禁止寫法
 
@@ -154,7 +164,7 @@ Modal (320×109px)
 ```
 Modal (320×277px)
 ├── Header — "帳號切換"
-├── Frame 15 — Content (padding 12px, border #d1d1d1)
+├── Frame 15 — Content (padding 12px, border Color/Neutral/200)
 │   ├── 暱稱 label (Texts base) + Select "帳號一"（下拉選單）
 │   └── 密碼 label (Texts base) + Input "********" + icons/none
 └── Footer
@@ -196,15 +206,15 @@ Modal (560×390px)
 
 | 區塊 | 尺寸 / 間距 | Token / 說明 |
 |---|---|---|
-| 外框 | 560×390px, radius 8, border `#b0b0b0` | `Radius/8`, `Color/Neutral/300` |
+| 外框 | 560×390px, radius 8, border `Color/Neutral/300` | `Radius/8`, `Color/Neutral/300` |
 | Header | h 51px, padding 12px | `Spacing/12` |
-| Header 下邊框 | `#b0b0b0` + `#00000033` | `Color/Neutral/300` + 固定 effect |
+| Header 下邊框 | `Color/Neutral/300` + `--effect-modal-header-shadow` | `Color/Neutral/300` + Effect variable |
 | 房名列 | padding top 8, right 12, bottom 4, left 12 | `Spacing/8`, `Spacing/12`, `Spacing/4` |
 | Info item row | padding 8px 12px, gap 20px, flex-wrap | `Spacing/8`, `Spacing/12`, 固定 20px gap；不使用 horizontal overflow |
 | Info item | h 36px, radius 6, white bg, icon + text | `Radius/6`, `Color/Neutral/0` |
 | Info item 左側 border | only left side, 4px；top/right/bottom border width = 0；跟隨 item `Radius/6` 自然裁切圓角 | `Spacing/4`, `Radius/6`, `Color/Neutral/200` |
 | Static input frame | padding 8px 12px | `Spacing/8`, `Spacing/12` |
-| Static input content | 536×174px, radius 6, padding 6px 12px, border `#d1d1d1`，白底一般狀態；不可編輯，不套 disabled 灰底樣式 | `Radius/6`, `Spacing/6`, `Spacing/12`, `Color/Neutral/200` |
+| Static input content | 536×174px, radius 6, padding 6px 12px, border `Color/Neutral/200`，白底一般狀態；不可編輯，不套 disabled 灰底樣式 | `Radius/6`, `Spacing/6`, `Spacing/12`, `Color/Neutral/200` |
 | Footer | h 58px, padding 12px, button right aligned | `Spacing/12` |
 
 ### Typography / Colors
@@ -216,8 +226,8 @@ Modal (560×390px)
 | Pill text | 16px Regular 400 | `Color/Text/800` |
 | Static input text | 12px Regular 400 | `Color/Text/800` |
 | Icon fill | black | `Color/Icon/Default` |
-| Close button bg | `#454545` | `Color/Neutral/800` |
-| Close button text | `#e1e1e0` | `Color/Text/100` |
+| Close button bg | `Color/Neutral/800` | `Color/Neutral/800` |
+| Close button text | `Color/Text/100` | `Color/Text/100` |
 
 ### RWD / Interaction
 
@@ -440,18 +450,18 @@ Modal
 | Body text | 16px Regular | `Color/Text/800` |
 | Sub-title / placeholder / inventory | 12px Regular | `Color/Text/800` / disabled uses `Color/Text/400` |
 | Product price | 16px SemiBold 600 | `Color/Text/800` |
-| Disabled time select | fill `#D1D1D1` + text `#888888` | `Color/Neutral/200`, `Color/Text/400` |
-| Active time select | fill `#FFFFFF` + stroke `#D1D1D1` | `Color/Neutral/0`, `Color/Neutral/200` |
-| Quantity active value bg | `#FFCC00` | `Color/Tab/yellow` |
-| Cart date chip bg | `#BDFFF6` | `Color/Accent/cart-date` |
-| Cart time chip bg | `#EAFFC5` | `Color/Accent/cart-time` |
+| Disabled time select | fill `Color/Neutral/200` + text `Color/Text/400` | `Color/Neutral/200`, `Color/Text/400` |
+| Active time select | fill `Color/Neutral/0` + stroke `Color/Neutral/200` | `Color/Neutral/0`, `Color/Neutral/200` |
+| Quantity active value bg | `Color/Tab/yellow` | `Color/Tab/yellow` |
+| Cart date chip bg | `Color/Accent/cart-date` | `Color/Accent/cart-date` |
+| Cart time chip bg | `Color/Accent/cart-time` | `Color/Accent/cart-time` |
 | Count pill text | 12px Regular | `Color/Text/800` |
-| Active category count bg | `#D3EBFD` | `Color/Bootstrap/focus-background` |
-| Modal body bg | `#F6F6F6` | `Color/Surface/Default` |
-| Content panel bg | `#F6FAFD` | `Color/Modal/Hover` / `Color/Neutral/75` |
-| Card border | `#E1E1E0` | `Color/Border/Default` |
-| Footer cancel bg | `#D1D1D1` | `Color/Neutral/200` |
-| Footer confirm bg | `#454545` | `Color/Text/800` |
+| Active category count bg | `Color/Bootstrap/focus-background` | `Color/Bootstrap/focus-background` |
+| Modal body bg | `Color/Surface/Default` | `Color/Surface/Default` |
+| Content panel bg | `Color/Modal/Hover` / `Color/Neutral/75` | `Color/Modal/Hover` / `Color/Neutral/75` |
+| Card border | `Color/Border/Default` | `Color/Border/Default` |
+| Footer cancel bg | `Color/Neutral/200` | `Color/Neutral/200` |
+| Footer confirm bg | `Color/Text/800` | `Color/Text/800` |
 
 ### Token gaps / unresolved
 
@@ -573,25 +583,57 @@ Modal (1019px wide reference)
 |---|---|---|
 | Header title | 20px SemiBold 600 | `Color/Text/800` |
 | Main title | 24px SemiBold 600 | `Color/Text/800` |
-| Action buttons bg | `#FDEBD7` | `Color/Brand/Brand-100` |
-| Default unpaid pill | `#E12129` | `Color/Surface/Status-Negative` |
-| Paid pill | `#2ACA18` | `Color/Surface/Status-Positive` |
-| Waitlist pill | `#E05216` | `Color/Surface/Brand-Active` |
-| Section header bg | `#F6F6F6` | `Color/Surface/Default` |
-| Section panel bg | `#FFFFFF` | `Color/Neutral/0` |
-| Section border | `#D1D1D1` | `Color/Neutral/200` |
-| Transfer selected method | `#F7D275` | `Color/SubItem/Selected` |
-| Transfer inline `檢查` | `#42EBE9` | `Color/Surface/Accent` |
+| Action buttons bg | `Color/Brand/Brand-100` | `Color/Brand/Brand-100` |
+| Default unpaid pill | `Color/Surface/Status-Negative` | `Color/Surface/Status-Negative` |
+| Paid pill | `Color/Surface/Status-Positive` | `Color/Surface/Status-Positive` |
+| Waitlist pill | `Color/Surface/Brand-Active` | `Color/Surface/Brand-Active` |
+| Section header bg | `Color/Surface/Default` | `Color/Surface/Default` |
+| Section panel bg | `Color/Neutral/0` | `Color/Neutral/0` |
+| Section border | `Color/Neutral/200` | `Color/Neutral/200` |
+| Transfer selected method | `Color/SubItem/Selected` | `Color/SubItem/Selected` |
+| Transfer inline `檢查` | `Color/Surface/Accent` | `Color/Surface/Accent` |
 
 ### Interaction
 
 | 行為 | 規則 |
 |---|---|
-| 開啟 | `產生訂單` click → read `rb-order-type` radio and open `modalOrderSummaryBackdrop` with mapped variant: `無設定` → default unpaid, `正式單` → paid, `候補單` → waitlist |
+| 開啟 | `產生訂單` click → read `rb-order-type` radio and open `modalOrderSummaryBackdrop` with mapped variant: `無設定` → default unpaid, `正式單` → paid, `候補單` → waitlist；every modal open resets scrollable body position to top |
 | 關閉 | header close、footer `取消` / `確定`、backdrop、Esc 關閉 |
-| Header actions | `簡訊` / `列印` currently visual prototype only，尚未接後端或瀏覽器 print API |
+| Header actions | `簡訊` opens `state=sms / order summary`; `列印` remains visual prototype，尚未接後端或瀏覽器 print API |
 | Accordion sections | `訂房與入住人資訊` header toggles its content open/closed; icon switches between `down.svg` and `up.svg`; modal open resets to expanded |
 | Other status details | 尚未接入；使用者會後續建立狀態按鈕，production 由 backend transaction status 決定 |
+
+---
+
+## state=sms / order summary（簡訊）
+
+**使用位置**：`preview/landing.html` 的 order summary modal header action `簡訊`。
+**Figma 讀取日期**：2026-05-07。
+**Figma source**：selected node `1436:43555`，648×1161px，main component `73:626 / state=has content`。
+
+### Implementation contract
+
+| 項目 | 規則 |
+|---|---|
+| Open trigger | order summary header `簡訊` button opens `modalSmsBackdrop` |
+| Modal size | desktop max width follows 648px reference; viewport narrower than reference uses `calc(100vw - 24px)` |
+| Header | title `簡訊`, close icon `icons/close` |
+| 發送號碼 | section label `發送號碼`; first radio is default checked; first option select text `0999111222`; second radio label `自行設定` with single input placeholder |
+| 訂單內容 | section label `訂單內容`; fields: `訂單編號`, `飯店名稱`, `銀行`, `虛擬帳號`, `入住日`, `訂單總額`, `應付訂金`, `已付金額`, `訂房人`, `入住人`, `訂房人生日`, `繳款期限`, `取消日期`, `入住夜數`; data is backend-rendered in production |
+| 發送內容 | section label `發送內容`; stats card contains `字數統計 25` and `簡訊通數 1` separated by a vertical divider; sample select label `樣本` with value `sample`; textarea placeholder |
+| 歷史紀錄 | card title `歷史紀錄`; table columns `#`, `登錄類別`, `登錄日期`, `登錄號碼`, `登錄內容`; prototype rows use placeholder and `111` |
+| Footer | `取消`, `確定`; both close modal in preview |
+| Active-state caveat | first radio default was confirmed by user; do not infer other active/default states from visual selection alone |
+
+### Layout / RWD
+
+| 區塊 | 規格 |
+|---|---|
+| Shell | uses shared modal header/footer with fixed header/footer and scrollable body |
+| Content slot | body content has `Color/Neutral/200` border and 12px padding, matching Figma content swap |
+| Form rows | desktop uses 80px left section label + 32px gap + flexible right content; mobile stacks section label above content |
+| Order fields | desktop order fields use 3-column grid; first row `飯店名稱` spans 2 columns; mobile stacks to one column |
+| History table | table keeps horizontal scroll on narrow viewports |
 
 ---
 
@@ -600,11 +642,11 @@ Modal (1019px wide reference)
 ```
 Modal (320×407px)
 ├── Header — "會員安全管理"
-├── Frame 15 — Tab + Content (padding 12px, border #d1d1d1)
+├── Frame 15 — Tab + Content (padding 12px, border Color/Neutral/200)
 │   ├── Tab 列（Frame 61）: 密碼[選中] | 暱稱 | IP 紀錄
 │   ├── 新密碼 label + Input (password) + icons/eye-open
 │   ├── 新密碼確認 label + Input (password) + icons/eye-open
-└── Frame 63 — 原密碼區 (padding 12px, border #d1d1d1)
+└── Frame 63 — 原密碼區 (padding 12px, border Color/Neutral/200)
     ├── 原密碼 label + 說明 "作用於修改密碼與暱稱" (sm)
     └── Input "92!xD2aB" + icons/eye-open
 └── Footer
@@ -618,13 +660,13 @@ Modal (320×407px)
 
 | Tab | Figma 寬度 | HTML class | 選中狀態 | 未選中狀態 |
 |---|---|---|---|---|
-| 密碼 | 44px | `w-11` | `bg-[#e1e1e0]` | `bg-white`（無底色差異） |
-| 暱稱 | 44px | `w-11` | `bg-[#e1e1e0]` | `bg-white` |
-| IP 紀錄 | 63px | `w-[63px]` | `bg-[#e1e1e0]` | `bg-white` |
+| 密碼 | 44px | `w-11` | `bg-border-default` | `bg-white`（無底色差異） |
+| 暱稱 | 44px | `w-11` | `bg-border-default` | `bg-white` |
+| IP 紀錄 | 63px | `w-[63px]` | `bg-border-default` | `bg-white` |
 
 - Padding：`py-1.5 px-3`（6px/12px）
-- 字型：`text-base`（16px）`text-[#454545]`
-- **不加 border**：選中只有 `bg-[#e1e1e0]`，未選中看起來無框無底色
+- 字型：`text-base`（16px）`text-text-default`
+- **不加 border**：選中只有 `bg-border-default`，未選中看起來無框無底色
 
 ### 密碼欄位
 
@@ -671,11 +713,11 @@ Modal (320×455px)
 
 | 時間範圍 | 顏色 | Token |
 |---|---|---|
-| 近期（4 天前） | `#2178cf` | `Color/MenuItem/Default` |
-| 中期（10 天前） | `#ef6f25` | `Color/Surface/Brand-500-Default` |
-| 過久（90 天前） | `#e12129` | `Color/Surface/Negative` |
+| 近期（4 天前） | `Color/MenuItem/Default` | `Color/MenuItem/Default` |
+| 中期（10 天前） | `Color/Surface/Brand-500-Default` | `Color/Surface/Brand-500-Default` |
+| 過久（90 天前） | `Color/Surface/Negative` | `Color/Surface/Negative` |
 
-> 密碼 "90天" 未更換的警示也使用 `#e12129`（紅色）。
+> 密碼 "90天" 未更換的警示也使用 `Color/Surface/Negative`。
 
 ---
 
@@ -683,19 +725,19 @@ Modal (320×455px)
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| Modal 邊框 | `#b0b0b0` | `Color/Neutral/300` |
-| Header 下邊框 | `#b0b0b0` | `Color/Neutral/300` |
-| 標題文字 | `#454545` | `Color/Neutral/800` |
-| Content 區邊框 | `#d1d1d1` | `Color/Neutral/200` |
-| 選中 Tab 背景 | `#e1e1e0` | `Color/Neutral/100` |
-| 確定按鈕 bg | `#454545` | `Color/Neutral/800` |
-| 取消按鈕 bg | `#d1d1d1` | `Color/Neutral/200` |
+| Modal 邊框 | `Color/Neutral/300` | `Color/Neutral/300` |
+| Header 下邊框 | `Color/Neutral/300` | `Color/Neutral/300` |
+| 標題文字 | `Color/Neutral/800` | `Color/Neutral/800` |
+| Content 區邊框 | `Color/Neutral/200` | `Color/Neutral/200` |
+| 選中 Tab 背景 | `Color/Neutral/100` | `Color/Neutral/100` |
+| 確定按鈕 bg | `Color/Neutral/800` | `Color/Neutral/800` |
+| 取消按鈕 bg | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
 ## 實作注意事項
 
-1. **Overlay**：全站統一使用 `rgba(0, 0, 0, 0.4)` 半透明黑色遮罩（見「全站 Backdrop 規格」）
+1. **Overlay**：全站統一使用 `--effect-modal-backdrop` 半透明黑色遮罩（見「全站 Backdrop 規格」）
 2. **置中**：`position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)`
 3. **關閉**：點 icons/close 或遮罩關閉 Modal
 4. **Tab 切換**：password / nick name / IP 共用同一 Modal，tab 控制顯示內容

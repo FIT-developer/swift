@@ -17,8 +17,8 @@
 
 | Variant 名稱 | Node ID | 背景 | 說明 |
 |---|---|---|---|
-| `state=none selected` | `25:118` | `#ffffff` | 未選中 |
-| `state=selected` | `25:120` | `#86b7fe` | 已選中 |
+| `state=none selected` | `25:118` | `Color/Neutral/0` | 未選中 |
+| `state=selected` | `25:120` | `Color/Chart/blue` | 已選中 |
 
 ---
 
@@ -50,11 +50,11 @@
 
 | 元素 | 屬性 | 值 | Token |
 |---|---|---|---|
-| 容器 | background | `#ffffff` | `Color/Neutral/0` |
-| icons/check | Vector fill | `#ffffff` | `Color/Neutral/0`（不可見） |
-| Texts | 文字色 | `#454545` | `Color/Neutral/800` |
+| 容器 | background | `Color/Neutral/0` | `Color/Neutral/0` |
+| icons/check | Vector fill | `Color/Neutral/0` | `Color/Neutral/0`（不可見） |
+| Texts | 文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
 
-> `icons/check` 填色與背景同色（#ffffff），視覺上不可見，結構上保留位置。
+> `icons/check` 填色與背景同色（Color/Neutral/0），視覺上不可見，結構上保留位置。
 
 ---
 
@@ -62,9 +62,9 @@
 
 | 元素 | 屬性 | 值 | Token |
 |---|---|---|---|
-| 容器 | background | `#86b7fe` | `Color/Bootstrap/components/focus` |
-| icons/check | Vector fill | `#f6f6f6` | `Color/Neutral/50` |
-| Texts | 文字色 | `#f6f6f6` | `Color/Neutral/50` |
+| 容器 | background | `Color/Chart/blue` | `Color/Bootstrap/components/focus` |
+| icons/check | Vector fill | `Color/Neutral/50` | `Color/Neutral/50` |
+| Texts | 文字色 | `Color/Neutral/50` | `Color/Neutral/50` |
 
 ---
 
@@ -79,15 +79,15 @@ Figma 佔位文字：`"199) 地球村美日語太平洋旅店"`
 
 ```html
 <!-- none selected -->
-<div class="flex items-center gap-1 px-1 py-1 rounded-lg bg-white cursor-pointer hover:bg-[#F6FAFD]">
+<div class="flex items-center gap-1 px-1 py-1 rounded-lg bg-white cursor-pointer hover:bg-surface-hover">
   <span class="w-4 h-4 flex-shrink-0"></span><!-- check icon placeholder (invisible) -->
-  <span class="text-base text-[#454545]">199) 地球村美日語太平洋旅店</span>
+  <span class="text-base text-text-default">199) 地球村美日語太平洋旅店</span>
 </div>
 
 <!-- selected -->
-<div class="flex items-center gap-1 px-1 py-1 rounded-lg bg-[#86b7fe]">
+<div class="flex items-center gap-1 px-1 py-1 rounded-lg bg-[Color/Chart/blue]">
   <img src="../assets/icons/check.svg" class="w-4 h-4 flex-shrink-0">
-  <span class="text-base text-[#f6f6f6]">199) 地球村美日語太平洋旅店</span>
+  <span class="text-base text-surface-default">199) 地球村美日語太平洋旅店</span>
 </div>
 ```
 

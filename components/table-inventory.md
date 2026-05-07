@@ -6,11 +6,11 @@
 
 ## 外框
 
-`725 × 263`，fill `#ffffff`，stroke `#d1d1d1`，r:12，pad 12/16
+`725 × 263`，fill `Color/Neutral/0`，stroke `Color/Neutral/200`，r:12，pad 12/16
 
 ## Header
 
-Texts（md）「2026 / 02 / 15  四」，`#454545`；顯示選取日期 + 星期
+Texts（md）「2026 / 02 / 15  四」，`Color/Neutral/800`；顯示選取日期 + 星期
 
 ## 表格區（Frame 117）
 
@@ -20,11 +20,11 @@ Texts（md）「2026 / 02 / 15  四」，`#454545`；顯示選取日期 + 星期
 
 | 欄 | Frame | 寬 | header fill | 說明 |
 |---|---|---|---|---|
-| 勾選 | Frame 110 | 46 | stroke `#3d3d3d` | checkbox 欄，header/footer 用 Rectangle |
-| 房型 | Frame 111 | 151 | stroke `#3d3d3d` + fill same header | 「義大利麵房」「香蕉船房」「總計」 |
-| 代號 | Frame 112 | 62 | stroke `#3d3d3d` | XYZ / XYZ / — |
-| 庫存總數 | Frame 113 | 88 | stroke `#3d3d3d` | 99 / 99 / 200 |
-| 可用庫存數 | Frame 114 | 104 | — | 88 / 88 / **200**（footer 值 `#e05216`） |
+| 勾選 | Frame 110 | 46 | stroke `Color/Neutral/900` | checkbox 欄，header/footer 用 Rectangle |
+| 房型 | Frame 111 | 151 | stroke `Color/Neutral/900` + fill same header | 「義大利麵房」「香蕉船房」「總計」 |
+| 代號 | Frame 112 | 62 | stroke `Color/Neutral/900` | XYZ / XYZ / — |
+| 庫存總數 | Frame 113 | 88 | stroke `Color/Neutral/900` | 99 / 99 / 200 |
+| 可用庫存數 | Frame 114 | 104 | — | 88 / 88 / **200**（footer 值 `Color/Brand/Brand-600`） |
 | 保留房數 | Frame 115 | 88 | — | 11 / 11 / 200 |
 | 分配數 | Frame 116 | 72 | — | Input(sm) / Input(sm, disabled) / 100 |
 
@@ -36,8 +36,8 @@ Texts（md）「2026 / 02 / 15  四」，`#454545`；顯示選取日期 + 星期
 
 ### Header / Footer 樣式
 
-Header 行：stroke `#454545`（加粗邊框效果）  
-Footer 行：stroke `#454545`
+Header 行：stroke `Color/Neutral/800`（加粗邊框效果）
+Footer 行：stroke `Color/Neutral/800`
 
 ### 勾選欄
 
@@ -46,12 +46,12 @@ Footer 行：stroke `#454545`
 
 ### 分配數欄（Input 格）
 
-- 可編輯：fill `#ffffff`，stroke `#d1d1d1`，r:6，帶 icons/down（32×32 格內）
-- 唯讀：fill `#e1e1e0`，stroke `#d1d1d1`，r:6
+- 可編輯：fill `Color/Neutral/0`，stroke `Color/Neutral/200`，r:6，帶 icons/down（32×32 格內）
+- 唯讀：fill `Color/Neutral/100`，stroke `Color/Neutral/200`，r:6
 
 ## 數量分配列（Frame 119）
 
-`725 × 62`，fill `#ffffff`，stroke `#d1d1d1`，r:12，緊接在 Table 下方（@ y:395）
+`725 × 62`，fill `Color/Neutral/0`，stroke `Color/Neutral/200`，r:12，緊接在 Table 下方（@ y:395）
 
 | 元素 | 說明 |
 |---|---|
@@ -70,22 +70,22 @@ Figma `Frame 346`（148×36）位於 Frame 348（filter row）右側 x:557，與
 
 ### 三顆按鈕規格（共用樣式 + 各自顏色）
 
-每顆 `36 × 36`，cornerRadius `4`，padding `4`，stroke `#d1d1d1`（未選態 border 改用各自色），按鈕間距 `20px`。
+每顆 `36 × 36`，cornerRadius `4`，padding `4`，stroke `Color/Neutral/200`（未選態 border 改用各自色），按鈕間距 `20px`。
 
 | 按鈕 | 對應顏色 | 語義 | 控制的 cell chip border 色 |
 |---|---|---|---|
-| 訂 | `#2aca18`（綠） | 已訂房數 | `border-[#2aca18]` |
-| 餘 | `#86b7fe`（藍） | 餘房數 | `border-[#86b7fe]` |
-| 保 | `#f28b45`（橙） | 保留房數 | `border-[#f28b45]` |
+| 訂 | `Color/Surface/Positive`（綠） | 已訂房數 | `border-[Color/Surface/Positive]` |
+| 餘 | `Color/Chart/blue`（藍） | 餘房數 | `border-[Color/Chart/blue]` |
+| 保 | `Color/Brand/Brand-400`（橙） | 保留房數 | `border-[Color/Brand/Brand-400]` |
 
 ### 兩態樣式
 
 | 狀態 | bg | border | text |
 |---|---|---|---|
-| 選中（active，預設三顆皆選中） | 該色填滿 | 該色 | `#454545` |
-| 未選 | `#ffffff` | 該色（保留） | `#454545` |
+| 選中（active，預設三顆皆選中） | 該色填滿 | 該色 | `Color/Neutral/800` |
+| 未選 | `Color/Neutral/0` | 該色（保留） | `Color/Neutral/800` |
 
-> **與 Figma 示意稿差異**：Figma 內字色為 `#ffffff`（白），實裝統一為 `#454545`（黑），確保未選態白底時文字可讀，且兩態文字色一致。
+> **與 Figma 示意稿差異**：Figma 內字色為 `Color/Neutral/0`（白），實裝統一為 `Color/Neutral/800`（黑），確保未選態白底時文字可讀，且兩態文字色一致。
 
 ### 行為
 

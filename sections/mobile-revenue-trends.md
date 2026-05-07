@@ -31,7 +31,7 @@ Mobile 版營業資訊趨勢區塊。Card 排列改為**橫向捲動**，Card 4 
 | 高度 | `200px` | `200px`（相同） |
 | Padding | `12px` all sides | `12px`（相同） |
 | Corner radius | `6px` | `6px`（相同） |
-| Border | `#D1D1D1` | `#D1D1D1`（相同） |
+| Border | `Color/Neutral/200` | `Color/Neutral/200`（相同） |
 
 ---
 
@@ -41,7 +41,7 @@ Mobile 版營業資訊趨勢區塊。Card 排列改為**橫向捲動**，Card 4 
 [FRAME] Revenue trends (744×200px)
 ├── [INSTANCE] Title
 │   ├── [INSTANCE] icons/operation-system (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "營業資訊"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "營業資訊"  20px  SemiBold 600  Color/Neutral/800
 └── [FRAME] Trend details (720×148, y:40)  ← 橫向捲動容器
     ├── Card 1（今日營收） 220px  x:0
     ├── Card 2（平均房價） 220px  x:236
@@ -59,7 +59,7 @@ Mobile 版營業資訊趨勢區塊。Card 排列改為**橫向捲動**，Card 4 
 | 文字 | `"營業資訊"` | — |
 | Font | Noto Sans **SemiBold 600** | — |
 | Font size | `20px`（md） | — |
-| Color | `#454545` | `Color/Neutral/800` |
+| Color | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 

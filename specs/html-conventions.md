@@ -14,29 +14,29 @@
 | 位置 | 格線 | 說明 |
 |---|---|---|
 | 欄與欄之間（垂直線） | **無** | 不加 `border-r` |
-| 行與行之間（水平線） | **有** `border-b border-[#d1d1d1]` | 加在 `<tr>` 上 |
+| 行與行之間（水平線） | **有** `border-b border-border-disabled` | 加在 `<tr>` 上 |
 | 最後一行底線 | **無** | 若下方緊鄰已有 `border-t` 的元素（如 footer），最後一個 `<tr>` 移除 `border-b` |
-| Header 底線 | **有** `border-b border-[#d1d1d1]` | 加在每個 `<th>` 上 |
-| Header 底色 | **保留** `bg-[#fef6ee]` | 加在 `<tr>` 上 |
+| Header 底線 | **有** `border-b border-border-disabled` | 加在每個 `<th>` 上 |
+| Header 底色 | **保留** `bg-brand-50` | 加在 `<tr>` 上 |
 | Table 外框 | **無** | `<table>` 不加外框 |
 
 ### 標準寫法
 
 ```html
-<table class="text-sm text-[#454545] border-collapse min-w-max w-full">
+<table class="text-sm text-text-default border-collapse min-w-max w-full">
   <thead>
-    <tr class="bg-[#fef6ee] text-left font-semibold">
-      <th class="px-3 py-2 border-b border-[#d1d1d1] whitespace-nowrap">欄位一</th>
-      <th class="px-3 py-2 border-b border-[#d1d1d1] whitespace-nowrap">欄位二</th>
+    <tr class="bg-brand-50 text-left font-semibold">
+      <th class="px-3 py-2 border-b border-border-disabled whitespace-nowrap">欄位一</th>
+      <th class="px-3 py-2 border-b border-border-disabled whitespace-nowrap">欄位二</th>
     </tr>
   </thead>
   <tbody>
-    <tr class="border-b border-[#d1d1d1] hover:bg-[#e1e1e0] transition-colors">
+    <tr class="border-b border-border-disabled hover:bg-border-default transition-colors">
       <td class="px-3 py-2 whitespace-nowrap">資料</td>
       <td class="px-3 py-2 whitespace-nowrap">資料</td>
     </tr>
     <!-- 最後一行不加 border-b -->
-    <tr class="hover:bg-[#e1e1e0] transition-colors">
+    <tr class="hover:bg-border-default transition-colors">
       <td class="px-3 py-2 whitespace-nowrap">資料</td>
       <td class="px-3 py-2 whitespace-nowrap">資料</td>
     </tr>
@@ -65,10 +65,10 @@
 
 ```html
 <div class="flex-1 min-w-0 overflow-x-auto">
-  <div class="flex border border-[#d1d1d1] rounded-md overflow-hidden text-sm text-[#454545] w-max">
-    <button class="px-3 py-1.5 bg-[#ffcc00] border-r border-[#d1d1d1] font-medium whitespace-nowrap">選中</button>
-    <button class="px-3 py-1.5 bg-white hover:bg-[#f6f6f6] border-r border-[#d1d1d1] whitespace-nowrap">未選中</button>
-    <button class="px-3 py-1.5 bg-white hover:bg-[#f6f6f6] whitespace-nowrap">未選中</button>
+  <div class="flex border border-border-disabled rounded-md overflow-hidden text-sm text-text-default w-max">
+    <button class="px-3 py-1.5 bg-tab-yellow border-r border-border-disabled font-medium whitespace-nowrap">選中</button>
+    <button class="px-3 py-1.5 bg-white hover:bg-surface-default border-r border-border-disabled whitespace-nowrap">未選中</button>
+    <button class="px-3 py-1.5 bg-white hover:bg-surface-default whitespace-nowrap">未選中</button>
   </div>
 </div>
 ```
@@ -91,14 +91,14 @@
 <div class="px-3 pt-3 pb-2 flex flex-col sm:flex-row sm:items-center gap-2">
   <!-- Tab 列 -->
   <div class="flex-1 min-w-0 overflow-x-auto">
-    <div class="flex border border-[#d1d1d1] rounded-md overflow-hidden text-sm w-max">
+    <div class="flex border border-border-disabled rounded-md overflow-hidden text-sm w-max">
       ...tabs...
     </div>
   </div>
   <!-- Search -->
   <div class="relative sm:flex-shrink-0">
     <input type="text" placeholder="主題搜尋"
-      class="border border-[#d1d1d1] rounded-md pl-3 pr-8 py-1.5 text-sm outline-none focus:border-[#2178CF] w-full sm:w-[124px]" />
+      class="border border-border-disabled rounded-md pl-3 pr-8 py-1.5 text-sm outline-none focus:border-menu w-full sm:w-[124px]" />
     <img src="./assets/icons/search.svg" class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 opacity-50 pointer-events-none" />
   </div>
 </div>
@@ -121,10 +121,10 @@
 ### 標準寫法
 
 ```html
-<div class="px-3 text-sm text-[#454545]">
+<div class="px-3 text-sm text-text-default">
   <!-- Header — 獨立 overflow-x-auto -->
   <div class="overflow-x-auto">
-    <div class="flex min-w-max bg-[#fef6ee] border-b border-[#d1d1d1] font-semibold">
+    <div class="flex min-w-max bg-brand-50 border-b border-border-disabled font-semibold">
       <div class="w-10 flex-shrink-0 px-3 py-2 whitespace-nowrap">#</div>
       <div class="w-20 flex-shrink-0 px-3 py-2 whitespace-nowrap">分類</div>
       <div class="flex-1 min-w-0 px-3 py-2 whitespace-nowrap">主題</div>
@@ -132,7 +132,7 @@
     </div>
   </div>
   <!-- Row group -->
-  <div class="border-b border-[#d1d1d1]">
+  <div class="border-b border-border-disabled">
     <!-- data 行：獨立 overflow-x-auto，內層 min-w-max -->
     <div class="overflow-x-auto">
       <div class="flex min-w-max">
@@ -144,7 +144,7 @@
     </div>
     <!-- 展開內文：overflow-x-auto 外側，自然填滿，文字向下斷行 -->
     <div class="px-3 pb-2">
-      <div class="leading-relaxed border border-[#d1d1d1] rounded-md px-3 py-1.5 bg-white">
+      <div class="leading-relaxed border border-border-disabled rounded-md px-3 py-1.5 bg-white">
         長文內容自然斷行...
       </div>
     </div>

@@ -21,8 +21,8 @@ Desktop Row 1 右欄。顯示系統層級的警示通知（授權數量、簡訊
 | 位置 | x:854, y:72（頁面絕對） | — |
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
-| Background | `#FFFFFF` | `Color/Neutral/0` |
-| Border | `#D1D1D1` | `Color/Neutral/200` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -32,7 +32,7 @@ Desktop Row 1 右欄。顯示系統層級的警示通知（授權數量、簡訊
 [INSTANCE] System notifications (572×313px)
 ├── [INSTANCE] Title (112×27px, x:12, y:12)
 │   ├── [INSTANCE] icons/label (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "系統通知"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "系統通知"  20px  SemiBold 600  Color/Neutral/800
 ├── [FRAME] notification list (548×250, x:12, y:51)
 │   ├── Frame 79  — 第 1 列（22px 高）
 │   ├── Frame 80  — 第 2 列（28px 高）
@@ -41,7 +41,7 @@ Desktop Row 1 右欄。顯示系統層級的警示通知（授權數量、簡訊
 │   ├── Frame 83  — 第 5 列（28px 高）
 │   ├── Frame 84  — 第 6 列（28px 高）
 │   └── Frame 85  — 第 7 列（28px 高）
-└── [RECT] Rectangle 15 (6×161px, x:552, y:68, #D9D9D9) ← 捲動指示條
+└── [RECT] Rectangle 15 (6×161px, x:552, y:68, visual-only scrollbar indicator) ← 捲動指示條
 ```
 
 ---
@@ -54,7 +54,7 @@ Desktop Row 1 右欄。顯示系統層級的警示通知（授權數量、簡訊
 | 文字 | `"系統通知"` | — |
 | Font | Noto Sans **SemiBold 600** | — |
 | Font size | `20px`（md） | — |
-| Color | `#454545` | `Color/Neutral/800` |
+| Color | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -64,7 +64,7 @@ Desktop Row 1 右欄。顯示系統層級的警示通知（授權數量、簡訊
 |---|---|---|
 | 尺寸 | `6×161px` | — |
 | 位置 | x:552, y:68（緊貼右側內邊） | — |
-| Color | `#D9D9D9` | `Color/Scrollbar/Default` |
+| Color | visual-only scrollbar indicator | 不作為 HTML 色彩 token；實作使用 browser scrollbar / existing neutral token |
 
 > 捲動指示條為視覺設計元素，實作時由瀏覽器原生捲動條取代，不需手動實作。
 
@@ -85,12 +85,12 @@ Desktop Row 1 右欄。顯示系統層級的警示通知（授權數量、簡訊
 
 | 語意 | 文字 | bg | Token | 用於 |
 |---|---|---|---|---|
-| 類型：簡訊 | `簡訊` | `#34C759` | `Color/Accent/Green` | Row 2, 3 |
-| 嚴重度：總部 | `總部` | `#E12129` | `Color/Surface/Negative` | Row 2 |
-| 嚴重度：分館 | `分館` | `#F28B45` | `Color/Surface/Brand-400-Hover` | Row 3 |
-| 類型：網址 | `網址` | `#2178CF` | `Color/MenuItem/Default` | Row 4–7 |
+| 類型：簡訊 | `簡訊` | `Color/Accent/Green` | `Color/Accent/Green` | Row 2, 3 |
+| 嚴重度：總部 | `總部` | `Color/Surface/Negative` | `Color/Surface/Negative` | Row 2 |
+| 嚴重度：分館 | `分館` | `Color/Brand/Brand-400` | `Color/Surface/Brand-400-Hover` | Row 3 |
+| 類型：網址 | `網址` | `Color/MenuItem/Default` | `Color/MenuItem/Default` | Row 4–7 |
 
-共用 chip 樣式：`height: 28px`、`padding: 6px 12px`、`border-radius: 6px`、`font-size: 12px`、`color: #F6F6F6`
+共用 chip 樣式：`height: 28px`、`padding: 6px 12px`、`border-radius: 6px`、`font-size: 12px`、`color: Color/Neutral/50`
 
 ---
 
@@ -98,16 +98,16 @@ Desktop Row 1 右欄。顯示系統層級的警示通知（授權數量、簡訊
 
 | 列 | 結構 | chip |
 |---|---|---|
-| 1 | `序號` + 純文字（`#E12129` 強調數字） | 無 |
+| 1 | `序號` + 純文字（`Color/Surface/Negative` 強調數字） | 無 |
 | 2 | `序號` + GREEN chip + RED chip + 文字 | 簡訊（綠）、總部（紅） |
 | 3 | `序號` + GREEN chip + ORANGE chip + 文字 | 簡訊（綠）、分館（橘） |
-| 4–7 | `序號` + BLUE chip + 文字（日期 `#2178CF`，天數 `#E12129`） | 網址（藍） |
+| 4–7 | `序號` + BLUE chip + 文字（日期 `Color/MenuItem/Default`，天數 `Color/Surface/Negative`） | 網址（藍） |
 
 **HTML 語意選用**：
 - 列表容器：`<ol class="list-none">` — 有序列表，符合編號語意
 - 日期值：`<time>` — 語意化時間標記
-- 強調數字：`<span class="text-[#E12129]">` — 僅色彩強調，不改變字重
-- 藍色日期：`<time class="text-[#2178CF]">` — 日期 + 顏色合一
+- 強調數字：`<span class="text-status-negative">` — 僅色彩強調，不改變字重
+- 藍色日期：`<time class="text-menu">` — 日期 + 顏色合一
 - Chip：`<span class="inline-flex ...">` — inline badge，無互動
 
 ---

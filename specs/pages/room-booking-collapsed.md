@@ -37,7 +37,7 @@
 - 外層 Frame 408：`1400 × 2563`，margin `20px` 左右、`12px` 上
 - Frame 407（全寬主內容）：`1400 × 2500`，**無 aside 區塊**
 - **floatIcons/ai**：`40 × 70` @ x:1372, y:1058
-- **Button Y/N「產生訂單」**：`137 × 39` @ x:1263, y:2524（state=yes，bg:`#454545`）
+- **Button Y/N「產生訂單」**：`137 × 39` @ x:1263, y:2524（state=yes，bg:`Color/Neutral/800`）
 
 ---
 
@@ -47,7 +47,7 @@
 
 ### Compact Menu（menu instance，collapsed state）
 
-`240 × 48`，@ x:0，bg:`#ffffff`，padding `12`
+`240 × 48`，@ x:0，bg:`Color/Neutral/0`，padding `12`
 
 | 元素 | 說明 |
 |---|---|
@@ -70,7 +70,7 @@
 
 ## [A] 空房與庫存查詢 Accordion
 
-**尺寸**：`1400 × 619`，bg:`#f6fafd`，padding `20`，@ y:70
+**尺寸**：`1400 × 619`，bg:`Color/Neutral/75`，padding `20`，@ y:70
 
 ### Header（Frame 99）
 
@@ -89,7 +89,7 @@
 
 ## [B] 客戶類型 + 訂房資料（Frame 230）
 
-**尺寸**：`1400 × 432`，bg:`#f6fafd`，padding `20`，@ y:711
+**尺寸**：`1400 × 432`，bg:`Color/Neutral/75`，padding `20`，@ y:711
 
 ### 頂部資料列（Frame 367）
 
@@ -102,7 +102,7 @@
 
 ### 訂房資料 Grid（Frame 222）
 
-`1360 × 282`，@ x:20, y:130，bg:`#ffffff`，padding 12
+`1360 × 282`，@ x:20, y:130，bg:`Color/Neutral/0`，padding 12
 
 **容器 1360px，grid 內容 ≈ 1398px → 仍需 overflow-x: scroll**（欄位同展開版，位置不變）
 
@@ -110,7 +110,7 @@
 
 ## [C] 訂單條件 Accordion（Order condition）
 
-**尺寸**：`1400 × 425`，bg:`#f6fafd`，padding `20`，@ y:1165
+**尺寸**：`1400 × 425`，bg:`Color/Neutral/75`，padding `20`，@ y:1165
 
 ### Header
 
@@ -118,7 +118,7 @@
 
 ### 內容容器
 
-`1360 × 342`，bg:`#ffffff`，padding `12`
+`1360 × 342`，bg:`Color/Neutral/0`，padding `12`
 
 Frame 370（三欄）：`1336 × 318`（較展開版 1076→1336，各欄寬隨之增大）
 
@@ -130,7 +130,7 @@ Frame 370（三欄）：`1336 × 318`（較展開版 1076→1336，各欄寬隨�
 
 ### 左側：訂房資料（Frame 349）
 
-`951 × 888`，bg:`#f6fafd`，padding `20`，@ x:0
+`951 × 888`，bg:`Color/Neutral/75`，padding `20`，@ x:0
 
 | 子區塊 | 尺寸 | 說明 |
 |---|---|---|
@@ -139,7 +139,7 @@ Frame 370（三欄）：`1336 × 318`（較展開版 1076→1336，各欄寬隨�
 
 ### 右側：正式單與候補單 Accordion
 
-`425 × 888`，bg:`#f6fafd`，padding `20`，@ x:975（與左側 gap = 24px）
+`425 × 888`，bg:`Color/Neutral/75`，padding `20`，@ x:975（與左側 gap = 24px）
 
 **內容同展開版**，尺寸不變。
 

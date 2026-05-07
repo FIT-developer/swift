@@ -16,8 +16,8 @@
 - 若舊實作仍有 `text-[#...]`、`bg-[#...]`、`border-[#...]`，只能在能 1:1 對應本檔 token 時替換；無對應者需列入未解問題。
 - Figma Variables 是底層來源；HTML/Tailwind 實作可使用更符合場景的語意 alias。alias 必須在本檔有對照，不可自行新增未記錄名稱。
 - `white` / `bg-white` / `text-white` 可視為 `Color/Neutral/0` 的授權 Tailwind alias；使用時以「白色表面」或「深色背景反白文字」為語意，不需強制改成 `neutral-0`。
-- `rgba(...)`、box-shadow、drop-shadow、modal backdrop 等 Effect 不納入 Figma Variables 色彩 token。這類固定元件效果需以當前 Figma component 視覺為依據，記錄在元件規範或本檔 Effect 章節，不得混入 `Color/*`。
-- scrollbar 為 HTML/CSS 原生特規：Figma 可用視覺示意色表示 scrollbar 空間，但實作由 DOM/browser 樣式決定，不建立顏色 token。
+- `rgba(...)`、box-shadow、drop-shadow、modal backdrop 等 Effect 不納入 Figma Variables 色彩 token，但實作不可散落 raw value；需以命名 CSS variable 管理，並記錄在元件規範或本檔 Effect 章節。
+- scrollbar 為 HTML/CSS 原生特規；實作使用既有中性色 token alias，不新增非 Figma Variables 色彩。
 
 ---
 
@@ -288,10 +288,11 @@
 
 | Effect | 目前實作 | 規則 |
 |---|---|---|
-| Modal backdrop | `rgba(0, 0, 0, 0.4)` | 固定 modal 特規，見 `components/modal.md` / `progress.md` 決策 |
-| Mobile sidebar backdrop | `rgba(0, 0, 0, 0.28)` | 固定 mobile overlay 特規 |
-| Box shadow / drop-shadow | 元件 CSS 內保留 `rgba(...)` | 不轉成 color token；若 Figma component 有調整，依 component 更新 |
-| Chart translucent fill | 由 chart color + opacity 形成 | 優先以 `Color/Chart/*` 為底色，再於 Chart.js 設定透明度 |
+| Modal backdrop | `--effect-modal-backdrop` | 固定 modal 特規，見 `components/modal.md` / `progress.md` 決策 |
+| Mobile sidebar backdrop | `--effect-mobile-sidebar-backdrop` | 固定 mobile overlay 特規 |
+| Box shadow / drop-shadow | `--effect-*` CSS variables | 不轉成 color token；不得在 component CSS 中散落 raw `rgba(...)` |
+| Chart translucent fill | `--effect-chart-purple-red-soft` | 由 chart color + opacity 形成，Chart.js 以 CSS variable 讀取 |
+| Scrollbar thumb | `--color-border-disabled` | 使用既有 neutral token alias，不新增 scrollbar color token |
 
 ---
 

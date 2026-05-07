@@ -22,7 +22,7 @@ Desktop 版為左側固定 sidebar（menu）+ 右側主內容區的雙欄佈局�
 |---|---|---|
 | 示意稿寬度 | `1440px` | — |
 | 頁面總高度 | `1449px` | — |
-| Background | `#FFFFFF` | `Color/Neutral/0` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
 | Padding | 無全局 padding（各元素自行定位） | — |
 
 ---
@@ -30,7 +30,7 @@ Desktop 版為左側固定 sidebar（menu）+ 右側主內容區的雙欄佈局�
 ## 頁面結構（絕對定位）
 
 ```
-[FRAME] Landing page - 0116 (1440×1449px, bg #FFFFFF)
+[FRAME] Landing page - 0116 (1440×1449px, bg Color/Neutral/0)
 ├── [INSTANCE] menu              (240×1188px, x:12,   y:12)
 ├── [INSTANCE] Function icons    (156×24px,   x:1272, y:20)
 ├── [FRAME]    Order status      (556×313px,  x:272,  y:72)
@@ -75,8 +75,8 @@ Desktop 版為左側固定 sidebar（menu）+ 右側主內容區的雙欄佈局�
 | 尺寸 | `240×1188px` | — |
 | 位置 | x:12, y:12 | — |
 | Corner radius | `8px` | `Radius/8` |
-| Background | `#FFFFFF` | `Color/Neutral/0` |
-| Border | `#E1E1E0` | `Color/Neutral/150` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
+| Border | `Color/Neutral/100` | `Color/Neutral/150` |
 
 > 完整規格見 `components/menu.md`。
 

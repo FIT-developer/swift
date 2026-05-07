@@ -21,13 +21,13 @@
 ```
 
 **頁面外框**
-- 外層 Section 背景：`#ffffff`
+- 外層 Section 背景：`Color/Neutral/0`
 - 外層 Frame 402：`1400 × 2567`，margin `20px` 左右、`12px` 上
 - Frame 401（aside + main 排列）：`1400 × 2496`
   - Aside (menu instance)：`240px` wide @ x:0
   - Main (Frame 400)：`1140px` wide @ x:260（aside + 20px gap）
 - **floatIcons/ai**：`40 × 70` @ x:1372, y:1058（固定右側浮動）
-- **Button Y/N「產生訂單」**：`137 × 39` @ x:1263, y:2528（頁面右下角，state=yes，bg:`#454545`）
+- **Button Y/N「產生訂單」**：`137 × 39` @ x:1263, y:2528（頁面右下角，state=yes，bg:`Color/Neutral/800`）
 
 ---
 
@@ -35,7 +35,7 @@
 
 - **state**：`extend`（展開）
 - **尺寸**：`240 × 1188px`
-- **樣式**：bg `#ffffff`、border `#e1e1e0`、cornerRadius `8`、padding `12`
+- **樣式**：bg `Color/Neutral/0`、border `Color/Neutral/100`、cornerRadius `8`、padding `12`
 - **選中項目**：前台作業 → 房間預訂（sub-item selected 黃底）
 - 其餘內容與 landing.html 一致
 
@@ -47,31 +47,31 @@
 
 | 元素 | 尺寸 | 位置 | 樣式 |
 |---|---|---|---|
-| Input「房間預訂」 | 127 × 36 | x:0 | bg:`#f6fafd`（active 狀態），pad 6/12，帶 icons/close |
-| Input「xxoo」 | 96 × 36 | x:139 | bg:`#ffffff`，pad 6/12，帶 icons/close |
+| Input「房間預訂」 | 127 × 36 | x:0 | bg:`Color/Neutral/75`（active 狀態），pad 6/12，帶 icons/close |
+| Input「xxoo」 | 96 × 36 | x:139 | bg:`Color/Neutral/0`，pad 6/12，帶 icons/close |
 | Function icons | 156 × 24 | x:984, y:6 | 4 icons 各 24×24，gap 20px |
 
 **Function icons badge 顏色**：
-- bulletin (99)、person-md (99+)、system (99+)：`#ef6f25`
-- message (0)：`#d1d1d1`（零值用灰色）
+- bulletin (99)、person-md (99+)、system (99+)：`Color/Brand/Brand-500`
+- message (0)：`Color/Neutral/200`（零值用灰色）
 
 ---
 
 ## [A] 空房與庫存查詢 Accordion
 
-**尺寸**：`1140 × 619`，bg:`#f6fafd`，padding `20`，@ y:60
+**尺寸**：`1140 × 619`，bg:`Color/Neutral/75`，padding `20`，@ y:60
 
 ### Header（Frame 99）
 
 - 寬 `1100`，高 `27`，@ x:20, y:20
-- 文字「空房與庫存查詢」：`md`（20px SemiBold）、`#454545`
+- 文字「空房與庫存查詢」：`md`（20px SemiBold）、`Color/Neutral/800`
 - icons/up：24×24 @ x:1076（展開狀態用 up icon）
 
 ### 內容（Frame 224）
 
 `1100 × 536`，@ x:20, y:63
 
-**左側 Calendar**：`351 × 431`，bg:`#ffffff`，padding `12`
+**左側 Calendar**：`351 × 431`，bg:`Color/Neutral/0`，padding `12`
 - Frame 120（選日控制列）：327 × 36，@y:12
   - 顯示「已選 0 天」與「今日 / 12」 input
 - Frame 93（月份標題列）：327 × 40，@y:60
@@ -85,8 +85,8 @@
 |---|---|---|---|
 | Frame 97（操作按鈕） | 176 × 42 | y:0 | 「空房查詢」/「庫存表」兩個 Button |
 | Payment method | 541 × 42 | y:58 | 棟別 filter tab（全部/A棟/B棟/C棟/…） |
-| Table（庫存表） | 725 × 263 | y:116 | bg:#ffffff，pad 12/16/12/16 |
-| Frame 119（數量分配） | 725 × 62 | y:395 | bg:#ffffff，pad 12/16/12/16，含時段 0–10 |
+| Table（庫存表） | 725 × 263 | y:116 | bg:Color/Neutral/0，pad 12/16/12/16 |
+| Frame 119（數量分配） | 725 × 62 | y:395 | bg:Color/Neutral/0，pad 12/16/12/16，含時段 0–10 |
 | Frame 11（底部按鈕） | 725 × 63 | y:473 | pad 12，「清除」/「加入訂單」Button Y/N |
 
 **Table 欄位**（6欄）：
@@ -104,7 +104,7 @@
 
 ## [B] 客戶類型 + 訂房資料（Frame 230）
 
-**尺寸**：`1140 × 432`，bg:`#f6fafd`，padding `20`，@ y:703
+**尺寸**：`1140 × 432`，bg:`Color/Neutral/75`，padding `20`，@ y:703
 
 ### 客戶類型按鈕（Frame 97）
 
@@ -112,8 +112,8 @@
 
 | 按鈕 | 尺寸 | 背景 | 狀態 |
 |---|---|---|---|
-| 一般客戶 | 88 × 42 | `#005fcc`（藍，選中） | active |
-| 合約客戶 | 88 × 42 | `#ffffff` | inactive |
+| 一般客戶 | 88 × 42 | `Color/Radio/Default`（藍，選中） | active |
+| 合約客戶 | 88 × 42 | `Color/Neutral/0` | inactive |
 
 ### 頂部資料列（Frame 367）
 
@@ -128,7 +128,7 @@
 
 ### 訂房資料 Grid（Frame 222）
 
-`1100 × 282`，@ x:20, y:130，bg:`#ffffff`，padding 12
+`1100 × 282`，@ x:20, y:130，bg:`Color/Neutral/0`，padding 12
 
 **總內容寬度 ≈ 1398px → 超出容器 1100px，需 overflow-x: scroll**
 
@@ -149,13 +149,13 @@
 **每 cell 行高**：52px（pad 8/12/8/12 或 8/8/8/0）  
 **Header 列高**：38px（pad 8/12/8/12）  
 **Footer 列高**：32px（pad 8/12/8/12）  
-**交替背景**：偶數資料行 bg:`#f6fafd`，奇數 bg:`#ffffff` 或無填色
+**交替背景**：偶數資料行 bg:`Color/Neutral/75`，奇數 bg:`Color/Neutral/0` 或無填色
 
 ---
 
 ## [C] 訂單條件 Accordion（Order condition）
 
-**尺寸**：`1140 × 425`，bg:`#f6fafd`，padding `20`，@ y:1159
+**尺寸**：`1140 × 425`，bg:`Color/Neutral/75`，padding `20`，@ y:1159
 
 ### Header
 
@@ -164,7 +164,7 @@
 
 ### 內容容器
 
-`1100 × 342`，bg:`#ffffff`，padding `12`
+`1100 × 342`，bg:`Color/Neutral/0`，padding `12`
 
 **三欄排列（Frame 370）**：`1076 × 318`，各欄寬 337px，欄間距 ≈ 32px
 
@@ -182,7 +182,7 @@
 
 ### 左側：訂房資料（Frame 348）
 
-`685 × 888`，bg:`#f6fafd`，padding `20`，@ x:0
+`685 × 888`，bg:`Color/Neutral/75`，padding `20`，@ x:0
 
 **Header 列（Frame 350）**：645 × 27
 - 標題「訂房資料」（Frame 246：116×27）
@@ -192,7 +192,7 @@
 
 - **Tab 列（Frame 356）**：184 × 42，pad 0/12/0/12
   - `訂房`（選中）/ `入住`
-- **表單內容（Frame 277）**：645 × 763，bg:`#ffffff`，pad 20/0/20/0
+- **表單內容（Frame 277）**：645 × 763，bg:`Color/Neutral/0`，pad 20/0/20/0
 
 **訂房 Tab 表單欄位**（內容見文字提取段落）：
 - 名稱、身份證號、護照號碼、生日（Calendar simple）、行動電話
@@ -208,11 +208,11 @@
 
 ### 右側：正式單與候補單 Accordion（Frame 1437:47168）
 
-`425 × 888`，bg:`#f6fafd`，padding `20`，@ x:709（與左側 gap = 24px）
+`425 × 888`，bg:`Color/Neutral/75`，padding `20`，@ x:709（與左側 gap = 24px）
 
 **Header**：385 × 27，「正式單與候補單」+ icons/down（**收起**狀態）
 
-**Content**：385 × 805，bg:`#ffffff`，padding `20`
+**Content**：385 × 805，bg:`Color/Neutral/0`，padding `20`
 - Payment method：訂單類型 Radio「無設定」/「正式單」/「候補單」（預設：無設定）
 - flexible content：顯示文字「未設定」
 
@@ -222,13 +222,13 @@
 
 | 用途 | 值 |
 |---|---|
-| Accordion / section bg | `#f6fafd` |
-| Card / white bg | `#ffffff` |
-| 一般客戶按鈕（選中） | `#005fcc` |
-| 副標題文字 | `#454545` |
-| badge（有值） | `#ef6f25` |
-| badge（零值） | `#d1d1d1` |
-| 選中 sub-item 底色 | `#f7d275` |
+| Accordion / section bg | `Color/Neutral/75` |
+| Card / white bg | `Color/Neutral/0` |
+| 一般客戶按鈕（選中） | `Color/Radio/Default` |
+| 副標題文字 | `Color/Neutral/800` |
+| badge（有值） | `Color/Brand/Brand-500` |
+| badge（零值） | `Color/Neutral/200` |
+| 選中 sub-item 底色 | `Color/SubItem/Selected` |
 
 ---
 

@@ -27,7 +27,7 @@
 [COMPONENT] Title — type=Default (112×27px)
 ├── [INSTANCE] icons/operation-system (24×24, x:0, y:1.5) ← icon slot（可 swap）
 └── [INSTANCE] Texts — md Bold (80×27, x:32)              ← 文字 slot（可 swap）
-    └── [TEXT] "系統操作"  20px  SemiBold 600  #454545
+    └── [TEXT] "系統操作"  20px  SemiBold 600  Color/Neutral/800
 ```
 
 > icon 垂直置中（y:1.5 = (27-24)/2）  
@@ -45,7 +45,7 @@
 | 文字 variant | `Texts / size=md (20) Bold` | — |
 | 文字字號 | `20px` | — |
 | 文字字重 | SemiBold 600 | — |
-| 文字色 | `#454545` | `Color/Neutral/800` |
+| 文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
 | 背景 | 無（透明） | — |
 | Padding | 無（0px） | — |
 
@@ -69,7 +69,7 @@
 ```html
 <div class="flex items-center gap-2">
   <img src="../assets/icons/operation-system.svg" class="w-6 h-6" alt="">
-  <span class="text-xl font-semibold text-[#454545]">統計圖表</span>
+  <span class="text-xl font-semibold text-text-default">統計圖表</span>
 </div>
 ```
 

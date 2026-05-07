@@ -16,10 +16,10 @@
 
 | Token | Value |
 |-------|-------|
-| Background | `#ffffff` |
-| Border | `#e1e1e0` |
-| Text primary | `#454545` |
-| Text link / active | `#2178cf` |
+| Background | `Color/Neutral/0` |
+| Border | `Color/Neutral/100` |
+| Text primary | `Color/Neutral/800` |
+| Text link / active | `Color/MenuItem/Default` |
 | Corner radius (component) | `8px` |
 | Padding (all sides) | `12px` |
 | Inner content width | `216px` (= 240 − 12×2) |
@@ -101,24 +101,24 @@
 - File download: **collapsed** (39px)
 - **POS entrance 新增**：`Pos entance icon` (216 × 39)
   - 含 icons/pos + 文字 "POS" + icons/attached-link（外連結）
-  - 外框：horizontal gradient stroke 3px，`#E376F9`（左）→ `#FF7878`（右）
+  - 外框：horizontal gradient stroke 3px，`Color/Accent/linear-pos-left`（左）→ `Color/Accent/linear-pos-right`（右）
   - 形狀：pill（`cornerRadius: 56`，`rounded-full`）
   - 內距：`padding: 6px 12px`
-  - **Hover 狀態**：stroke 不變 + 新增 fill `#FCFEC0`→`#F8ABFB` opacity 0.2
+  - **Hover 狀態**：stroke 不變 + 新增 fill `Color/Accent/float-circle-filled-1` → `Color/Accent/float-circle-filled-2`
 
 #### POS entrance 漸層外框實作方式
 與 floatIcons/ai 相同的雙層包裹技巧（gradient stroke 無法用 `border` 直接實現）：
-- 外層：`p-[3px] rounded-full`，`background: linear-gradient(to right, #E376F9, #FF7878)`
-- 內層：`rounded-full bg-white`，hover 時背景換為 `linear-gradient(to right, rgba(252,254,192,0.2), rgba(248,171,251,0.2))`
+- 外層：`p-[3px] rounded-full`，使用 `.pos-entrance-gradient-border` 套用 `Color/Accent/linear-pos-left` → `Color/Accent/linear-pos-right`
+- 內層：`rounded-full bg-white`，hover 時背景換為 `Color/Accent/float-circle-filled-1` → `Color/Accent/float-circle-filled-2`
 
 #### POS entrance HTML 實作
 ```html
 <div class="mb-4 pos-entrance-btn">
-  <div class="p-[3px] rounded-full" style="background: linear-gradient(to right, #E376F9, #FF7878);">
+  <div class="pos-entrance-gradient-border p-[3px] rounded-full">
     <div class="pos-entrance-inner flex items-center justify-between px-3 h-[33px] rounded-full cursor-pointer">
       <div class="flex items-center gap-1.5">
         <img src="./assets/icons/pos.svg" class="w-6 h-6 shrink-0" />
-        <span class="text-sm font-semibold text-[#454545]">POS</span>
+        <span class="text-sm font-semibold text-text-default">POS</span>
       </div>
       <img src="./assets/icons/attached-link.svg" class="w-6 h-6 shrink-0" />
     </div>
@@ -274,7 +274,7 @@ mobile (1146px) — 獨立響應式版本，由視窗寬度決定，Folder 不�
 
 | 觸發 | 效果 |
 |---|---|
-| Hover | 顯示 Tooltip `登出`（dark bg `#4f4f4f`，text `#e1e1e0`，12px，6px radius，arrow 朝上） |
+| Hover | 顯示 Tooltip `登出`（dark bg `Color/Neutral/700`，text `Color/Neutral/100`，12px，6px radius，arrow 朝上） |
 | 點擊 | 開啟 **確定登出？** Modal（見下方 Modal 規格） |
 
 ---
@@ -302,11 +302,11 @@ mobile (1146px) — 獨立響應式版本，由視窗寬度決定，Folder 不�
 
 | 狀態 | 背景 | 說明 |
 |---|---|---|
-| Default | `#ffffff`（白色 fill） | 未選取、未 hover |
-| Hover | `#ffffff`（白色 fill）+ cursor pointer | `Hover 內容` 標記，滑鼠游標進入 |
-| Selected | 透明（無 fill） | 顯示下方黃底 `#f7d275`（`sub-item-selected` class） |
+| Default | `Color/Neutral/0`（白色 fill） | 未選取、未 hover |
+| Hover | `Color/Neutral/0`（白色 fill）+ cursor pointer | `Hover 內容` 標記，滑鼠游標進入 |
+| Selected | 透明（無 fill） | 顯示下方黃底 `Color/SubItem/Selected`（`sub-item-selected` class） |
 
-> Sub-item text color 固定為 `#2178cf`，字重 Regular 400，12px（sm）。
+> Sub-item text color 固定為 `Color/MenuItem/Default`，字重 Regular 400，12px（sm）。
 
 ---
 
@@ -323,15 +323,15 @@ mobile (1146px) — 獨立響應式版本，由視窗寬度決定，Folder 不�
 **結構：**
 
 ```
-Modal (320×109, bg #ffffff)
+Modal (320×109, bg Color/Neutral/0)
 ├── Frame 12 — 上半部
 │   ├── Frame 10 (padding 12px)
-│   │   ├── Texts [md] "確定登出？" — SemiBold 20px #454545
+│   │   ├── Texts [md] "確定登出？" — SemiBold 20px Color/Neutral/800
 │   │   └── icons/close  24×24
 │   └── Texts (padding 12px) — body 說明文字（placeholder，實作自訂）
 └── Frame 11 (padding 12px) — 按鈕列
-    ├── Button Y/N "取消"  bg #d1d1d1  text #454545
-    └── Button Y/N "確定"  bg #454545  text #e1e1e0
+    ├── Button Y/N "取消"  bg Color/Neutral/200  text Color/Neutral/800
+    └── Button Y/N "確定"  bg Color/Neutral/800  text Color/Neutral/100
 ```
 
 #### Modal B：帳號切換
@@ -345,21 +345,21 @@ Modal (320×109, bg #ffffff)
 **結構：**
 
 ```
-Modal (320×277, bg #ffffff)
+Modal (320×277, bg Color/Neutral/0)
 ├── Frame 12 — 上半部
 │   ├── Frame 10 (padding 12px)
-│   │   ├── Texts [md] "帳號切換" — SemiBold 20px #454545
+│   │   ├── Texts [md] "帳號切換" — SemiBold 20px Color/Neutral/800
 │   │   └── icons/close  24×24
-│   └── content swap (padding 12px, border #d1d1d1)
+│   └── content swap (padding 12px, border Color/Neutral/200)
 │       ├── Frame 13
-│       │   ├── Texts [base] "暱稱"  #454545
+│       │   ├── Texts [base] "暱稱"  Color/Neutral/800
 │       │   └── Select — 顯示 "xiaomi999"（帳號下拉）
 │       └── Frame 14
-│           ├── Texts [base] "密碼"  #454545
+│           ├── Texts [base] "密碼"  Color/Neutral/800
 │           └── Input — 顯示 "********"（密碼輸入）
 └── Frame 11 (padding 12px) — 按鈕列
-    ├── Button Y/N "取消"  bg #d1d1d1  text #454545
-    └── Button Y/N "確定"  bg #454545  text #e1e1e0
+    ├── Button Y/N "取消"  bg Color/Neutral/200  text Color/Neutral/800
+    └── Button Y/N "確定"  bg Color/Neutral/800  text Color/Neutral/100
 ```
 
 ---
@@ -370,7 +370,7 @@ Modal (320×277, bg #ffffff)
 
 | Component | 目前狀態 | 需補充事項 |
 |---|---|---|
-| `Tooltip`（深色 hover tooltip） | `components/tooltips.md` 存在 | 深色 variant（bg `#4f4f4f`）樣式確認 |
+| `Tooltip`（深色 hover tooltip） | `components/tooltips.md` 存在 | 深色 variant（bg `Color/Neutral/700`）樣式確認 |
 | `Modal`（確定/取消）| `components/modal.md` 存在 | 兩個 modal variant（登出/帳號切換）樣式確認 |
 | `Button Y/N`（確定/取消按鈕）| `components/button-yn.md` 存在 | 兩種 variant 色彩規格確認 |
 | `Dropdown aside`（子項目狀態）| `components/dropdown-aside.md` 存在 | sub-item selected/hover 狀態規格確認 |

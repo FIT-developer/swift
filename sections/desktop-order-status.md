@@ -21,8 +21,8 @@ Desktop Row 1 左欄。顯示今日各類訂單的即時數量，由 `Title` + 5
 | 位置 | x:272, y:72（頁面絕對） | — |
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
-| Background | `#FFFFFF` | `Color/Neutral/0` |
-| Border | `#D1D1D1` | `Color/Neutral/200` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -32,7 +32,7 @@ Desktop Row 1 左欄。顯示今日各類訂單的即時數量，由 `Title` + 5
 [FRAME] Order status (556×313px)
 ├── [INSTANCE] Title (112×27px, x:12, y:12)
 │   ├── [INSTANCE] icons/operation-system (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "訂單快覽"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "訂單快覽"  20px  SemiBold 600  Color/Neutral/800
 └── [FRAME] today order status (532×250px, x:12, y:51)
     ├── [INSTANCE] Order — 今日到訪    (532×34px, y:0)
     ├── [INSTANCE] Order — 今日訂單    (532×34px, y:54)
@@ -51,7 +51,7 @@ Desktop Row 1 左欄。顯示今日各類訂單的即時數量，由 `Title` + 5
 | 文字 | `"訂單快覽"` | — |
 | Font | Noto Sans **SemiBold 600** | — |
 | Font size | `20px`（md） | — |
-| Color | `#454545` | `Color/Neutral/800` |
+| Color | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -62,8 +62,8 @@ Desktop Row 1 左欄。顯示今日各類訂單的即時數量，由 `Title` + 5
 | 列寬 | `532px`（fill，556 - 24 padding） | — |
 | 列高 | `34px` | — |
 | 列間距 | `54 - 34 = 20px` | `Spacing/20` |
-| Background | `#F6FAFD` | `Color/Neutral/75` |
-| Border | **左側僅一條** `#E05216`，`2px`；其他三邊無 | `Color/Surface/Brand-600-Active` |
+| Background | `Color/Neutral/75` | `Color/Neutral/75` |
+| Border | **左側僅一條** `Color/Brand/Brand-600`，`2px`；其他三邊無 | `Color/Surface/Brand-600-Active` |
 | Padding | top/bottom `6px`、left/right `12px` | `Spacing/6`、`Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 
@@ -97,9 +97,9 @@ Desktop Row 1 左欄。顯示今日各類訂單的即時數量，由 `Title` + 5
 
 1. **Order rows 全寬**：`w-full` 填滿父容器去掉 padding 後的寬度
 2. **列間距**：`gap-5`（20px）
-3. **左側 border 僅**：`border-l-2 border-[#E05216]`，不加 `border` 全框
-4. **Badge Active**：`bg-[#E12129] text-[#F6F6F6] rounded`（4px radius），值 ≤ 99 顯示數字，> 99 顯示 `99+`
-5. **Badge Empty**：`bg-[#D1D1D1] text-[#454545] rounded-lg`（8px radius），顯示 `0`
+3. **左側 border 僅**：`border-l-2 border-brand-active`，不加 `border` 全框
+4. **Badge Active**：`bg-status-negative text-surface-default rounded`（4px radius），值 ≤ 99 顯示數字，> 99 顯示 `99+`
+5. **Badge Empty**：`bg-border-disabled text-text-default rounded-lg`（8px radius），顯示 `0`
 6. **此 section 在 Mobile 不存在**；Mobile 版 Order status 包含於 `mobile-top` section 中
 
 ---

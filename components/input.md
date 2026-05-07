@@ -20,10 +20,10 @@
 | Corner radius | `6px` (`Radius/6`) | 同 |
 | Padding（一般） | top/bottom `6px`、left/right `12px` | 同 |
 | Padding（chip 類） | top/bottom `4px`、left/right `8px` | — |
-| Border（default） | `#D1D1D1` `Color/Neutral/200` | 同 |
-| Border（focus） | `#86B7FE` `Color/Bootstrap/components/focus` | — |
-| Background（default） | `#FFFFFF` `Color/Neutral/0` | `#E1E1E0` `Color/Neutral/100` |
-| Text color（default） | `#454545` `Color/Neutral/800` | `#888888` `Color/Neutral/400` |
+| Border（default） | `Color/Neutral/200` `Color/Neutral/200` | 同 |
+| Border（focus） | `Color/Chart/blue` `Color/Bootstrap/components/focus` | — |
+| Background（default） | `Color/Neutral/0` `Color/Neutral/0` | `Color/Neutral/100` `Color/Neutral/100` |
+| Text color（default） | `Color/Neutral/800` `Color/Neutral/800` | `Color/Neutral/400` `Color/Neutral/400` |
 | Font size | `12px`（sm） | — |
 
 ---
@@ -35,8 +35,8 @@
 | status | ID | 尺寸 | 說明 | 使用紀錄 |
 |---|---|---|---|---|
 | `Default` | `20:33` | 28×127px | 白底灰框，sm 文字 | ✅ System notifications 彩色 chip（fill 覆寫） |
-| `Default disabled` | `502:7889` | 28×127px | 灰底，文字 #888888 | ⬜ 待比對 |
-| `focus` | `20:35` | 28×127px | 白底，藍框 `#86B7FE` | ⬜ 待比對 |
+| `Default disabled` | `502:7889` | 28×127px | 灰底，文字 Color/Neutral/400 | ⬜ 待比對 |
+| `focus` | `20:35` | 28×127px | 白底，藍框 `Color/Chart/blue` | ⬜ 待比對 |
 
 ---
 
@@ -55,11 +55,11 @@
 | status | ID | 尺寸 | 說明 | 使用紀錄 |
 |---|---|---|---|---|
 | `text area` | `1036:13995` | 28×155px | 白底灰框，右下角 resize handle（灰色雙線） | ⬜ 待比對 |
-| `textarea scroll` | `1039:17062` | 28×155px | 同上 + 右上角捲動指示線（`#D1D1D1`） | ⬜ 待比對 |
+| `textarea scroll` | `1039:17062` | 28×155px | 同上 + 右上角捲動指示線（`Color/Neutral/200`） | ⬜ 待比對 |
 | `textarea scroll disabled` | `1153:29668` | 28×155px | 灰底，resize handle + 捲動指示線 | ⬜ 待比對 |
 
 **Resize handle 規格（Group 10）**：
-- 兩條斜線，stroke `#B0B0B0` `Color/Neutral/300`
+- 兩條斜線，stroke `Color/Neutral/300` `Color/Neutral/300`
 - 位置：右下角 (x:149, y:22)
 
 ---
@@ -70,20 +70,20 @@
 
 | status | ID | 背景色 | 邊框 | 說明 | 使用紀錄 |
 |---|---|---|---|---|---|
-| `radios not focus` | `455:4120` | `#FFFFFF` | `#D1D1D1` | 未選取、未 focus | ⬜ 待比對 |
-| `radios not focus disabled` | `953:16193` | `#B0B0B0` | `#D1D1D1` | 未選取、停用 | ⬜ 待比對 |
-| `range` | `460:7075` | `#2178CF` | `#D1D1D1` | 已選取（藍色實心） | ⬜ 待比對 |
-| `radios focus` | `455:7009` | `#FFFFFF` | `#D1D1D1` + `#2178CF`（雙框） | 未選取、focus 中 | ⬜ 待比對 |
-| `radios disabled` | `953:13250` | `#888888` | `#D1D1D1` + `#B0B0B0`（雙框） | 停用中 | ⬜ 待比對 |
+| `radios not focus` | `455:4120` | `Color/Neutral/0` | `Color/Neutral/200` | 未選取、未 focus | ⬜ 待比對 |
+| `radios not focus disabled` | `953:16193` | `Color/Neutral/300` | `Color/Neutral/200` | 未選取、停用 | ⬜ 待比對 |
+| `range` | `460:7075` | `Color/MenuItem/Default` | `Color/Neutral/200` | 已選取（藍色實心） | ⬜ 待比對 |
+| `radios focus` | `455:7009` | `Color/Neutral/0` | `Color/Neutral/200` + `Color/MenuItem/Default`（雙框） | 未選取、focus 中 | ⬜ 待比對 |
+| `radios disabled` | `953:13250` | `Color/Neutral/400` | `Color/Neutral/200` + `Color/Neutral/300`（雙框） | 停用中 | ⬜ 待比對 |
 
 **Radio 顏色對照**：
 
 | 色值 | Token |
 |---|---|
-| `#2178CF`（選取） | `Color/MenuItem/Default` |
-| `#B0B0B0`（停用） | `Color/Neutral/300` |
-| `#888888`（停用深） | `Color/Neutral/400` |
-| `#86B7FE`（focus 框） | `Color/Bootstrap/components/focus` |
+| `Color/MenuItem/Default`（選取） | `Color/MenuItem/Default` |
+| `Color/Neutral/300`（停用） | `Color/Neutral/300` |
+| `Color/Neutral/400`（停用深） | `Color/Neutral/400` |
+| `Color/Chart/blue`（focus 框） | `Color/Bootstrap/components/focus` |
 
 ---
 
@@ -93,11 +93,11 @@
 
 | status | ID | 尺寸 | 背景 | 邊框 | Icon 色 | 說明 | 使用紀錄 |
 |---|---|---|---|---|---|---|---|
-| `icons` | `56:323` | 36×102px | `#FFFFFF` | `#D1D1D1` | 黑 `#000000` | 白底灰框 + 右側 close icon | ⬜ 待比對 |
-| `icons disabled` | `502:5125` | 36×127px | `#E1E1E0` | `#D1D1D1` | 灰 `#888888` | 灰底 + 停用 icon | ⬜ 待比對 |
-| `icon focus` | `648:19794` | 36×127px | `#D3EBFD` | `#86B7FE` | 黑 `#000000` | 藍底 + 藍框（focus 狀態） | ⬜ 待比對 |
+| `icons` | `56:323` | 36×102px | `Color/Neutral/0` | `Color/Neutral/200` | 黑 `Color/Icon/Default` | 白底灰框 + 右側 close icon | ⬜ 待比對 |
+| `icons disabled` | `502:5125` | 36×127px | `Color/Neutral/100` | `Color/Neutral/200` | 灰 `Color/Neutral/400` | 灰底 + 停用 icon | ⬜ 待比對 |
+| `icon focus` | `648:19794` | 36×127px | `Color/Bootstrap/focus-background` | `Color/Chart/blue` | 黑 `Color/Icon/Default` | 藍底 + 藍框（focus 狀態） | ⬜ 待比對 |
 
-**`icon focus` 背景色**：`#D3EBFD` = `Color/Bootstrap/focus-background`
+**`icon focus` 背景色**：`Color/Bootstrap/focus-background` = `Color/Bootstrap/focus-background`
 
 ---
 
@@ -108,17 +108,17 @@
 
 | status | ID | 尺寸 | 背景 | 文字色 | Icon 色 | 說明 | 使用紀錄 |
 |---|---|---|---|---|---|---|---|
-| `attached-link` | `163:7619` | 32×86px | `#FFFFFF` | `#454545` | 黑 `#000000` | 白底灰框，default 狀態 | ✅ Card `tend up`（icon 替換為 attached-link） |
-| `attached-link hover` | `163:7701` | 32×86px | `#454545` | `#E1E1E0` | `#E1E1E0` | 深色背景，hover 狀態 | ✅ Card `tend up hover`（icon 替換為 attached-link-moved） |
+| `attached-link` | `163:7619` | 32×86px | `Color/Neutral/0` | `Color/Neutral/800` | 黑 `Color/Icon/Default` | 白底灰框，default 狀態 | ✅ Card `tend up`（icon 替換為 attached-link） |
+| `attached-link hover` | `163:7701` | 32×86px | `Color/Neutral/800` | `Color/Neutral/100` | `Color/Neutral/100` | 深色背景，hover 狀態 | ✅ Card `tend up hover`（icon 替換為 attached-link-moved） |
 
 **Attached-link 規格詳細**：
 
 | 屬性 | Default | Hover |
 |---|---|---|
-| Background | `#FFFFFF` `Color/Neutral/0` | `#454545` `Color/Neutral/800` |
-| Border | `#D1D1D1` `Color/Neutral/200` | `#D1D1D1` `Color/Neutral/200` |
-| Text color | `#454545` `Color/Neutral/800` | `#E1E1E0` `Color/Neutral/100` |
-| Icon fill | `#000000` | `#E1E1E0` `Color/Neutral/100` |
+| Background | `Color/Neutral/0` `Color/Neutral/0` | `Color/Neutral/800` `Color/Neutral/800` |
+| Border | `Color/Neutral/200` `Color/Neutral/200` | `Color/Neutral/200` `Color/Neutral/200` |
+| Text color | `Color/Neutral/800` `Color/Neutral/800` | `Color/Neutral/100` `Color/Neutral/100` |
+| Icon fill | `Color/Icon/Default` | `Color/Neutral/100` `Color/Neutral/100` |
 | Padding | `4px / 8px` | `4px / 8px` |
 | Corner radius | `6px` `Radius/6` | `6px` |
 
@@ -159,10 +159,10 @@
 
 | 使用場景 | 覆寫 fill | Token |
 |---|---|---|
-| 類型：簡訊 | `#34C759` | `Color/Accent/Green` |
-| 嚴重度：總部 | `#E12129` | `Color/Surface/Negative` |
-| 嚴重度：分館 | `#F28B45` | `Color/Surface/Brand-400-Hover` |
-| 類型：網址 | `#2178CF` | `Color/MenuItem/Default` |
+| 類型：簡訊 | `Color/Accent/Green` | `Color/Accent/Green` |
+| 嚴重度：總部 | `Color/Surface/Negative` | `Color/Surface/Negative` |
+| 嚴重度：分館 | `Color/Brand/Brand-400` | `Color/Surface/Brand-400-Hover` |
+| 類型：網址 | `Color/MenuItem/Default` | `Color/MenuItem/Default` |
 
 ---
 

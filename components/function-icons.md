@@ -65,8 +65,8 @@ function icons (24×24px)
 
 | 狀態 | 條件 | 背景 | 文字色 | Token |
 |---|---|---|---|---|
-| Active | 計數 > 0 | `#ef6f25` | `#f6f6f6` | `Color/Surface/Brand-500-Default` / `Color/Neutral/50` |
-| Empty | 計數 = 0 | `#d1d1d1` | `#454545` | `Color/Neutral/200` / `Color/Neutral/800` |
+| Active | 計數 > 0 | `Color/Brand/Brand-500` | `Color/Neutral/50` | `Color/Surface/Brand-500-Default` / `Color/Neutral/50` |
+| Empty | 計數 = 0 | `Color/Neutral/200` | `Color/Neutral/800` | `Color/Neutral/200` / `Color/Neutral/800` |
 
 ---
 
@@ -87,10 +87,10 @@ function icons (24×24px)
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| Active badge 背景 | `#ef6f25` | `Color/Surface/Brand-500-Default` |
-| Active badge 文字 | `#f6f6f6` | `Color/Neutral/50` |
-| Empty badge 背景 | `#d1d1d1` | `Color/Neutral/200` |
-| Empty badge 文字 | `#454545` | `Color/Neutral/800` |
+| Active badge 背景 | `Color/Brand/Brand-500` | `Color/Surface/Brand-500-Default` |
+| Active badge 文字 | `Color/Neutral/50` | `Color/Neutral/50` |
+| Empty badge 背景 | `Color/Neutral/200` | `Color/Neutral/200` |
+| Empty badge 文字 | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -105,12 +105,12 @@ function icons (24×24px)
   <!-- bulletin icon -->
   <div class="relative w-6 h-6">
     <img src="../assets/icons/bulletin.svg" class="w-6 h-6">
-    <span class="absolute -top-1.5 -right-1.5 text-xs font-normal px-1 py-0.5 rounded-full bg-[#ef6f25] text-[#f6f6f6] leading-none">99</span>
+    <span class="absolute -top-1.5 -right-1.5 text-xs font-normal px-1 py-0.5 rounded-full bg-brand-500 text-surface-default leading-none">99</span>
   </div>
   <!-- message icon (empty) -->
   <div class="relative w-6 h-6">
     <img src="../assets/icons/message.svg" class="w-6 h-6">
-    <span class="absolute -top-1.5 -right-1.5 text-xs font-normal px-1 py-0.5 rounded-full bg-[#d1d1d1] text-[#454545] leading-none">0</span>
+    <span class="absolute -top-1.5 -right-1.5 text-xs font-normal px-1 py-0.5 rounded-full bg-border-disabled text-text-default leading-none">0</span>
   </div>
   <!-- person-md icon -->
   <div class="relative w-6 h-6">

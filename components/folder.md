@@ -24,9 +24,9 @@
 ```
 [INSTANCE] Folder (24×24px)
 ├── Rectangle 2 — 左側窄條 (9×24px, x:0)
-│   └── cornerRadius 2, fills #ffffff, strokes #000000
+│   └── cornerRadius 2, fills Color/Neutral/0, strokes Color/Icon/Default
 └── Rectangle 1 — 右側寬體 (20.57×24px, x:3.43)
-    └── cornerRadius 2, fills #ffffff, strokes #000000
+    └── cornerRadius 2, fills Color/Neutral/0, strokes Color/Icon/Default
 ```
 
 | 元素 | 尺寸 | 位置 | 說明 |

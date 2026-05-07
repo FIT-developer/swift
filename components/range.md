@@ -6,15 +6,15 @@
 
 ## 外框
 
-`562 × 35`，fill `#ffffff`
+`562 × 35`，fill `Color/Neutral/0`
 
 ## 結構
 
 | 元素 | 尺寸 | x | 說明 |
 |---|---|---|---|
-| Line 21（軌道） | 388 × 0 | 14, y:16 | stroke `#b0b0b0`，水平線 |
-| Input（滑桿 handle） | 14 × 14 | -1, y:9 | fill `#2178cf`，r:36（圓形） |
-| Frame 107（時段顯示） | 54 × 35 | 508, y:0 | fill `#ffffff`，stroke `#e1e1e0`，r:12；內含時段數字列 |
+| Line 21（軌道） | 388 × 0 | 14, y:16 | stroke `Color/Neutral/300`，水平線 |
+| Input（滑桿 handle） | 14 × 14 | -1, y:9 | fill `Color/MenuItem/Default`，r:36（圓形） |
+| Frame 107（時段顯示） | 54 × 35 | 508, y:0 | fill `Color/Neutral/0`，stroke `Color/Neutral/100`，r:12；內含時段數字列 |
 
 ## Frame 107 內容
 
@@ -22,21 +22,21 @@
 
 ## 數量分配 button（Frame 102）
 
-`111 × 38`，@ x:598，fill `#ffffff`，stroke `#d1d1d1`，r:12
+`111 × 38`，@ x:598，fill `Color/Neutral/0`，stroke `Color/Neutral/200`，r:12
 
 | 元素 | 尺寸 | 說明 |
 |---|---|---|
-| Texts「數量分配」 | 64 × 22 | 16px，`#454545` |
-| icons/submit | 15 × 16 | Vector fill `#2178cf`，確認提交 |
+| Texts「數量分配」 | 64 × 22 | 16px，`Color/Neutral/800` |
+| icons/submit | 15 × 16 | Vector fill `Color/MenuItem/Default`，確認提交 |
 
 ## HTML 實作
 
 ```html
 <!-- Range slider with blue handle -->
-<div class="relative flex items-center" style="width:562px; height:35px">
-  <div class="absolute h-px bg-[#b0b0b0]" style="left:14px; width:388px; top:16px"></div>
-  <div class="absolute w-3.5 h-3.5 rounded-full bg-[#2178cf] cursor-pointer" style="left:0; top:10px"></div>
+<div class="range-slider">
+  <div class="range-slider-track"></div>
+  <div class="range-slider-handle"></div>
   <!-- time indicator box -->
-  <div class="absolute border border-[#e1e1e0] rounded-xl" style="left:508px; width:54px; height:35px"></div>
+  <div class="range-slider-time"></div>
 </div>
 ```

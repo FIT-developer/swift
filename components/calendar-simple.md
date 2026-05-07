@@ -11,8 +11,8 @@
 - 預設值 = 今日（markup 留空，JS 填 `dayjs().format('YYYY-MM-DD')`）
 - 開啟時 dropdown 重置 viewingDate 到目前選取日期
 - 今日格子加 `.today`（藍色邊框 1.5px）
-- 選中格子加 `.selected`（藍底白字 `#005fcc`）
-- 週末標題列粉底（`.title-highlight` `#ffc0cb`）
+- 選中格子加 `.selected`（藍底白字 `Color/Radio/Default`）
+- 週末標題列粉底（`.title-highlight` `Color/Accent/Pink`）
 - 點外部關閉、`window.activeSimpleCalendar` 互斥
 
 **Disable 規則：**
@@ -49,10 +49,10 @@ CSS：
 ```css
 .calendar-header-select {
   border: none; background: transparent; font-weight: bold;
-  color: #374151; cursor: pointer; padding: 2px 4px; border-radius: 4px;
+  color: var(--color-text-emphasis); cursor: pointer; padding: 2px 4px; border-radius: 4px;
 }
-.calendar-header-select:hover { background-color: #f3f4f6; }
-.calendar-header-select:focus { outline: 2px solid #005fcc; }
+.calendar-header-select:hover { background-color: var(--color-surface-hover); }
+.calendar-header-select:focus { outline: 2px solid var(--color-radio); }
 ```
 
 ---
@@ -63,8 +63,8 @@ Default：
 
 ```html
 <div class="rb-cal-cell flex-1">
-  <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-[#d1d1d1] rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
-    <span class="rb-cal-date flex-1 text-left text-base text-[#454545]"></span>
+  <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+    <span class="rb-cal-date flex-1 text-left text-base text-text-default"></span>
     <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
   </button>
 </div>

@@ -1,0 +1,235 @@
+/* Global tokens and browser-level rules shared by preview pages.
+   Page-specific layout/component CSS stays in each preview file unless promoted explicitly. */
+
+:root {
+  /* Neutral / surface */
+  --color-white: #ffffff;
+  --color-surface-default: #f6f6f6; /* Neutral/50 */
+  --color-surface-hover: #f6fafd; /* Neutral/75 · Modal/Hover */
+  --color-bootstrap-focus-background: #d3ebfd; /* Bootstrap/focus-background */
+  --color-border-default: #e1e1e0; /* Neutral/100 */
+  --color-border-disabled: #d1d1d1; /* Neutral/200 */
+  --color-text-placeholder: #b0b0b0; /* Neutral/300 */
+  --color-text-secondary: #888888; /* Neutral/400 */
+  --color-text-muted: #6d6d6d; /* Text/500 */
+  --color-text-supporting: #5d5d5d; /* Text/600 */
+  --color-text-subtitle: #4f4f4f; /* Text/700 */
+  --color-text-default: #454545; /* Neutral/800 */
+  --color-text-emphasis: #3d3d3d; /* Text/900 */
+  --color-text-inverse: #e1e1e0; /* Text/100 */
+  --color-icon-default: #000000; /* Icon/Default */
+
+  /* Brand & action */
+  --color-menu: #2178cf; /* MenuItem/Default */
+  --color-radio: #005fcc; /* Radio/Default */
+  --color-radio-hover: #3b78d5; /* Radio/Hover */
+  --color-subitem-selected: #f7d275; /* SubItem/Selected */
+  --color-brand-50: #fef6ee; /* Brand-50 */
+  --color-brand-400: #f28b45; /* Brand-400 */
+  --color-brand-500: #ef6f25; /* Brand-500 / Surface Brand-Default */
+  --color-brand-active: #e05216; /* Brand-600 */
+  --color-surface-action: #005fcc; /* Surface/Action-Default */
+  --color-surface-accent: #42ebe9; /* Surface/Accent */
+  --color-surface-brand: #ef6f25; /* Surface/Brand-Default */
+  --color-surface-brand-hover: #f28b45; /* Surface/Brand-Hover */
+  --color-border-focus: #b0b0b0; /* Border/Focus */
+  --color-border-plugin: #6d6d6d; /* Border/Plugin-Default */
+  --color-border-plugin-invalid: #d90000; /* Border/Plugin-Invalid */
+
+  /* Status */
+  --color-status-positive: #2aca18;
+  --color-status-negative: #e12129;
+
+  /* Chart / accent */
+  --color-chart-blue: #86b7fe;
+  --color-chart-green: #34c759;
+  --color-chart-purple-red: #ff0bd6;
+  --color-accent-pink: #ffc0cb;
+  --color-accent-light-green: #bbf7d0;
+  --color-accent-green: #34c759;
+  --color-accent-cart-date: #bdfff6;
+  --color-accent-cart-time: #eaffc5;
+  --color-accent-celebration: #f44df4;
+  --color-accent-linear-pos-left: #e376f9;
+  --color-accent-linear-pos-right: #ff7878;
+  --color-accent-float-circle-mixed-1: #ffb624;
+  --color-accent-float-circle-mixed-2: #3f930b;
+  --color-accent-float-circle-filled-1: #f2befd;
+  --color-accent-float-circle-filled-2: #ffb6b6;
+  --color-tab-yellow: #ffcc00;
+
+  /* Overlay / effect variables */
+  --z-popover: 30;
+  --z-mobile-sidebar-backdrop: 40;
+  --z-mobile-sidebar: 50;
+  --z-modal: 60;
+  --effect-mobile-sidebar-backdrop: rgba(0, 0, 0, 0.28);
+  --effect-modal-backdrop: rgba(0, 0, 0, 0.4);
+  --effect-sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  --effect-modal-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  --effect-calendar-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --effect-modal-header-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  --effect-modal-header-shadow-soft: 0 1px 0 rgba(0, 0, 0, 0.08);
+  --effect-float-shadow: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
+  --effect-chart-purple-red-soft: rgba(255, 11, 214, 0.08);
+}
+
+/* Browser / document baseline */
+
+* {
+  box-sizing: border-box;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+body {
+  min-width: 375px;
+  background: var(--color-surface-default);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-menu);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: var(--color-border-disabled);
+}
+
+/* Shared component utilities */
+
+.modal-header-shadow {
+  box-shadow: var(--effect-modal-header-shadow);
+}
+
+.modal-header-shadow-soft {
+  box-shadow: var(--effect-modal-header-shadow-soft);
+}
+
+.icon-mask {
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* Shared modal shell */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--effect-modal-backdrop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  width: 320px;
+  border: 1px solid var(--color-text-placeholder);
+  border-radius: 8px;
+  background: var(--color-white);
+  box-shadow: var(--effect-modal-shadow);
+}
+
+/* Shared simple calendar dropdown */
+
+.rb-cal-cell {
+  position: relative;
+  min-width: 160px;
+}
+
+.calendar-dropdown {
+  display: none;
+  position: fixed;
+  z-index: var(--z-popover);
+  width: 280px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 0.5rem;
+  background: var(--color-white);
+  box-shadow: var(--effect-calendar-shadow);
+}
+
+.calendar-dropdown.active {
+  display: block;
+}
+
+.calendar-day:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+}
+
+.calendar-day.selected {
+  background-color: var(--color-radio) !important;
+  color: var(--color-white) !important;
+}
+
+.calendar-day.today {
+  border: 1.5px solid var(--color-radio);
+  font-weight: bold;
+}
+
+.title-highlight {
+  border-radius: 4px;
+  background-color: var(--color-accent-pink) !important;
+}
+
+.calendar-day:disabled {
+  color: var(--color-text-default);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.calendar-header-select {
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-emphasis);
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.calendar-header-select:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.calendar-header-select:focus {
+  outline: 2px solid var(--color-radio);
+}

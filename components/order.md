@@ -22,8 +22,8 @@
 | 高度 | `34px` | — |
 | Padding | top/bottom `6px`、left/right `12px` | `Spacing/6`、`Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
-| Background fill | `#F6FAFD` | `Color/Neutral/75` |
-| Border | **左側僅一條**，`#E05216`，`2px` | `Color/Surface/Brand-600-Active` |
+| Background fill | `Color/Neutral/75` | `Color/Neutral/75` |
+| Border | **左側僅一條**，`Color/Brand/Brand-600`，`2px` | `Color/Surface/Brand-600-Active` |
 | 其他三邊 border | なし（無） | — |
 
 ---
@@ -33,7 +33,7 @@
 ```
 [INSTANCE] Order (fill × 34px)
 ├── [INSTANCE] Texts — label（左對齊，fill 撐開）
-│   └── [TEXT] base  16px  #4F4F4F
+│   └── [TEXT] base  16px  Color/Neutral/700
 └── [INSTANCE] Texts — badge（右對齊，固定寬度）
     └── [TEXT] sm    12px  依狀態決定顏色
 ```
@@ -46,10 +46,10 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| Background | `#E12129` | `Color/Surface/Negative` |
+| Background | `Color/Surface/Negative` | `Color/Surface/Negative` |
 | Corner radius | `4px` | `Radius/4` |
 | Padding | top/bottom `2px`、left/right `4px` | `Spacing/2`、`Spacing/4` |
-| Text color | `#F6F6F6` | `Color/Neutral/50` |
+| Text color | `Color/Neutral/50` | `Color/Neutral/50` |
 | Font size | `12px`（sm） | — |
 | 顯示規則 | 數值 ≤ 99 → 直接顯示；數值 > 99 → 顯示 `"99+"` | — |
 
@@ -57,10 +57,10 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| Background | `#D1D1D1` | `Color/Neutral/200` |
+| Background | `Color/Neutral/200` | `Color/Neutral/200` |
 | Corner radius | `8px` | `Radius/8` |
 | Padding | top/bottom `2px`、left/right `4px` | `Spacing/2`、`Spacing/4` |
-| Text color | `#454545` | `Color/Neutral/800` |
+| Text color | `Color/Neutral/800` | `Color/Neutral/800` |
 | Font size | `12px`（sm） | — |
 | 顯示規則 | 固定顯示 `"0"` | — |
 
@@ -72,7 +72,7 @@
 |---|---|---|
 | Font | Noto Sans Regular | — |
 | Font size | `16px`（base） | — |
-| Color | `#4F4F4F` | `Color/Neutral/700` |
+| Color | `Color/Neutral/700` | `Color/Neutral/700` |
 | Alignment | LEFT | — |
 
 ---
@@ -87,7 +87,7 @@
 | 高度 | `313px` | — |
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
-| Border | `#D1D1D1` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 | Background | 無（透明） | — |
 
 **內部排列：**

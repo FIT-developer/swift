@@ -22,7 +22,7 @@
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 | Background | 無（透明） | — |
-| Border (stroke) | `#D1D1D1` | `Color/Neutral/200` |
+| Border (stroke) | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -32,7 +32,7 @@
 [FRAME] Statistics (1154×804px)
 ├── [INSTANCE] Title
 │   ├── [INSTANCE] icons/operation-system (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "統計圖表"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "統計圖表"  20px  SemiBold 600  Color/Neutral/800
 └── [FRAME] Statistics details (1130×741, x:12 y:51)
     ├── [INSTANCE] chartjs - bar       (525×293.5px, x:0   y:0)   ← 左上
     ├── [INSTANCE] chartjs - line      (525×304px,   x:605 y:0)   ← 右上
@@ -50,7 +50,7 @@
 | 文字 | `"統計圖表"` | — |
 | Font | Noto Sans **SemiBold 600** | — |
 | Font size | `20px`（md） | — |
-| Color | `#454545` | `Color/Neutral/800` |
+| Color | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -71,21 +71,21 @@
 
 **Node ID**: `270:11724`（INSTANCE）  
 **外層容器**：padding 0, 左右各 4px  
-**內層 Frame 32**：cornerRadius 6, fills `#FFFFFF`, padding 12, stroke `#D1D1D1`
+**內層 Frame 32**：cornerRadius 6, fills `Color/Neutral/0`, padding 12, stroke `Color/Neutral/200`
 
 ### 結構
 ```
 chartjs - bar
 └── Frame 32 (白底卡片)
-    ├── Y 軸標籤（Frame 29）：0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20  [sm #454545]
+    ├── Y 軸標籤（Frame 29）：0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20  [sm Color/Neutral/800]
     ├── Frame 31（圖表主體）
     │   ├── Frame 27（圖例列）
-    │   │   ├── Rectangle 3 — 藍色色塊 #86B7FE（圖例色樣）
-    │   │   └── Texts sm — "2026-01-31 今日可住房況"  [#454545]
+    │   │   ├── Rectangle 3 — 藍色色塊 Color/Chart/blue（圖例色樣）
+    │   │   └── Texts sm — "2026-01-31 今日可住房況"  [Color/Neutral/800]
     │   └── Group 4（圖表區域）
-    │       ├── 橫向 grid lines × 11（stroke #B0B0B0）
-    │       ├── 縱向 grid lines × 6（stroke #B0B0B0）
-    │       └── 長條 × 5（fills #86B7FE）
+    │       ├── 橫向 grid lines × 11（stroke Color/Neutral/300）
+    │       ├── 縱向 grid lines × 6（stroke Color/Neutral/300）
+    │       └── 長條 × 5（fills Color/Chart/blue）
     └── Frame 30（X 軸標籤）
         └── sm texts：威尼斯雙人, 夏慕尼四人, 義大利三人, 保留房二人, 保留房四人
 ```
@@ -104,55 +104,55 @@ chartjs - bar
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| 長條 fill | `#86B7FE` | `Color/Chart/blue` |
-| 圖例色塊 | `#86B7FE` | `Color/Chart/blue` |
-| Grid lines | `#B0B0B0` | `Color/Neutral/300` |
-| 文字 | `#454545` | `Color/Neutral/800` |
+| 長條 fill | `Color/Chart/blue` | `Color/Chart/blue` |
+| 圖例色塊 | `Color/Chart/blue` | `Color/Chart/blue` |
+| Grid lines | `Color/Neutral/300` | `Color/Neutral/300` |
+| 文字 | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
 ## 圖表二：chartjs - line（一週訂房統計）
 
 **Node ID**: `270:11725`（INSTANCE）  
-**容器**：cornerRadius 8, fills `#FFFFFF`, padding 12, stroke `#D1D1D1`
+**容器**：cornerRadius 8, fills `Color/Neutral/0`, padding 12, stroke `Color/Neutral/200`
 
 ### 結構
 ```
 chartjs - line
 ├── Frame 26（Y 軸區域）
-│   ├── "訂單數" 軸標籤  [sm #454545，y:141]
-│   └── Frame 25（Y 值）：0, 10, 20, 30, 40, 50, 60, 70, 80, 90  [sm #454545]
+│   ├── "訂單數" 軸標籤  [sm Color/Neutral/800，y:141]
+│   └── Frame 25（Y 值）：0, 10, 20, 30, 40, 50, 60, 70, 80, 90  [sm Color/Neutral/800]
 └── Frame 22（圖表主體）
     ├── Frame 27（圖例列）
-    │   ├── Rectangle 3 — 白底粉框 #F44DF4
-    │   └── "一週訂房統計"  [sm #454545]
+    │   ├── Rectangle 3 — 白底粉框 Color/Accent/Celebration
+    │   └── "一週訂房統計"  [sm Color/Neutral/800]
     ├── Group 3（圖表區域）
-    │   ├── 橫向 grid lines × 11（stroke #B0B0B0）
-    │   ├── 縱向 grid lines × 7（stroke #B0B0B0）
-    │   ├── Vector 1 — 折線  [stroke #FF0BD6]
-    │   └── Ellipse 1–7 — 資料點（fills #FFFFFF, strokes #FF0BD6）
+    │   ├── 橫向 grid lines × 11（stroke Color/Neutral/300）
+    │   ├── 縱向 grid lines × 7（stroke Color/Neutral/300）
+    │   ├── Vector 1 — 折線  [stroke Color/Chart/purpleRed]
+    │   └── Ellipse 1–7 — 資料點（fills Color/Neutral/0, strokes Color/Chart/purpleRed）
     ├── Frame 21（X 軸日期）：12/31, 1/1, 1/2, 1/3, 1/4, 1/5, 1/6
-    └── "日期" 軸標籤  [sm #454545，置中]
+    └── "日期" 軸標籤  [sm Color/Neutral/800，置中]
 ```
 
 ### 顏色
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| 折線 stroke | `#FF0BD6` | `Color/Chart/purpleRed` |
-| 資料點 stroke | `#FF0BD6` | `Color/Chart/purpleRed` |
-| 圖例框 stroke | `#F44DF4` | `Color/Bootstrap/aside/Notification` |
-| Grid lines | `#B0B0B0` | `Color/Neutral/300` |
-| 文字 | `#454545` | `Color/Neutral/800` |
+| 折線 stroke | `Color/Chart/purpleRed` | `Color/Chart/purpleRed` |
+| 資料點 stroke | `Color/Chart/purpleRed` | `Color/Chart/purpleRed` |
+| 圖例框 stroke | `Color/Accent/Celebration` | `Color/Bootstrap/aside/Notification` |
+| Grid lines | `Color/Neutral/300` | `Color/Neutral/300` |
+| 文字 | `Color/Neutral/800` | `Color/Neutral/800` |
 
-> 注意：圖例框色 `#F44DF4`（Notification）與折線色 `#FF0BD6`（Chart/purpleRed）為同系色但不同值，各有獨立 token，實作時應分別引用。
+> 注意：圖例框色 `Color/Accent/Celebration`（Notification）與折線色 `Color/Chart/purpleRed`（Chart/purpleRed）為同系色但不同值，各有獨立 token，實作時應分別引用。
 
 ---
 
 ## 圖表三：chartjs - diverging（今日超賣管理）
 
 **Node ID**: `270:11726`（INSTANCE）  
-**容器**：cornerRadius 6, fills `#FFFFFF`, padding 12, stroke `#D1D1D1`
+**容器**：cornerRadius 6, fills `Color/Neutral/0`, padding 12, stroke `Color/Neutral/200`
 
 ### 結構
 ```
@@ -161,66 +161,66 @@ chartjs - diverging
 │   └── sm texts：威尼斯雙人, 夏慕尼四人, 義大利三人, 保留房二人, 保留房四人
 └── Frame 40（圖表主體）
     ├── Frame 38（圖表區域）
-    │   ├── "2026-01-31 今日超賣管理"  [sm #454545，置中]
+    │   ├── "2026-01-31 今日超賣管理"  [sm Color/Neutral/800，置中]
     │   └── Group 5（長條群組）
-    │       ├── Grid lines（stroke #B0B0B0）
-    │       ├── 灰色長條 × 5（fills #888888）← 當日庫存
-    │       ├── 紅色長條（fills #E12129）← 已超賣
-    │       └── 綠色長條 × 3（fills #2ACA18）← 已賣出
+    │       ├── Grid lines（stroke Color/Neutral/300）
+    │       ├── 灰色長條 × 5（fills Color/Neutral/400）← 當日庫存
+    │       ├── 紅色長條（fills Color/Surface/Negative）← 已超賣
+    │       └── 綠色長條 × 3（fills Color/Surface/Positive）← 已賣出
     ├── Frame 33（X 軸刻度）：15, 10, 5, 0, -5, -10（對稱軸）
     └── Frame 37（圖例 + 軸標籤）
-        ├── "房間數量"  [sm #888888，軸標籤]
+        ├── "房間數量"  [sm Color/Neutral/400，軸標籤]
         └── 圖例：
-            ├── 已超賣 #E12129 + 文字 #888888
-            ├── 已賣出 #2ACA18 + 文字 #888888
-            └── 當日庫存 #6D6D6D + 文字 #888888
+            ├── 已超賣 Color/Surface/Negative + 文字 Color/Neutral/400
+            ├── 已賣出 Color/Surface/Positive + 文字 Color/Neutral/400
+            └── 當日庫存 Color/Neutral/500 + 文字 Color/Neutral/400
 ```
 
 ### 顏色
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| 已超賣（紅） | `#E12129` | `Color/Surface/Negative` |
-| 已賣出（綠） | `#2ACA18` | `Color/Surface/Positive` |
-| 當日庫存（灰） | `#888888` / `#6D6D6D` | `Color/Neutral/400` / `Color/Neutral/500` |
-| Grid lines | `#B0B0B0` | `Color/Neutral/300` |
-| 軸標籤 | `#888888` | `Color/Neutral/400` |
-| 標題文字 | `#454545` | `Color/Neutral/800` |
+| 已超賣（紅） | `Color/Surface/Negative` | `Color/Surface/Negative` |
+| 已賣出（綠） | `Color/Surface/Positive` | `Color/Surface/Positive` |
+| 當日庫存（灰） | `Color/Neutral/400` / `Color/Neutral/500` | `Color/Neutral/400` / `Color/Neutral/500` |
+| Grid lines | `Color/Neutral/300` | `Color/Neutral/300` |
+| 軸標籤 | `Color/Neutral/400` | `Color/Neutral/400` |
+| 標題文字 | `Color/Neutral/800` | `Color/Neutral/800` |
 
-> ⚠️ 長條填色 `#888888`（Neutral/400），圖例色塊 `#6D6D6D`（Neutral/500）不一致，疑為設計細節偏差。
+> ⚠️ 長條填色 `Color/Neutral/400`（Neutral/400），圖例色塊 `Color/Neutral/500`（Neutral/500）不一致，疑為設計細節偏差。
 
 ---
 
 ## 圖表四：chartjs - doughnut（今日訂單來源分佈）
 
 **Node ID**: `270:11727`（INSTANCE）  
-**容器**：cornerRadius 6, 無背景色, padding 12, stroke `#D1D1D1`
+**容器**：cornerRadius 6, 無背景色, padding 12, stroke `Color/Neutral/200`
 
 ### 結構
 ```
 chartjs - doughnut
 ├── Frame 43（標題 + 圖例）
-│   ├── "今日訂單來源分佈"  [sm #454545，置中]
+│   ├── "今日訂單來源分佈"  [sm Color/Neutral/800，置中]
 │   └── Frame 37（圖例列）
-│       ├── OTA    #005FCC 色塊 + 文字 #888888
-│       ├── 官網   #2ACA18 色塊 + 文字 #888888
-│       └── 電話/現場 #6D6D6D 色塊 + 文字 #888888
+│       ├── OTA    Color/Radio/Default 色塊 + 文字 Color/Neutral/400
+│       ├── 官網   Color/Surface/Positive 色塊 + 文字 Color/Neutral/400
+│       └── 電話/現場 Color/Neutral/500 色塊 + 文字 Color/Neutral/400
 └── Mask group（甜甜圈圖）
-    ├── Ellipse 12 — 中心圓孔（#D9D9D9）
+    ├── Ellipse 12 — 中心圓孔（visual-only center hole; not used as HTML color token）
     └── Group 6（扇形切片）
-        ├── Ellipse 9  — fills #B0B0B0（灰，推測對應電話/現場）
-        ├── Ellipse 10 — fills #005FCC（藍，OTA）
-        └── Ellipse 11 — fills #34C759（綠，推測對應官網）
+        ├── Ellipse 9  — fills Color/Neutral/300（灰，推測對應電話/現場）
+        ├── Ellipse 10 — fills Color/Radio/Default（藍，OTA）
+        └── Ellipse 11 — fills Color/Accent/Green（綠，推測對應官網）
 ```
 
 ### 顏色
 
 | 元素 | 圖例色 | 扇形色 | Token |
 |---|---|---|---|
-| OTA | `#005FCC` | `#005FCC` | `Color/Radio/Default` |
-| 官網 | `#2ACA18` | `#34C759` | 圖例 `Color/Surface/Positive` / 扇形 `Color/Chart/green` |
-| 電話/現場 | `#6D6D6D` | `#B0B0B0` | 圖例 `Color/Neutral/500` / 扇形 `Color/Neutral/300` |
-| 中心圓孔 | — | `#D9D9D9` | `Color/Scrollbar/Default`（Figma 視覺用，HTML 自動生成） |
+| OTA | `Color/Radio/Default` | `Color/Radio/Default` | `Color/Radio/Default` |
+| 官網 | `Color/Surface/Positive` | `Color/Accent/Green` | 圖例 `Color/Surface/Positive` / 扇形 `Color/Chart/green` |
+| 電話/現場 | `Color/Neutral/500` | `Color/Neutral/300` | 圖例 `Color/Neutral/500` / 扇形 `Color/Neutral/300` |
+| 中心圓孔 | — | visual-only center hole | 不作為 HTML 色彩 token |
 
 ---
 
@@ -228,11 +228,11 @@ chartjs - doughnut
 
 | 說明 | 位置 | 狀態 |
 |---|---|---|
-| `#86B7FE` → `Color/Chart/blue`（圖表語意獨立） | chartjs - bar | ✅ 2026-04-13 確認 |
-| `#FF0BD6` → `Color/Chart/purpleRed` | chartjs - line | ✅ 2026-04-13 確認 |
-| 圖例框 `#F44DF4` vs 折線 `#FF0BD6` — 兩個不同 token | chartjs - line | ✅ 各有獨立 token，分開引用 |
+| `Color/Chart/blue` → `Color/Chart/blue`（圖表語意獨立） | chartjs - bar | ✅ 2026-04-13 確認 |
+| `Color/Chart/purpleRed` → `Color/Chart/purpleRed` | chartjs - line | ✅ 2026-04-13 確認 |
+| 圖例框 `Color/Accent/Celebration` vs 折線 `Color/Chart/purpleRed` — 兩個不同 token | chartjs - line | ✅ 各有獨立 token，分開引用 |
 | doughnut 官網扇形用 `Color/Chart/green`，圖例用 `Color/Surface/Positive` | chartjs - doughnut | ✅ 2026-04-13 確認 |
-| `#D9D9D9` → `Color/Scrollbar/Default`，HTML 實作不需直接引用 | chartjs - doughnut | ✅ 2026-04-13 確認 |
+| Doughnut 中心圓孔為 visual-only，不作為 HTML 色彩 token | chartjs - doughnut | ✅ 2026-04-13 確認 |
 
 ---
 

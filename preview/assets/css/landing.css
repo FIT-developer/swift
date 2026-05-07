@@ -1,0 +1,1103 @@
+/* Page-specific styles for preview/landing.html. */
+
+/* Nav sub-item selected state — same bg as hover */
+.sub-item-selected {
+  background: var(--color-surface-hover);
+}
+/* Page tab chip */
+/* Page tab chip — inactive (default) and active states match Figma spec */
+.page-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 6px;
+  font-size: 16px;
+  color: var(--color-text-default);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+}
+.page-tab:hover {
+  background: var(--color-surface-hover);
+}
+.page-tab.active {
+  background: var(--color-surface-hover);
+  border-color: var(--color-chart-blue);
+}
+.page-tab-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+.page-tab-close:hover {
+  opacity: 1;
+}
+/* Menu category: parent trigger is neutral, children items are blue */
+.menu-category .accordion-trigger {
+  color: var(--color-text-default);
+}
+.menu-category .accordion-trigger + div > div {
+  color: var(--color-menu);
+}
+
+/* Mobile horizontal scroll */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.scroll-x::-webkit-scrollbar {
+  height: 4px;
+}
+
+/* POS entrance button hover fill */
+.pos-entrance-inner {
+  background: var(--color-white);
+  transition: background 0.2s;
+}
+.pos-entrance-btn:hover .pos-entrance-inner {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-float-circle-filled-1),
+    var(--color-accent-float-circle-filled-2)
+  );
+}
+/* Section card */
+.section-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+/* Sidebar select */
+.sidebar-select {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 6px;
+  padding: 6px 32px 6px 12px;
+  font-size: 16px;
+  color: var(--color-text-default);
+  cursor: pointer;
+  background-color: var(--color-white);
+  background-image: url("./assets/icons/down.svg");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 16px;
+  font-family: "Noto Sans TC", sans-serif;
+}
+.sidebar-select:focus {
+  outline: none;
+  border-color: var(--color-menu);
+}
+
+/* Desktop sidebar collapsed state — only hides at md+; mobile uses drawer state */
+@media (min-width: 768px) {
+  #sidebar.md-collapsed {
+    display: none !important;
+  }
+}
+
+/* Accordion icon rotation */
+.accordion-icon {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.accordion-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Mobile sidebar overlay */
+.mobile-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--effect-mobile-sidebar-backdrop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: var(--z-mobile-sidebar-backdrop);
+}
+.mobile-sidebar-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 767px) {
+  #sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(320px, 80%);
+    max-width: 320px;
+    height: 100vh;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: var(--z-mobile-sidebar);
+    overflow-y: auto;
+    will-change: transform;
+    box-shadow: var(--effect-sidebar-shadow);
+  }
+  #sidebar.mobile-open {
+    transform: translateX(0);
+  }
+}
+
+.mobile-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+.mobile-sidebar-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-default);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+body.mobile-sidebar-open {
+  overflow: hidden;
+}
+
+/* Member modal — desktop: 320px centered; mobile: fullscreen */
+#modalMemberBackdrop .modal-box {
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 639px) {
+  #modalMemberBackdrop {
+    align-items: stretch;
+  }
+  #modalMemberBackdrop .modal-box {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+/* Bulletin vendor + Administer modals — desktop: max-width centered; mobile: fullscreen */
+#modalBulletinBackdrop .modal-box {
+  width: 100%;
+  max-width: 681px;
+  display: flex;
+  flex-direction: column;
+}
+#modalAdministerBackdrop .modal-box {
+  width: 100%;
+  max-width: 836px;
+  display: flex;
+  flex-direction: column;
+}
+#modalRoomIntroBackdrop .modal-box {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+}
+#modalRoomEditBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 646px);
+  max-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalPurchaseAddonBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 1194px);
+  max-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalOrderSummaryBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 1019px);
+  max-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalSmsBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 648px);
+  max-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sms-modal-content {
+  border: 1px solid var(--color-border-disabled);
+  padding: 12px;
+}
+.sms-form-row {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.sms-field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px 39px;
+}
+.sms-table {
+  width: 100%;
+  min-width: 584px;
+  border-collapse: collapse;
+  font-size: 16px;
+  color: var(--color-text-default);
+}
+.sms-table th,
+.sms-table td {
+  padding: 7px 12px;
+  font-weight: 400;
+  line-height: 22px;
+  text-align: left;
+  vertical-align: middle;
+}
+.sms-table thead th {
+  background: var(--color-surface-hover);
+}
+.sms-table tbody td {
+  border-bottom: 1px solid var(--color-border-disabled);
+}
+.sms-table .sms-table-number {
+  text-align: center;
+  width: 72px;
+}
+.sms-table .sms-table-right {
+  text-align: right;
+}
+.order-summary-shell {
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 8px;
+  background: var(--color-white);
+  padding: 12px;
+}
+.order-summary-section {
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 8px;
+  background: var(--color-white);
+  padding: 20px;
+}
+.order-summary-section-title {
+  background: var(--color-surface-default);
+  padding: 8px 12px;
+  font-size: 20px;
+  line-height: 27px;
+  color: var(--color-text-default);
+}
+.order-summary-section-title--underlined {
+  border-bottom: 1px solid var(--color-text-default);
+}
+.order-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px 20px;
+  padding-top: 4px;
+}
+.order-summary-label {
+  padding: 3px 12px;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-text-muted);
+}
+.order-summary-value {
+  padding: 3px 12px;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-text-default);
+}
+.order-summary-grid-spacer {
+  min-height: 1px;
+}
+.order-summary-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  font-size: 16px;
+  color: var(--color-text-default);
+}
+.order-summary-table th,
+.order-summary-table td {
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+.order-summary-table thead th {
+  border-top: 1px solid var(--color-text-default);
+  border-bottom: 1px solid var(--color-text-default);
+  background: var(--color-surface-hover);
+}
+.order-summary-table--after-title thead th {
+  border-top: 0;
+}
+.order-summary-table tbody td {
+  border-bottom: 1px solid var(--color-border-disabled);
+}
+.order-summary-table tfoot td {
+  border-top: 1px solid var(--color-text-default);
+}
+.order-summary-number {
+  text-align: right;
+  white-space: nowrap;
+}
+.order-summary-table .order-summary-number {
+  text-align: right;
+  white-space: nowrap;
+}
+.order-summary-project-subtitle {
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.order-summary-money {
+  display: inline-flex;
+  gap: 4px;
+  white-space: nowrap;
+}
+.order-summary-inline-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.order-summary-addons-section {
+  flex: 1 1 655px;
+  min-width: 0;
+}
+.order-summary-total-section {
+  flex: 0 0 315.67px;
+  min-width: 0;
+  background: var(--color-brand-50);
+}
+.order-summary-total-section .order-summary-section-title {
+  background: var(--color-brand-50);
+  color: var(--color-surface-action);
+}
+.order-summary-addons-table {
+  min-width: 615px;
+}
+.order-summary-total-table {
+  min-width: 275.67px;
+  background: var(--color-brand-50);
+}
+.order-summary-total-table thead th {
+  background: var(--color-brand-50);
+}
+.order-summary-hotel-name {
+  background: var(--color-surface-hover);
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-text-default);
+}
+.order-summary-hotel-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  border-bottom: 1px solid var(--color-border-disabled);
+  padding: 4px 0;
+}
+.order-summary-hotel-pair {
+  display: grid;
+  grid-template-columns: minmax(120px, 147px) minmax(0, 1fr);
+  min-width: 0;
+}
+.order-summary-person-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+}
+.order-summary-person-row {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  border-bottom: 1px solid var(--color-border-disabled);
+  padding: 4px 0;
+}
+.purchase-addon-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.purchase-addon-main {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 20px;
+}
+.purchase-addon-menu {
+  flex: 0 0 240px;
+}
+.purchase-addon-frame410 {
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  container-type: inline-size;
+}
+.purchase-addon-result {
+  flex: 0 0 327px;
+}
+.purchase-addon-products {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.purchase-addon-product-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 140px) minmax(0, 140px) minmax(0, 155px);
+  gap: 20px;
+}
+.purchase-addon-product-grid .rb-cal-cell {
+  min-width: 0;
+}
+.purchase-addon-date-text {
+  font-size: 14px;
+}
+.purchase-addon-time-toggle[aria-pressed="true"] .toggle-knob {
+  transform: translateX(12px);
+  border-color: var(--color-status-positive);
+}
+.purchase-addon-time-toggle[aria-pressed="false"] .toggle-knob {
+  transform: translateX(2px);
+  border-color: var(--color-text-secondary);
+}
+.purchase-category-btn[aria-pressed="true"] {
+  background: var(--color-white);
+}
+.purchase-category-btn[aria-pressed="true"] .purchase-category-count {
+  background: var(--color-bootstrap-focus-background);
+}
+.purchase-addon-category-list.is-collapsed {
+  display: none;
+}
+.purchase-addon-category-toggle[aria-expanded="false"] img {
+  transform: rotate(180deg);
+}
+.purchase-addon-content-toggle[aria-expanded="false"] img {
+  transform: rotate(180deg);
+}
+.purchase-addon-products.is-collapsed {
+  display: none;
+}
+@container (max-width: 500px) {
+  .purchase-addon-product-grid {
+    grid-template-columns: minmax(0, 140px) minmax(0, 140px);
+  }
+}
+@container (max-width: 330px) {
+  .purchase-addon-product-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 1023px) {
+  .purchase-addon-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(295px, 327px);
+    align-items: start;
+  }
+  .purchase-addon-main {
+    flex-direction: column;
+  }
+  .purchase-addon-menu,
+  .purchase-addon-result {
+    width: 100%;
+    flex-basis: auto;
+  }
+}
+@media (max-width: 639px) {
+  .purchase-addon-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  .purchase-addon-main,
+  .purchase-addon-frame410,
+  .purchase-addon-result {
+    width: 100%;
+    flex-basis: auto;
+  }
+}
+.room-edit-price-table tbody td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  vertical-align: middle;
+}
+.room-edit-price-table tbody tr:first-child td {
+  padding-top: 8px;
+}
+.room-edit-price-table tbody tr:last-child td {
+  padding-bottom: 8px;
+}
+.room-edit-price-table tbody tr:only-child td {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+@media (max-width: 639px) {
+  #modalBulletinBackdrop,
+  #modalAdministerBackdrop,
+  #modalRoomIntroBackdrop,
+  #modalRoomEditBackdrop,
+  #modalPurchaseAddonBackdrop,
+  #modalSmsBackdrop,
+  #modalOrderSummaryBackdrop {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0;
+  }
+  #modalBulletinBackdrop .modal-box,
+  #modalAdministerBackdrop .modal-box,
+  #modalRoomIntroBackdrop .modal-box,
+  #modalRoomEditBackdrop .modal-box,
+  #modalPurchaseAddonBackdrop .modal-box,
+  #modalSmsBackdrop .modal-box,
+  #modalOrderSummaryBackdrop .modal-box {
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+  }
+  .order-summary-grid {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 4px 0;
+  }
+  .order-summary-grid-spacer {
+    display: none;
+  }
+  .order-summary-person-grid {
+    grid-template-columns: 1fr;
+  }
+  .order-summary-hotel-row {
+    grid-template-columns: 1fr;
+  }
+  .order-summary-inline-row {
+    flex-direction: column;
+  }
+  .order-summary-addons-section,
+  .order-summary-total-section {
+    width: 100%;
+    flex-basis: auto;
+  }
+  .order-summary-person-row {
+    grid-template-columns: 104px minmax(0, 1fr);
+  }
+  .sms-form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .sms-field-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+/* ── Room-booking: mode toggle (calendar JS managed) ─── */
+.mode-toggle {
+  display: inline-flex;
+  align-self: flex-start;
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 28px;
+  overflow: hidden;
+}
+.mode-btn {
+  height: 42px;
+  padding: 0 24px;
+  background: var(--color-white);
+  border: none;
+  font-size: 16px;
+  color: var(--color-text-default);
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+}
+.mode-btn.active {
+  background: var(--color-radio);
+  color: var(--color-white);
+}
+.mode-btn:not(.active):hover {
+  background: var(--color-surface-hover);
+}
+
+/* ── Payment method chip (正式單 panel) ───────────── */
+/* Figma Button component-set:
+   circle-none-selected (974:12453) → padding 10/16, r:28, stroke Color/Neutral/200, no fill
+   circle-selected-yellow (1482:26085) → padding 10/16, r:28, fill+stroke Color/SubItem/Selected */
+.rb-pay-chip {
+  padding: 10px 16px;
+  border-radius: 28px;
+  background: transparent;
+  border: 1px solid var(--color-border-disabled);
+  font-size: 16px;
+  color: var(--color-text-default);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.rb-pay-chip:hover {
+  background: var(--color-surface-hover);
+}
+.rb-pay-chip.rb-pay-active {
+  background: var(--color-subitem-selected);
+  border-color: var(--color-subitem-selected);
+  color: var(--color-text-default);
+}
+
+/* ── Nation radio (selected = 藍框) ───────────────── */
+.nation-radio {
+  accent-color: var(--color-menu);
+}
+
+/* ── Order data lock toggle ──────────────────────── */
+/* 紅鎖 = inputs disabled (灰底)；綠鎖 = inputs active (白底) */
+.order-lock {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.order-lock[data-locked="true"] .order-lock-icon {
+  filter: invert(38%) sepia(86%) saturate(1832%) hue-rotate(355deg)
+    brightness(95%) contrast(91%);
+} /* Brand active */
+.order-lock[data-locked="false"] .order-lock-icon {
+  filter: invert(64%) sepia(58%) saturate(465%) hue-rotate(85deg)
+    brightness(95%) contrast(85%);
+} /* Accent green */
+.order-panel.is-locked input:not([type="radio"]):not([type="checkbox"]),
+.order-panel.is-locked select,
+.order-panel.is-locked textarea {
+  background: var(--color-border-default);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+.order-panel.is-locked input[type="radio"],
+.order-panel.is-locked input[type="checkbox"] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.order-panel.is-locked label {
+  cursor: default;
+}
+.order-panel.is-locked .rb-cal-cell {
+  background: var(--color-border-disabled);
+  pointer-events: none;
+}
+.order-panel.is-locked .rb-cal-cell .rb-cal-date {
+  color: var(--color-text-secondary);
+}
+
+/* 訂房資料 panels：grid cell + flex children 都允許縮到 0，input 才能跟著螢幕寬度縮 */
+.order-panel > * {
+  min-width: 0;
+}
+.order-panel input,
+.order-panel select,
+.order-panel textarea {
+  min-width: 0;
+}
+
+/* 合約 panel：read-only 文字 + 底線（不是 input 框） */
+.contract-display {
+  display: block;
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-border-disabled);
+  background: transparent;
+  color: var(--color-text-default);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+/* ── Order data tabs (訂房 / 入住 / 合約) ─────────── */
+/* Figma Frame 356：72×42, padding 10/20, gap 28, radius top-only */
+.order-tab {
+  height: 42px;
+  padding: 10px 20px;
+  background: var(--color-border-disabled);
+  border: 1px solid var(--color-border-default);
+  border-bottom: none;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  font-size: 16px;
+  color: var(--color-text-default);
+  cursor: pointer;
+}
+.order-tab.order-tab-active {
+  background: var(--color-white);
+  position: relative;
+  z-index: 1;
+  margin-bottom: -1px;
+}
+
+/* ── Customer type toggle (一般客戶 / 合約客戶) ───── */
+/* 視覺參考 mode-toggle（pill r:28），尺寸保持 Figma Frame 97 (176×42)：兩顆 88×42 */
+.customer-toggle {
+  display: inline-flex;
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 28px;
+  overflow: hidden;
+}
+.customer-btn {
+  min-width: 88px;
+  height: 42px;
+  padding: 10px 12px;
+  background: var(--color-white);
+  border: none;
+  font-size: 16px;
+  color: var(--color-text-default);
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+}
+.customer-btn.active {
+  background: var(--color-radio);
+  color: var(--color-white);
+}
+.customer-btn:not(.active):hover {
+  background: var(--color-surface-hover);
+}
+
+/* ── Merged input group (Bootstrap-style) ─────────── */
+/* 統編 / 合約公司 / 新的訂房人：共邊框，外圓角僅在首尾 */
+.input-group {
+  display: inline-flex;
+  max-width: 100%;
+}
+.input-group > * {
+  min-width: 0;
+}
+@media (max-width: 480px) {
+  .input-group > input,
+  .input-group > select {
+    width: auto !important;
+    flex: 1 1 0;
+    min-width: 80px;
+  }
+}
+.input-group > * {
+  height: 36px;
+  border: 1px solid var(--color-border-disabled);
+  background: var(--color-white);
+  color: var(--color-text-default);
+  font-size: 16px;
+  padding: 0 12px;
+  margin: 0;
+}
+.input-group > *:not(:first-child) {
+  border-left: none;
+}
+.input-group > *:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+.input-group > *:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+.input-group > button {
+  cursor: pointer;
+}
+.input-group > select {
+  appearance: auto;
+}
+
+/* ── Stepper input (table 間數欄) ──────────────────── */
+/* 對應 Figma 間數 cell：145×36 box，內含 [−] [N] [+] */
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  width: 145px;
+  height: 36px;
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 6px;
+  background: var(--color-white);
+  overflow: hidden;
+}
+.stepper-btn {
+  flex: 0 0 44px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--color-text-default);
+  line-height: 1;
+}
+.stepper-btn:hover {
+  background: var(--color-surface-hover);
+}
+.stepper input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 16px;
+  color: var(--color-text-default);
+  outline: none;
+  padding: 0;
+}
+
+/* ── Room-booking: filter tabs (棟別 chips) ─────────── */
+/* Figma Button component-set:
+   circle-none-selected (974:12453)  → transparent + stroke Color/Neutral/200, padding 10/16, r:28
+   circle-selected-yellow (1482:26085) → fill+stroke Color/SubItem/Selected, padding 10/16, r:28 */
+.rb-filter-tab {
+  height: 42px;
+  padding: 10px 16px;
+  border-radius: 28px;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--color-text-default);
+  background: transparent;
+  border: 1px solid var(--color-border-disabled);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.rb-filter-tab:hover {
+  background: var(--color-surface-hover);
+}
+.rb-filter-tab.rb-active {
+  background: var(--color-subitem-selected);
+  border-color: var(--color-subitem-selected);
+  color: var(--color-text-default);
+}
+
+/* ── Inventory metric toggle (訂/餘/保) ───────────── */
+/* 對應 Figma Frame 346：36×36、r:4、border 同 --c、active 時填 --c；文字統一 Text/800 */
+.inv-metric-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid var(--c);
+  background: var(--color-white);
+  color: var(--color-text-default);
+  font-size: 16px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+.inv-metric-btn.rb-active {
+  background: var(--c);
+}
+
+/* ── Room-booking: accordion ───────────────────────── */
+.rb-accordion-content.rb-hidden {
+  display: none;
+}
+
+/* ── Calendar component ────────────────────────────── */
+/* width 封頂 351px；容器更窄時等比縮（cell 用 1fr 分配） */
+.rb-cal-wrap {
+  width: 351px;
+  max-width: 100%;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 12px;
+  padding: 12px;
+}
+.rb-cal-row1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  margin-bottom: 12px;
+}
+.rb-cal-row2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  margin-bottom: 8px;
+}
+.rb-selected-count {
+  font-size: 16px;
+  color: var(--color-text-default);
+}
+.rb-cal-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rb-today-btn {
+  font-size: 16px;
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 6px;
+  width: 56px;
+  height: 34px;
+  background: var(--color-white);
+  color: var(--color-text-default);
+  cursor: pointer;
+}
+.rb-today-btn:hover {
+  background: var(--color-surface-hover);
+}
+.rb-interval-select {
+  font-size: 14px;
+  border: 1px solid var(--color-border-disabled);
+  border-radius: 6px;
+  width: 79px;
+  height: 36px;
+  background: var(--color-white);
+  color: var(--color-text-default);
+  cursor: pointer;
+  padding: 0 6px;
+}
+.rb-interval-select:disabled {
+  background: var(--color-border-default);
+  opacity: 1;
+  cursor: not-allowed;
+}
+.rb-nav-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-text-placeholder);
+  border-radius: 4px;
+  background: var(--color-white);
+  cursor: pointer;
+}
+.rb-nav-btn:hover {
+  background: var(--color-surface-hover);
+}
+.rb-cal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-default);
+  min-width: 125px;
+  text-align: center;
+}
+#calGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  column-gap: 5px;
+  row-gap: 8px;
+  touch-action: none;
+}
+/* Day cells — scoped under .rb-cal-wrap */
+.rb-cal-wrap .day {
+  height: 55px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-disabled);
+  padding: 6px 4px;
+  text-align: center;
+  background: var(--color-white);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  box-sizing: border-box;
+}
+.rb-cal-wrap .day:hover:not(.disabled) {
+  border-color: var(--color-text-placeholder);
+  background: var(--color-surface-hover);
+}
+.rb-cal-wrap .day-wday {
+  font-size: 12px;
+  color: var(--color-text-default);
+  margin-bottom: 2px;
+}
+.rb-cal-wrap .day-num {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-default);
+  line-height: 1.4;
+}
+/* outside month (type=future): no fill, Neutral/100 border, Neutral/400 text */
+.rb-cal-wrap .day.outside {
+  border-color: var(--color-border-default);
+}
+.rb-cal-wrap .day.outside .day-wday,
+.rb-cal-wrap .day.outside .day-num {
+  color: var(--color-text-secondary);
+}
+/* past/disabled (type=diasbled): Neutral/100 fill+border, Neutral/400 text */
+.rb-cal-wrap .day.disabled {
+  background: var(--color-border-default) !important;
+  border-color: var(--color-border-default) !important;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.rb-cal-wrap .day.disabled .day-wday,
+.rb-cal-wrap .day.disabled .day-num {
+  color: var(--color-text-secondary) !important;
+}
+/* today (type=today): Accent/Pink fill, white text */
+.rb-cal-wrap .day.today {
+  background: var(--color-accent-pink) !important;
+  border-color: var(--color-accent-pink) !important;
+}
+.rb-cal-wrap .day.today .day-wday,
+.rb-cal-wrap .day.today .day-num {
+  color: var(--color-white) !important;
+}
+/* sel-start/end (type=focus): Chart/Blue fill, Neutral/0 border, white text */
+.rb-cal-wrap .day.sel-start,
+.rb-cal-wrap .day.sel-end {
+  background: var(--color-chart-blue) !important;
+  border-color: var(--color-white) !important;
+}
+.rb-cal-wrap .day.sel-start .day-wday,
+.rb-cal-wrap .day.sel-start .day-num,
+.rb-cal-wrap .day.sel-end .day-wday,
+.rb-cal-wrap .day.sel-end .day-num {
+  color: var(--color-white) !important;
+}
+/* sel-mid (type=selected): Accent/Light Green fill, Text/800 text */
+.rb-cal-wrap .day.sel-mid {
+  background: var(--color-accent-light-green) !important;
+  border-color: var(--color-accent-light-green) !important;
+}
+.rb-cal-wrap .day.sel-mid .day-wday,
+.rb-cal-wrap .day.sel-mid .day-num {
+  color: var(--color-text-default) !important;
+}
+/* today + sel-mid: green overrides pink */
+.rb-cal-wrap .day.today.sel-mid {
+  background: var(--color-accent-light-green) !important;
+  border-color: var(--color-accent-light-green) !important;
+}
+.rb-cal-wrap .day.today.sel-mid .day-wday,
+.rb-cal-wrap .day.today.sel-mid .day-num {
+  color: var(--color-text-default) !important;
+}
+/* today + sel-start/end: blue overrides pink */
+.rb-cal-wrap .day.today.sel-start,
+.rb-cal-wrap .day.today.sel-end {
+  background: var(--color-chart-blue) !important;
+  border-color: var(--color-white) !important;
+}
+.rb-cal-wrap .day.today.sel-start .day-wday,
+.rb-cal-wrap .day.today.sel-start .day-num,
+.rb-cal-wrap .day.today.sel-end .day-wday,
+.rb-cal-wrap .day.today.sel-end .day-num {
+  color: var(--color-white) !important;
+}

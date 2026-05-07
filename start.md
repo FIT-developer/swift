@@ -82,6 +82,9 @@ tokens → icons → components → sections → layout → 實作
   - 舊 HTML 只能作為現有實作參考，不可覆蓋已確認的 Figma contract。
   - 若 Figma 沒有覆蓋某段內容，而需要沿用舊 HTML/spec，必須先明講沿用範圍與原因。
   - 若舊 HTML/spec 和 Figma contract 衝突，先停下來回報，不可直接用舊 HTML 補齊。
+- 為避免 spec 污染，當輪最新 Figma contract + 使用者確認事項是實作來源；舊 spec / 舊 HTML / Figma history 只能標為 reference 或沿用範圍，不可靜默升格為 current source。
+- 若發現舊 spec 範例含 hard-coded color、inline style、過期 default state、或與最新 contract 不一致，先列入「規格污染 / 待清理」並回報；不要複製到新實作。
+- 當同一元件存在多個歷史版本，必須在 spec checkpoint 明確標出 current version 的 node id / read date / confirmed defaults；未標 current 的舊段落不得作為實作依據。
 - Figma selection 中的 currently selected / active visual state 不可自動推論為 default state；如果 active state 可能只是為了展示、檢查某個 variant、或讀取特規 layout，必須列為疑點並詢問使用者。
 - 實作後的驗證必須包含 contract-specific checks；不可只跑 script parse / duplicate id / diff check。
 - 需要寫檔時：

@@ -39,7 +39,7 @@
 | 尺寸 | 119×132.48px |
 | Padding | top/bottom `24px`、left/right `4px` |
 | 內容 | 多色向量圖形（品牌完整 logo） |
-| 背景 | `#ffffff` |
+| 背景 | `Color/Neutral/0` |
 
 ---
 
@@ -55,7 +55,7 @@
 | 尺寸 | 24×24px |
 | Padding | 無（0px） |
 | 內容 | 多色向量圖形（品牌 icon 版） |
-| 背景 | `#ffffff` |
+| 背景 | `Color/Neutral/0` |
 
 > Mobile nav bar（Frame 4）使用此 variant，對應節點名稱 `icons/logo`。
 
@@ -77,10 +77,10 @@
 | Logo icon | 24×24px，x:0 |
 | 關閉 icon | `icons/close`，24×24px，x:91 |
 | Logo 與 close 間距 | 91 - 24 = **67px** |
-| 背景 | `#ffffff` |
+| 背景 | `Color/Neutral/0` |
 
 > 用於 Mobile 側邊 menu 展開後的頂部列：左側 logo、右側 × 關閉按鈕。  
-> 關閉按鈕 icon 為 `icons/close`（13.15×13.15px Vector，fills `#000000`）。
+> 關閉按鈕 icon 為 `icons/close`（13.15×13.15px Vector，fills `Color/Icon/Default`）。
 
 ---
 

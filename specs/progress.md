@@ -4,6 +4,232 @@
 
 ---
 
+## Session 59 交接（2026-05-07）
+
+### 舊 spec hard-coded color / inline style 清理
+
+**已完成**:
+- 清理 `components/`, `sections/`, `layouts/`, `specs/` 內舊 spec 的 hard-coded hex、Tailwind arbitrary color class、inline `style=` 範例與 unmanaged color 描述。
+- 排除範圍：
+  - `specs/progress.md`：歷史交接紀錄，不作為 current implementation spec。
+  - `specs/assets/tokens.md`：token 權威來源，允許記錄 raw token value。
+  - `specs/icons.md`：icon source mapping / asset 記錄。
+  - `specs/ui-audit-2026-05-02.md`：歷史 audit 紀錄。
+- 對於無 token 對應的舊 Figma visual-only 色值，已改成「不可直接實作，需先補 token」或 visual-only 描述，避免舊 spec 污染新實作。
+
+**驗證**:
+- 舊 spec raw color / inline scan：通過，未再找到 `#...`, `bg-[#...]`, `text-[#...]`, `border-[#...]`, `accent-[#...]`, `style=`。
+- unmanaged wording scan：通過，未再找到 `Unmapped color`, `Unmanaged`, `Figma annotation color`。
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`id_count=91`, `duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+
+### Browser visual QA
+
+**狀態**:
+- 本輪未完成真正 browser visual QA：目前可用工具列表沒有 Browser skill 需要的 Node REPL / `mcp__node_repl__js` browser 控制工具，也沒有 Playwright / Puppeteer 本地套件可用。
+- 已完成替代的低層驗證：HTTP 200、script parse、duplicate id、diff check、spec scan。
+- 這不等同於視覺截圖驗證；下一輪若 Browser tool 可用，需補看 `preview/landing.html` desktop/mobile 畫面與主要 modal 開啟狀態。
+
+### 後續決定 / 提醒
+
+- 其他 clickable semantic issues：先列為將來提醒；目前前端 prototype 只需能開啟對應畫面或產生功能，很多語意會跟後端串接行為一起整理。
+- 其他 preview HTML 不需要共用 `base.css`；它們若已有自己的 CSS，就不要回頭強制改成 shared base。
+
+## Session 58 交接（2026-05-07）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 shared modal close focus return：
+  - `openModal(id, returnFocusTarget)` 會記住開啟 modal 的原觸發元素。
+  - `closeModal(id)` 關閉已開啟的 modal 後，將 focus 還原到原觸發元素。
+  - 不新增 modal open autofocus，不主動 focus 表單、標題或第一個控制項，避免強制移動使用者視覺瀏覽位置。
+- 已更新 `components/modal.md`，記錄 shared modal interaction：open scroll reset、no autofocus、close returns focus to trigger。
+- 清理 active modal spec 內的 hard-coded color examples：
+  - `components/modal.md` 已移除 `#...`、`bg-[#...]`、`text-[#...]`、`border-[#...]`、`style=` 色彩範例。
+  - 改以 Figma token 名稱或 Tailwind semantic alias 表示。
+- 依使用者確認修正 modal / calendar overlay scale：
+  - 新增 `--z-popover`, `--z-mobile-sidebar-backdrop`, `--z-mobile-sidebar`, `--z-modal`。
+  - calendar dropdown 從 unmanaged `z-index: 1000` 改為 `var(--z-popover)`，避免高於 modal layer。
+- 收斂 runtime unmanaged color / effect value：
+  - scrollbar thumb 改用 `--color-border-disabled`。
+  - backdrop、box-shadow、drop-shadow、Chart.js translucent fill 改以 `--effect-*` CSS variable 管理。
+  - 移除 `landing.html` runtime 內散落的 raw `rgba(...)` / hard-coded hex；目前 raw hex / rgba 只保留在 `:root` token/effect variable 定義。
+- 低成本 accessibility / semantic fix：
+  - mobile / desktop top function icon triggers 從 clickable `div` / clickable image 改為 `button type="button"`，並補 `aria-label`；不改動 visual layout。
+- 已更新 `specs/assets/tokens.md`：
+  - Effect 不進 `Color/*` token，但實作不得散落 raw value；需以命名 CSS variable 管理。
+  - scrollbar 使用既有 neutral token alias，不新增非 Figma Variables 色彩。
+- 已更新 `start.md` 的 spec 污染預防規則：
+  - 最新 Figma contract + 使用者確認事項是當輪實作來源。
+  - 舊 spec / 舊 HTML / Figma history 只能標為 reference 或沿用範圍。
+  - 舊範例若含 hard-coded color、inline style、過期 default state，需先回報，不可複製到新實作。
+
+**待討論**:
+- 舊 spec 範例中的 hard-coded hex / inline style 仍需另排清理。
+- Global style 搬移到 `preview/assets/css/base.css` 是中等整理，不建議和功能修正混在同一輪：
+  - `preview/landing.html` 目前 `<style>` 混有真正全域規則、page-specific scoped CSS、modal CSS、chart CSS、room-booking CSS。
+  - 直接整包搬到 `base.css` 風險高，可能讓 page-specific 規則意外影響其他 preview HTML。
+  - 下一輪建議先分類，再分批搬移：
+    1. 真正全域：focus-visible、prefers-reduced-motion、scrollbar、overlay z-index/effect variables。
+    2. shared component：modal shell、calendar dropdown、button/icon shared rules。
+    3. page-specific：landing sidebar/topbar/chart/room-booking/order-summary scoped CSS，先留在 `landing.html` 或另建 page CSS，不應放進 global base。
+  - 搬移後需驗證 `landing.html` visual/interaction 不變，並確認其他 preview HTML 不被新 global CSS 污染。
+- Browser visual QA 是否納入每輪固定驗證流程，需和使用者確認執行成本與範圍；本輪只做低成本 semantic fix。
+
+### Global style 拆分 Step 1（2026-05-07）
+
+**已完成**:
+- 新增 `preview/assets/css/base.css`。
+- `preview/landing.html` 已新增 `<link href="./assets/css/base.css" rel="stylesheet" />`。
+- 已從 `landing.html` inline `<style>` 搬出真正全域規則：
+  - `:root` token / effect / z-index variables。
+  - global `box-sizing` + Noto Sans TC font-family。
+  - `body` background / min-width。
+  - `focus-visible` outline。
+  - `prefers-reduced-motion`。
+  - global scrollbar。
+- `landing.html` inline `<style>` 目前保留 page / component scoped CSS，例如 modal shell、sidebar、order-summary、purchase-addon、room-booking、calendar component 等。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- static check：`landing.html` 已連到 `./assets/css/base.css`，且 `base.css` 檔案存在。
+- 備註：嘗試以 8001 啟動 preview server 驗證 CSS URL 時，server process 顯示 running 但本環境 curl 連線失敗；未留下 server process。
+
+**下一步建議**:
+- Step 2：抽 shared component CSS，候選為 modal shell / modal header shadow / calendar dropdown / shared icon-mask；搬之前需確認其他 preview HTML 是否也要引用。
+- Step 3：page-specific CSS 不放進 `base.css`；若要再拆，建議建立 `preview/assets/css/landing.css`，只由 `landing.html` 引入。
+
+### Global style 拆分 Step 2（2026-05-07）
+
+**已完成**:
+- 將 shared component CSS 從 `preview/landing.html` 搬到 `preview/assets/css/base.css`：
+  - `modal-header-shadow` / `modal-header-shadow-soft`。
+  - `icon-mask` shared utility。
+  - shared modal shell：`.modal-backdrop`, `.modal-backdrop.open`, `.modal-box`。
+  - shared simple calendar dropdown：`.rb-cal-cell`, `.calendar-dropdown`, `.calendar-day*`, `.calendar-header-select`, `.title-highlight`。
+- `base.css` 已分段：
+  - Global tokens / effect variables。
+  - Browser / document baseline。
+  - Shared component utilities。
+  - Shared modal shell。
+  - Shared simple calendar dropdown。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+
+**下一步建議**:
+- Step 3：不要再往 `base.css` 放 page-specific CSS；若要繼續縮小 `landing.html`，建立 `preview/assets/css/landing.css`，只放 landing / room-booking / order-summary / purchase-addon scoped CSS，並只由 `landing.html` 引入。
+
+### Global style 拆分 Step 3（2026-05-07）
+
+**已完成**:
+- 新增 `preview/assets/css/landing.css`。
+- `preview/landing.html` 已移除 inline `<style>`，改為依序載入：
+  1. `./assets/css/base.css`
+  2. `./assets/css/landing.css`
+- `landing.css` 內容是原 `landing.html` 剩餘 page-specific / feature-specific CSS 的機械搬移：
+  - landing shell / sidebar / page tabs。
+  - POS entrance / section-card / input group。
+  - modal variant 尺寸與 RWD overrides。
+  - order-summary / SMS / purchase-addon / room-edit / room-booking scoped CSS。
+- `base.css` 保持只放：
+  - tokens / effect / z-index variables。
+  - browser baseline。
+  - shared utilities。
+  - shared modal shell。
+  - shared simple calendar dropdown。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- static check：`landing.html` 無 inline `<style>`；`landing.css` 沒有 raw hex / rgba。
+
+**重要決定**:
+- `base.css` 不放 landing-specific 規則，避免污染其他 preview HTML。
+- `landing.css` 只由 `landing.html` 引入；若未來其他頁需要共用其中某段，需先升格成 shared component 規則再搬到 `base.css`。
+
+## Session 57 交接（2026-05-07）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 modal reopen scroll position：
+  - 新增 `resetModalScroll(modal)` helper。
+  - `openModal(id)` 每次開啟 modal 時會將 backdrop、`.modal-box`、以及 modal 內所有 `.overflow-y-auto` scroller 的 `scrollTop` 重設為 `0`。
+  - 解決 order summary 由 `產生訂單` 開啟三種 variant 後，關閉再切 radio 開啟其他 variant 時，內容仍停留在上一個 scroll position 的問題。
+- 已更新 `components/modal.md`，記錄 every modal open resets scrollable body position to top。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- contract-specific check：通過，`modal_scroll_reset_check=pass`。
+
+**重要決定**:
+- scroll reset 放在 shared `openModal()` path，而不是只放在 close 或單一 variant；這樣 `無設定` / `正式單` / `候補單` 三種 order summary variant 都一致從頂部開始。
+
+## Session 56 交接（2026-05-07）
+
+### 本次進度交接
+
+**已完成**:
+- 修正 SMS modal `發送內容` stats card divider：
+  - `字數統計` 與 `簡訊通數` 中間 divider 從水平線 `h-px w-[55px]` 改為垂直線 `h-[55px] w-px`。
+- 已更新 `components/modal.md`，記錄 stats card 兩組統計中間是 vertical divider。
+
+**驗證**:
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- contract-specific check：通過，`sms_divider_check=vertical`。
+
+**重要決定**:
+- SMS stats card divider orientation 以使用者確認為準：vertical，不是 horizontal。
+
+## Session 55 交接（2026-05-07）
+
+### 本次進度交接
+
+**已完成**:
+- 依 Figma latest selection `1436:43555 / Modal / 648×1161` 實作 order summary header `簡訊` action modal：
+  - 新增 `modalSmsBackdrop`，desktop max width 648px，header/footer fixed，body scroll。
+  - order summary header `簡訊` button 加上 `data-modal-open="modalSmsBackdrop"`。
+  - `發送號碼` section：第一個 radio 預設 checked，select 顯示 `0999111222`；第二個 radio 為 `自行設定` + input。
+  - `訂單內容` section：補齊 Figma 文字掃描到的 14 個欄位：`訂單編號`, `飯店名稱`, `銀行`, `虛擬帳號`, `入住日`, `訂單總額`, `應付訂金`, `已付金額`, `訂房人`, `入住人`, `訂房人生日`, `繳款期限`, `取消日期`, `入住夜數`。
+  - `發送內容` section：包含 `字數統計 25`, `簡訊通數 1`, `樣本 sample`, textarea placeholder。
+  - `歷史紀錄` section：table columns `#`, `登錄類別`, `登錄日期`, `登錄號碼`, `登錄內容`；prototype rows 使用 placeholder / `111`。
+  - mobile 下 SMS modal 與其他大型 modal 一樣滿版，form rows 與 field grid 改為單欄，history table 保持 horizontal scroll。
+- 已更新 `components/modal.md`：
+  - 新增 `state=sms / order summary` source row。
+  - 新增 SMS modal implementation contract、layout/RWD 規則。
+  - 更新 order summary header action：`簡訊` opens SMS modal，`列印` 仍為 visual prototype。
+
+**驗證**:
+- Figma screenshot reference：已讀取 node `1436:43555` PNG reference。
+- inline script parse：通過，`inline_scripts=6`。
+- duplicate id check：通過，`duplicate_id_count=0`。
+- `git diff --check`：通過。
+- `curl -I http://127.0.0.1:8000/landing.html`：回傳 200 OK。
+- contract-specific check：通過，`sms_contract_checks=pass fields=14`。
+
+**下一步應做**:
+- 建議用 browser visual QA 點 order summary header `簡訊` button，檢查 SMS modal desktop 寬度、body scroll、發送內容 stats/sample 位置與 history table 寬度。
+- 若要接 production data，後端需渲染發送號碼選項、訂單欄位 value、SMS sample list、textarea content、字數/通數與歷史紀錄 rows。
+
+**重要決定**:
+- `1436:43555` 是 order summary header `簡訊` action 的 modal。
+- `發送號碼` 第一個 radio default checked 是使用者確認，不是從 Figma active state 自行推論。
+
 ## Session 54 交接（2026-05-06）
 
 ### 本次進度交接

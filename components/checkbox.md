@@ -12,18 +12,18 @@
 
 | 狀態 | fill（外框） | fill（勾選背景） | stroke |
 |---|---|---|---|
-| 未選中 | `#ffffff` | — | （需補讀） |
-| 選中 | `#ffffff` | `#2178cf` | `#2178cf` |
+| 未選中 | `Color/Neutral/0` | — | （需補讀） |
+| 選中 | `Color/Neutral/0` | `Color/MenuItem/Default` | `Color/MenuItem/Default` |
 
-選中狀態：內部 Rectangle（14×14）fill `#2178cf`，stroke `#2178cf`，r:4
+選中狀態：內部 Rectangle（14×14）fill `Color/MenuItem/Default`，stroke `Color/MenuItem/Default`，r:4
 
 ## HTML 實作
 
 ```html
 <!-- 選中 -->
-<div class="w-3.5 h-3.5 bg-[#2178cf] border border-[#2178cf] rounded-[4px] flex items-center justify-center">
+<div class="w-3.5 h-3.5 bg-menu border border-menu rounded-[4px] flex items-center justify-center">
   <svg ...checkmark />
 </div>
 <!-- 未選中 -->
-<div class="w-3.5 h-3.5 bg-white border border-[#d1d1d1] rounded-[4px]"></div>
+<div class="w-3.5 h-3.5 bg-white border border-border-disabled rounded-[4px]"></div>
 ```

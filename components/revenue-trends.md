@@ -24,7 +24,7 @@
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 | Background | 無（透明） | — |
-| Border (stroke) | `#D1D1D1` | `Color/Neutral/200` |
+| Border (stroke) | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -34,7 +34,7 @@
 [FRAME] Revenue trends (1154×200px)
 ├── [INSTANCE] Title
 │   ├── [INSTANCE] icons/operation-system (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "營業資訊"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "營業資訊"  20px  SemiBold 600  Color/Neutral/800
 └── [FRAME] Trend details (1130×137, x:12 y:51)
     ├── [INSTANCE] Card — 今日營收    (270.5×137px, x:0)
     ├── [INSTANCE] Card — 平均房價    (270.5×134.5px, x:286.5)
@@ -52,7 +52,7 @@
 | 文字 | `"營業資訊"` | — |
 | Font | Noto Sans **SemiBold 600** | — |
 | Font size | `20px`（md） | — |
-| Color | `#454545` | `Color/Neutral/800` |
+| Color | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -68,7 +68,7 @@
 | Padding | top/bottom `12px`、left/right `24px` | `Spacing/12`、`Spacing/24` |
 | Corner radius | `8px` | `Radius/8` |
 | Background | 無（透明） | — |
-| Border | `#D1D1D1` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ### Card 內部結構
 
@@ -93,22 +93,22 @@
 
 | 區域 | 內容 | 樣式 |
 |---|---|---|
-| 標籤 | `今日營收` | md 20px Regular `#454545` |
-| 連結 chip | `日營收` + `icons/attached-link` | Input，白底灰框，sm 12px `#454545` |
-| 數值 | `NT$ 350,000` | lg 24px SemiBold `#454545` |
-| 趨勢 icon | `icons/trend-up-red` | stroke `#E12129` |
-| 趨勢值 | `+16%` | base 16px `#E12129` |
-| 比較基準 | `較昨日` | sm 12px `#454545` |
+| 標籤 | `今日營收` | md 20px Regular `Color/Neutral/800` |
+| 連結 chip | `日營收` + `icons/attached-link` | Input，白底灰框，sm 12px `Color/Neutral/800` |
+| 數值 | `NT$ 350,000` | lg 24px SemiBold `Color/Neutral/800` |
+| 趨勢 icon | `icons/trend-up-red` | stroke `Color/Surface/Negative` |
+| 趨勢值 | `+16%` | base 16px `Color/Surface/Negative` |
+| 比較基準 | `較昨日` | sm 12px `Color/Neutral/800` |
 
 **連結 chip（Input variant 觀測值）**：
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 填色 | `#FFFFFF` | `Color/Neutral/0` |
-| 邊框 | `#D1D1D1` | `Color/Neutral/200` |
+| 填色 | `Color/Neutral/0` | `Color/Neutral/0` |
+| 邊框 | `Color/Neutral/200` | `Color/Neutral/200` |
 | Corner radius | `6px` | `Radius/6` |
 | Padding | top/bottom `4px`、left/right `8px` | `Spacing/4`、`Spacing/8` |
-| 文字 | `日營收`，sm 12px，`#454545` | — |
+| 文字 | `日營收`，sm 12px，`Color/Neutral/800` | — |
 | Icon | `icons/attached-link`（24×24） | — |
 
 > 此為 Input component 的「白底灰框連結」variant，與 System notifications 的彩色 chip 不同。
@@ -119,12 +119,12 @@
 
 | 區域 | 內容 | 樣式 |
 |---|---|---|
-| 標籤 | `平均房價` | md 20px Regular `#454545` |
+| 標籤 | `平均房價` | md 20px Regular `Color/Neutral/800` |
 | 連結 chip | 無 | — |
-| 數值 | `NT$ 4,200` | lg 24px SemiBold `#454545` |
-| 趨勢 icon | `icons/trend-down-green` | stroke `#2ACA18` |
-| 趨勢值 | `+16%` | base 16px `#2ACA18` |
-| 比較基準 | `較昨日` | sm 12px `#454545` |
+| 數值 | `NT$ 4,200` | lg 24px SemiBold `Color/Neutral/800` |
+| 趨勢 icon | `icons/trend-down-green` | stroke `Color/Surface/Positive` |
+| 趨勢值 | `+16%` | base 16px `Color/Surface/Positive` |
+| 比較基準 | `較昨日` | sm 12px `Color/Neutral/800` |
 
 ---
 
@@ -132,12 +132,12 @@
 
 | 區域 | 內容 | 樣式 |
 |---|---|---|
-| 標籤 | `今日住房率` | md 20px Regular `#454545` |
+| 標籤 | `今日住房率` | md 20px Regular `Color/Neutral/800` |
 | 連結 chip | 無 | — |
-| 數值 | `92%` | lg 24px SemiBold `#454545` |
-| 趨勢 icon | `icons/trend-down-green` | stroke `#2ACA18` |
-| 趨勢值 | `+16%` | base 16px `#2ACA18` |
-| 比較基準 | `較昨日` | sm 12px `#454545` |
+| 數值 | `92%` | lg 24px SemiBold `Color/Neutral/800` |
+| 趨勢 icon | `icons/trend-down-green` | stroke `Color/Surface/Positive` |
+| 趨勢值 | `+16%` | base 16px `Color/Surface/Positive` |
+| 比較基準 | `較昨日` | sm 12px `Color/Neutral/800` |
 
 ---
 
@@ -147,12 +147,12 @@
 
 | 區域 | 內容 | 樣式 |
 |---|---|---|
-| 標籤 | `今日超賣` | md 20px Regular **`#E05216`** ← 警告色 |
+| 標籤 | `今日超賣` | md 20px Regular **`Color/Brand/Brand-600`** ← 警告色 |
 | 連結 chip | 無 | — |
-| 數值 | `NT$ -18,500` | lg 24px SemiBold `#454545` |
-| 趨勢 icon | `icons/warning-orange` | fill `#E05216` |
-| 趨勢值 | `5 間` | base 16px **`#E05216`** |
-| 比較基準 | `較昨日` | sm 12px `#454545` |
+| 數值 | `NT$ -18,500` | lg 24px SemiBold `Color/Neutral/800` |
+| 趨勢 icon | `icons/warning-orange` | fill `Color/Brand/Brand-600` |
+| 趨勢值 | `5 間` | base 16px **`Color/Brand/Brand-600`** |
+| 比較基準 | `較昨日` | sm 12px `Color/Neutral/800` |
 
 ---
 
@@ -160,9 +160,9 @@
 
 | 變體 | 標籤色 | 趨勢 icon | 趨勢值色 | 連結 chip |
 |---|---|---|---|---|
-| 標準 - trend up（負向） | `#454545` | `icons/trend-up-red` | `#E12129` | 可選 |
-| 標準 - trend down（正向） | `#454545` | `icons/trend-down-green` | `#2ACA18` | 無 |
-| Warning（超賣/警告） | `#E05216` | `icons/warning-orange` | `#E05216` | 無 |
+| 標準 - trend up（負向） | `Color/Neutral/800` | `icons/trend-up-red` | `Color/Surface/Negative` | 可選 |
+| 標準 - trend down（正向） | `Color/Neutral/800` | `icons/trend-down-green` | `Color/Surface/Positive` | 無 |
+| Warning（超賣/警告） | `Color/Brand/Brand-600` | `icons/warning-orange` | `Color/Brand/Brand-600` | 無 |
 
 ---
 

@@ -33,9 +33,9 @@ Mobile 版右下角浮動客服按鈕，**僅出現於 Mobile**，Desktop 版無
 
 ```
 [INSTANCE] floatIcons/ai (40×70px)
-├── [TEXT] "客服"     base 16px  Regular  #454545  ← 上方標籤
-└── [FRAME] Frame 78 (48×48px, cornerRadius 56, fills #F6FAFD, padding 6px)
-    └── [INSTANCE] icons/ai (24×24, cornerRadius 56, fills #FFFFFF)
+├── [TEXT] "客服"     base 16px  Regular  Color/Neutral/800  ← 上方標籤
+└── [FRAME] Frame 78 (48×48px, cornerRadius 56, fills Color/Neutral/75, padding 6px)
+    └── [INSTANCE] icons/ai (24×24, cornerRadius 56, fills Color/Neutral/0)
 ```
 
 > 注意：外層 instance 尺寸為 40×70px，但 Frame 78（圓形按鈕）為 48×48px，可能有 overflow 或對齊方式差異。
@@ -48,15 +48,15 @@ Mobile 版右下角浮動客服按鈕，**僅出現於 Mobile**，Desktop 版無
 |---|---|---|---|
 | 標籤文字 | font size | `16px`（base） | — |
 | 標籤文字 | font weight | Regular（400） | — |
-| 標籤文字 | color | `#454545` | `Color/Neutral/800` |
+| 標籤文字 | color | `Color/Neutral/800` | `Color/Neutral/800` |
 | 標籤文字 | 對齊 | 水平置中 | — |
 | 圓形容器 | 尺寸 | 48×48px | — |
 | 圓形容器 | cornerRadius | `56px`（完整圓） | `Radius/56` |
-| 圓形容器 | background | `#F6FAFD` | `Color/Neutral/75` |
+| 圓形容器 | background | `Color/Neutral/75` | `Color/Neutral/75` |
 | 圓形容器 | padding | `6px` all sides | `Spacing/6` |
 | Icon 容器 | 尺寸 | 24×24px | — |
 | Icon 容器 | cornerRadius | `56px` | `Radius/56` |
-| Icon 容器 | background | `#FFFFFF` | `Color/Neutral/0` |
+| Icon 容器 | background | `Color/Neutral/0` | `Color/Neutral/0` |
 | Icon | `icons/ai` | 24×24px | — |
 
 ---
@@ -66,7 +66,7 @@ Mobile 版右下角浮動客服按鈕，**僅出現於 Mobile**，Desktop 版無
 1. **定位**：`position: fixed; bottom: 64px; right: 65px;`（`right` 值固定 65px，`bottom` 依需求調整）
 2. **層級**：`z-index: 50`（高於一般內容）
 3. **排列**：`flex flex-col items-center gap-2`（文字在上，圓形按鈕在下）
-4. **圓形按鈕**：`w-12 h-12 rounded-full bg-[#F6FAFD] p-1.5 flex items-center justify-center`
+4. **圓形按鈕**：`w-12 h-12 rounded-full bg-surface-hover p-1.5 flex items-center justify-center`
 5. **Icon 白底圓**：`w-6 h-6 rounded-full bg-white flex items-center justify-center`
 6. **僅 Mobile**：包在 `md:hidden` 內，Desktop 不顯示
 

@@ -6,7 +6,7 @@
     <title>Swift — 今日總覽</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Semantic colors mapped to CSS vars — see :root in <style> below.
+      // Semantic colors mapped to CSS vars — see preview/assets/css/base.css.
       // tokens.md is the source of truth.
       tailwind.config = {
         theme: {
@@ -76,1240 +76,8 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <style>
-      /* ── Design tokens (source: specs/assets/tokens.md) ──────────────── */
-      :root {
-        /* Neutral / surface */
-        --color-white: #ffffff;
-        --color-surface-default: #f6f6f6;        /* Neutral/50 */
-        --color-surface-hover: #f6fafd;          /* Neutral/75 · Modal/Hover */
-        --color-bootstrap-focus-background: #d3ebfd; /* Bootstrap/focus-background */
-        --color-border-default: #e1e1e0;         /* Neutral/100 */
-        --color-border-disabled: #d1d1d1;        /* Neutral/200 */
-        --color-text-placeholder: #b0b0b0;       /* Neutral/300 */
-        --color-text-secondary: #888888;         /* Neutral/400 */
-        --color-text-muted: #6d6d6d;             /* Text/500 */
-        --color-text-supporting: #5d5d5d;        /* Text/600 */
-        --color-text-subtitle: #4f4f4f;          /* Text/700 */
-        --color-text-default: #454545;           /* Neutral/800 — main body */
-        --color-text-emphasis: #3d3d3d;          /* Text/900 */
-        --color-text-inverse: #e1e1e0;           /* Text/100 */
-        --color-icon-default: #000000;           /* Icon/Default */
-        /* Brand & action */
-        --color-menu: #2178cf;                   /* MenuItem/Default */
-        --color-radio: #005fcc;                  /* Radio/Default */
-        --color-radio-hover: #3b78d5;            /* Radio/Hover */
-        --color-subitem-selected: #f7d275;       /* SubItem/Selected (yellow chip) */
-        --color-brand-50: #fef6ee;               /* Brand-50 */
-        --color-brand-400: #f28b45;              /* Brand-400 */
-        --color-brand-500: #ef6f25;              /* Brand-500 / Surface Brand-Default */
-        --color-brand-active: #e05216;           /* Brand-600 */
-        --color-surface-action: #005fcc;         /* Surface/Action-Default */
-        --color-surface-accent: #42ebe9;         /* Surface/Accent */
-        --color-surface-brand: #ef6f25;          /* Surface/Brand-Default */
-        --color-surface-brand-hover: #f28b45;    /* Surface/Brand-Hover */
-        --color-border-focus: #b0b0b0;           /* Border/Focus */
-        --color-border-plugin: #6d6d6d;          /* Border/Plugin-Default */
-        --color-border-plugin-invalid: #d90000;  /* Border/Plugin-Invalid */
-        /* Status */
-        --color-status-positive: #2aca18;
-        --color-status-negative: #e12129;
-        /* Chart / accent */
-        --color-chart-blue: #86b7fe;
-        --color-chart-green: #34c759;
-        --color-chart-purple-red: #ff0bd6;
-        --color-accent-pink: #ffc0cb;
-        --color-accent-light-green: #bbf7d0;
-        --color-accent-green: #34c759;
-        --color-accent-cart-date: #bdfff6;
-        --color-accent-cart-time: #eaffc5;
-        --color-accent-celebration: #f44df4;
-        --color-accent-linear-pos-left: #e376f9;
-        --color-accent-linear-pos-right: #ff7878;
-        --color-accent-float-circle-mixed-1: #ffb624;
-        --color-accent-float-circle-mixed-2: #3f930b;
-        --color-accent-float-circle-filled-1: #f2befd;
-        --color-accent-float-circle-filled-2: #ffb6b6;
-        --color-tab-yellow: #ffcc00;
-      }
-
-      * {
-        font-family: "Noto Sans TC", sans-serif;
-        box-sizing: border-box;
-      }
-      body {
-        background: var(--color-surface-default);
-        min-width: 375px;
-      }
-
-      /* Issue 3: Focus states */
-      button:focus-visible,
-      a:focus-visible,
-      input:focus-visible,
-      select:focus-visible,
-      textarea:focus-visible {
-        outline: 2px solid var(--color-menu);
-        outline-offset: 2px;
-      }
-
-      /* Issue 4: prefers-reduced-motion */
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-          scroll-behavior: auto !important;
-        }
-      }
-
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #d9d9d9;
-        border-radius: 3px;
-      }
-
-      /* Nav sub-item selected state — same bg as hover */
-      .sub-item-selected {
-        background: var(--color-surface-hover);
-      }
-      /* Page tab chip */
-      /* Page tab chip — inactive (default) and active states match Figma spec */
-      .page-tab {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        background: var(--color-white);
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 6px;
-        font-size: 16px;
-        color: var(--color-text-default);
-        white-space: nowrap;
-        cursor: pointer;
-        user-select: none;
-        flex-shrink: 0;
-      }
-      .page-tab:hover {
-        background: var(--color-surface-hover);
-      }
-      .page-tab.active {
-        background: var(--color-surface-hover);
-        border-color: var(--color-chart-blue);
-      }
-      .page-tab-close {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        cursor: pointer;
-        border: none;
-        background: transparent;
-        padding: 0;
-        opacity: 0.5;
-        flex-shrink: 0;
-      }
-      .page-tab-close:hover {
-        opacity: 1;
-      }
-      /* Menu category: parent trigger is neutral, children items are blue */
-      .menu-category .accordion-trigger {
-        color: var(--color-text-default);
-      }
-      .menu-category .accordion-trigger + div > div {
-        color: var(--color-menu);
-      }
-
-      /* Mobile horizontal scroll */
-      .scroll-x {
-        overflow-x: auto;
-        scrollbar-width: thin;
-      }
-      .scroll-x::-webkit-scrollbar {
-        height: 4px;
-      }
-
-      /* POS entrance button hover fill */
-      .pos-entrance-inner {
-        background: var(--color-white);
-        transition: background 0.2s;
-      }
-      .pos-entrance-btn:hover .pos-entrance-inner {
-        background: linear-gradient(
-          to right,
-          var(--color-accent-float-circle-filled-1),
-          var(--color-accent-float-circle-filled-2)
-        );
-      }
-      .icon-mask {
-        display: inline-block;
-        background-color: currentColor;
-        -webkit-mask-position: center;
-        mask-position: center;
-        -webkit-mask-repeat: no-repeat;
-        mask-repeat: no-repeat;
-        -webkit-mask-size: contain;
-        mask-size: contain;
-      }
-
-      /* Section card */
-      .section-card {
-        background: var(--color-white);
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 6px;
-        padding: 12px;
-      }
-
-      /* Sidebar select */
-      .sidebar-select {
-        -webkit-appearance: none;
-        appearance: none;
-        display: block;
-        width: 100%;
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 6px;
-        padding: 6px 32px 6px 12px;
-        font-size: 16px;
-        color: var(--color-text-default);
-        cursor: pointer;
-        background-color: var(--color-white);
-        background-image: url("./assets/icons/down.svg");
-        background-repeat: no-repeat;
-        background-position: right 8px center;
-        background-size: 16px 16px;
-        font-family: "Noto Sans TC", sans-serif;
-      }
-      .sidebar-select:focus {
-        outline: none;
-        border-color: var(--color-menu);
-      }
-
-      /* Desktop sidebar collapsed state — only hides at md+; mobile uses drawer state */
-      @media (min-width: 768px) {
-        #sidebar.md-collapsed {
-          display: none !important;
-        }
-      }
-
-      /* Accordion icon rotation */
-      .accordion-icon {
-        transition: transform 0.2s ease;
-        flex-shrink: 0;
-      }
-      .accordion-icon.open {
-        transform: rotate(180deg);
-      }
-
-      /* Mobile sidebar overlay */
-      .mobile-sidebar-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.28);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.25s ease;
-        z-index: 40;
-      }
-      .mobile-sidebar-backdrop.open {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      @media (max-width: 767px) {
-        #sidebar {
-          position: fixed;
-          inset: 0 auto 0 0;
-          width: min(320px, 80%);
-          max-width: 320px;
-          height: 100vh;
-          padding: 0;
-          border: none;
-          border-radius: 0;
-          transform: translateX(-100%);
-          transition: transform 0.25s ease;
-          z-index: 50;
-          overflow-y: auto;
-          will-change: transform;
-          box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
-        }
-        #sidebar.mobile-open {
-          transform: translateX(0);
-        }
-      }
-
-      .mobile-sidebar-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 16px;
-        border-bottom: 1px solid var(--color-border-default);
-      }
-      .mobile-sidebar-close {
-        width: 32px;
-        height: 32px;
-        border: none;
-        background: transparent;
-        color: var(--color-text-default);
-        font-size: 18px;
-        line-height: 1;
-        cursor: pointer;
-      }
-
-      body.mobile-sidebar-open {
-        overflow: hidden;
-      }
-
-      /* Modal backdrop */
-      .modal-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 60;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-      }
-      .modal-backdrop.open {
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .modal-box {
-        background: var(--color-white);
-        border: 1px solid var(--color-text-placeholder);
-        border-radius: 8px;
-        width: 320px;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
-      }
-
-      /* Member modal — desktop: 320px centered; mobile: fullscreen */
-      #modalMemberBackdrop .modal-box {
-        display: flex;
-        flex-direction: column;
-      }
-      @media (max-width: 639px) {
-        #modalMemberBackdrop {
-          align-items: stretch;
-        }
-        #modalMemberBackdrop .modal-box {
-          width: 100%;
-          height: 100%;
-          border-radius: 0;
-          border: none;
-          box-shadow: none;
-        }
-      }
-
-      /* Bulletin vendor + Administer modals — desktop: max-width centered; mobile: fullscreen */
-      #modalBulletinBackdrop .modal-box {
-        width: 100%;
-        max-width: 681px;
-        display: flex;
-        flex-direction: column;
-      }
-      #modalAdministerBackdrop .modal-box {
-        width: 100%;
-        max-width: 836px;
-        display: flex;
-        flex-direction: column;
-      }
-      #modalRoomIntroBackdrop .modal-box {
-        width: 100%;
-        max-width: 560px;
-        display: flex;
-        flex-direction: column;
-      }
-      #modalRoomEditBackdrop .modal-box {
-        width: min(calc(100vw - 24px), 646px);
-        max-height: calc(100vh - 24px);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      #modalPurchaseAddonBackdrop .modal-box {
-        width: min(calc(100vw - 24px), 1194px);
-        max-height: calc(100vh - 24px);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      #modalOrderSummaryBackdrop .modal-box {
-        width: min(calc(100vw - 24px), 1019px);
-        max-height: calc(100vh - 24px);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      .order-summary-shell {
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 8px;
-        background: var(--color-white);
-        padding: 12px;
-      }
-      .order-summary-section {
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 8px;
-        background: var(--color-white);
-        padding: 20px;
-      }
-      .order-summary-section-title {
-        background: var(--color-surface-default);
-        padding: 8px 12px;
-        font-size: 20px;
-        line-height: 27px;
-        color: var(--color-text-default);
-      }
-      .order-summary-section-title--underlined {
-        border-bottom: 1px solid var(--color-text-default);
-      }
-      .order-summary-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 8px 20px;
-        padding-top: 4px;
-      }
-      .order-summary-label {
-        padding: 3px 12px;
-        font-size: 16px;
-        line-height: 22px;
-        color: var(--color-text-muted);
-      }
-      .order-summary-value {
-        padding: 3px 12px;
-        font-size: 16px;
-        line-height: 22px;
-        color: var(--color-text-default);
-      }
-      .order-summary-grid-spacer {
-        min-height: 1px;
-      }
-      .order-summary-table {
-        width: 100%;
-        min-width: 900px;
-        border-collapse: collapse;
-        font-size: 16px;
-        color: var(--color-text-default);
-      }
-      .order-summary-table th,
-      .order-summary-table td {
-        padding: 8px 12px;
-        text-align: left;
-        vertical-align: top;
-        font-weight: 400;
-      }
-      .order-summary-table thead th {
-        border-top: 1px solid var(--color-text-default);
-        border-bottom: 1px solid var(--color-text-default);
-        background: var(--color-surface-hover);
-      }
-      .order-summary-table--after-title thead th {
-        border-top: 0;
-      }
-      .order-summary-table tbody td {
-        border-bottom: 1px solid var(--color-border-disabled);
-      }
-      .order-summary-table tfoot td {
-        border-top: 1px solid var(--color-text-default);
-      }
-      .order-summary-number {
-        text-align: right;
-        white-space: nowrap;
-      }
-      .order-summary-table .order-summary-number {
-        text-align: right;
-        white-space: nowrap;
-      }
-      .order-summary-project-subtitle {
-        width: 100%;
-        max-width: 100%;
-        white-space: normal;
-        overflow-wrap: anywhere;
-      }
-      .order-summary-money {
-        display: inline-flex;
-        gap: 4px;
-        white-space: nowrap;
-      }
-      .order-summary-inline-row {
-        display: flex;
-        gap: 24px;
-        align-items: flex-start;
-      }
-      .order-summary-addons-section {
-        flex: 1 1 655px;
-        min-width: 0;
-      }
-      .order-summary-total-section {
-        flex: 0 0 315.67px;
-        min-width: 0;
-        background: var(--color-brand-50);
-      }
-      .order-summary-total-section .order-summary-section-title {
-        background: var(--color-brand-50);
-        color: var(--color-surface-action);
-      }
-      .order-summary-addons-table {
-        min-width: 615px;
-      }
-      .order-summary-total-table {
-        min-width: 275.67px;
-        background: var(--color-brand-50);
-      }
-      .order-summary-total-table thead th {
-        background: var(--color-brand-50);
-      }
-      .order-summary-hotel-name {
-        background: var(--color-surface-hover);
-        padding: 4px 12px;
-        text-align: center;
-        font-size: 16px;
-        line-height: 22px;
-        color: var(--color-text-default);
-      }
-      .order-summary-hotel-row {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        border-bottom: 1px solid var(--color-border-disabled);
-        padding: 4px 0;
-      }
-      .order-summary-hotel-pair {
-        display: grid;
-        grid-template-columns: minmax(120px, 147px) minmax(0, 1fr);
-        min-width: 0;
-      }
-      .order-summary-person-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0 24px;
-      }
-      .order-summary-person-row {
-        display: grid;
-        grid-template-columns: 140px minmax(0, 1fr);
-        border-bottom: 1px solid var(--color-border-disabled);
-        padding: 4px 0;
-      }
-      .purchase-addon-layout {
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-      }
-      .purchase-addon-main {
-        display: flex;
-        flex: 1 1 auto;
-        min-width: 0;
-        gap: 20px;
-      }
-      .purchase-addon-menu {
-        flex: 0 0 240px;
-      }
-      .purchase-addon-frame410 {
-        flex: 1 1 0;
-        width: 100%;
-        min-width: 0;
-        container-type: inline-size;
-      }
-      .purchase-addon-result {
-        flex: 0 0 327px;
-      }
-      .purchase-addon-products {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 16px;
-      }
-      .purchase-addon-product-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 140px) minmax(0, 140px) minmax(0, 155px);
-        gap: 20px;
-      }
-      .purchase-addon-product-grid .rb-cal-cell {
-        min-width: 0;
-      }
-      .purchase-addon-date-text {
-        font-size: 14px;
-      }
-      .purchase-addon-time-toggle[aria-pressed="true"] .toggle-knob {
-        transform: translateX(12px);
-        border-color: var(--color-status-positive);
-      }
-      .purchase-addon-time-toggle[aria-pressed="false"] .toggle-knob {
-        transform: translateX(2px);
-        border-color: var(--color-text-secondary);
-      }
-      .purchase-category-btn[aria-pressed="true"] {
-        background: var(--color-white);
-      }
-      .purchase-category-btn[aria-pressed="true"] .purchase-category-count {
-        background: var(--color-bootstrap-focus-background);
-      }
-      .purchase-addon-category-list.is-collapsed {
-        display: none;
-      }
-      .purchase-addon-category-toggle[aria-expanded="false"] img {
-        transform: rotate(180deg);
-      }
-      .purchase-addon-content-toggle[aria-expanded="false"] img {
-        transform: rotate(180deg);
-      }
-      .purchase-addon-products.is-collapsed {
-        display: none;
-      }
-      @container (max-width: 500px) {
-        .purchase-addon-product-grid {
-          grid-template-columns: minmax(0, 140px) minmax(0, 140px);
-        }
-      }
-      @container (max-width: 330px) {
-        .purchase-addon-product-grid {
-          grid-template-columns: minmax(0, 1fr);
-        }
-      }
-      @media (max-width: 1023px) {
-        .purchase-addon-layout {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(295px, 327px);
-          align-items: start;
-        }
-        .purchase-addon-main {
-          flex-direction: column;
-        }
-        .purchase-addon-menu,
-        .purchase-addon-result {
-          width: 100%;
-          flex-basis: auto;
-        }
-      }
-      @media (max-width: 639px) {
-        .purchase-addon-layout {
-          display: flex;
-          flex-direction: column;
-        }
-        .purchase-addon-main,
-        .purchase-addon-frame410,
-        .purchase-addon-result {
-          width: 100%;
-          flex-basis: auto;
-        }
-      }
-      .room-edit-price-table tbody td {
-        padding-top: 4px;
-        padding-bottom: 4px;
-        vertical-align: middle;
-      }
-      .room-edit-price-table tbody tr:first-child td {
-        padding-top: 8px;
-      }
-      .room-edit-price-table tbody tr:last-child td {
-        padding-bottom: 8px;
-      }
-      .room-edit-price-table tbody tr:only-child td {
-        padding-top: 8px;
-        padding-bottom: 8px;
-      }
-      @media (max-width: 639px) {
-        #modalBulletinBackdrop,
-        #modalAdministerBackdrop,
-        #modalRoomIntroBackdrop,
-        #modalRoomEditBackdrop,
-        #modalPurchaseAddonBackdrop,
-        #modalOrderSummaryBackdrop {
-          align-items: stretch;
-          justify-content: stretch;
-          padding: 0;
-        }
-        #modalBulletinBackdrop .modal-box,
-        #modalAdministerBackdrop .modal-box,
-        #modalRoomIntroBackdrop .modal-box,
-        #modalRoomEditBackdrop .modal-box,
-        #modalPurchaseAddonBackdrop .modal-box,
-        #modalOrderSummaryBackdrop .modal-box {
-          width: 100%;
-          max-width: 100%;
-          max-height: none;
-          height: 100%;
-          border-radius: 0;
-          border: none;
-          box-shadow: none;
-          margin: 0;
-        }
-        .order-summary-grid {
-          grid-template-columns: 112px minmax(0, 1fr);
-          gap: 4px 0;
-        }
-        .order-summary-grid-spacer {
-          display: none;
-        }
-        .order-summary-person-grid {
-          grid-template-columns: 1fr;
-        }
-        .order-summary-hotel-row {
-          grid-template-columns: 1fr;
-        }
-        .order-summary-inline-row {
-          flex-direction: column;
-        }
-        .order-summary-addons-section,
-        .order-summary-total-section {
-          width: 100%;
-          flex-basis: auto;
-        }
-        .order-summary-person-row {
-          grid-template-columns: 104px minmax(0, 1fr);
-        }
-      }
-      /* ── Room-booking: mode toggle (calendar JS managed) ─── */
-      .mode-toggle {
-        display: inline-flex;
-        align-self: flex-start;
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 28px;
-        overflow: hidden;
-      }
-      .mode-btn {
-        height: 42px;
-        padding: 0 24px;
-        background: var(--color-white);
-        border: none;
-        font-size: 16px;
-        color: var(--color-text-default);
-        cursor: pointer;
-        text-align: center;
-        white-space: nowrap;
-      }
-      .mode-btn.active {
-        background: var(--color-radio);
-        color: var(--color-white);
-      }
-      .mode-btn:not(.active):hover {
-        background: var(--color-surface-hover);
-      }
-
-      /* ── Payment method chip (正式單 panel) ───────────── */
-      /* Figma Button component-set:
-         circle-none-selected (974:12453) → padding 10/16, r:28, stroke #d1d1d1, no fill
-         circle-selected-yellow (1482:26085) → padding 10/16, r:28, fill+stroke #f7d275 */
-      .rb-pay-chip {
-        padding: 10px 16px;
-        border-radius: 28px;
-        background: transparent;
-        border: 1px solid var(--color-border-disabled);
-        font-size: 16px;
-        color: var(--color-text-default);
-        cursor: pointer;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .rb-pay-chip:hover {
-        background: var(--color-surface-hover);
-      }
-      .rb-pay-chip.rb-pay-active {
-        background: var(--color-subitem-selected);
-        border-color: var(--color-subitem-selected);
-        color: var(--color-text-default);
-      }
-
-      /* ── Nation radio (selected = 藍框) ───────────────── */
-      .nation-radio {
-        accent-color: var(--color-menu);
-      }
-
-      /* ── Order data lock toggle ──────────────────────── */
-      /* 紅鎖 = inputs disabled (灰底)；綠鎖 = inputs active (白底) */
-      .order-lock {
-        background: transparent;
-        border: 0;
-        padding: 0;
-      }
-      .order-lock[data-locked="true"] .order-lock-icon {
-        filter: invert(38%) sepia(86%) saturate(1832%) hue-rotate(355deg)
-          brightness(95%) contrast(91%);
-      } /* 紅 #e05216 */
-      .order-lock[data-locked="false"] .order-lock-icon {
-        filter: invert(64%) sepia(58%) saturate(465%) hue-rotate(85deg)
-          brightness(95%) contrast(85%);
-      } /* 綠 ~#34c759 */
-      .order-panel.is-locked input:not([type="radio"]):not([type="checkbox"]),
-      .order-panel.is-locked select,
-      .order-panel.is-locked textarea {
-        background: var(--color-border-default);
-        color: var(--color-text-secondary);
-        pointer-events: none;
-      }
-      .order-panel.is-locked input[type="radio"],
-      .order-panel.is-locked input[type="checkbox"] {
-        pointer-events: none;
-        opacity: 0.5;
-      }
-      .order-panel.is-locked label {
-        cursor: default;
-      }
-      .order-panel.is-locked .rb-cal-cell {
-        background: var(--color-border-disabled);
-        pointer-events: none;
-      }
-      .order-panel.is-locked .rb-cal-cell .rb-cal-date {
-        color: var(--color-text-secondary);
-      }
-
-      /* 訂房資料 panels：grid cell + flex children 都允許縮到 0，input 才能跟著螢幕寬度縮 */
-      .order-panel > * {
-        min-width: 0;
-      }
-      .order-panel input,
-      .order-panel select,
-      .order-panel textarea {
-        min-width: 0;
-      }
-
-      /* 合約 panel：read-only 文字 + 底線（不是 input 框） */
-      .contract-display {
-        display: block;
-        padding: 4px 0;
-        border: 0;
-        border-bottom: 1px solid var(--color-border-disabled);
-        background: transparent;
-        color: var(--color-text-default);
-        font-size: 16px;
-        line-height: 22px;
-      }
-
-      /* ── Order data tabs (訂房 / 入住 / 合約) ─────────── */
-      /* Figma Frame 356：72×42, padding 10/20, gap 28, radius top-only */
-      .order-tab {
-        height: 42px;
-        padding: 10px 20px;
-        background: var(--color-border-disabled);
-        border: 1px solid var(--color-border-default);
-        border-bottom: none;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-        font-size: 16px;
-        color: var(--color-text-default);
-        cursor: pointer;
-      }
-      .order-tab.order-tab-active {
-        background: var(--color-white);
-        position: relative;
-        z-index: 1;
-        margin-bottom: -1px;
-      }
-
-      /* ── Customer type toggle (一般客戶 / 合約客戶) ───── */
-      /* 視覺參考 mode-toggle（pill r:28），尺寸保持 Figma Frame 97 (176×42)：兩顆 88×42 */
-      .customer-toggle {
-        display: inline-flex;
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 28px;
-        overflow: hidden;
-      }
-      .customer-btn {
-        min-width: 88px;
-        height: 42px;
-        padding: 10px 12px;
-        background: var(--color-white);
-        border: none;
-        font-size: 16px;
-        color: var(--color-text-default);
-        cursor: pointer;
-        text-align: center;
-        white-space: nowrap;
-      }
-      .customer-btn.active {
-        background: var(--color-radio);
-        color: var(--color-white);
-      }
-      .customer-btn:not(.active):hover {
-        background: var(--color-surface-hover);
-      }
-
-      /* ── Merged input group (Bootstrap-style) ─────────── */
-      /* 統編 / 合約公司 / 新的訂房人：共邊框，外圓角僅在首尾 */
-      .input-group {
-        display: inline-flex;
-        max-width: 100%;
-      }
-      .input-group > * {
-        min-width: 0;
-      }
-      @media (max-width: 480px) {
-        .input-group > input,
-        .input-group > select {
-          width: auto !important;
-          flex: 1 1 0;
-          min-width: 80px;
-        }
-      }
-      .input-group > * {
-        height: 36px;
-        border: 1px solid var(--color-border-disabled);
-        background: var(--color-white);
-        color: var(--color-text-default);
-        font-size: 16px;
-        padding: 0 12px;
-        margin: 0;
-      }
-      .input-group > *:not(:first-child) {
-        border-left: none;
-      }
-      .input-group > *:first-child {
-        border-top-left-radius: 6px;
-        border-bottom-left-radius: 6px;
-      }
-      .input-group > *:last-child {
-        border-top-right-radius: 6px;
-        border-bottom-right-radius: 6px;
-      }
-      .input-group > button {
-        cursor: pointer;
-      }
-      .input-group > select {
-        appearance: auto;
-      }
-
-      /* ── Simple calendar dropdown (variant 2) ─────────── */
-      /* 用於訂房明細表 入住日 / 退房日 cells；藍色用 surface-action #005FCC */
-      .rb-cal-cell {
-        position: relative;
-        min-width: 160px;
-      }
-      .calendar-dropdown {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        background: var(--color-white);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--color-border-default);
-        border-radius: 0.5rem;
-        width: 280px;
-      }
-      .calendar-dropdown.active {
-        display: block;
-      }
-      .calendar-day:hover:not(:disabled) {
-        background-color: var(--color-surface-hover);
-      }
-      .calendar-day.selected {
-        background-color: var(--color-radio) !important;
-        color: var(--color-white) !important;
-      }
-      .calendar-day.today {
-        border: 1.5px solid var(--color-radio);
-        font-weight: bold;
-      }
-      .title-highlight {
-        background-color: var(--color-accent-pink) !important;
-        border-radius: 4px;
-      }
-      .calendar-day:disabled {
-        color: var(--color-text-default);
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-      .calendar-header-select {
-        border: none;
-        background: transparent;
-        font-weight: bold;
-        color: var(--color-text-emphasis);
-        cursor: pointer;
-        padding: 2px 4px;
-        border-radius: 4px;
-      }
-      .calendar-header-select:hover {
-        background-color: var(--color-surface-hover);
-      }
-      .calendar-header-select:focus {
-        outline: 2px solid var(--color-radio);
-      }
-
-      /* ── Stepper input (table 間數欄) ──────────────────── */
-      /* 對應 Figma 間數 cell：145×36 box，內含 [−] [N] [+] */
-      .stepper {
-        display: inline-flex;
-        align-items: center;
-        width: 145px;
-        height: 36px;
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 6px;
-        background: var(--color-white);
-        overflow: hidden;
-      }
-      .stepper-btn {
-        flex: 0 0 44px;
-        height: 100%;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        color: var(--color-text-default);
-        line-height: 1;
-      }
-      .stepper-btn:hover {
-        background: var(--color-surface-hover);
-      }
-      .stepper input {
-        flex: 1;
-        min-width: 0;
-        height: 100%;
-        border: none;
-        background: transparent;
-        text-align: center;
-        font-size: 16px;
-        color: var(--color-text-default);
-        outline: none;
-        padding: 0;
-      }
-
-      /* ── Room-booking: filter tabs (棟別 chips) ─────────── */
-      /* Figma Button component-set:
-         circle-none-selected (974:12453)  → transparent + stroke #d1d1d1, padding 10/16, r:28
-         circle-selected-yellow (1482:26085) → fill+stroke #f7d275, padding 10/16, r:28 */
-      .rb-filter-tab {
-        height: 42px;
-        padding: 10px 16px;
-        border-radius: 28px;
-        font-size: 16px;
-        cursor: pointer;
-        color: var(--color-text-default);
-        background: transparent;
-        border: 1px solid var(--color-border-disabled);
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .rb-filter-tab:hover {
-        background: var(--color-surface-hover);
-      }
-      .rb-filter-tab.rb-active {
-        background: var(--color-subitem-selected);
-        border-color: var(--color-subitem-selected);
-        color: var(--color-text-default);
-      }
-
-      /* ── Inventory metric toggle (訂/餘/保) ───────────── */
-      /* 對應 Figma Frame 346：36×36、r:4、border 同 --c、active 時填 --c；文字統一 #454545 */
-      .inv-metric-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 4px;
-        border: 1px solid var(--c);
-        background: var(--color-white);
-        color: var(--color-text-default);
-        font-size: 16px;
-        line-height: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        padding: 0;
-      }
-      .inv-metric-btn.rb-active {
-        background: var(--c);
-      }
-
-      /* ── Room-booking: accordion ───────────────────────── */
-      .rb-accordion-content.rb-hidden {
-        display: none;
-      }
-
-      /* ── Calendar component ────────────────────────────── */
-      /* width 封頂 351px；容器更窄時等比縮（cell 用 1fr 分配） */
-      .rb-cal-wrap {
-        width: 351px;
-        max-width: 100%;
-        background: var(--color-white);
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 12px;
-        padding: 12px;
-      }
-      .rb-cal-row1 {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 36px;
-        margin-bottom: 12px;
-      }
-      .rb-cal-row2 {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 40px;
-        margin-bottom: 8px;
-      }
-      .rb-selected-count {
-        font-size: 16px;
-        color: var(--color-text-default);
-      }
-      .rb-cal-right-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .rb-today-btn {
-        font-size: 16px;
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 6px;
-        width: 56px;
-        height: 34px;
-        background: var(--color-white);
-        color: var(--color-text-default);
-        cursor: pointer;
-      }
-      .rb-today-btn:hover {
-        background: var(--color-surface-hover);
-      }
-      .rb-interval-select {
-        font-size: 14px;
-        border: 1px solid var(--color-border-disabled);
-        border-radius: 6px;
-        width: 79px;
-        height: 36px;
-        background: var(--color-white);
-        color: var(--color-text-default);
-        cursor: pointer;
-        padding: 0 6px;
-      }
-      .rb-interval-select:disabled {
-        background: var(--color-border-default);
-        opacity: 1;
-        cursor: not-allowed;
-      }
-      .rb-nav-btn {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid var(--color-text-placeholder);
-        border-radius: 4px;
-        background: var(--color-white);
-        cursor: pointer;
-      }
-      .rb-nav-btn:hover {
-        background: var(--color-surface-hover);
-      }
-      .rb-cal-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--color-text-default);
-        min-width: 125px;
-        text-align: center;
-      }
-      #calGrid {
-        display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        column-gap: 5px;
-        row-gap: 8px;
-        touch-action: none;
-      }
-      /* Day cells — scoped under .rb-cal-wrap */
-      .rb-cal-wrap .day {
-        height: 55px;
-        border-radius: 12px;
-        border: 1px solid var(--color-border-disabled);
-        padding: 6px 4px;
-        text-align: center;
-        background: var(--color-white);
-        cursor: pointer;
-        user-select: none;
-        -webkit-user-select: none;
-        box-sizing: border-box;
-      }
-      .rb-cal-wrap .day:hover:not(.disabled) {
-        border-color: var(--color-text-placeholder);
-        background: var(--color-surface-hover);
-      }
-      .rb-cal-wrap .day-wday {
-        font-size: 12px;
-        color: var(--color-text-default);
-        margin-bottom: 2px;
-      }
-      .rb-cal-wrap .day-num {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--color-text-default);
-        line-height: 1.4;
-      }
-      /* outside month (type=future): no fill, #e1e1e0 border, #888888 text */
-      .rb-cal-wrap .day.outside {
-        border-color: var(--color-border-default);
-      }
-      .rb-cal-wrap .day.outside .day-wday,
-      .rb-cal-wrap .day.outside .day-num {
-        color: var(--color-text-secondary);
-      }
-      /* past/disabled (type=diasbled): #e1e1e0 fill+border, #888888 text */
-      .rb-cal-wrap .day.disabled {
-        background: var(--color-border-default) !important;
-        border-color: var(--color-border-default) !important;
-        cursor: not-allowed;
-        pointer-events: none;
-      }
-      .rb-cal-wrap .day.disabled .day-wday,
-      .rb-cal-wrap .day.disabled .day-num {
-        color: var(--color-text-secondary) !important;
-      }
-      /* today (type=today): #ffc0cb fill, white text */
-      .rb-cal-wrap .day.today {
-        background: var(--color-accent-pink) !important;
-        border-color: var(--color-accent-pink) !important;
-      }
-      .rb-cal-wrap .day.today .day-wday,
-      .rb-cal-wrap .day.today .day-num {
-        color: var(--color-white) !important;
-      }
-      /* sel-start/end (type=focus): #86b7fe fill, #ffffff border, white text */
-      .rb-cal-wrap .day.sel-start,
-      .rb-cal-wrap .day.sel-end {
-        background: var(--color-chart-blue) !important;
-        border-color: var(--color-white) !important;
-      }
-      .rb-cal-wrap .day.sel-start .day-wday,
-      .rb-cal-wrap .day.sel-start .day-num,
-      .rb-cal-wrap .day.sel-end .day-wday,
-      .rb-cal-wrap .day.sel-end .day-num {
-        color: var(--color-white) !important;
-      }
-      /* sel-mid (type=selected): #bbf7d0 fill, #454545 text */
-      .rb-cal-wrap .day.sel-mid {
-        background: var(--color-accent-light-green) !important;
-        border-color: var(--color-accent-light-green) !important;
-      }
-      .rb-cal-wrap .day.sel-mid .day-wday,
-      .rb-cal-wrap .day.sel-mid .day-num {
-        color: var(--color-text-default) !important;
-      }
-      /* today + sel-mid: green overrides pink */
-      .rb-cal-wrap .day.today.sel-mid {
-        background: var(--color-accent-light-green) !important;
-        border-color: var(--color-accent-light-green) !important;
-      }
-      .rb-cal-wrap .day.today.sel-mid .day-wday,
-      .rb-cal-wrap .day.today.sel-mid .day-num {
-        color: var(--color-text-default) !important;
-      }
-      /* today + sel-start/end: blue overrides pink */
-      .rb-cal-wrap .day.today.sel-start,
-      .rb-cal-wrap .day.today.sel-end {
-        background: var(--color-chart-blue) !important;
-        border-color: var(--color-white) !important;
-      }
-      .rb-cal-wrap .day.today.sel-start .day-wday,
-      .rb-cal-wrap .day.today.sel-start .day-num,
-      .rb-cal-wrap .day.today.sel-end .day-wday,
-      .rb-cal-wrap .day.today.sel-end .day-num {
-        color: var(--color-white) !important;
-      }
-    </style>
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/landing.css" rel="stylesheet" />
   </head>
   <body>
     <!-- ════════════════════════════════════
@@ -1370,35 +138,50 @@
           <div
             class="md:hidden flex items-center justify-around px-4 py-3"
           >
-            <div id="mobileBulletinBtn" class="relative cursor-pointer">
+            <button
+              id="mobileBulletinBtn"
+              type="button"
+              class="relative cursor-pointer border-0 bg-transparent p-0"
+              aria-label="開啟公告"
+            >
               <img
                 src="./assets/icons/bulletin.svg"
                 class="w-6 h-6"
-                alt="公告"
+                alt=""
               />
               <span
                 class="absolute -top-1.5 -right-2 bg-brand-500 text-white text-[10px] rounded-full px-1 py-0.5 leading-none"
                 >99</span
               >
-            </div>
-            <div id="mobileMessageBtn" class="relative cursor-pointer">
+            </button>
+            <button
+              id="mobileMessageBtn"
+              type="button"
+              class="relative cursor-pointer border-0 bg-transparent p-0"
+              aria-label="開啟訊息"
+            >
               <img
                 src="./assets/icons/message.svg"
                 class="w-6 h-6"
-                alt="訊息"
+                alt=""
               />
               <span
                 class="absolute -top-1.5 -right-1 bg-border-disabled text-text-default text-[10px] rounded-full px-1 py-0.5 leading-none"
                 >0</span
               >
-            </div>
-            <div id="mobileMemberBtn" class="relative cursor-pointer">
+            </button>
+            <button
+              id="mobileMemberBtn"
+              type="button"
+              class="relative cursor-pointer border-0 bg-transparent p-0"
+              aria-label="開啟會員安全管理"
+            >
               <img
                 src="./assets/icons/person-md.svg"
                 class="w-6 h-6"
-                alt="個人"
+                alt=""
               />
-            </div>
+            </button>
             <div class="relative">
               <img
                 src="./assets/icons/system.svg"
@@ -2034,34 +817,46 @@
             ></div>
             <!-- Function icons -->
             <div id="topWrap" class="flex items-center gap-11">
-              <div id="desktopBulletinBtn" class="relative cursor-pointer">
+              <button
+                id="desktopBulletinBtn"
+                type="button"
+                class="relative cursor-pointer border-0 bg-transparent p-0"
+                aria-label="開啟公告"
+              >
                 <img
                   src="./assets/icons/bulletin.svg"
-                  alt="bulletin"
+                  alt=""
                   class="w-6 h-6"
                 />
                 <span
                   class="absolute -top-1.5 -right-2 bg-brand-500 text-white text-[10px] rounded-full px-1 py-0.5 leading-none"
                   >99</span
                 >
-              </div>
-              <div id="desktopMessageBtn" class="relative cursor-pointer">
+              </button>
+              <button
+                id="desktopMessageBtn"
+                type="button"
+                class="relative cursor-pointer border-0 bg-transparent p-0"
+                aria-label="開啟訊息"
+              >
                 <img
                   src="./assets/icons/message.svg"
-                  alt="message"
+                  alt=""
                   class="w-6 h-6"
                 />
                 <span
                   class="absolute -top-1.5 -right-1 bg-border-disabled text-text-default text-[10px] rounded-full px-1 py-0.5 leading-none"
                   >0</span
                 >
-              </div>
-              <img
+              </button>
+              <button
                 id="desktopMemberBtn"
-                src="./assets/icons/person-md.svg"
-                alt="person-md"
-                class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
-              />
+                type="button"
+                class="cursor-pointer border-0 bg-transparent p-0 opacity-70 hover:opacity-100"
+                aria-label="開啟會員安全管理"
+              >
+                <img src="./assets/icons/person-md.svg" alt="" class="w-6 h-6" />
+              </button>
               <img
                 src="./assets/icons/system.svg"
                 alt="system"
@@ -2300,8 +1095,8 @@
                         >
                         <!--
                       Figma: Input attached-link
-                      Default → bg #fff, text #454545, icon attached-link (black)
-                      Hover   → bg #454545, text #E1E1E0, icon attached-link-moved (#E1E1E0)
+                      Default → bg Neutral/0, text Text/800, icon attached-link
+                      Hover   → bg Text/800, text Text/100, icon attached-link-moved
                     -->
                         <button
                           class="group border border-border-disabled rounded-[6px] text-xs text-text-default hover:text-text-inverse bg-white hover:bg-text-default transition-colors duration-150 px-2 py-1 flex items-center gap-1 cursor-pointer whitespace-nowrap"
@@ -3014,14 +1809,14 @@
 
         <!-- Scrollable body -->
         <div class="flex-1 overflow-y-auto min-h-0 p-3 flex flex-col gap-3">
-          <!-- Frame 15: Tab + Content (border #d1d1d1, padding 12px)
+          <!-- Frame 15: Tab + Content (border Neutral/200, padding 12px)
                Tab row = 3 個獨立 Input instances，各自有 border + radius，gap 12px
-               選中 bg #e1e1e0，未選中 #ffffff，字型 12px (Input sm) -->
+               選中 bg Neutral/100，未選中 Neutral/0，字型 12px (Input sm) -->
           <div
             class="border border-border-disabled rounded-md p-3 flex flex-col gap-3"
           >
             <!-- Frame 61 — Tab row
-                 Input instances: 無外框，選中 bg #e1e1e0，未選中 bg #ffffff
+                 Input instances: 無外框，選中 bg Neutral/100，未選中 bg Neutral/0
                  寬度：密碼 44px、暱稱 44px、IP 紀錄 63px，gap 12px，py-1.5 px-3，text-base
                  whitespace-nowrap + overflow-x-auto 保證標題不換行、過長可滑動 -->
             <div class="overflow-x-auto">
@@ -3218,8 +2013,7 @@
       <div class="modal-box mx-3">
         <!-- Header -->
         <div
-          class="flex-shrink-0 flex h-[51px] items-center justify-between border-b border-text-placeholder px-3"
-          style="box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2)"
+          class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
         >
           <span
             id="modalRoomIntroTitle"
@@ -3327,8 +2121,7 @@
       <div class="modal-box mx-3">
         <!-- Header -->
         <div
-          class="flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
-          style="box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2)"
+          class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
         >
           <div class="flex min-w-0 items-center gap-6">
             <span
@@ -3698,7 +2491,7 @@
       <div class="modal-box mx-3">
         <!-- Header -->
         <div
-          class="flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3 shadow-[0_1px_0_rgba(0,0,0,0.2)]"
+          class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
         >
           <span
             id="modalPurchaseAddonTitle"
@@ -3898,7 +2691,7 @@
       <div class="modal-box mx-3">
         <!-- Header -->
         <div
-          class="flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3 shadow-[0_1px_0_rgba(0,0,0,0.2)]"
+          class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
         >
           <span
             id="modalOrderSummaryTitle"
@@ -3926,6 +2719,7 @@
                   <button
                     type="button"
                     class="inline-flex h-[39px] items-center gap-2 rounded-md bg-brand-50 px-3 py-1.5 text-xl font-semibold text-text-default"
+                    data-modal-open="modalSmsBackdrop"
                   >
                     <img
                       src="./assets/icons/order-summary-message-share.svg"
@@ -4506,8 +3300,233 @@
     </div>
 
     <!-- ════════════════════════════════════
+         Modal J — 簡訊
+    ════════════════════════════════════ -->
+    <div
+      id="modalSmsBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalSmsTitle"
+    >
+      <div class="modal-box mx-3">
+        <!-- Header -->
+        <div
+          class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+        >
+          <span id="modalSmsTitle" class="text-xl font-semibold text-text-default"
+            >簡訊</span
+          >
+          <button
+            type="button"
+            class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+            data-modal="modalSmsBackdrop"
+            aria-label="關閉"
+          >
+            <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+          </button>
+        </div>
+
+        <div class="min-h-0 flex-1 overflow-y-auto bg-white p-3">
+          <div class="sms-modal-content space-y-8">
+            <section class="sms-form-row">
+              <h3 class="pt-1 text-xl font-normal leading-[27px] text-text-default">
+                發送號碼
+              </h3>
+              <div class="grid gap-5 sm:grid-cols-2 sm:gap-6">
+                <label class="flex min-w-0 items-center gap-3">
+                  <input
+                    type="radio"
+                    name="smsSendNumber"
+                    class="h-5 w-5 shrink-0 accent-radio"
+                    checked
+                  />
+                  <button
+                    type="button"
+                    class="flex h-9 min-w-0 flex-1 items-center justify-between rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"
+                  >
+                    <span class="truncate">0999111222</span>
+                    <img src="./assets/icons/down.svg" alt="" class="h-6 w-6 shrink-0" />
+                  </button>
+                </label>
+                <label class="flex min-w-0 items-center gap-3">
+                  <input
+                    type="radio"
+                    name="smsSendNumber"
+                    class="h-5 w-5 shrink-0 accent-radio"
+                  />
+                  <span class="shrink-0 text-base text-text-default">自行設定</span>
+                  <input
+                    type="text"
+                    placeholder="placeholder"
+                    class="h-[34px] min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"
+                  />
+                </label>
+              </div>
+            </section>
+
+            <section class="sms-form-row">
+              <h3 class="text-xl font-normal leading-[27px] text-text-default">
+                訂單內容
+              </h3>
+              <div class="sms-field-grid">
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">訂單編號</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0 sm:col-span-2">
+                  <span class="block text-base text-text-default">飯店名稱</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">銀行</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">虛擬帳號</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">入住日</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">訂單總額</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">應付訂金</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">已付金額</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">訂房人</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">入住人</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">訂房人生日</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">繳款期限</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">取消日期</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+                <label class="block min-w-0">
+                  <span class="block text-base text-text-default">入住夜數</span>
+                  <input type="text" placeholder="placeholder" class="mt-3 h-[34px] w-full min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
+                </label>
+              </div>
+            </section>
+
+            <section class="sms-form-row">
+              <h3 class="text-xl font-normal leading-[27px] text-text-default">
+                發送內容
+              </h3>
+              <div class="space-y-5">
+                <div class="grid gap-5 sm:grid-cols-[247px_minmax(0,1fr)]">
+                  <label class="block min-w-0 sm:order-1">
+                    <span class="block text-base text-text-default">樣本</span>
+                    <button
+                      type="button"
+                      class="mt-3 flex h-9 w-full min-w-0 items-center justify-between rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"
+                    >
+                      <span class="truncate">sample</span>
+                      <img src="./assets/icons/down.svg" alt="" class="h-6 w-6 shrink-0" />
+                    </button>
+                  </label>
+                  <div class="rounded-lg border border-border-disabled bg-surface-hover p-3 sm:order-2">
+                    <div class="ml-auto flex w-full max-w-[253px] items-center justify-between gap-5">
+                      <div class="min-w-0">
+                        <div class="text-xl leading-[27px] text-text-default">字數統計</div>
+                        <div class="mt-1 text-xl leading-[27px] text-text-default">25</div>
+                      </div>
+                      <div class="h-[55px] w-px shrink-0 bg-text-muted"></div>
+                      <div class="min-w-0">
+                        <div class="text-xl leading-[27px] text-text-default">簡訊通數</div>
+                        <div class="mt-1 text-xl leading-[27px] text-text-default">1</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <textarea
+                  rows="4"
+                  placeholder="placeholder"
+                  class="block min-h-[99px] w-full resize-y rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"
+                ></textarea>
+              </div>
+            </section>
+
+            <section class="rounded-lg border border-border-disabled bg-white p-5">
+              <h3 class="bg-surface-default px-3 py-2 text-xl font-normal leading-[27px] text-text-default">
+                歷史紀錄
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="sms-table">
+                  <thead>
+                    <tr>
+                      <th class="sms-table-number">#</th>
+                      <th>登錄類別</th>
+                      <th>登錄日期</th>
+                      <th>登錄號碼</th>
+                      <th class="sms-table-right">登錄內容</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="sms-table-number">1</td>
+                      <td>placeholder</td>
+                      <td>placeholder</td>
+                      <td>placeholder</td>
+                      <td class="sms-table-right">111</td>
+                    </tr>
+                    <tr>
+                      <td class="sms-table-number">2</td>
+                      <td>placeholder</td>
+                      <td>placeholder</td>
+                      <td>placeholder</td>
+                      <td class="sms-table-right">111</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 px-3">
+          <button
+            type="button"
+            class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+            data-modal="modalSmsBackdrop"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+            data-modal="modalSmsBackdrop"
+          >
+            確定
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
          floatIcons/ai — 浮動客服按鈕
-         fixed 右下角，40×70px，圓形 icon frame #f6fafd
+         fixed 右下角，40×70px，圓形 icon frame Surface/Hover
     ════════════════════════════════════ -->
     <div class="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-1.5">
       <span class="text-base text-text-default whitespace-nowrap">客服</span>
@@ -4516,7 +3535,7 @@
         class="rounded-full p-[3px]"
         style="
           background: linear-gradient(to bottom, var(--color-accent-float-circle-mixed-1), var(--color-accent-float-circle-mixed-2));
-          filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
+          filter: var(--effect-float-shadow);
         "
       >
         <button
@@ -4540,8 +3559,7 @@
       <div class="modal-box">
         <!-- Header -->
         <div
-          class="flex items-center justify-between px-3 py-3 border-b border-border-focus"
-          style="box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08)"
+          class="modal-header-shadow-soft flex items-center justify-between border-b border-border-focus px-3 py-3"
         >
           <span
             id="modalLogoutTitle"
@@ -4592,8 +3610,7 @@
       <div class="modal-box">
         <!-- Header -->
         <div
-          class="flex items-center justify-between px-3 py-3 border-b border-border-focus"
-          style="box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08)"
+          class="modal-header-shadow-soft flex items-center justify-between border-b border-border-focus px-3 py-3"
         >
           <span
             id="modalSwitchTitle"
@@ -5858,20 +4875,56 @@
 
       // ── Modal open / close ───────────────────────────────────────────
       (function () {
-        function openModal(id) {
+        var modalReturnFocusTargets = {};
+        function rememberModalReturnFocus(id, target) {
+          var fallback = document.activeElement;
+          var focusTarget =
+            target && typeof target.focus === "function" ? target : fallback;
+          if (
+            focusTarget &&
+            focusTarget !== document.body &&
+            typeof focusTarget.focus === "function"
+          ) {
+            modalReturnFocusTargets[id] = focusTarget;
+          }
+        }
+        function restoreModalReturnFocus(id) {
+          var focusTarget = modalReturnFocusTargets[id];
+          delete modalReturnFocusTargets[id];
+          if (!focusTarget || !focusTarget.isConnected) return;
+          if (focusTarget.disabled) return;
+          try {
+            focusTarget.focus({ preventScroll: true });
+          } catch (err) {
+            focusTarget.focus();
+          }
+        }
+        function openModal(id, returnFocusTarget) {
           var el = document.getElementById(id);
           if (!el) return;
+          rememberModalReturnFocus(id, returnFocusTarget);
           if (id === "modalRoomEditBackdrop") resetRoomEditModal();
           if (id === "modalPurchaseAddonBackdrop") resetPurchaseAddonModal();
           if (id === "modalOrderSummaryBackdrop") resetOrderSummaryModal();
+          resetModalScroll(el);
           el.classList.add("open");
           document.body.style.overflow = "hidden";
         }
         function closeModal(id) {
           var el = document.getElementById(id);
           if (!el) return;
+          var wasOpen = el.classList.contains("open");
           el.classList.remove("open");
           document.body.style.overflow = "";
+          if (wasOpen) restoreModalReturnFocus(id);
+        }
+        function resetModalScroll(modal) {
+          modal.scrollTop = 0;
+          var box = modal.querySelector(".modal-box");
+          if (box) box.scrollTop = 0;
+          modal.querySelectorAll(".overflow-y-auto").forEach(function (scroller) {
+            scroller.scrollTop = 0;
+          });
         }
         function setRoomEditLocked(locked) {
           var modal = document.getElementById("modalRoomEditBackdrop");
@@ -6598,13 +5651,13 @@
             e.preventDefault();
             var variant = getOrderSummaryVariantFromOrderType();
             if (!setOrderSummaryVariant(variant)) return;
-            openModal("modalOrderSummaryBackdrop");
+            openModal("modalOrderSummaryBackdrop", orderSummarySubmit);
             return;
           }
           var btn = e.target.closest("[data-modal-open]");
           if (!btn) return;
           e.preventDefault();
-          openModal(btn.dataset.modalOpen);
+          openModal(btn.dataset.modalOpen, btn);
         });
 
         // Compact desktop triggers → Modal A/B
@@ -6616,7 +5669,7 @@
               : "modalSwitchBackdrop";
           btn &&
             btn.addEventListener("click", function () {
-              openModal(target);
+              openModal(target, btn);
             });
         });
 
@@ -6625,7 +5678,7 @@
           var btn = document.getElementById(id);
           btn &&
             btn.addEventListener("click", function () {
-              openModal("modalBulletinBackdrop");
+              openModal("modalBulletinBackdrop", btn);
             });
         });
 
@@ -6634,7 +5687,7 @@
           var btn = document.getElementById(id);
           btn &&
             btn.addEventListener("click", function () {
-              openModal("modalAdministerBackdrop");
+              openModal("modalAdministerBackdrop", btn);
             });
         });
 
@@ -6643,7 +5696,7 @@
           var btn = document.getElementById(id);
           btn &&
             btn.addEventListener("click", function () {
-              openModal("modalMemberBackdrop");
+              openModal("modalMemberBackdrop", btn);
             });
         });
 
@@ -6676,6 +5729,7 @@
           "modalRoomIntroBackdrop",
           "modalRoomEditBackdrop",
           "modalPurchaseAddonBackdrop",
+          "modalSmsBackdrop",
           "modalOrderSummaryBackdrop",
         ].forEach(function (id) {
           var el = document.getElementById(id);
@@ -6697,6 +5751,7 @@
               "modalRoomIntroBackdrop",
               "modalRoomEditBackdrop",
               "modalPurchaseAddonBackdrop",
+              "modalSmsBackdrop",
               "modalOrderSummaryBackdrop",
             ].forEach(closeModal);
           }
@@ -6985,7 +6040,7 @@
               label: "訂單數",
               data: [45, 62, 55, 70, 48, 65, 58],
               borderColor: token("--color-chart-purple-red"),
-              backgroundColor: "rgba(255,11,214,0.08)",
+              backgroundColor: token("--effect-chart-purple-red-soft"),
               borderWidth: 2,
               pointBackgroundColor: token("--color-chart-purple-red"),
               pointRadius: 3,

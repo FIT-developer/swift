@@ -29,8 +29,8 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| Background | `#ffffff` | `Color/Neutral/0` |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 | Corner radius | `6px` | `Radius/6` |
 
 > Default / hover：Frame 32 為 517×280（内縮 4px，component 寬 525）。  
@@ -47,12 +47,12 @@
     │   └── Texts×11: 20/18/16/14/12/10/8/6/4/2/0  (gap: 20px)
     └── Frame 31 — 圖表主體 (377×256, x:79, y:12)
         ├── Frame 27 — 圖例 (198×16, x:89.5, y:0)
-        │   ├── Rectangle 3 — 色塊 (52×16, fill:#86b7fe, stroke:#86b7fe)
+        │   ├── Rectangle 3 — 色塊 (52×16, fill:Color/Chart/blue, stroke:Color/Chart/blue)
         │   └── Texts '2026-01-31 今日可住房況' (138×16, x:60)
         ├── Group 4 — 格線 + 長條 (377×208, x:0, y:24)
-        │   ├── Lines×11 — 水平格線 (stroke:#b0b0b0)
-        │   ├── Lines×6  — 垂直格線 (stroke:#b0b0b0)
-        │   └── Rectangles×5 — 長條（各 39px 寬，fill:#86b7fe）
+        │   ├── Lines×11 — 水平格線 (stroke:Color/Neutral/300)
+        │   ├── Lines×6  — 垂直格線 (stroke:Color/Neutral/300)
+        │   └── Rectangles×5 — 長條（各 39px 寬，fill:Color/Chart/blue）
         └── Frame 30 — X軸房型標籤 (377×16, x:0, y:240)
             └── Texts×5: 威尼斯雙人/夏慕尼四人/義大利三人/保留房二人/保留房四人
 ```
@@ -65,7 +65,7 @@
 |---|---|
 | 數值刻度（Default） | `20` `18` `16` `14` `12` `10` `8` `6` `4` `2` `0`，間距 20px |
 | 數值刻度（sm） | `20` `16` `12` `10` `6` `4` `0`（精簡，非等距） |
-| 字型 | 12px Regular，`#454545` |
+| 字型 | 12px Regular，`Color/Neutral/800` |
 | 軸標題 | 無（bar 圖沒有 Y 軸標題，與 line 圖不同） |
 
 ---
@@ -80,7 +80,7 @@
 | `保留房二人` | x:237.75 |
 | `保留房四人` | x:317 |
 
-- 每個標籤 60×16px，12px Regular，`#454545`
+- 每個標籤 60×16px，12px Regular，`Color/Neutral/800`
 
 ---
 
@@ -88,11 +88,11 @@
 
 | 房型 | 寬 | 高（示例） | x | fill |
 |---|---|---|---|---|
-| 威尼斯雙人 | 39px | 120px | x:17 | `#86b7fe` |
-| 夏慕尼四人 | 39px | 190px | x:93 | `#86b7fe` |
-| 義大利三人 | 39px | 30px | x:169 | `#86b7fe` |
-| 保留房二人 | 39px | 49px | x:244 | `#86b7fe` |
-| 保留房四人 | 39px | 20px | x:319 | `#86b7fe` |
+| 威尼斯雙人 | 39px | 120px | x:17 | `Color/Chart/blue` |
+| 夏慕尼四人 | 39px | 190px | x:93 | `Color/Chart/blue` |
+| 義大利三人 | 39px | 30px | x:169 | `Color/Chart/blue` |
+| 保留房二人 | 39px | 49px | x:244 | `Color/Chart/blue` |
+| 保留房四人 | 39px | 20px | x:319 | `Color/Chart/blue` |
 
 ---
 
@@ -100,10 +100,10 @@
 
 | 元素 | 值 |
 |---|---|
-| 色塊 Rectangle 3 | 52×16px，fill `#86b7fe`，stroke `#86b7fe`（實心藍色塊） |
-| 圖例文字 | `'2026-01-31 今日可住房況'`，12px Regular，`#454545` |
+| 色塊 Rectangle 3 | 52×16px，fill `Color/Chart/blue`，stroke `Color/Chart/blue`（實心藍色塊） |
+| 圖例文字 | `'2026-01-31 今日可住房況'`，12px Regular，`Color/Neutral/800` |
 
-> 與折線圖（`#f44df4` 空心框）不同：bar 圖圖例為實心藍色塊。
+> 與折線圖（`Color/Accent/Celebration` 空心框）不同：bar 圖圖例為實心藍色塊。
 
 ---
 
@@ -114,9 +114,9 @@
 | 屬性 | 值 | Token |
 |---|---|---|
 | 尺寸 | `93×38px` | — |
-| 背景 | `#4f4f4f` | `Color/Neutral/700` |
+| 背景 | `Color/Neutral/700` | `Color/Neutral/700` |
 | Corner radius | `6px` | `Radius/6` |
-| 文字色 | `#e1e1e0` | `Color/Neutral/100` |
+| 文字色 | `Color/Neutral/100` | `Color/Neutral/100` |
 | 第一行 | `'1/4'` 12px | — |
 | 第二行 | `'訂房數據: 56'` 12px | — |
 | 箭頭方向 | Polygon 1 在右側（x:99.89），向右（→）指向資料點 | — |
@@ -144,14 +144,14 @@
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| 卡片背景 | `#ffffff` | `Color/Neutral/0` |
-| 卡片邊框 | `#d1d1d1` | `Color/Neutral/200` |
-| 文字（全部） | `#454545` | `Color/Neutral/800` |
-| 格線 | `#b0b0b0` | `Color/Neutral/300` |
-| 長條 fill | `#86b7fe` | `Color/Chart/blue` |
-| 圖例色塊 | `#86b7fe` | `Color/Chart/blue` |
-| Tooltip 背景 | `#4f4f4f` | `Color/Neutral/700` |
-| Tooltip 文字 | `#e1e1e0` | `Color/Neutral/100` |
+| 卡片背景 | `Color/Neutral/0` | `Color/Neutral/0` |
+| 卡片邊框 | `Color/Neutral/200` | `Color/Neutral/200` |
+| 文字（全部） | `Color/Neutral/800` | `Color/Neutral/800` |
+| 格線 | `Color/Neutral/300` | `Color/Neutral/300` |
+| 長條 fill | `Color/Chart/blue` | `Color/Chart/blue` |
+| 圖例色塊 | `Color/Chart/blue` | `Color/Chart/blue` |
+| Tooltip 背景 | `Color/Neutral/700` | `Color/Neutral/700` |
+| Tooltip 文字 | `Color/Neutral/100` | `Color/Neutral/100` |
 
 ---
 

@@ -37,7 +37,7 @@
 | Padding | top/bottom `6px`、left/right `12px` | `Spacing/6`、`Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 | 文字 variant | `Texts / base (16px Regular)` | — |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -45,9 +45,9 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#454545` | `Color/Neutral/800` |
+| 背景 | `Color/Neutral/800` | `Color/Neutral/800` |
 | 文字 | `"確定"` | — |
-| 文字色 | `#e1e1e0` | `Color/Neutral/100` |
+| 文字色 | `Color/Neutral/100` | `Color/Neutral/100` |
 
 ---
 
@@ -55,9 +55,9 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#d1d1d1` | `Color/Neutral/200` |
+| 背景 | `Color/Neutral/200` | `Color/Neutral/200` |
 | 文字 | `"取消"` | — |
-| 文字色 | `#454545` | `Color/Neutral/800` |
+| 文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -65,12 +65,12 @@
 
 ```html
 <!-- 確定 -->
-<button class="px-3 py-1.5 rounded-md bg-[#454545] text-[#e1e1e0] text-base border border-[#d1d1d1]">
+<button class="px-3 py-1.5 rounded-md bg-[Color/Neutral/800] text-text-inverse text-base border border-border-disabled">
   確定
 </button>
 
 <!-- 取消 -->
-<button class="px-3 py-1.5 rounded-md bg-[#d1d1d1] text-[#454545] text-base border border-[#d1d1d1]">
+<button class="px-3 py-1.5 rounded-md bg-border-disabled text-text-default text-base border border-border-disabled">
   取消
 </button>
 ```

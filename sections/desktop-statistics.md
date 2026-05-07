@@ -22,7 +22,7 @@ Desktop Row 3，全寬。顯示 4 個統計圖表，以 **2×2 grid** 排列：
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 | Background | 無（透明） | — |
-| Border | `#D1D1D1` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -32,7 +32,7 @@ Desktop Row 3，全寬。顯示 4 個統計圖表，以 **2×2 grid** 排列：
 [FRAME] Statistics (1154×804px)
 ├── [INSTANCE] Title (112×27px, x:12, y:12)
 │   ├── [INSTANCE] icons/operation-system (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "統計圖表"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "統計圖表"  20px  SemiBold 600  Color/Neutral/800
 └── [FRAME] Statistics details (1130×741px, x:12, y:51)
     ├── [INSTANCE] chartjs - bar        (525×293.5px, x:0,   y:0)   ← 左上
     ├── [INSTANCE] chartjs - line       (525×304px,   x:605, y:0)   ← 右上

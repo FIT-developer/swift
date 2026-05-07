@@ -35,7 +35,7 @@ Mobile 頂部區塊，由 **Nav bar**（Frame 4）與 **Order status** 兩個子
 └── [FRAME] Order status (744×313px, y:36)
     ├── [INSTANCE] Title
     │   ├── [INSTANCE] icons/operation-system (24×24)
-    │   └── [INSTANCE] Texts → [TEXT] "訂單快覽"  20px  SemiBold 600  #454545
+    │   └── [INSTANCE] Texts → [TEXT] "訂單快覽"  20px  SemiBold 600  Color/Neutral/800
     └── [FRAME] Order details（5 個 Order rows，y:36 起）
         ├── Order row 1 — 訂單預訂
         ├── Order row 2 — 待入住
@@ -86,8 +86,8 @@ Mobile 頂部區塊，由 **Nav bar**（Frame 4）與 **Order status** 兩個子
 | 位置 | y:36（距 nav bar 底部 12px） | — |
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
-| Border | `#D1D1D1` | `Color/Neutral/200` |
-| Background | `#FFFFFF` | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
 
 ### Title 列
 
@@ -97,7 +97,7 @@ Mobile 頂部區塊，由 **Nav bar**（Frame 4）與 **Order status** 兩個子
 | 文字 | `"訂單快覽"` | — |
 | Font | Noto Sans **SemiBold 600** | — |
 | Font size | `20px`（md） | — |
-| Color | `#454545` | `Color/Neutral/800` |
+| Color | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ### Order rows
 

@@ -41,10 +41,10 @@
 | 屬性 | 值 | Token |
 |---|---|---|
 | 尺寸 | `34×34px` | — |
-| Background | `#ffffff` | `Color/Neutral/0` |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 | Corner radius | `mixed`（圓角僅部分邊） | — |
-| Icon fill | `#000000` | — |
+| Icon fill | `Color/Icon/Default` | — |
 
 ---
 
@@ -54,18 +54,18 @@
 |---|---|---|
 | 尺寸 | `50.4×34px` | — |
 | Padding | top/bottom `6px`、left/right `12px` | — |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 | 文字對齊 | CENTER | — |
 | 文字字號 | `16px` Regular | — |
-| 文字色 | `#454545` | `Color/Neutral/800` |
+| 文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ### 頁碼狀態
 
 | 狀態 | 背景 | Token |
 |---|---|---|
-| 一般頁碼 | `#ffffff` | `Color/Neutral/0` |
-| 當前頁（active） | `#b0b0b0` | `Color/Neutral/300` |
-| 省略符號 `...` | `#ffffff` | — |
+| 一般頁碼 | `Color/Neutral/0` | `Color/Neutral/0` |
+| 當前頁（active） | `Color/Neutral/300` | `Color/Neutral/300` |
+| 省略符號 `...` | `Color/Neutral/0` | — |
 
 ---
 
@@ -75,7 +75,7 @@
 [←]  [1]  [2★]  [...]  [4]  [5]  [→]
 ```
 
-★ 當前頁（fill `#b0b0b0`）
+★ 當前頁（fill `Color/Neutral/300`）
 
 ---
 
@@ -104,17 +104,17 @@
 ```html
 <nav class="flex items-end pt-3">
   <!-- 上一頁 -->
-  <button class="w-[34px] h-[34px] flex items-center justify-center bg-white border border-[#d1d1d1] rounded-l-md">
+  <button class="w-[34px] h-[34px] flex items-center justify-center bg-white border border-border-disabled rounded-l-md">
     <img src="../assets/icons/left.svg" class="w-4 h-2.5">
   </button>
   <!-- 頁碼 -->
-  <button class="w-[50px] h-[34px] text-base text-center text-[#454545] bg-white border border-[#d1d1d1]">1</button>
-  <button class="w-[50px] h-[34px] text-base text-center text-[#454545] bg-[#b0b0b0] border border-[#d1d1d1]">2</button>
-  <button class="w-[50px] h-[34px] text-base text-center text-[#454545] bg-white border border-[#d1d1d1]">...</button>
-  <button class="w-[50px] h-[34px] text-base text-center text-[#454545] bg-white border border-[#d1d1d1]">4</button>
-  <button class="w-[50px] h-[34px] text-base text-center text-[#454545] bg-white border border-[#d1d1d1]">5</button>
+  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-white border border-border-disabled">1</button>
+  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-[Color/Neutral/300] border border-border-disabled">2</button>
+  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-white border border-border-disabled">...</button>
+  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-white border border-border-disabled">4</button>
+  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-white border border-border-disabled">5</button>
   <!-- 下一頁 -->
-  <button class="w-[34px] h-[34px] flex items-center justify-center bg-white border border-[#d1d1d1] rounded-r-md">
+  <button class="w-[34px] h-[34px] flex items-center justify-center bg-white border border-border-disabled rounded-r-md">
     <img src="../assets/icons/right.svg" class="w-4 h-2.5">
   </button>
 </nav>

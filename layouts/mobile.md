@@ -26,7 +26,7 @@ Mobile 版與 Desktop 版**內容完全相同**，差異僅在佈局：
 |---|---|---|
 | 示意稿寬度 | `768px` | — |
 | 頁面總高度 | `2278px`（含所有 sections） | — |
-| Background | `#FFFFFF` | `Color/Neutral/0` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
 | Padding | `12px` all sides | `Spacing/12` |
 | 內容寬度 | `744px`（768 - 24） | — |
 
@@ -84,7 +84,7 @@ Mobile 版與 Desktop 版**內容完全相同**，差異僅在佈局：
 | 容器高度 | `313px` | `313px`（相同） |
 | Padding | `12px` | `12px`（相同） |
 | Corner radius | `6px` | `6px`（相同） |
-| Border | `#D1D1D1` | `#D1D1D1`（相同） |
+| Border | `Color/Neutral/200` | `Color/Neutral/200`（相同） |
 | Order row 寬度 | `720px`（fill） | `532px`（fill） |
 | Order row 高度 | `34px` | `34px`（相同） |
 | Row 間距 | `20px` | `20px`（相同） |
@@ -164,9 +164,9 @@ Mobile 版與 Desktop 版**內容完全相同**，差異僅在佈局：
 
 ```
 [INSTANCE] floatIcons/ai (40×70px)
-├── [TEXT] "客服"  base 16px Regular  #454545  ← 上方標籤
-└── [FRAME] Frame 78 (48×48, cornerRadius 56, fills #F6FAFD, padding 6px)
-    └── [INSTANCE] icons/ai (24×24, cornerRadius 56, fills #FFFFFF)
+├── [TEXT] "客服"  base 16px Regular  Color/Neutral/800  ← 上方標籤
+└── [FRAME] Frame 78 (48×48, cornerRadius 56, fills Color/Neutral/75, padding 6px)
+    └── [INSTANCE] icons/ai (24×24, cornerRadius 56, fills Color/Neutral/0)
 ```
 
 ### 樣式
@@ -174,14 +174,14 @@ Mobile 版與 Desktop 版**內容完全相同**，差異僅在佈局：
 | 元素 | 屬性 | 值 | Token |
 |---|---|---|---|
 | 標籤文字 | font | base 16px Regular | — |
-| 標籤文字 | color | `#454545` | `Color/Neutral/800` |
+| 標籤文字 | color | `Color/Neutral/800` | `Color/Neutral/800` |
 | 圓形容器 | size | 48×48px | — |
 | 圓形容器 | cornerRadius | `56px` | `Radius/56` |
-| 圓形容器 | background | `#F6FAFD` | `Color/Neutral/75` |
+| 圓形容器 | background | `Color/Neutral/75` | `Color/Neutral/75` |
 | 圓形容器 | padding | `6px` | `Spacing/6` |
 | Icon 容器 | size | 24×24px | — |
 | Icon 容器 | cornerRadius | `56px` | `Radius/56` |
-| Icon 容器 | background | `#FFFFFF` | `Color/Neutral/0` |
+| Icon 容器 | background | `Color/Neutral/0` | `Color/Neutral/0` |
 | Icon | `icons/ai` | 24×24 | — |
 
 > `floatIcons/ai` 僅出現於 Mobile 版，Desktop 版無此元素。  

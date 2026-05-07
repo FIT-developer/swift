@@ -29,8 +29,8 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| Background | `#ffffff` | `Color/Neutral/0` |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 | Corner radius | `8px` | `Radius/8` |
 | Padding | `12px` all sides | `Spacing/12` |
 
@@ -48,13 +48,13 @@
 │       └── Texts×10: 90 / 80 / 70 / 60 / 50 / 40 / 30 / 20 / 10 / 0  (gap: 22px)
 └── Frame 22 — 圖表主體 (451×280, x:62, y:12)
     ├── Frame 27 — 圖例列 (132×16, x:159.5, y:0)
-    │   ├── Rectangle 3 — 色塊 (52×16, fill:#ffffff, stroke:#f44df4)
+    │   ├── Rectangle 3 — 色塊 (52×16, fill:Color/Neutral/0, stroke:Color/Accent/Celebration)
     │   └── Texts '一週訂房統計' (72×16, x:60)
     ├── Group 3 — 格線 + 折線 (463×208, x:-6, y:24)
-    │   ├── Lines×11 — 水平格線 (451px wide, stroke:#b0b0b0)
-    │   ├── Lines×8  — 垂直格線 (stroke:#b0b0b0)
-    │   ├── Vector 1 — 折線本體 (451.5×119.38, stroke:#ff0bd6)
-    │   └── Ellipses×7 — 資料點 (12×12, fill:#ffffff, stroke:#ff0bd6)
+    │   ├── Lines×11 — 水平格線 (451px wide, stroke:Color/Neutral/300)
+    │   ├── Lines×8  — 垂直格線 (stroke:Color/Neutral/300)
+    │   ├── Vector 1 — 折線本體 (451.5×119.38, stroke:Color/Chart/purpleRed)
+    │   └── Ellipses×7 — 資料點 (12×12, fill:Color/Neutral/0, stroke:Color/Chart/purpleRed)
     ├── Frame 21 — X軸日期 (450×16, x:0.5, y:240)
     │   └── Texts×7: 12/31 / 1/1 / 1/2 / 1/3 / 1/4 / 1/5 / 1/6
     └── Texts '日期' — X軸標題 (451×16, x:0, y:264, text-align:CENTER)
@@ -66,7 +66,7 @@
 
 | 元素 | 規格 |
 |---|---|
-| 標題 | `'訂單數'`，12px Regular，`#454545`，垂直置中（y:141） |
+| 標題 | `'訂單數'`，12px Regular，`Color/Neutral/800`，垂直置中（y:141） |
 | 數值刻度（Default） | `90` `80` `70` `60` `50` `40` `30` `20` `10` `0`，間距 22px |
 | 數值刻度（sm） | `90` `70` `50` `30` `10` `0`，間距 20px（每 20 單位一刻） |
 
@@ -76,8 +76,8 @@
 
 | 元素 | 規格 |
 |---|---|
-| 日期標籤 | `12/31` `1/1` `1/2` `1/3` `1/4` `1/5` `1/6`，12px Regular，`#454545` |
-| 軸標題 | `'日期'`，12px Regular，`#454545`，水平置中 |
+| 日期標籤 | `12/31` `1/1` `1/2` `1/3` `1/4` `1/5` `1/6`，12px Regular，`Color/Neutral/800` |
+| 軸標題 | `'日期'`，12px Regular，`Color/Neutral/800`，水平置中 |
 
 ---
 
@@ -85,14 +85,14 @@
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| 折線 | `#ff0bd6` | `Color/Chart/purpleRed` |
-| 資料點（圓） | fill `#ffffff`，stroke `#ff0bd6` | — |
-| 水平格線 | `#b0b0b0` | `Color/Neutral/300` |
-| 垂直格線 | `#b0b0b0` | `Color/Neutral/300` |
-| 圖例色塊邊框 | `#f44df4` | `Color/Bootstrap/aside/Notification` |
+| 折線 | `Color/Chart/purpleRed` | `Color/Chart/purpleRed` |
+| 資料點（圓） | fill `Color/Neutral/0`，stroke `Color/Chart/purpleRed` | — |
+| 水平格線 | `Color/Neutral/300` | `Color/Neutral/300` |
+| 垂直格線 | `Color/Neutral/300` | `Color/Neutral/300` |
+| 圖例色塊邊框 | `Color/Accent/Celebration` | `Color/Bootstrap/aside/Notification` |
 
-> 圖例色塊（Rectangle 3）fill 為 `#ffffff`，border 為 `#f44df4`，呈現為「空白框線」樣式。  
-> 注意：圖例 stroke `#f44df4` ≠ 折線顏色 `#ff0bd6`（兩者相近但不同值，各有獨立 token）。
+> 圖例色塊（Rectangle 3）fill 為 `Color/Neutral/0`，border 為 `Color/Accent/Celebration`，呈現為「空白框線」樣式。
+> 注意：圖例 stroke `Color/Accent/Celebration` ≠ 折線顏色 `Color/Chart/purpleRed`（兩者相近但不同值，各有獨立 token）。
 
 ---
 
@@ -105,11 +105,11 @@
 | 屬性 | 值 | Token |
 |---|---|---|
 | 尺寸 | `93×38px` | — |
-| 背景 | `#4f4f4f` | `Color/Neutral/700` |
-| 文字色 | `#e1e1e0` | `Color/Neutral/100` |
+| 背景 | `Color/Neutral/700` | `Color/Neutral/700` |
+| 文字色 | `Color/Neutral/100` | `Color/Neutral/100` |
 | 第一行 | `'1/4'`（日期）12px | — |
 | 第二行 | `'訂房數據: 56'` 12px | — |
-| 箭頭 | Polygon 1（9.53×8.25），fill `#4f4f4f`，y:-7（朝上） | — |
+| 箭頭 | Polygon 1（9.53×8.25），fill `Color/Neutral/700`，y:-7（朝上） | — |
 | 位置（Default hover） | x:256, y:127 | — |
 | 位置（sm hover） | x:191, y:90 | — |
 
@@ -135,14 +135,14 @@
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| 卡片背景 | `#ffffff` | `Color/Neutral/0` |
-| 卡片邊框 | `#d1d1d1` | `Color/Neutral/200` |
-| 文字（全部） | `#454545` | `Color/Neutral/800` |
-| 格線 | `#b0b0b0` | `Color/Neutral/300` |
-| 折線 | `#ff0bd6` | `Color/Chart/purpleRed` |
-| 圖例框線 | `#f44df4` | `Color/Bootstrap/aside/Notification` |
-| Tooltip 背景 | `#4f4f4f` | `Color/Neutral/700` |
-| Tooltip 文字 | `#e1e1e0` | `Color/Neutral/100` |
+| 卡片背景 | `Color/Neutral/0` | `Color/Neutral/0` |
+| 卡片邊框 | `Color/Neutral/200` | `Color/Neutral/200` |
+| 文字（全部） | `Color/Neutral/800` | `Color/Neutral/800` |
+| 格線 | `Color/Neutral/300` | `Color/Neutral/300` |
+| 折線 | `Color/Chart/purpleRed` | `Color/Chart/purpleRed` |
+| 圖例框線 | `Color/Accent/Celebration` | `Color/Bootstrap/aside/Notification` |
+| Tooltip 背景 | `Color/Neutral/700` | `Color/Neutral/700` |
+| Tooltip 文字 | `Color/Neutral/100` | `Color/Neutral/100` |
 
 ---
 

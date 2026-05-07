@@ -21,8 +21,8 @@
 | 高度 | `313px` | — |
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
-| Background | `#FFFFFF` | `Color/Neutral/0` |
-| Border (stroke) | `#D1D1D1` | `Color/Neutral/200` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
+| Border (stroke) | `Color/Neutral/200` | `Color/Neutral/200` |
 | Border width | `1px` | — |
 
 ---
@@ -33,7 +33,7 @@
 [INSTANCE] System notifications (572×313px)
 ├── [INSTANCE] Title
 │   ├── [INSTANCE] icons/label (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "系統通知"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "系統通知"  20px  SemiBold 600  Color/Neutral/800
 ├── [FRAME] notification list (548×250, x:12 y:51)
 │   ├── Frame 79  — 第 1 列：授權數量
 │   ├── Frame 80  — 第 2 列：簡訊餘額（總部）
@@ -42,7 +42,7 @@
 │   ├── Frame 83  — 第 5 列：網域到期
 │   ├── Frame 84  — 第 6 列：網域到期
 │   └── Frame 85  — 第 7 列：網域到期
-└── [RECT] Rectangle 15 (6×161, x:552, #D9D9D9) ← 右側捲動指示器
+└── [RECT] Rectangle 15 (6×161, x:552, visual-only scrollbar indicator; not used as HTML color token) ← 右側捲動指示器
 ```
 
 ---
@@ -55,7 +55,7 @@
 | 文字 | `"系統通知"` | — |
 | Font | Noto Sans **SemiBold 600** | — |
 | Font size | `20px`（md） | — |
-| Color | `#454545` | `Color/Neutral/800` |
+| Color | `Color/Neutral/800` | `Color/Neutral/800` |
 
 > **注意**：此元件的 Title 字重為 SemiBold 600，已確認為設計意圖（2026-04-13 統一）。
 
@@ -71,9 +71,9 @@
 
 | 元素 | 文字 | 顏色 | Token |
 |---|---|---|---|
-| 數字編號 + 前綴 | `1.有` | `#454545` | `Color/Neutral/800` |
-| 強調數字 | `28` | `#E12129` | `Color/Surface/Negative` |
-| 後綴 | `筆授權單。` | `#454545` | `Color/Neutral/800` |
+| 數字編號 + 前綴 | `1.有` | `Color/Neutral/800` | `Color/Neutral/800` |
+| 強調數字 | `28` | `Color/Surface/Negative` | `Color/Surface/Negative` |
+| 後綴 | `筆授權單。` | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -85,12 +85,12 @@
 
 | 元素 | 文字 | 顏色 | Token |
 |---|---|---|---|
-| 數字編號 | `2.` | `#454545` | `Color/Neutral/800` |
-| Input chip | `簡訊` | bg `#34C759` | `Color/Accent/Green` |
-| Input chip | `總部` | bg `#E12129` | `Color/Surface/Negative` |
-| 一般文字 | `簡訊剩` | `#454545` | `Color/Neutral/800` |
-| 強調數字 | `28` | `#E12129` | `Color/Surface/Negative` |
-| 後綴 | `通。` | `#454545` | `Color/Neutral/800` |
+| 數字編號 | `2.` | `Color/Neutral/800` | `Color/Neutral/800` |
+| Input chip | `簡訊` | bg `Color/Accent/Green` | `Color/Accent/Green` |
+| Input chip | `總部` | bg `Color/Surface/Negative` | `Color/Surface/Negative` |
+| 一般文字 | `簡訊剩` | `Color/Neutral/800` | `Color/Neutral/800` |
+| 強調數字 | `28` | `Color/Surface/Negative` | `Color/Surface/Negative` |
+| 後綴 | `通。` | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -102,12 +102,12 @@
 
 | 元素 | 文字 | 顏色 | Token |
 |---|---|---|---|
-| 數字編號 | `3.` | `#454545` | `Color/Neutral/800` |
-| Input chip | `簡訊` | bg `#34C759` | `Color/Accent/Green` |
-| Input chip | `分館` | bg `#F28B45` | `Color/Surface/Brand-400-Hover` |
-| 一般文字 | `簡訊剩` | `#454545` | `Color/Neutral/800` |
-| 強調數字 | `28` | `#E12129` | `Color/Surface/Negative` |
-| 後綴 | `通。` | `#454545` | `Color/Neutral/800` |
+| 數字編號 | `3.` | `Color/Neutral/800` | `Color/Neutral/800` |
+| Input chip | `簡訊` | bg `Color/Accent/Green` | `Color/Accent/Green` |
+| Input chip | `分館` | bg `Color/Brand/Brand-400` | `Color/Surface/Brand-400-Hover` |
+| 一般文字 | `簡訊剩` | `Color/Neutral/800` | `Color/Neutral/800` |
+| 強調數字 | `28` | `Color/Surface/Negative` | `Color/Surface/Negative` |
+| 後綴 | `通。` | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -119,13 +119,13 @@
 
 | 元素 | 文字 | 顏色 | Token |
 |---|---|---|---|
-| 數字編號 | `4.`–`7.` | `#454545` | `Color/Neutral/800` |
-| Input chip | `網址` | bg `#2178CF` | `Color/MenuItem/Default` |
-| 場館名稱 | `義大利山莊網址到期日` | `#454545` | `Color/Neutral/800` |
-| 日期 | `2022-01-22` | `#2178CF` | `Color/MenuItem/Default` |
-| 連接詞 | `於` | `#454545` | `Color/Neutral/800` |
-| 強調天數 | `28` | `#E12129` | `Color/Surface/Negative` |
-| 後綴 | `天後過期。` | `#454545` | `Color/Neutral/800` |
+| 數字編號 | `4.`–`7.` | `Color/Neutral/800` | `Color/Neutral/800` |
+| Input chip | `網址` | bg `Color/MenuItem/Default` | `Color/MenuItem/Default` |
+| 場館名稱 | `義大利山莊網址到期日` | `Color/Neutral/800` | `Color/Neutral/800` |
+| 日期 | `2022-01-22` | `Color/MenuItem/Default` | `Color/MenuItem/Default` |
+| 連接詞 | `於` | `Color/Neutral/800` | `Color/Neutral/800` |
+| 強調天數 | `28` | `Color/Surface/Negative` | `Color/Surface/Negative` |
+| 後綴 | `天後過期。` | `Color/Neutral/800` | `Color/Neutral/800` |
 
 > 實作時第 4–7 列以動態資料渲染，上方為範例值。
 
@@ -141,16 +141,16 @@
 | Padding | top/bottom `6px`、left/right `12px` | `Spacing/6`、`Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 | Font size | `12px`（sm） | — |
-| Text color | `#F6F6F6` | `Color/Neutral/50` |
+| Text color | `Color/Neutral/50` | `Color/Neutral/50` |
 
 ### Chip 顏色一覽
 
 | 語意 | 文字 | bg 色 | Token |
 |---|---|---|---|
-| 類型：簡訊 | `簡訊` | `#34C759` | `Color/Accent/Green` |
-| 嚴重度：總部 | `總部` | `#E12129` | `Color/Surface/Negative` |
-| 嚴重度：分館 | `分館` | `#F28B45` | `Color/Surface/Brand-400-Hover` |
-| 類型：網址 | `網址` | `#2178CF` | `Color/MenuItem/Default` |
+| 類型：簡訊 | `簡訊` | `Color/Accent/Green` | `Color/Accent/Green` |
+| 嚴重度：總部 | `總部` | `Color/Surface/Negative` | `Color/Surface/Negative` |
+| 嚴重度：分館 | `分館` | `Color/Brand/Brand-400` | `Color/Surface/Brand-400-Hover` |
+| 類型：網址 | `網址` | `Color/MenuItem/Default` | `Color/MenuItem/Default` |
 
 ---
 
@@ -160,8 +160,8 @@
 |---|---|
 | 尺寸 | `6×161px` |
 | 位置 | `x:552, y:68`（容器右側） |
-| Fill | `#D9D9D9` |
-| Token | ⚠️ tokens.md 未定義（`Neutral/200` = `#D1D1D1`，值不同） |
+| Fill | visual-only scrollbar indicator; not used as HTML color token |
+| Token | 實作前需先補 token；不可直接使用 Figma raw color |
 | 用途 | 推測為垂直捲動指示器，Figma 未明確標示 |
 
 ---
@@ -170,10 +170,10 @@
 
 | 樣式 | 大小 | 字重 | 顏色 | 用途 |
 |---|---|---|---|---|
-| base | `16px` | Regular 400 | `#454545` | 一般說明文字 |
-| base | `16px` | Regular 400 | `#E12129` | 強調數字（餘額、天數） |
-| base | `16px` | Regular 400 | `#2178CF` | 日期、連結 |
-| sm | `12px` | Regular 400 | `#F6F6F6` | chip 內文字 |
+| base | `16px` | Regular 400 | `Color/Neutral/800` | 一般說明文字 |
+| base | `16px` | Regular 400 | `Color/Surface/Negative` | 強調數字（餘額、天數） |
+| base | `16px` | Regular 400 | `Color/MenuItem/Default` | 日期、連結 |
+| sm | `12px` | Regular 400 | `Color/Neutral/50` | chip 內文字 |
 
 ---
 
@@ -181,8 +181,8 @@
 
 | 項目 | 狀態 |
 |---|---|
-| `#34C759`（簡訊 chip）對應 token | ✅ `Color/Accent/Green`（2026-04-13 確認） |
-| `#D9D9D9`（Rectangle 15）對應 token | ⚠️ 與 Neutral/200 數值不同，待確認 |
+| `Color/Accent/Green`（簡訊 chip）對應 token | ✅ `Color/Accent/Green`（2026-04-13 確認） |
+| Rectangle 15 visual-only scrollbar indicator 對應 token | 實作前需先補 token；不可直接使用 Figma raw color |
 | 捲動行為（列數超出容器高度時） | Figma 未定義 |
 | 空狀態（無通知時） | Figma 未定義 |
 | Hover / Click 互動 | Figma 未定義 |

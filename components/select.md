@@ -30,9 +30,9 @@
 ```
 Frame 1 (242×24px, x:12, y:6)
 ├── Texts — base (213×22px, x:0)    ← 已選值或 placeholder
-│   └── TEXT  16px  Regular  #454545
+│   └── TEXT  16px  Regular  Color/Neutral/800
 └── icons/down (24×24, x:218)       ← 展開箭頭
-    └── Vector  fills #000000
+    └── Vector  fills Color/Icon/Default
 ```
 
 | 屬性 | 值 | Token |
@@ -51,9 +51,9 @@ Frame 1 (242×24px, x:12, y:6)
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| Background | `#ffffff` | `Color/Neutral/0` |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
-| 文字色 | `#454545` | `Color/Neutral/800` |
+| Background | `Color/Neutral/0` | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
+| 文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 
@@ -61,9 +61,9 @@ Frame 1 (242×24px, x:12, y:6)
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| Background | `#d1d1d1` | `Color/Neutral/200` |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
-| 文字色 | `#888888` | `Color/Neutral/400` |
+| Background | `Color/Neutral/200` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
+| 文字色 | `Color/Neutral/400` | `Color/Neutral/400` |
 
 ---
 
@@ -74,8 +74,8 @@ Frame 1 (242×24px, x:12, y:6)
 ```
 [COMPONENT] Select — state=twice section (266×34px)
 └── Frame 227 (242×34px, x:12)
-    ├── Texts (92×34px, x:4)        ← 左側數值欄（含 top/bottom padding 6px, border #d1d1d1）
-    │   └── TEXT "99113322"  16px  Regular  #454545
+    ├── Texts (92×34px, x:4)        ← 左側數值欄（含 top/bottom padding 6px, border Color/Neutral/200）
+    │   └── TEXT "99113322"  16px  Regular  Color/Neutral/800
     └── Frame 1 (140×34px, x:102)  ← 右側下拉觸發器
         ├── Texts (107×22px, x:4)
         └── icons/down (24×24, x:116)
@@ -83,8 +83,8 @@ Frame 1 (242×24px, x:12, y:6)
 
 | 屬性 | 值 |
 |---|---|
-| Background | `#ffffff` |
-| Border | `#d1d1d1` |
+| Background | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` |
 | 左欄寬度 | `92px`，border 分隔 |
 | 右欄寬度 | `140px` |
 | 使用情境 | 日期範圍、代號 + 名稱組合選擇 |
@@ -97,15 +97,15 @@ Frame 1 (242×24px, x:12, y:6)
 [COMPONENT] Select — state=focus (266×42px)
 ├── Frame 1 (Trigger bar，同 Default)
 └── Select content show (261×84px, x:12, y:36)
-    ├── cornerRadius 8, fills #ffffff, padding 10px
-    ├── Select content — 未選中（30×241px, y:10）  → bg #ffffff
-    └── Select content — 已選中（30×241px, y:44）  → bg #86b7fe
+    ├── cornerRadius 8, fills Color/Neutral/0, padding 10px
+    ├── Select content — 未選中（30×241px, y:10）  → bg Color/Neutral/0
+    └── Select content — 已選中（30×241px, y:44）  → bg Color/Chart/blue
 ```
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| Border（focus 狀態） | `#86b7fe` | `Color/Bootstrap/components/focus` |
-| 下拉面板 background | `#ffffff` | `Color/Neutral/0` |
+| Border（focus 狀態） | `Color/Chart/blue` | `Color/Bootstrap/components/focus` |
+| 下拉面板 background | `Color/Neutral/0` | `Color/Neutral/0` |
 | 下拉面板 cornerRadius | `8px` | `Radius/8` |
 | 下拉面板 padding | `10px` | `Spacing/8`（近似） |
 | 選項間距 | y:10 → y:44，gap `4px` | — |
@@ -118,9 +118,9 @@ Frame 1 (242×24px, x:12, y:6)
 [COMPONENT] Select — state=multiple 3 (266×42px)
 ├── Frame 1 (Trigger bar，同 Default)
 └── Select content show (261×118px, x:12, y:36)
-    ├── Select content (y:10)  → 未選中 #ffffff
-    ├── Select content (y:44)  → 未選中 #ffffff
-    └── Select content (y:78)  → 已選中 #86b7fe
+    ├── Select content (y:10)  → 未選中 Color/Neutral/0
+    ├── Select content (y:44)  → 未選中 Color/Neutral/0
+    └── Select content (y:78)  → 已選中 Color/Chart/blue
 ```
 
 > 高度隨選項數量增加。`multiple 3` 為 3 個選項的示意 variant。
@@ -133,8 +133,8 @@ Frame 1 (242×24px, x:12, y:6)
 
 | 狀態 | 背景 | icons/check 填色 | 文字色 |
 |---|---|---|---|
-| 未選中 | `#ffffff` | `#ffffff`（不可見） | `#454545` |
-| 已選中 | `#86b7fe` | `#f6f6f6` | `#f6f6f6` |
+| 未選中 | `Color/Neutral/0` | `Color/Neutral/0`（不可見） | `Color/Neutral/800` |
+| 已選中 | `Color/Chart/blue` | `Color/Neutral/50` | `Color/Neutral/50` |
 
 ```
 Select content (30×241px)
@@ -151,13 +151,13 @@ Select content (30×241px)
 
 | 元素 | 色值 | Token |
 |---|---|---|
-| Default border | `#d1d1d1` | `Color/Neutral/200` |
-| Focus border | `#86b7fe` | `Color/Bootstrap/components/focus` |
-| Disabled background | `#d1d1d1` | `Color/Neutral/200` |
-| 選中項背景 | `#86b7fe` | `Color/Bootstrap/components/focus` |
-| Default 文字 | `#454545` | `Color/Neutral/800` |
-| Disabled 文字 | `#888888` | `Color/Neutral/400` |
-| 選中項文字 | `#f6f6f6` | `Color/Neutral/50` |
+| Default border | `Color/Neutral/200` | `Color/Neutral/200` |
+| Focus border | `Color/Chart/blue` | `Color/Bootstrap/components/focus` |
+| Disabled background | `Color/Neutral/200` | `Color/Neutral/200` |
+| 選中項背景 | `Color/Chart/blue` | `Color/Bootstrap/components/focus` |
+| Default 文字 | `Color/Neutral/800` | `Color/Neutral/800` |
+| Disabled 文字 | `Color/Neutral/400` | `Color/Neutral/400` |
+| 選中項文字 | `Color/Neutral/50` | `Color/Neutral/50` |
 
 ---
 

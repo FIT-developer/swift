@@ -20,7 +20,7 @@
 
 | 屬性 | 值 |
 |---|---|
-| 顏色 | `#f9e616`（黃色，同 Tooltip md 背景） |
+| 顏色 | `Color/Surface/Secondary`（黃色，同 Tooltip md 背景） |
 | Corner radius | `24px`（圓弧轉折） |
 | 類型 | Figma CONNECTOR node |
 

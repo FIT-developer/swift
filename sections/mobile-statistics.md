@@ -31,7 +31,7 @@ Mobile 版統計圖表區塊。Desktop 的 2×2 grid 改為**單欄垂直堆疊*
 | 高度 | `1320px` | `804px` |
 | Padding | `12px` all sides | `12px`（相同） |
 | Corner radius | `6px` | `6px`（相同） |
-| Border | `#D1D1D1` | `#D1D1D1`（相同） |
+| Border | `Color/Neutral/200` | `Color/Neutral/200`（相同） |
 
 ---
 
@@ -41,7 +41,7 @@ Mobile 版統計圖表區塊。Desktop 的 2×2 grid 改為**單欄垂直堆疊*
 [FRAME] Statistics (744×1320px)
 ├── [INSTANCE] Title
 │   ├── [INSTANCE] icons/operation-system (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "統計圖表"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "統計圖表"  20px  SemiBold 600  Color/Neutral/800
 └── [FRAME] Statistics details (720×1267, y:51)  ← 單欄垂直排列
     ├── chartjs - bar       (342×265px, x:189, y:0)    ← 第 1 欄
     ├── chartjs - diverging (342×334px, x:189, y:285)  ← 第 2 欄
@@ -59,7 +59,7 @@ Mobile 版統計圖表區塊。Desktop 的 2×2 grid 改為**單欄垂直堆疊*
 | 文字 | `"統計圖表"` | — |
 | Font | Noto Sans **SemiBold 600** | — |
 | Font size | `20px`（md） | — |
-| Color | `#454545` | `Color/Neutral/800` |
+| Color | `Color/Neutral/800` | `Color/Neutral/800` |
 
 ---
 

@@ -29,7 +29,7 @@
 ```
 [COMPONENT] Account (127×24px)
 ├── Texts sm — 帳號名 (59×16, x:0, y:4)
-│   └── TEXT "xiaomi999"  12px  Regular  #454545
+│   └── TEXT "xiaomi999"  12px  Regular  Color/Neutral/800
 └── Frame 9 — 操作按鈕列 (64×24, x:63)
     ├── icons/logout (24×24, x:4)   ← 登出
     └── icons/switch (24×24, x:40)  ← 切換帳號
@@ -38,7 +38,7 @@
 | 屬性 | 值 | Token |
 |---|---|---|
 | 帳號文字 | `Texts / sm (12px Regular)` | — |
-| 帳號文字色 | `#454545` | `Color/Neutral/800` |
+| 帳號文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
 | 帳號 x 位置 | x:0 | — |
 | 操作列 x 位置 | x:63 | — |
 | 兩 icon 間距 | x:40 - x:4 - 24 = **12px** | — |
@@ -51,17 +51,17 @@
 
 ```
 Tooltips instance (48×20px, x:48, y:17)
-├── Polygon 1 (tooltip 箭頭, fills #4f4f4f, x:18, y:-6)  ← 向上箭頭
-└── Texts sm → "登出"  12px  Regular  #e1e1e0
+├── Polygon 1 (tooltip 箭頭, fills Color/Neutral/700, x:18, y:-6)  ← 向上箭頭
+└── Texts sm → "登出"  12px  Regular  Color/Neutral/100
 ```
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| Tooltip 背景 | `#4f4f4f` | `Color/Neutral/700` |
+| Tooltip 背景 | `Color/Neutral/700` | `Color/Neutral/700` |
 | Tooltip corner radius | `6px` | `Radius/6` |
 | Tooltip padding | top/bottom `2px`、left/right `12px` | `Spacing/2`、`Spacing/12` |
-| Tooltip 文字色 | `#e1e1e0` | `Color/Neutral/100` |
-| 箭頭 fill | `#4f4f4f` | `Color/Neutral/700` |
+| Tooltip 文字色 | `Color/Neutral/100` | `Color/Neutral/100` |
+| 箭頭 fill | `Color/Neutral/700` | `Color/Neutral/700` |
 | 箭頭位置 | x:18, y:-6（向上，指向 icon） | — |
 
 ---

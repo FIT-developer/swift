@@ -26,7 +26,7 @@
 |---|---|
 | 文字 | 客服 |
 | 字號 | `16px`（`text-base`） |
-| 色彩 | `#454545` |
+| 色彩 | `Color/Neutral/800` |
 | 換行 | `whitespace-nowrap` |
 
 ### 圓形 Icon Frame（Frame 78）
@@ -35,17 +35,17 @@
 |---|---|
 | 尺寸 | 48×48px（`w-12 h-12`） |
 | 形狀 | 全圓（`cornerRadius: 56`，`rounded-full`） |
-| 背景 | `#f6fafd` |
-| **外框** | linear-gradient stroke 3px，`#FFB624`（頂）→ `#3F930B`（底） |
+| 背景 | `Color/Neutral/75` |
+| **外框** | linear-gradient stroke 3px，`Color/Accent/float-circle-mixed-1`（頂）→ `Color/Accent/float-circle-mixed-2`（底） |
 | **陰影** | `drop-shadow(0 2px 2px rgba(0,0,0,0.25))` |
-| Icon | `icons/ai`，24×24px，色彩 `#000000` |
+| Icon | `icons/ai`，24×24px，色彩 `Color/Icon/Default` |
 | Padding | 6px（icon 居中） |
 
 ### HTML 漸層外框實作方式
 
 漸層外框無法用 `border` 直接實現，改用雙層包裹：
-- 外層：`p-[3px] rounded-full`，`background: linear-gradient(to bottom, #FFB624, #3F930B)`，`filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25))`
-- 內層：`w-[42px] h-[42px] rounded-full bg-[#f6fafd]`（48 - 3×2 = 42px）
+- 外層：`p-[3px] rounded-full`，使用 `.float-ai-gradient-border` 套用 `Color/Accent/float-circle-mixed-1` → `Color/Accent/float-circle-mixed-2` 與 `--effect-float-shadow`
+- 內層：`w-[42px] h-[42px] rounded-full bg-surface-hover`（48 - 3×2 = 42px）
 
 ---
 
@@ -53,9 +53,9 @@
 
 ```html
 <div class="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-1.5">
-  <span class="text-base text-[#454545] whitespace-nowrap">客服</span>
-  <div class="rounded-full p-[3px]" style="background: linear-gradient(to bottom, #FFB624, #3F930B); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25));">
-    <button class="w-[42px] h-[42px] rounded-full bg-[#f6fafd] flex items-center justify-center">
+  <span class="text-base text-text-default whitespace-nowrap">客服</span>
+  <div class="float-ai-gradient-border rounded-full p-[3px]">
+    <button class="w-[42px] h-[42px] rounded-full bg-surface-hover flex items-center justify-center">
       <img src="./assets/icons/ai.svg" class="w-6 h-6" />
     </button>
   </div>

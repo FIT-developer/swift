@@ -22,7 +22,7 @@ Desktop Row 2，全寬橫排。顯示今日 4 項 KPI 數據（營收、房價�
 | Padding | `12px` all sides | `Spacing/12` |
 | Corner radius | `6px` | `Radius/6` |
 | Background | 無（透明） | — |
-| Border | `#D1D1D1` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -32,7 +32,7 @@ Desktop Row 2，全寬橫排。顯示今日 4 項 KPI 數據（營收、房價�
 [FRAME] Revenue trends (1154×200px)
 ├── [INSTANCE] Title (112×27px, x:12, y:12)
 │   ├── [INSTANCE] icons/operation-system (24×24)
-│   └── [INSTANCE] Texts → [TEXT] "營業資訊"  20px  SemiBold 600  #454545
+│   └── [INSTANCE] Texts → [TEXT] "營業資訊"  20px  SemiBold 600  Color/Neutral/800
 └── [FRAME] Trend details (1130×137px, x:12, y:51)
     ├── [INSTANCE] Card — 今日營收    (270.5×137px,   x:0)
     ├── [INSTANCE] Card — 平均房價    (270.5×134.5px, x:286.5)

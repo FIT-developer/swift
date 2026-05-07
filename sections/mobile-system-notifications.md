@@ -31,8 +31,8 @@ Mobile 版系統通知區塊，為 `System notifications` component instance 直
 | 高度 | `313px` | `313px`（相同） |
 | Padding | `12px` all sides | `12px`（相同） |
 | Corner radius | `6px` | `6px`（相同） |
-| Border | `#D1D1D1` | `#D1D1D1`（相同） |
-| Background | `#FFFFFF` | `#FFFFFF`（相同） |
+| Border | `Color/Neutral/200` | `Color/Neutral/200`（相同） |
+| Background | `Color/Neutral/0` | `Color/Neutral/0`（相同） |
 
 ---
 
@@ -41,18 +41,18 @@ Mobile 版系統通知區塊，為 `System notifications` component instance 直
 完整規格見 `components/system-notifications.md`。
 
 結構摘要：
-- **Title**：icons/label + "系統通知"（SemiBold 600，20px，#454545）
+- **Title**：icons/label + "系統通知"（SemiBold 600，20px，Color/Neutral/800）
 - **7 個通知列**，每列含 Input chip（顏色標示來源）+ 通知內文 Texts
 
 | # | Chip 文字 | Chip 顏色 | Token | 通知內文（節錄） |
 |---|---|---|---|---|
-| 1 | 簡訊 | `#34C759` | `Color/Accent/Green` | 房型已售完，請確認超賣設定… |
-| 2 | 總部 | `#E12129` | `Color/Surface/Negative` | 房型庫存不足，請即刻補充… |
-| 3 | 分館 | `#F28B45` | `Color/Surface/Brand-400-Hover` | 設備故障，請聯絡維修人員… |
-| 4 | 網址 | `#2178CF` | `Color/MenuItem/Default` | 訂單取消率過高，請確認… |
-| 5 | 總部 | `#E12129` | `Color/Surface/Negative` | 退款申請待審核… |
-| 6 | 簡訊 | `#34C759` | `Color/Accent/Green` | 新訂單已成立，請即刻確認… |
-| 7 | 分館 | `#F28B45` | `Color/Surface/Brand-400-Hover` | 客房打掃完畢，可安排入住… |
+| 1 | 簡訊 | `Color/Accent/Green` | `Color/Accent/Green` | 房型已售完，請確認超賣設定… |
+| 2 | 總部 | `Color/Surface/Negative` | `Color/Surface/Negative` | 房型庫存不足，請即刻補充… |
+| 3 | 分館 | `Color/Brand/Brand-400` | `Color/Surface/Brand-400-Hover` | 設備故障，請聯絡維修人員… |
+| 4 | 網址 | `Color/MenuItem/Default` | `Color/MenuItem/Default` | 訂單取消率過高，請確認… |
+| 5 | 總部 | `Color/Surface/Negative` | `Color/Surface/Negative` | 退款申請待審核… |
+| 6 | 簡訊 | `Color/Accent/Green` | `Color/Accent/Green` | 新訂單已成立，請即刻確認… |
+| 7 | 分館 | `Color/Brand/Brand-400` | `Color/Surface/Brand-400-Hover` | 客房打掃完畢，可安排入住… |
 
 ---
 

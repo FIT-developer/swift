@@ -29,7 +29,7 @@
 | 尺寸 | `836×491px` | — |
 | Padding | top `8px`，其餘 `12px` | — |
 | Corner radius | `6px` | `Radius/6` |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
@@ -58,7 +58,7 @@
 | 元素 | 規格 |
 |---|---|
 | Icon | `icons/message`（24×24） |
-| 文字 | `"旅宿e管家公告"`，20px Regular，`#454545` |
+| 文字 | `"旅宿e管家公告"`，20px Regular，`Color/Neutral/800` |
 | 關閉 | `icons/close`（24×24，x:788） |
 
 > 使用 `icons/message`（平台公告），而非 vendor 的 `icons/bulletin`（管理訊息）。
@@ -71,15 +71,15 @@
 
 | # | Tab 文字 | 背景 | 說明 |
 |---|---|---|---|
-| 1 | `全部` | `#ffffff` | 未選中 |
-| 2 | `一般` | `#ffffff` | 未選中 |
-| 3 | `系統維護` | `#ffcc00` | **選中**（`Color/Tab/Yellow`） |
-| 4 | `系統操作` | `#ffffff` | 未選中 |
-| 5 | `功能調整` | `#ffffff` | 未選中 |
-| 6 | `功能開放` | `#ffffff` | 未選中 |
-| 7 | `功能申請` | `#ffffff` | 未選中 |
-| 8 | `商業合作` | `#ffffff` | 未選中 |
-| 9 | `推廣` | `#ffffff` | 未選中 |
+| 1 | `全部` | `Color/Neutral/0` | 未選中 |
+| 2 | `一般` | `Color/Neutral/0` | 未選中 |
+| 3 | `系統維護` | `Color/Tab/yellow` | **選中**（`Color/Tab/Yellow`） |
+| 4 | `系統操作` | `Color/Neutral/0` | 未選中 |
+| 5 | `功能調整` | `Color/Neutral/0` | 未選中 |
+| 6 | `功能開放` | `Color/Neutral/0` | 未選中 |
+| 7 | `功能申請` | `Color/Neutral/0` | 未選中 |
+| 8 | `商業合作` | `Color/Neutral/0` | 未選中 |
+| 9 | `推廣` | `Color/Neutral/0` | 未選中 |
 
 > 與 `Bulletin - vendor` 差異：  
 > - 共 9 個 tab（vendor 有 5 個）
@@ -95,8 +95,8 @@
 | 尺寸 | 124×36px |
 | Placeholder | `"主題搜尋"` |
 | 右側 icon | `icons/search` |
-| Background | `#ffffff` |
-| Border | `#d1d1d1` |
+| Background | `Color/Neutral/0` |
+| Border | `Color/Neutral/200` |
 | Corner radius | `6px` |
 
 ---
@@ -105,8 +105,8 @@
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#fef6ee` | `Color/Surface/Brand-50` |
-| Border | `#888888` | `Color/Neutral/400` |
+| 背景 | `Color/Brand/Brand-50` | `Color/Surface/Brand-50` |
+| Border | `Color/Neutral/400` | `Color/Neutral/400` |
 | 文字字重 | SemiBold 600 | — |
 
 欄位配置（與 vendor 不同，無「來源」欄）：
@@ -153,10 +153,10 @@
 | 屬性 | 值 | Token |
 |---|---|---|
 | 字號 | `16px` Regular | — |
-| 文字色 | `#454545` | `Color/Neutral/800` |
+| 文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
 | 對齊 | LEFT | — |
-| Background | `#ffffff` | — |
-| Border | `#d1d1d1` | `Color/Neutral/200` |
+| Background | `Color/Neutral/0` | — |
+| Border | `Color/Neutral/200` | `Color/Neutral/200` |
 | Corner radius | `6px` | `Radius/6` |
 | Padding | `6px` top/bottom，`12px` left/right | — |
 
@@ -166,7 +166,7 @@
 
 | 元素 | 規格 |
 |---|---|
-| 筆數 | `"共 61 筆"`，base 16px，`#454545` |
+| 筆數 | `"共 61 筆"`，base 16px，`Color/Neutral/800` |
 | Pagination | 320×46px，與 vendor 相同結構 |
 
 ---

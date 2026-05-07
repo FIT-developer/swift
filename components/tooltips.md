@@ -20,7 +20,7 @@
 
 ## Variants 總覽
 
-### 深色（Dark）sm — bg `#4f4f4f`，文字 `#e1e1e0`，12px
+### 深色（Dark）sm — bg `Color/Neutral/700`，文字 `Color/Neutral/100`，12px
 
 | Variant 名稱 | Node ID | 箭頭方向 | 箭頭位置 |
 |---|---|---|---|
@@ -30,7 +30,7 @@
 | `state=left` | `194:2195` | 向左（←） | 左側，x:-7.36 |
 | `state=state6` | `194:2191` | 向下（↓） | 下方中央（同 down） |
 
-### 黃色（Yellow）md — bg `#f9e616`，文字 `#454545`，20px，stroke `#000000` ⚠️ 設計稿標注專用，不渲染到 HTML
+### 黃色（Yellow）md — bg `Color/Surface/Secondary`，文字 `Color/Neutral/800`，20px，stroke `Color/Icon/Default` ⚠️ 設計稿標注專用，不渲染到 HTML
 
 | Variant 名稱 | Node ID | 箭頭方向 |
 |---|---|---|
@@ -39,7 +39,7 @@
 | `state=md left` | `194:4371` | 向左（←） |
 | `state=md down` | `194:4376` | 向下（↓） |
 
-### 圖表專用（Chart）— bg `#4f4f4f`，雙行文字，12px
+### 圖表專用（Chart）— bg `Color/Neutral/700`，雙行文字，12px
 
 | Variant 名稱 | Node ID | 箭頭方向 | 用途 |
 |---|---|---|---|
@@ -52,19 +52,19 @@
 
 ```
 [COMPONENT] Tooltips — Default/down/right/left (66×20px)
-├── Texts sm → text  12px  Regular  #e1e1e0
-└── Polygon 1 (9.53×8.25px)  fills #4f4f4f  ← 箭頭
+├── Texts sm → text  12px  Regular  Color/Neutral/100
+└── Polygon 1 (9.53×8.25px)  fills Color/Neutral/700  ← 箭頭
 ```
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#4f4f4f` | `Color/Neutral/700` |
+| 背景 | `Color/Neutral/700` | `Color/Neutral/700` |
 | Corner radius | `6px` | `Radius/6` |
 | Padding | top/bottom `2px`、left/right `12px` | — |
-| 文字色 | `#e1e1e0` | `Color/Neutral/100` |
+| 文字色 | `Color/Neutral/100` | `Color/Neutral/100` |
 | 文字字號 | `12px`（sm Regular） | — |
 | 箭頭尺寸 | 9.53×8.25px | — |
-| 箭頭填色 | `#4f4f4f` | `Color/Neutral/700` |
+| 箭頭填色 | `Color/Neutral/700` | `Color/Neutral/700` |
 
 ---
 
@@ -72,20 +72,20 @@
 
 ```
 [COMPONENT] Tooltips — md up/right/left/down (96×31px)
-├── Texts md → text  20px  Regular  #454545
-└── Polygon 1 (17×14px)  fills #f9e616  ← 箭頭
+├── Texts md → text  20px  Regular  Color/Neutral/800
+└── Polygon 1 (17×14px)  fills Color/Surface/Secondary  ← 箭頭
 ```
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#f9e616` | `Color/Surface/Secondary` |
+| 背景 | `Color/Surface/Secondary` | `Color/Surface/Secondary` |
 | Corner radius | `6px` | `Radius/6` |
 | Padding | top/bottom `2px`、left/right `12px` | — |
-| Border | stroke `#000000` | — |
-| 文字色 | `#454545` | `Color/Neutral/800` |
+| Border | stroke `Color/Icon/Default` | — |
+| 文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
 | 文字字號 | `20px`（md Regular） | — |
 | 箭頭尺寸 | 17×14px（較大） | — |
-| 箭頭填色 | `#f9e616` | `Color/Surface/Secondary` |
+| 箭頭填色 | `Color/Surface/Secondary` | `Color/Surface/Secondary` |
 
 ---
 
@@ -94,14 +94,14 @@
 ```
 [COMPONENT] Tooltips — chartjs line/bar (93×38px)
 ├── Frame 28
-│   ├── Texts sm → "1/4"          12px  Regular  #e1e1e0  (第一行：日期/索引)
-│   └── Texts sm → "訂房數據: 56"  12px  Regular  #e1e1e0  (第二行：標籤 + 數值)
-└── Polygon 1 (9.53×8.25px)  fills #4f4f4f
+│   ├── Texts sm → "1/4"          12px  Regular  Color/Neutral/100  (第一行：日期/索引)
+│   └── Texts sm → "訂房數據: 56"  12px  Regular  Color/Neutral/100  (第二行：標籤 + 數值)
+└── Polygon 1 (9.53×8.25px)  fills Color/Neutral/700
 ```
 
 | 屬性 | 值 | Token |
 |---|---|---|
-| 背景 | `#4f4f4f` | `Color/Neutral/700` |
+| 背景 | `Color/Neutral/700` | `Color/Neutral/700` |
 | Corner radius | `6px` | `Radius/6` |
 | Padding | top/bottom `2px`、left/right `12px` | — |
 | 第一行 | 日期或序號（`"1/4"`） | — |
