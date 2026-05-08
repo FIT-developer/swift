@@ -14,3 +14,4 @@ specs/assets/figma-variables.json
 
 # Browser visual QA screenshots — regenerated each round, not source
 specs/qa-screenshots/
+preview/screenshots/

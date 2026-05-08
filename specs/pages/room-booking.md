@@ -238,3 +238,9 @@
 - **Calendar** 與 **Calendar simple** 是不同元件：前者含完整月曆 grid；後者為單行帶 icons/calendar 的 Input
 - **DatePicker** component 在間數欄使用，含 header「訂房間數」
 - aside 版型後需讀取 `room-booking-collapsed.md`（aside 收摺版）
+- **訂單條件 → 到店方式：是 Button 不是 Select**
+  - Figma node：`I1456:26597;813:28134;1456:26693`（trigger，36×312）；row 容器 `…1456:26690`（Frame 352，36×424）
+  - 觀察：此節點雖套用 `Select` instance 模板，但 trailing 24×24 icon 為 `icons/road`（id `…25:89;1106:19291`），而同 frame 內其他 Select（人數 / 發票 / 折扣 / 加購 / 預付百分比）trailing 皆為 `icons/down`（`25:75`）。`<select>` 無法在 option 內 render 圖示，因此實作為 `<button>`，點擊開 modal 選擇方式。
+  - 結構：左 text「自行到店」（16px / `Color/Text/800`），右 24×24 `icons/road`
+  - 樣式：bg `Color/Neutral/0`、border `Color/Neutral/200`、radius `6`、padding `6/12`
+  - **未定義項目**（待 Figma 補）：variant 清單與對應 icon、modal 內容、hover / focus / disabled state；本輪不腦補

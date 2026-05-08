@@ -4,6 +4,253 @@
 
 ---
 
+## Session 63 交接（2026-05-08）
+
+### 任務：到店方式 modal — chip bug fix + Phase C/D 實作 + 4 個使用者驗收問題（**未驗收完成**）
+
+接續 Session 62。本輪 dev 端做完 chip bug fix、Phase C 接送 swiper card stack、Phase D mobile RWD，但**使用者驗收未完成**。使用者點出 4 個問題後，我修了第 4 個（delete sync）的程式碼，使用者就 reset context。下一輪 session 必須 **先讓使用者親自開瀏覽器確認 4 項修復是否符合預期**，不可自稱完成 / 不可逕自 commit。
+
+> **過程教訓**（已寫入記憶 `feedback_completion_user_confirms.md`）：dev 端 verify pass ≠ 使用者驗收完成；視覺類功能要主動跑多角度截圖讓使用者驗收，不要急著結案。
+
+---
+
+### 已完成（本輪 dev 端）
+
+#### 1. Bug fix — 4 chip 點擊全部失效
+- **Root cause**：到店方式 modal IIFE 在 `<script>`（line 3843-6440）內，但 trigger button `#arrivalMethodTrigger` 在 line ~7829，**晚於 script block 執行時被解析**。`document.getElementById("arrivalMethodTrigger")` 回傳 null，IIFE 在 `if (!chipRow || !trigger || !triggerLabel) return;` 早退。**4 個 chip 都失效**（不只 2 / 3，使用者沒注意 chip 1 因為它本來就是 default-active）。
+- **Fix**（`preview/landing.html:5938-6010`）：
+  - 移除早退 guard 中的 `trigger` / `triggerLabel` 檢查
+  - 改用 `document.addEventListener("click", ...)` 委派，匹配 `#arrivalMethodTrigger`，handler 內 lazy `getElementById("arrivalMethodTriggerLabel")`
+  - 確定 button commit 邏輯也改 lazy lookup label
+- **Verified**（chrome-devtools MCP）：4 chip 切換 / confirm commit + close + label 更新 / cancel discard staging / 重開 sync 到 last committed state — 全 pass。
+- **記憶教訓**：在 inline script 內直接 `getElementById` 後段 DOM 元素會 silent fail；下次寫類似 IIFE 改用 document delegation 或 `DOMContentLoaded` wrapper（待寫成記憶或在 `start.md` 補一條）。
+
+#### 2. Phase C — 接送 雙 swiper card stack 完成
+- **CDN**：head 內加 `swiper@12 swiper-bundle.min.css/js`
+- **HTML**（`preview/landing.html` transfer panel + `<template data-am-transfer-card-template>`）：
+  - 雙 column grid（接客單 / 送客單），每 column 含：日期 header / Add button / 序號 label / swiper stack / Dots row（左箭頭 + dots + 右箭頭）
+  - 卡片 5 row：生效日期+客人數 / 客目的地點+客搭乘資訊 / 客到站時間（時+分 stepper）/ 接待時間（時+分 stepper）/ 備註 textarea / 刪除清單 button
+- **JS**（IIFE 末段）：
+  - `initSwiper(kind)` 用 `effect:"cards"` + `cardsEffect:{perSlideOffset:8, perSlideRotate:0}` + `grabCursor:true`
+  - `appendCard` / `deleteCard` / `refreshCol`（更新序號 label / dots / 刪除 enabled state）
+  - `ensureTransferInit` lazy 在第一次點 transfer chip 時 init（避免 hidden panel 內 swiper 算錯尺寸）
+  - 刪除 button：cards.length<=1 時 disabled
+  - dot click → `slideTo(i)`；箭頭 → slidePrev/slideNext
+  - active dot 改 24×20 rounded-rect 藍 (`--color-bootstrap-components-focus` + stroke `--color-bootstrap-focus-background`)，inactive 20×20 灰圓 (`--color-neutral-200`)
+- **CSS**（`preview/assets/css/landing.css` 尾段）：完整 `.am-transfer-*` 樣式
+  - 外層 grid 1fr 1fr / gap 24
+  - inner stack bg `--color-modal-hover` (`#f6fafd`) / 高 577px
+  - card bg `--color-neutral-0` / border `--color-text-100` / radius 12 / padding 20
+  - Add button bg `--color-brand-100` (`#fdebd7`)
+  - 刪除清單 button 兩態（active 紅 trash / disabled 灰）— **trash icon 用 mask-image** 套 `currentColor` 切色（trash-can.svg 內建紅 stroke 不能直接 tint，所以改 `<span>` + `mask: url(...)` + `background:currentColor`）
+- **Verified**（chrome-devtools 視覺）：4 卡片 add/delete 流程、dot click 同步、箭頭切換、刪除 disabled state 切換、stack 視覺 peek-out 都正常。
+
+#### 3. Phase D — mobile RWD（同一次 commit）
+- `@media (max-width: 768px)` 內：
+  - `.am-modal-box[data-am-state="transfer"] { width: auto; }`
+  - `.am-transfer-grid { grid-template-columns: 1fr; }` → 接客單上 / 送客單下垂直堆疊
+  - inner stack 高度從 577 降為 480（mobile 視窗矮）
+- **Self-verified**（chrome-devtools emulate viewport 600×900,mobile）：grid-template-columns 變單欄 526px，matchMedia `(max-width: 768px)` true。**使用者尚未親自驗收**。
+
+#### 4. 使用者驗收回饋（2026-05-08）+ 我這輪後續修復 — **再次未驗收**
+
+使用者反饋 4 個問題並明確說「不要急著完成」「完成要等我確認」：
+
+| # | 問題 | 修復 | 驗收狀態 |
+|---|---|---|---|
+| 1 | chip 4（接送）modal **header/footer 完全被吃掉** — 因 transfer panel 過高（>900px viewport）modal 整體垂直 overflow，header 跑去視窗上方、footer 跑去下方 | `.am-modal-box` 加 `max-height: calc(100vh - 24px)` + `display:flex column`；`.am-modal-content` 加 `flex:1 / overflow-y:auto / min-height:0` 讓 chip-row + panel 在內部 scroll，不再把 header/footer 推出視窗。同步在 HTML 上加 `.am-modal-content` class（`<div class="am-modal-content border-b border-border-disabled p-3">`）作 stable hook，不依賴 tailwind class | ❌ **使用者尚未驗收** |
+| 2 | active dot 形狀錯成「橢圓」（24×20 rounded-rect），應該是「全圓」 | `.am-transfer-dot.is-active` 改 20×20 圓 + 2px halo（`box-shadow: 0 0 0 2px var(--color-bootstrap-focus-background)`），底色 `--color-bootstrap-components-focus` | ❌ **使用者尚未驗收** |
+| 3 | 卡片多時 dot 容器直接擠到左右箭頭，沒 padding 緩衝 | `.am-transfer-dots` 加 `padding: 0 16px` + `overflow-x: auto`，超量時水平滾動（依 `feedback_no_scroll_affordance` 不加 fade/客製 scrollbar） | ❌ **使用者尚未驗收** |
+| 4 | 3 卡時刪第 2 卡，序號 label「接待單 1」沒同步更新；行為（刪後落到哪一張）不明顯 | UX 已對齊（使用者選 **Stay at idx 1**：刪後留在原 idx，自動指向下一張）。`deleteCard` 改用 `swiper.removeSlide(idx)`（Swiper 內建會自動 clamp activeIndex 並觸發 `slideChange` → `refreshCol` → 序號 label 同步） | ❌ **使用者尚未驗收**；也尚未 chrome-devtools 跑 regression 確認 label 真的同步（reset before re-verify） |
+
+---
+
+### 後續迭代（同 session，2026-05-08）
+
+使用者驗收 4 個 issue 修復後，再點出 8 個視覺/結構問題並逐一修。**dev 端 self-verified 全 pass，使用者多數認可，整體尚未 commit。**
+
+#### 視覺結構（chip / 序號 / mobile 滿版 / card stack 重組）— 5 件
+
+| # | 問題 | 修法 |
+|---|---|---|
+| A | chip row 是 flex-wrap，太擠時會換行；應與「正式單 / 候補單 chips」一致 nowrap + overflow | `landing.html:3703` chip row 改 `flex flex-nowrap items-center gap-4 overflow-x-auto min-w-0`（與 `#paymentChips` 對齊） |
+| B | 「接待單 1」「送客單 1」序號 label 沒置中 | `landing.css` `.am-transfer-index { text-align: center; }` |
+| C | mobile (≤768px) modal **應滿版**：0 padding / 0 radius / 0 border，0~768px 範圍 | `@media (max-width:768px) #modalArrivalMethodBackdrop .am-modal-box { width:100vw; height:100vh; max-width/max-height:100vw/100vh; border-radius:0; border:0 (四向) }` |
+| D | **多餘的 `.am-transfer-stack` 包裹層**：原本「藍底 stack 容器 → 內含白底 card」是錯的；正確是 card 自己就是藍底，不需要外層藍 box，stack 多耗 padding 40 害內容塞不下 | HTML 兩處刪 `<div class="am-transfer-stack">` 包裹（pickup / dropoff），swiper 直接掛 `.am-transfer-col` 下；CSS 刪 `.am-transfer-stack` 規則，`.am-swiper` 自己拿 `height/overflow:visible` |
+| E | card 應全部都是藍底，**包含 swiper 下層卡**（單卡 OK，2+ 卡時下層 card 看起來「灰」的） | (1) `.am-transfer-card` bg 從 `--color-neutral-0` 改 `--color-modal-hover`（`#f6fafd` 藍）；(2) **真兇**：swiper cards effect 預設加 `.swiper-slide-shadow-cards`（rgba(0,0,0,0.15) 黑色蒙版），下層 slide opacity:1 把藍蓋成灰 → init 時加 `cardsEffect.slideShadows: false` 關掉 |
+
+> 額外 `.am-transfer-card { touch-action: pan-y; }`：避免 mobile 上 swiper 水平拖拉吃掉卡片內垂直滑動。
+
+#### 視覺微調 + JS — 3 件
+
+| # | 問題 | 修法 |
+|---|---|---|
+| F | 「客人數」stepper 在 cell-pair 內仍是固定 96px，不是 100% | CSS 加 `.am-card-row-pair .am-stepper { width: 100%; }` 覆蓋 `.am-stepper { width: 96px; }` |
+| G | delete button 下方留白太多（~74px），設計稿沒那麼多 | (1) `.am-transfer-card { padding: 20px 20px 12px; }`（下 padding 從 20→12）；(2) **真兇**：`.am-swiper` 高 577 但 card content intrinsic = 514，多餘 63px 是 swiper 強制撐高 → `.am-swiper { height: 514px; }`，並把 mobile 的 `height: 560` override 拿掉（mobile content intrinsic 也 514） |
+| H | 生效日期欄位 placeholder 顯示，需預設今日 | JS `appendCard` 加 `todayISO()`，clone 時 `dateInput.value = todayISO()`（**已被 calendar 實作覆蓋，改由 dayjs 填**） |
+
+#### 第三輪 — 生效日 calendar widget 真正接上 + 視覺 fix
+
+| # | 問題 | 修法 |
+|---|---|---|
+| I | 生效日只填了 default value，沒 calendar 互動（使用者點 backlog 第 1 項） | (1) markup：`<input type=text>` 換 `.rb-cal-cell.am-card-date` 結構（`.rb-cal-btn` + `.rb-cal-date`），**無 trailing icon**（特規）；(2) 既有 `initSubPageBehaviors` 內的 simple calendar IIFE 提取 `function initCell(cell)` 並 export 為 `window.initSimpleCalendarCell`（為其他 lazy-mounted cell 鋪路）；(3) 但 arrival method trigger 在 landing 直接出現、`initSubPageBehaviors` 不會跑，所以在 arrival method IIFE 自寫 `initEffectiveDateCell(cell)`（default variant only — 過去 disabled、今日預設、無 birthday selector）；(4) `appendCard` 內 clone 完對 `.am-card-date` 呼叫 init |
+| J | calendar dropdown 不可見 — swiper-wrapper 用 `transform`，破壞 `position:fixed` 的 viewport-relative 行為 | dropdown 改 `document.body.appendChild(dropdown)` portaling 出 swiper transform context；inline `z-index:100`（高於 modal `z-60`、popover token 預設只 `z-30`）防被 modal 蓋 |
+| K | base.css `.rb-cal-cell { min-width: 160px }` 撐爆 modal 內生效日 cell（cell 寬僅 ~120 → 容不下 160） | CSS scoped override：`.am-card-date { min-width: 0; width: 100% }`（不動 base 規則 → 影響範圍最小，4 個既有 caller 不受影響） |
+| L | day 的「藍色圓圈」在某些渲染下視覺位移到文字下方 — 1.5px border + rounded-full + border-box 在 sub-pixel anti-alias 下，藍邊會被弧形邊角削成「半圈」 | dropdown 額外加 class `am-card-date-dropdown` 作 modal-scoped hook；CSS `.am-card-date-dropdown .calendar-day { line-height: 1 }` + `.am-card-date-dropdown .calendar-day.today { border: 0; box-shadow: inset 0 0 0 1.5px var(--color-radio-default) }`（box-shadow 不被 rounded-full clip、不影響 layout） |
+
+> **CSS cache 注意**：使用者首次回報「min-width 又出現」是瀏覽器快取舊 CSS，無痕 / hard reload 後正常。後續發類似報告先請對方 hard reload 排除。
+
+#### Spec 同步
+- `components/arrival-method-modal.md` Row 1 標 `Calendar simple（無 icon 特規）` + 補一段「生效日 calendar 特規」：本 modal 內生效日 cell 寬僅夠放 `YYYY-MM-DD`，不掛 calendar trailing icon、也不為此獨佔一行；其他地方仍依 `components/calendar-simple.md` 帶 icon。
+- `.gitignore` 加 `preview/screenshots/`（同 `specs/qa-screenshots/` 規則：QA 截圖 regenerate-each-round、非 source）。
+
+---
+
+### 涉及檔案（commit 前狀態）
+
+- `preview/landing.html`
+  - head：加 swiper@12 CDN
+  - 到店方式 modal：chip-row class 改 nowrap+overflow / 兩處 `.am-transfer-stack` 包裹移除 / `<div class="am-modal-content">` stable hook / 生效日 markup 改 `.rb-cal-cell.am-card-date`（無 icon）
+  - IIFE：trigger lazy lookup / Phase C JS（swiper init+add/delete/refresh）/ `cardsEffect.slideShadows:false` / `appendCard` 內呼叫 `initEffectiveDateCell` / 完整 default-variant 月曆實作（dropdown 加 `am-card-date-dropdown` class、portal 到 body、z-index:100）
+  - `initSubPageBehaviors` 內 simple calendar IIFE：cell init 提取為 `function initCell` + `window.initSimpleCalendarCell = ... || initCell` export
+- `preview/assets/css/landing.css`：尾段 `.am-transfer-*` 全套 + `.am-modal-box` flex column / max-height / mobile 滿版 override / `.am-transfer-card` 改藍底 + padding 縮 + touch-action / `.am-swiper { height:514 }` / `.am-card-row-pair .am-stepper { width:100% }` / 序號 text-align:center / dot 全圓 + dots padding / `.am-card-date { min-width:0; width:100% }` / `.am-card-date-dropdown` calendar-day line-height + today inset box-shadow
+- `components/arrival-method-modal.md`：Row 1 補生效日 calendar 無 icon 特規段
+- `.gitignore`：加 `preview/screenshots/`
+- `specs/progress.md`：本 session 紀錄
+- 其他繼承 Session 62 未 commit：`components/modal.md` / `components/order-condition.md` / `components/arrival-method-modal.md`（新檔本身）/ `specs/pages/room-booking.md`
+
+---
+
+### 下一輪 backlog（依使用者偏好排序）
+1. **icon 補**：自駕 / 包車或專車 / 接送 trigger trailing icon 待 Figma 補（目前永遠 road.svg，per 使用者 2026-05-08）
+2. **UX 優化**：自行到店 chip 無次選項時的提示文字、add button 強/弱 bg 兩態語意
+3. **Stepper hour/minute max**：0-23 / 0-59 後端 spec 補完再加
+4. **Form input id/name + password 包 form**：console issue 警告（Session 62 backlog）
+5. **`effect:"cards"` 偏移方向**：Figma D-2 back card 偏移右上、Swiper 預設右下；嚴格對齊需 customize transform
+6. **trash-can mask**（已實作但記錄）：`<span>` + `mask-image:url(trash-can.svg)` + `background:currentColor`，灰態 `--color-text-300`、紅態 `--color-border-plugin-invalid`
+7. **calendar prev/next month 完整 regression**：本輪 dev 端只測過開 dropdown / 點未來日期 / 互斥；月份切換按鈕未跑全 cycle
+8. **calendar dropdown leak**：每張 card init 一個 dropdown 並 portal 到 body；card 被 deleteCard 時 dropdown 沒清掉，留在 body。多次 add/delete 會堆積。下次補 cleanup（observe slide remove → 移除對應 dropdown）
+
+---
+
+### 未解問題（繼承 + 新增）
+1. inline IIFE 內直接 `getElementById` 後段元素 silent fail — 已修 chip bug 個案，codebase 其他類似 IIFE 是否同問題待全面 audit；考慮寫成記憶或補 `start.md` 守則
+2. 完整 regression 仍未跑（chip 1-4 切換 / stepper / cancel/confirm / 各 issue 修復互不干擾、calendar 月份切換全 cycle）
+3. mobile 滿版引入後，swiper height 514 在極矮 viewport（如 iPhone SE 568）扣 header+footer+chip-row+date-header 可能不夠 → modal-content 整體可 scroll，所以還行，但 ergonomics 待實機驗
+4. calendar dropdown DOM leak（見下一輪 backlog 第 8 項）
+
+---
+
+## Session 62 交接（2026-05-08）
+
+### 任務：到店方式 modal（component + landing.html implementation）
+
+**進行中（沒做完）**: Phase B 實作完但有 bug，使用者要求先交接重開 context。
+
+---
+
+### 已完成
+
+#### 1. 訂單條件 → 到店方式 trigger button（landing.html）
+- `<select>` 改為 `<button>`，內容：`<span>自行到店</span>` + `icons/road.svg` 24×24
+- attrs：`id="arrivalMethodTrigger"` / `data-modal-open="modalArrivalMethodBackdrop"` / `aria-haspopup="dialog"`
+- label span：`id="arrivalMethodTriggerLabel"`（JS 用來同步 chip 文字）
+- icon：`id="arrivalMethodTriggerIcon"`，**永遠維持 road.svg 不換**（使用者 2026-05-08 確認，chip 切換只更新 label 文字）
+
+#### 2. Spec 寫作 + 對齊
+- `components/arrival-method-modal.md` 新建（讀取 6 個 Figma instance：State A `1106:19329` / B `1109:19460` / C `1110:19603` / D-1 `1121:16398` / D-2 `1124:17174` / D-3 `1135:16863`）
+- 共用 modal 結構（外框 / Header / Footer / Backdrop / 共用 interaction）改為 reference `components/modal.md`，**不再重複描述**（修正本 session 早期違反 start.md L62-65「上游沒做完下游不動」原則所致的 spec 重複）
+- `components/modal.md` Variants 表新增 `state=arrival method` 條目
+- `components/order-condition.md:183`「到店方式 = Select」改為「到店方式 = Button trigger，點擊開到店方式 Modal」
+- `specs/pages/room-booking.md` 注意事項段已早期加入到店方式 button 註記
+- 使用者 2026-05-08 釐清 9 個疑點全寫入 spec「已釐清項目」段（含 swiper.js v12 cards effect 的 CDN 與初始化程式碼）
+- 新增記憶 `feedback_upstream_spec_first.md`：寫 component variant spec 前必須先讀 parent / 共用 spec，禁止從 Figma raw bottom-up 推
+
+#### 3. Phase A — Modal shell + chip switch
+- 新增 modal HTML：`#modalArrivalMethodBackdrop`，含 header（標題 / icons/close）、chip row（4 個 chip）、4 個 panel slot（A 空 / B-D 後續填）、footer（取消 / 確定）
+- 加 backdrop click + ESC 陣列把 `modalArrivalMethodBackdrop` 接上既有 modal infra
+- chip 切換：點 chip → active class 切到該 chip + panel hidden 切換 + `data-am-state` 同步到 `.am-modal-box`（控 width）
+- CSS：`.am-modal-box width:507px`，`[data-am-state="transfer"] width:834px`，`max-width:calc(100vw - 24px)`
+- chip 樣式 reuse 既有 `.rb-pay-chip` / `.rb-pay-active`（與 `components/button.md` `circle-none-selected` / `circle-selected-yellow` 對齊）
+
+#### 4. Phase B — vehicle stepper grid（States B / C）
+- HTML：B panel 5 個 vehicle item（轎車/電車/重機/機車/腳踏車，flex-wrap），C panel 2 個（九人座/遊覽車）
+- 每個 item：label + `.am-stepper`（text + `icons/up-and-down`，bg neutral-0 / border neutral-200 / radius 6 / padding 6/12）
+- stepper click：上下半 split → upper +1 / lower -1，min 0、無 max（使用者確認 JS 邏輯由後端後續實作）
+- CSS：`.am-vehicle-grid` flex-wrap、`.am-vehicle-item` w:96 + col gap 12、`.am-stepper` 對齊 `components/input.md` `number` variant 規格（1057:18817）
+
+#### 5. Phase B — 確定 / 取消 commit 邏輯
+- 確定：commit active chip 文字到 `#arrivalMethodTriggerLabel`，關 modal
+- 取消：不 commit；下次再開 modal 時 trigger handler 會 sync chip state 回 trigger 顯示的方式（避免殘留前次切換）
+- chipText map: `{ general: "自行到店", "self-drive": "自駕", charter: "包車或專車", transfer: "接送" }`
+- 確定 button 已從 `.modal-close-btn` 拿掉、改 `data-am-action="confirm"`，由本 modal 的 IIFE 自己處理 commit + closeModal
+
+---
+
+### 未完成 / Bug
+
+#### Bug：自駕 / 包車或專車 chip click 失效（2026-05-08 使用者回報）
+- 使用者 reload 後反映：「自駕、包車或專車 按鈕點擊都失效了」
+- 自行到店、接送 chip 是否正常未明確說
+- chrome-devtools MCP session 在這輪斷掉，無法直接 inspect / 看 console error
+- 從程式邏輯看，4 個 chip 用同一 event delegation handler，理論上不該只有 2/3 失效；建議下一輪先：
+  1. 開 chrome-devtools 看 console 是否有 error
+  2. 點 chip 看 panel 是否真的不切（vs 切了但內容不顯眼）
+  3. 確認 hard reload 後 JS 真的更新到最新版（避免 cache 老 JS）
+  4. 若仍失效，檢查 `chipRow.addEventListener("click", ...)` 是否被同 modal 內 stepper handler 「吃掉」（理論上不會，但 worth 確認）
+- 未做：State D（接送）內容（swiper card stack）
+
+#### 其他未做（Phase C/D）
+- **Phase C**：State D 接送 selected → 雙 swiper card stack（接客單 + 送客單），swiper.js v12 cards effect、5 row 卡片內容（生效日期 / 客人數 / 客目的地點 / 客搭乘資訊 / 客到站時間 / 接待時間 / 備註 / 刪除清單）、新增/刪除卡 / dot pagination / 左右箭頭 — 全部待做
+- **Phase D**：mobile RWD（接卡上 / 送卡下垂直堆疊）
+
+---
+
+### 重要決策（本輪）
+
+1. **Spec 對齊原則**：違反 start.md「上游沒做完下游不動」造成兩輪 token 浪費（先寫重複 spec、再清理對齊）。已寫入記憶 `feedback_upstream_spec_first.md`。下一輪起新 component variant spec 必須先讀通 parent spec（modal.md / button.md / input.md 等）、只記獨有差異。
+2. **Trigger icon 永遠維持 road.svg**（使用者明確指示），切 chip 只換文字不換 icon。
+3. **Stepper 互動**：split-half +/- 1，min 0，no max；JS 完整邏輯由後端實作。
+4. **疑點 5 已解**：modal header 雙層 stroke = `Color/Neutral/300` solid + `--effect-modal-header-shadow`，對齊 `components/modal.md` L87。
+
+---
+
+### 涉及檔案
+
+- `preview/landing.html`
+  - 訂單條件 → 到店方式 row：`<select>` → `<button>` (trigger)
+  - 新增 `#modalArrivalMethodBackdrop` modal HTML（包含 chip row + 4 個 panel + footer）
+  - JS IIFE：chip switch + trigger sync + commit/cancel + stepper split-half +/-
+  - backdrop click / ESC 陣列加 `modalArrivalMethodBackdrop`
+- `preview/assets/css/landing.css`：尾段加 `.am-modal-box` / `.am-vehicle-grid` / `.am-vehicle-item` / `.am-vehicle-label` / `.am-stepper` / `.am-stepper-value` / `.am-stepper-icon` 規則
+- `components/arrival-method-modal.md`：新檔（spec 已對齊 modal.md，去除重複段落）
+- `components/modal.md`：Variants 表加 `state=arrival method` 條目
+- `components/order-condition.md:183`：到店方式 row 改寫
+- `~/.claude/projects/.../memory/feedback_upstream_spec_first.md`：新記憶
+- `~/.claude/projects/.../memory/MEMORY.md`：index 加上條目
+
+---
+
+### 下一輪應做（依序）
+
+1. **抓 chip 失效 bug**：先 chrome-devtools 連線測 chip click，看 console + DOM 行為，確認 4 個 chip 是否真的有 2 個失效；若 reproduce 不到，請使用者具體說明哪個 chip 點了沒反應的「沒反應」是什麼樣（chip 不變色？panel 不出現？或別的）
+2. **Phase C — 接送 swiper card stack 實作**：套 swiper@12 CDN（CSS / JS）、雙 swiper（接 + 送）、卡片內容（5 row 欄位 + 備註 textarea + 刪除清單 button）、dots + arrows、新增 / 刪除卡邏輯
+3. **Phase D — mobile RWD**：接卡上 / 送卡下垂直堆疊
+4. **commit**：本輪變動全未 commit（landing.html / landing.css / 新 spec / 修舊 spec / progress.md）— 等 Phase C/D 完做完整視覺驗證後再一次 commit
+
+---
+
+### 未解問題（繼承）
+
+1. 4 個方式對應 trigger trailing icon — Figma 只給「自行到店 → road」，其他 3 個 icon 待 Figma 補
+   - 使用者 2026-05-08 確認暫時 icon 不換（永遠保留 road），等 Figma 出 icon 再 swap
+2. modal header 雙層 stroke 已解（對齊 modal.md L87）
+3. 自行到店 chip UX 提示文字（無次選項時是否顯示「無需填寫」之類） — 下一輪 UX 優化
+4. swiper.js stackblitz 完整 project URL — 使用者貼的是 generic URL；不影響實作（已有完整 HTML/CSS/JS 範例）
+5. modal 互動 QA、form input id/name、password 包 form — 仍未做
+
+---
+
 ## Session 61 交接（2026-05-07）
 
 ### Consumer 遷移完成 + base.css alias 區整段刪除

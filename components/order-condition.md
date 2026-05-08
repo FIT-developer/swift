@@ -180,7 +180,7 @@ Row 格式：label（Texts 100×22，left）+ 數值（Texts right-aligned，@ x
 | Row | y | h | 內容 |
 |---|---|---|---|
 | 人數 | 0 | 36 | label `人數` + Select 82.67×36「1」+ `大`(sm 12) + Select 82.67×36「0」+ `小`(sm 12)，元素間距 **12px** |
-| 到店方式 | 56 | 36 | label + Select 225.33（內容「自行到店」+ `icons/road` 24×24） |
+| 到店方式 | 56 | 36 | label + **Button** 225.33（trigger，內容「自行到店」+ `icons/road` 24×24，點擊開到店方式 Modal — 詳見 `components/arrival-method-modal.md`） |
 | 發票 | 112 | 36 | label + Select 225.33（內容「不開發票」） |
 | 統編 | 168 | 34 | label + Input 225.33（placeholder，**bg `Color/Neutral/100` 停用**） |
 | 抬頭 | 222 | 34 | label + Input 225.33（placeholder，**停用**） |

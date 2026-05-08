@@ -34,6 +34,7 @@
 | `state=order summary / waitlist` | `1437:45408` | 1019×2506px | 候補單交易狀態；上方狀態與基本資訊付款狀態分離 |
 | `state=order summary / transfer official` | `1437:46152` | 1019×2935px | 候補轉正式單交易狀態，含 `轉正式單` section action area |
 | `state=sms / order summary` | `1436:43555` | 648×1161px | Order summary header `簡訊` action opens this SMS modal |
+| `state=arrival method` | `1106:19329` / `1109:19460` / `1110:19603` / `1121:16398` / `1124:17174` / `1135:16863` | 175–993 × 507/834 | 訂單條件 → 到店方式 button 觸發；4 個 chip 切 4 個 sub-state（自行到店 / 自駕 / 包車或專車 / 接送），State D 接送含並排 swiper card stack。詳見 `components/arrival-method-modal.md` |
 
 ---
 
