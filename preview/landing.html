@@ -8379,14 +8379,14 @@
           <div class="rb-accordion-content bg-white rounded-xl p-3 mt-4">
             <div class="flex gap-8 flex-wrap">
               <!-- Column 1 -->
-              <div class="flex flex-col gap-5 flex-1 min-w-[280px]">
+              <div class="flex flex-col gap-5 basis-[280px] grow">
                 <!-- 人數：label + select 大 + select 小（兩個獨立計數，大/小為單位後綴 sm 12px） -->
                 <div class="flex items-center gap-3">
                   <span class="text-base text-text-default w-[100px] shrink-0"
                     >人數</span
                   >
                   <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base w-[82.67px]"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 md:flex-none md:w-[82.67px]"
                   >
                     <option>1</option>
                     <option>2</option>
@@ -8395,7 +8395,7 @@
                   </select>
                   <span class="text-xs text-text-default">大</span>
                   <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base w-[82.67px]"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 md:flex-none md:w-[82.67px]"
                   >
                     <option>0</option>
                     <option>1</option>
@@ -8484,7 +8484,7 @@
                 </div>
               </div>
               <!-- Column 2 -->
-              <div class="flex flex-col gap-5 flex-1 min-w-[280px]">
+              <div class="flex flex-col gap-5 basis-[280px] grow">
                 <div class="flex items-center gap-3">
                   <span class="text-base text-text-default w-[100px] shrink-0"
                     >折扣</span
@@ -8537,7 +8537,7 @@
                 </div>
               </div>
               <!-- Column 3 -->
-              <div class="flex flex-col gap-5 flex-1 min-w-[280px]">
+              <div class="flex flex-col gap-5 basis-[280px] grow">
                 <div class="flex items-start gap-3">
                   <span class="text-base text-text-default w-[100px] shrink-0 pt-1"
                     >訂單備註</span
@@ -8763,31 +8763,31 @@
                       >地址</span
                     >
                     <div class="flex flex-col gap-3 flex-1">
-                      <div class="flex flex-col gap-1">
+                      <div class="flex flex-col gap-1 min-w-0">
                         <span class="text-base text-text-default">縣/市</span>
                         <select
-                          class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
                         >
                           <option>台中</option>
                         </select>
                       </div>
-                      <div class="flex flex-col gap-1">
+                      <div class="flex flex-col gap-1 min-w-0">
                         <div class="flex justify-between">
                           <span class="text-base text-text-default">行政區</span>
                           <span class="text-base text-text-default">406</span>
                         </div>
                         <select
-                          class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
                         >
                           <option>北屯區</option>
                         </select>
                       </div>
-                      <div class="flex flex-col gap-1">
+                      <div class="flex flex-col gap-1 min-w-0">
                         <span class="text-base text-text-default">街道</span>
                         <input
                           type="text"
                           placeholder="placeholder"
-                          class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
                         />
                       </div>
                     </div>
@@ -8869,7 +8869,7 @@
                     <textarea
                       rows="4"
                       placeholder="placeholder"
-                      class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
+                      class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
                     ></textarea>
                   </div>
                 </div>
@@ -9043,31 +9043,31 @@
                       >地址</span
                     >
                     <div class="flex flex-col gap-3 flex-1">
-                      <div class="flex flex-col gap-1">
+                      <div class="flex flex-col gap-1 min-w-0">
                         <span class="text-base text-text-default">縣/市</span>
                         <select
-                          class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
                         >
                           <option>台中</option>
                         </select>
                       </div>
-                      <div class="flex flex-col gap-1">
+                      <div class="flex flex-col gap-1 min-w-0">
                         <div class="flex justify-between">
                           <span class="text-base text-text-default">行政區</span>
                           <span class="text-base text-text-default">406</span>
                         </div>
                         <select
-                          class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
                         >
                           <option>北屯區</option>
                         </select>
                       </div>
-                      <div class="flex flex-col gap-1">
+                      <div class="flex flex-col gap-1 min-w-0">
                         <span class="text-base text-text-default">街道</span>
                         <input
                           type="text"
                           placeholder="placeholder"
-                          class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
                         />
                       </div>
                     </div>
@@ -9148,7 +9148,7 @@
                     <textarea
                       rows="4"
                       placeholder="placeholder"
-                      class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
+                      class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
                     ></textarea>
                   </div>
                 </div>
