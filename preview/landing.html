@@ -8380,29 +8380,32 @@
             <div class="flex gap-8 flex-wrap">
               <!-- Column 1 -->
               <div class="flex flex-col gap-5 basis-full md:basis-[280px] grow">
-                <!-- 人數：label + select 大 + select 小（兩個獨立計數，大/小為單位後綴 sm 12px） -->
+                <!-- 人數：label + wrapper(滿版)[select 大 + select 小] —
+                     wrapper 包 2 個 select + 大/小 unit，照 Figma 原意自適應 -->
                 <div class="flex items-center gap-3">
                   <span class="text-base text-text-default w-[100px] shrink-0"
                     >人數</span
                   >
-                  <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 md:flex-none md:w-[82.67px]"
-                  >
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                  </select>
-                  <span class="text-xs text-text-default">大</span>
-                  <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 md:flex-none md:w-[82.67px]"
-                  >
-                    <option>0</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                  </select>
-                  <span class="text-xs text-text-default">小</span>
+                  <div class="flex flex-1 min-w-0 items-center gap-3">
+                    <select
+                      class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 md:flex-none md:w-[82.67px]"
+                    >
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                    </select>
+                    <span class="text-xs text-text-default">大</span>
+                    <select
+                      class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 md:flex-none md:w-[82.67px]"
+                    >
+                      <option>0</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                    </select>
+                    <span class="text-xs text-text-default">小</span>
+                  </div>
                 </div>
                 <div class="flex items-center gap-3">
                   <span class="text-base text-text-default w-[100px] shrink-0"
@@ -8411,7 +8414,7 @@
                   <button
                     id="arrivalMethodTrigger"
                     type="button"
-                    class="flex items-center justify-between flex-1 bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 text-text-default text-base"
+                    class="flex items-center justify-between flex-1 min-w-0 w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 text-text-default text-base"
                     data-modal-open="modalArrivalMethodBackdrop"
                     aria-haspopup="dialog"
                   >
@@ -8430,7 +8433,7 @@
                   >
                   <select
                     id="invoiceSelect"
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
                   >
                     <option value="none">不開發票</option>
                     <option value="issue">開發票</option>
@@ -8445,7 +8448,7 @@
                     type="text"
                     placeholder="placeholder"
                     disabled
-                    class="rb-invoice-input border border-border-disabled rounded-[6px] px-3 py-1.5 bg-border-default text-base flex-1"
+                    class="rb-invoice-input border border-border-disabled rounded-[6px] px-3 py-1.5 bg-border-default text-base flex-1 min-w-0 w-full"
                   />
                 </div>
                 <div class="flex items-center gap-3">
@@ -8457,7 +8460,7 @@
                     type="text"
                     placeholder="placeholder"
                     disabled
-                    class="rb-invoice-input border border-border-disabled rounded-[6px] px-3 py-1.5 bg-border-default text-base flex-1"
+                    class="rb-invoice-input border border-border-disabled rounded-[6px] px-3 py-1.5 bg-border-default text-base flex-1 min-w-0 w-full"
                   />
                 </div>
                 <!-- 繳款期限：label 直排（label 16px + 3 天 sm 12px） + Calendar input -->
@@ -8490,7 +8493,7 @@
                     >折扣</span
                   >
                   <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
                   >
                     <option>無折扣</option>
                   </select>
@@ -8502,7 +8505,7 @@
                   <input
                     type="text"
                     value="1444"
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
                   />
                 </div>
                 <div class="flex items-center gap-3">
@@ -8510,7 +8513,7 @@
                     >加購項目併單</span
                   >
                   <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
                   >
                     <option>併單</option>
                   </select>
@@ -8520,7 +8523,7 @@
                     >預付百分比</span
                   >
                   <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
                   >
                     <option>100%</option>
                   </select>
@@ -8532,7 +8535,7 @@
                   <input
                     type="text"
                     value="1444"
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
                   />
                 </div>
               </div>
@@ -8544,7 +8547,7 @@
                   >
                   <textarea
                     rows="4"
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 resize-none"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full resize-none"
                   ></textarea>
                 </div>
                 <div class="flex items-start gap-3">
@@ -8553,7 +8556,7 @@
                   >
                   <textarea
                     rows="4"
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 resize-none"
+                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full resize-none"
                   >
 需要瓦斯爐</textarea
                   >
