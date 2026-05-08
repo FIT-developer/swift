@@ -288,6 +288,17 @@ textarea:focus-visible {
   }
 }
 
+/* Mobile：隱藏 calendar 觸發按鈕內的 icon，讓窄欄/table cell 有空間放日期文字。
+   md+ 才顯示 icon。 */
+.rb-cal-btn > img {
+  display: none;
+}
+@media (min-width: 768px) {
+  .rb-cal-btn > img {
+    display: inline-block;
+  }
+}
+
 .calendar-dropdown {
   display: none;
   position: fixed;
