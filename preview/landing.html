@@ -4361,7 +4361,8 @@
                   '<div class="title-highlight py-1">六</div>' +
                   "</div>" +
                   '<div class="days-grid grid grid-cols-7 gap-1"></div>';
-                cell.appendChild(dropdown);
+                /* portal 到 document.body，避免被祖先 overflow:hidden 裁切 */
+                document.body.appendChild(dropdown);
                 dropdown.addEventListener("click", function (e) {
                   e.stopPropagation();
                 });
@@ -4451,7 +4452,6 @@
               }
               function positionDropdown() {
                 var r = btn.getBoundingClientRect();
-                var cellRect = cell.getBoundingClientRect();
                 var vw = window.innerWidth;
                 var vh = window.innerHeight;
                 var dw = dropdown.offsetWidth || 280;
@@ -4468,10 +4468,9 @@
                   top =
                     above > gutter ? above : Math.max(gutter, vh - dh - gutter);
                 }
-                // dropdown 為 cell 的 absolute child → 設 cell-relative coords
-                // （scroll 時 dropdown 自然跟著 cell 移動，不需 listener 重算）
-                dropdown.style.top = (top - cellRect.top) + "px";
-                dropdown.style.left = (left - cellRect.left) + "px";
+                // viewport 絕對座標（dropdown 已 portal 到 body, position: fixed）
+                dropdown.style.top = top + "px";
+                dropdown.style.left = left + "px";
               }
               btn.addEventListener("click", function (e) {
                 e.stopPropagation();
@@ -5704,7 +5703,8 @@
               '<div class="title-highlight py-1">日</div><div class="py-1">一</div><div class="py-1">二</div><div class="py-1">三</div><div class="py-1">四</div><div class="py-1">五</div><div class="title-highlight py-1">六</div>' +
               "</div>" +
               '<div class="days-grid grid grid-cols-7 gap-1"></div>';
-            cell.appendChild(dropdown);
+            /* portal 到 document.body，避免被祖先 overflow:hidden 裁切 */
+            document.body.appendChild(dropdown);
             dropdown.addEventListener("click", function (e) {
               e.stopPropagation();
             });
@@ -5755,7 +5755,6 @@
             }
             function positionDropdown() {
               var r = btn.getBoundingClientRect();
-              var cellRect = cell.getBoundingClientRect();
               var gutter = 8;
               var dw = dropdown.offsetWidth || 280;
               var dh = dropdown.offsetHeight || 340;
@@ -5764,9 +5763,9 @@
               if (top + dh + gutter > window.innerHeight) {
                 top = Math.max(gutter, r.top - dh - gutter);
               }
-              // cell-relative coords（dropdown 為 cell 的 absolute child）
-              dropdown.style.left = (left - cellRect.left) + "px";
-              dropdown.style.top = (top - cellRect.top) + "px";
+              // viewport 絕對座標（dropdown 已 portal 到 body, position: fixed）
+              dropdown.style.left = left + "px";
+              dropdown.style.top = top + "px";
             }
             btn.addEventListener("click", function (e) {
               e.stopPropagation();
@@ -5796,6 +5795,18 @@
               e.stopPropagation();
               viewingDate = viewingDate.add(1, "month");
               render();
+            });
+            // dropdown portal 到 body 後不再自動跟隨 cell；
+            // scroll/resize 時重算座標讓 dropdown 持續貼著 trigger button
+            window.addEventListener(
+              "scroll",
+              function () {
+                if (dropdown.classList.contains("active")) positionDropdown();
+              },
+              true,
+            );
+            window.addEventListener("resize", function () {
+              if (dropdown.classList.contains("active")) positionDropdown();
             });
           });
         }
@@ -6454,7 +6465,6 @@
             }
             function positionDropdown() {
               var r = btn.getBoundingClientRect();
-              var cellRect = cell.getBoundingClientRect();
               var vw = window.innerWidth;
               var vh = window.innerHeight;
               var dw = dropdown.offsetWidth || 280;
@@ -6468,9 +6478,9 @@
                 var above = r.top - dh - gutter;
                 top = above > gutter ? above : Math.max(gutter, vh - dh - gutter);
               }
-              // cell-relative coords（dropdown 為 cell 的 absolute child）
-              dropdown.style.top = (top - cellRect.top) + "px";
-              dropdown.style.left = (left - cellRect.left) + "px";
+              // viewport 絕對座標（dropdown 已 portal 到 body, position: fixed）
+              dropdown.style.top = top + "px";
+              dropdown.style.left = left + "px";
             }
             btn.addEventListener("click", function (e) {
               e.stopPropagation();
