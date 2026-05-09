@@ -188,9 +188,25 @@
   font-family: "Noto Sans TC", sans-serif;
 }
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Font-size scale — 全域文字大小規範
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   全域最小字體 = text-xs (12px)。
+   不允許任何 < 12px 的字（含 Tailwind arbitrary value 與 inline font-size）。
+   寫法：用 Tailwind utility（text-xs/text-sm/text-base/text-lg/text-xl）
+   或 var(--font-size-*)。違規由 scripts/lint-fonts.sh 攔截。 */
+:root {
+  --font-size-min:  12px;  /* = text-xs，全域最小 */
+  --font-size-sm:   14px;  /* = text-sm */
+  --font-size-base: 16px;  /* = text-base，預設 body */
+  --font-size-lg:   18px;  /* = text-lg */
+  --font-size-xl:   20px;  /* = text-xl */
+}
+
 body {
   min-width: 375px;
   background: var(--color-surface-default);
+  font-size: var(--font-size-base);
 }
 
 button:focus-visible,
@@ -301,7 +317,9 @@ textarea:focus-visible {
 
 .calendar-dropdown {
   display: none;
-  position: fixed;
+  /* position: absolute（child of rb-cal-cell which is position: relative）→
+     scroll 時 dropdown 會自然跟隨 trigger cell，不需 scroll listener 重算座標 */
+  position: absolute;
   z-index: var(--z-popover);
   width: 280px;
   border: 1px solid var(--color-border-default);

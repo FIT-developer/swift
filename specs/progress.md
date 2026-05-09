@@ -4,6 +4,113 @@
 
 ---
 
+## Session 64 交接（2026-05-08 → 2026-05-09）
+
+### 任務：iOS Safari mobile 爆版全 audit + Figma label-fluid pattern 還原 + 字體規範系統化 + Modal footer padding 統一 + Calendar dropdown 跟隨 trigger
+
+接續 Session 63。使用者用實機 iPhone 看 GitHub Pages 部署版發現多處 mobile 爆版／視覺問題，**Chrome devtools mobile mode 看不出來**（Blink ≠ iOS WebKit、且 devtools 預設裝置寬度通常 ≥ 寫死 min-width 值）。本輪做了 4 大主題的全面修法 + 建立持續性的 lint 規範。
+
+> **重要 cross-cutting 教訓**（已寫入記憶）：
+> - `feedback_min_width_mobile_safe.md`：Figma `min-width` 不可硬寫，需 `md:` 前綴或 `@media` 包
+> - `feedback_font_size_min_12px.md`：禁 `text-[10px]`、最小 12px、`scripts/lint-fonts.sh` 攔截
+> - `feedback_commit_push_keyword.md`：使用者沒說「commit & push」不可自動推
+> - `feedback_screenshot_session_folder.md`：QA 截圖按 session 編號分資料夾
+
+---
+
+### 已完成（已 commit 上線 4 顆）
+
+#### 1. `b25f8c8` Fix mobile overflow in room booking form fields
+- **Root cause**：`min-w-[280px]` 在 [C] 訂單條件 column wrapper、`.rb-cal-cell { min-width: 160px }` global、`w-[82.67px]` 兩顆 select
+- 3× `min-w-[280px]` → `basis-[280px] grow`
+- `.rb-cal-cell` mobile 解除 160 min（`@media (min-width: 768px)` 才設）
+- 人數 selects → `flex-1 min-w-0 md:flex-none md:w-[82.67px]`
+- [D] 訂房資料 地址 select/input/textarea 補 `w-full min-w-0`
+
+#### 2. `ab38dd7` Stack 訂單條件 columns to single column on mobile and hide calendar icons
+- iOS Safari 對 `basis-[280px]` 的 wrap 行為不一致（Chrome emu OK 但 iOS 仍 2 column overlap）
+- columns 改 `basis-full md:basis-[280px]` 強制 mobile 1 col stack
+- `.rb-cal-btn > img` mobile 隱藏、md+ 顯示（窄欄/table cell 騰出空間）
+
+#### 3. `08fc7e0` Apply Figma label-fixed-input-fluid pattern to 訂單條件 rows
+- **使用者點出 Figma 原意**：label 固定 + input/wrapper(w-full) 自適應；多 input row（人數）要包 wrapper container
+- 13 個 row 全部對齊 Figma pattern：
+  - 人數 row：5 children flat → label + `<div flex-1 min-w-0>[select][大][select][小]</div>`
+  - 11 個 input/select/button/textarea：`flex-1` → `flex-1 min-w-0 w-full`
+- iPad 768 「2+1 拼接」quirk 使用者接受不動
+
+#### 4. `a7120f5` Add 購物車 section title to purchase add-on modal right column
+- 加購 modal 右欄缺 section header 與左/中欄不對齊
+- 加 `<h3>` cart icon + 「購物車」標題
+
+---
+
+### 已完成（pending review，未 commit）— 本次 commit 內容
+
+#### A. iOS Safari 額外修法（4 件）
+| # | 修法 | 位置 |
+|---|---|---|
+| 1 | `.mode-toggle` + `.mode-btn` 加 `flex-shrink: 0`（防 iOS 擠扁） | `landing.css:619-636` |
+| 2 | [A] 空房與庫存查詢 accordion `mb-4` 從 header 移到 content `mt-4`（收起時無 gap） | `landing.html:7055,7066` |
+| 3 | `.input-group > select` `appearance: auto → none` + 自繪 chevron + 強制 `border-radius: 0`（首尾 6px 圓角）| `landing.css:823-842` |
+| 4 | 票券 chip 票券號碼 row 改 wrapper container pattern：mobile input ↓ input ↓ button stack 對齊 | `landing.html:2907-2922` |
+
+#### B. Calendar dropdown：position fixed → absolute（**選項 A**）
+- **使用者選 A**：dropdown 寫成 trigger cell 的 absolute child，scroll 時自然跟隨
+- `.calendar-dropdown { position: fixed → absolute }` (`base.css:302`)
+- 3× `positionDropdown()` 改寫成 cell-relative coords：把計算後的 viewport 座標減 `cellRect.top/left` 變相對值
+- 驗證：scroll 時 dropdown 跟著 cell 移動、gap 保持不變
+- 位置：`landing.html:4452, 5756, 6455`
+
+#### C. 字體規範系統化
+- **使用者規範**：「全域最小字體 = 12px，禁 10px，用變數管理」
+- 全部 `text-[10px]` → `text-xs`（總共 7 處：4 sidebar badge + 3 calendar weekday header）
+- 之前已改的 inv table：data row chip 12px、total row 16px、中秋連假 12px
+- `base.css :root` 加 `--font-size-min/sm/base/lg/xl` 5 個變數
+- `body { font-size: var(--font-size-base) }` 預設 16
+- `tokens.md § 字體` 新增「Font-size 規範」表格 + 禁用註記
+- 11px 違規順手清掉：`room-booking.html` 4 處、`chartjs-diverging.html` 1 處
+
+#### D. Lint 系統（**新增 `scripts/` 目錄**）
+- `scripts/lint-fonts.sh`：grep-based lint，禁 < 12px 字體（`text-[10px]`、`font-size: 10px` 等）
+- `scripts/git-hooks/pre-commit`：committable hook 範本
+- `.git/hooks/pre-commit`：本機已實裝（commit 前自動跑 lint，違規 exit 1 擋下）
+- `scripts/README.md`：安裝 / 繞過說明
+
+#### E. Modal footer padding 統一
+- iOS 真機觀察 modal 右側黑色按鈕貼邊（圓角手機 12px 不夠）
+- 5 處 `flex h-[58px] ... justify-end px-3` → `px-5`（12 → 20）
+- 位置：`landing.html:2106, 2468, 2679, 3302, 3527`
+- 驗證：mobile 390 button 距邊 20px、desktop 1440 距 modal 邊 21px
+
+---
+
+### 驗證截圖
+
+`specs/qa-screenshots/session-63/`（後段已說明開新資料夾規則，下次起用 session-64）：
+- `accordion-collapsed.png`：[A] 收起無 gap、merged input-group 中間方角
+- `inv-table-font-fix-desktop.png`：字體 12/16px 視覺驗證
+- `calendar-absolute-follows.png`：dropdown 跟著 cell
+- `modal-footer-px5.png`：button 距邊 20px
+- `am-arrow-first-disabled-tall.png`：arrival method swiper 首末頁 arrow disabled
+- `ticket-row-mobile-390-aligned.png`：票券號碼 row 3 children 對齊
+- `emu-iphone390-C-v3-final.png`：[C] 訂單條件 mobile stack
+- `emu-desktop1440-C-final.png`：[C] desktop 3 col 並排
+- `emu-ipad768-C-final.png`：iPad 2+1 拼接
+
+### 還沒做 / 下一步可選
+- iPad 768 「2+1 拼接」使用者已決定不動
+- `body { min-width: 375px }` 使用者覺得目前 OK，未動（iPhone Mini 320 罕見）
+- 4 個 sidebar 通知 badge + 3 個 calendar weekday 已從 10 改 12px，但若使用者覺得太大可微調
+
+### 重要決定
+- iOS Safari 跟 Chrome Blink 行為不一致：未來寫 mobile 一律靠真機驗證、不能只看 devtools
+- Lint 自動攔截 < 12px：違規由 hook 擋 commit；繞過用 `--no-verify`（不建議）
+- Calendar dropdown 改 absolute：trade-off 是若被 modal 內 `overflow: hidden` 截到要再處理，目前 inv/加購/到店 modal 都是 visible 沒事
+- Modal footer 全 `px-5`：mobile 安全邊距、desktop 看起來也不過鬆
+
+---
+
 ## Session 63 交接（2026-05-08）
 
 ### 任務：到店方式 modal — chip bug fix + Phase C/D 實作 + 4 個使用者驗收問題（**未驗收完成**）

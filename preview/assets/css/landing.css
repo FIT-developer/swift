@@ -619,6 +619,7 @@ body.mobile-sidebar-open {
 .mode-toggle {
   display: inline-flex;
   align-self: flex-start;
+  flex-shrink: 0;
   border: 1px solid var(--color-neutral-200);
   border-radius: 28px;
   overflow: hidden;
@@ -633,6 +634,7 @@ body.mobile-sidebar-open {
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .mode-btn.active {
   background: var(--color-radio-default);
@@ -821,7 +823,24 @@ body.mobile-sidebar-open {
   cursor: pointer;
 }
 .input-group > select {
-  appearance: auto;
+  /* iOS Safari native select 會強制套圓角，覆寫 input-group 中間元素的方角；
+     用 appearance: none 拿掉原生 chrome，自繪 chevron 補回視覺。 */
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("../icons/up-and-down.svg");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 16px;
+  padding-right: 28px;
+  border-radius: 0;
+}
+.input-group > select:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+.input-group > select:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 /* ── Stepper input (table 間數欄) ──────────────────── */

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Auto-installed pre-commit hook — calls scripts/lint-fonts.sh
+# 規範來源：specs/assets/tokens.md § 字體 / Font-size 規範
+# 重新安裝：cp scripts/git-hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+set -e
+root="$(git rev-parse --show-toplevel)"
+"$root/scripts/lint-fonts.sh" --staged

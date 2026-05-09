@@ -280,6 +280,20 @@
 | `base` | ~20–22px | ~28px | 主要內文、選單項目 |
 | `md` | ~24–27px | ~32px | Section 標題 |
 
+### Font-size 規範
+
+> **全域最小字體 = 12px (`text-xs`)**。**禁用** `text-[10px]` / `font-size: 10px` / 任何 < 12px 的字。
+> 寫法：使用 Tailwind utility（`text-xs` / `text-sm` / `text-base` / `text-lg` / `text-xl`），或 CSS variable `var(--font-size-*)`。
+> 變數定義在 `preview/assets/css/base.css` `:root`。
+
+| Variable | 值 | Tailwind 對應 | 用途 |
+|---|---|---|---|
+| `--font-size-min`  | `12px` | `text-xs`   | 全域最小（chip badge、輔助 metadata） |
+| `--font-size-sm`   | `14px` | `text-sm`   | 輔助說明、smaller body |
+| `--font-size-base` | `16px` | `text-base` | **預設 body 字**、表格內文 |
+| `--font-size-lg`   | `18px` | `text-lg`   | 強調 body |
+| `--font-size-xl`   | `20px` | `text-xl`   | Section 標題 |
+
 ---
 
 ## 陰影 (Shadows)
