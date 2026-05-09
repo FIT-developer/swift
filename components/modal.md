@@ -216,7 +216,7 @@ Modal (560×390px)
 | Info item 左側 border | only left side, 4px；top/right/bottom border width = 0；跟隨 item `Radius/6` 自然裁切圓角 | `Spacing/4`, `Radius/6`, `Color/Neutral/200` |
 | Static input frame | padding 8px 12px | `Spacing/8`, `Spacing/12` |
 | Static input content | 536×174px, radius 6, padding 6px 12px, border `Color/Neutral/200`，白底一般狀態；不可編輯，不套 disabled 灰底樣式 | `Radius/6`, `Spacing/6`, `Spacing/12`, `Color/Neutral/200` |
-| Footer | h 58px, padding 12px, button right aligned | `Spacing/12` |
+| Footer | h 58px, padding 左右 20px / 上下 0，button right aligned | `Spacing/20` |
 
 ### Typography / Colors
 
@@ -413,7 +413,7 @@ Modal
 | 區塊 | 規格 |
 |---|---|
 | Header | h 51px, padding 12px，title left、close right |
-| Footer | h 58px, padding 12px，buttons right aligned |
+| Footer | h 58px, padding 左右 20px / 上下 0，buttons right aligned |
 | Modal desktop | max width follows 1194px reference; content may cap to viewport minus 24px |
 | Modal body | content higher than viewport 時，body 垂直 scroll；header / footer 保持可見 |
 | Desktop layout | body 內是兩個主要 sibling：`main group(left menu + Frame 410)` / `right result cart`；main group 內 left + middle 橫向 flex |

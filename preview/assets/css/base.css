@@ -269,6 +269,10 @@ textarea:focus-visible {
 .modal-backdrop {
   position: fixed;
   inset: 0;
+  /* iOS Safari：inset:0 在動態 chrome 下等於 large viewport（含 toolbar），
+     用 height: 100dvh 改成 small viewport，footer 不會躲到 toolbar 後 */
+  height: 100vh;  /* fallback */
+  height: 100dvh;
   z-index: var(--z-modal);
   display: flex;
   align-items: center;

@@ -160,6 +160,9 @@ tokens → icons → components → sections → layout → 實作
 - [ ] **Token 檢查**: 所有顏色/間距/圓角都引用 tokens.md 的 token 名稱,沒有寫死 hex 或任意數值
 - [ ] **Icon 檢查**: 所有 icon 都從 `preview/assets/icons/` 引用,沒有自己畫 SVG 或用其他 icon library
 - [ ] **RWD 檢查**: 採流動寬度與 responsive constraints；375px 僅作為 Figma mobile 參考稿寬度，不得固定寫死，且元件在任務指定 viewport 的行為有實際測試過 (不只是 CSS 寫了就算)
+- [ ] **Font-size 檢查**: 沒有 < 12px 字體（`text-[10/11px]`、`font-size: <12px`）；用 `text-xs/sm/base/lg/xl` 或 `var(--font-size-*)`
+- [ ] **min-width mobile-safe 檢查**: 所有 fixed `min-w-[Npx]` 都有 `md:` 前綴或包 `@media (min-width: 768px)`；不得讓 mobile 強制大於 viewport
+- [ ] **Lint 自檢**: 跑 `./scripts/lint-fonts.sh`（commit 前 hook 會自動跑），exit 0 才算通過
 - [ ] **狀態完整性**: Spec 裡定義的所有狀態 (hover/active/disabled/error 等) 都有實作,沒有漏掉
 - [ ] **文字內容**: 繁體中文內容跟 Figma 一致,沒有自動翻譯或改寫
 **任何一項不通過,必須修正後重新報告,直到全部通過**。
@@ -177,6 +180,7 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 - 字體平滑化 (`-webkit-font-smoothing`)
 - 系統對話框樣式
 - 列印樣式 (`@media print`)
+- Typography token：`:root` 定義 `--font-size-min/sm/base/lg/xl`（12/14/16/18/20px），`body` 預設 `font-size: var(--font-size-base)`。詳見 `specs/assets/tokens.md § 字體 / Font-size 規範`
 **不要**在 base.css 裡:
 - 重新定義 Tailwind 已經有的 utility
 - 放元件樣式 (元件樣式優先用 Tailwind class；Tailwind 無法表達時，使用 scoped CSS class)
@@ -185,6 +189,8 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 **HTML / CSS style 規則**:
 - 禁止任意 inline style 與 hard-coded color / spacing / radius / font value。
 - 顏色、間距、圓角、字體等可 token 化的值，必須先在 `specs/assets/tokens.md` 有對應，再透過 CSS variable 或 Tailwind semantic class 使用。
+- 字體大小：**全域最小 12px**，禁用 `text-[10px]`、`font-size: 10px`、`text-[11px]` 等 < 12px 的寫法。用 `text-xs/text-sm/text-base/text-lg/text-xl` 或 `var(--font-size-min/sm/base/lg/xl)`。違規由 `scripts/lint-fonts.sh` + git pre-commit hook 自動攔截。
+- Mobile RWD：`min-width` 不得寫死 fixed 值。所有 `min-w-[Npx]` 需 `md:` 前綴（如 `md:min-w-[280px]`）或包 `@media (min-width: 768px)`；偏好寬度用 `basis-[Npx]` 不用 hard min。原因：iOS Safari 對 fixed `min-width` 在窄 viewport 不會 shrink/wrap，會直接溢出，且 Chrome devtools mobile mode 看不出來（Blink ≠ iOS WebKit）。
 - 單一 preview 頁面或元件專用、Tailwind 不好表達的樣式，可放在該 HTML 的 `<style>`，但必須用明確 scoped class（例如 `.room-edit-price-table`），不可散落 inline style。
 - 若 AI agent 判斷某個效果必須使用 inline style 或非 token 固定值，必須先向使用者報告原因、替代方案、影響差異，取得同意後才可使用，並把差異寫入對應 spec 或 `specs/progress.md`。
 
@@ -207,16 +213,28 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
   → 先讀使用規則與相關章節再動；不需要每次全量重讀或同步
 - ❌ 任意加入 inline style 或 hard-coded design value
   → 先使用 token / CSS variable / Tailwind semantic class；例外必須先報告並取得同意
+- ❌ 寫 < 12px 的字體（`text-[10px]`、`font-size: 10px`、`text-[11px]` 等）
+  → 全域最小 = `text-xs` (12px)；用 Tailwind utility 或 `var(--font-size-min/sm/base/lg/xl)`。pre-commit hook 會擋
+- ❌ 寫死的 `min-width: Npx` 在 mobile context 沒有 mobile-gate
+  → `min-w-[280px]` 必須是 `md:min-w-[280px]`；或改用 `basis-[Npx]` 讓 mobile 可 shrink。違反的話 iOS Safari 會直接溢出 viewport（Chrome devtools 看不出來）
 - ❌ 刪除任何 specs/ 底下的檔案
   → 改內容可以,刪檔要我同意
 - ❌ 產出 React / Next / 其他框架的 code
   → 這個專案堅持原生 HTML + Tailwind CDN
+- ❌ Commit / push 沒有使用者明確指示
+  → 修完就 commit & push 是自作主張；使用者打「commit & push」/「推」才動作
 
 ## 進度同步（每次任務完成後立刻執行）
 每完成一個 spec 或實作，立刻更新 `specs/progress.md`：
 - 在檔案最上方新增最新 Session 交接
 - 記錄：已完成、驗證、下一步應做、重要決定、未解問題
 - 若只是小修，也要記錄會影響下一輪判斷的決策或規則變更
+
+**交接時還要 audit 三份規範檔是否同步**（漏一份就有 drift 風險）：
+- `specs/progress.md`：本輪完成、決策、未解問題
+- `specs/assets/tokens.md`：若新增 / 修改 token（顏色、字體、間距、圓角等）
+- `start.md`：若新增 / 修改開發規則、禁區、產出驗證、全域樣式
+- 完成 commit 前自問：「這次改動有 implicit rule 是未來開發要遵守的嗎？」有的話 start.md 必補
 
 ## 疲勞與交接
 當你出現以下任一情況時,請主動停下工作並告知我:
