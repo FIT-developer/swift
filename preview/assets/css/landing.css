@@ -651,6 +651,110 @@ body.mobile-sidebar-open {
   background: var(--color-modal-hover);
 }
 
+/* ── Room-booking: inventory toolbar + date-details modal ─────────────── */
+.inventory-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  flex-wrap: wrap;
+}
+.inventory-excel-btn {
+  display: inline-flex;
+  height: 36px;
+  align-items: center;
+  gap: var(--spacing-12);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-6);
+  background: var(--color-neutral-0);
+  padding: var(--spacing-6) var(--spacing-12);
+  color: var(--color-text-800);
+  font-size: var(--font-size-base);
+  line-height: 1.375;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.inventory-excel-btn:hover {
+  background: var(--color-modal-hover);
+}
+.inv-date-trigger {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+.inv-date-trigger:hover {
+  color: var(--color-menuitem-default);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inventory-date-modal {
+  position: fixed;
+  z-index: var(--z-popover);
+  width: min(calc(100vw - var(--spacing-24)), 384px);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-8);
+  background: var(--color-neutral-0);
+  box-shadow: var(--effect-modal-shadow);
+}
+.inventory-date-modal-header {
+  display: flex;
+  min-height: 51px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  border-bottom: 1px solid var(--color-neutral-300);
+  box-shadow: var(--effect-modal-header-shadow);
+  padding: var(--spacing-12);
+}
+.inventory-date-modal-close {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.inventory-date-modal-close:hover {
+  opacity: 1;
+}
+.inventory-date-modal-body {
+  border: 1px solid var(--color-neutral-200);
+  border-top: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--spacing-12);
+}
+.inventory-date-detail-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  color: var(--color-text-800);
+  font-size: var(--font-size-base);
+}
+.inventory-date-detail-table th,
+.inventory-date-detail-table td {
+  height: 38px;
+  padding: var(--spacing-8) var(--spacing-12);
+  font-weight: 400;
+  line-height: 1.375;
+  text-align: left;
+  white-space: nowrap;
+}
+.inventory-date-detail-table th {
+  border-bottom: 1px solid var(--color-text-800);
+}
+.inventory-date-detail-table th:not(:first-child),
+.inventory-date-detail-table td:not(:first-child) {
+  text-align: center;
+}
+
 /* ── Payment method chip (正式單 panel) ───────────── */
 /* Figma Button component-set:
    circle-none-selected (974:12453) → padding 10/16, r:28, stroke Color/Neutral/200, no fill
@@ -1443,4 +1547,3 @@ body.mobile-sidebar-open {
     grid-template-columns: 1fr;
   }
 }
-

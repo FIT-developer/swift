@@ -4,6 +4,56 @@
 
 ---
 
+## Session 65 交接（2026-05-11）
+
+### 任務：Figma `type=table 2 + modal` 補 Excel 匯出按鈕 + 庫存日期 details modal
+
+使用者以 `figma-go` 指定目前選取元件，已讀取並確認 source of truth：
+- Figma node：`1405:48344`
+- Component name：`type=table 2 + modal`
+- Size：`1019 × 514`
+- Page：`components`
+
+### 已完成
+
+1. `components/table-inventory.md`
+   - 新增 Current Figma contract（2026-05-11）
+   - 記錄 toolbar 的 `Excel` + `icons/download` button（node `1405:48355`）
+   - 記錄日期數字 / 星期同 column trigger 開啟 `state=date details` modal（modal node `1405:48924`）
+   - 記錄 modal body 欄位：`房型 / 正式 / 未付款 / 已過期 / 候補`
+
+2. `preview/landing.html`
+   - [A] 空房與庫存查詢右側 toolbar 補 `Excel` download button
+   - Excel button 只在「庫存表」mode 顯示；「空房查詢」mode 隱藏
+   - Excel button 會將目前庫存表匯出為 UTF-8 BOM CSV，檔名 `庫存表.csv`
+   - 庫存表日期列與星期列新增 trigger；點 `11` 或 `一` 會開 date-details modal
+   - Modal 關閉行為鎖在自己的 close button；不使用 outside click / scroll / resize / Esc 關閉
+
+3. `preview/assets/css/landing.css`
+   - 新增 scoped `.inventory-*` 樣式
+   - 所有新增 color / spacing / radius / font-size 使用 tokens / CSS variables
+   - Modal 寬度以 Figma size `384px` 為上限，mobile 使用 `100vw - Spacing/24` clamp
+   - Modal body table 預設 `overflow-x: auto`，小尺寸可水平滑動檢視內容
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- Local preview server：`http://127.0.0.1:8002/landing.html` 回 200（驗證後已關閉 server）
+- Headless Chrome + DevTools Protocol 互動驗證通過：
+  - 開「房間預定」→ 切「庫存表」
+  - 點日期 `11` → modal 顯示，title `2026-02-11`
+  - modal rows：`義大利麵房|0|0|0|0`、`香蕉船房|1|1|1|1`
+  - close icon 可關閉
+  - 點星期 `一` → modal 再次顯示，title `2026-02-11`
+  - Excel button 觸發 1 次匯出流程
+
+### 注意
+
+- Figma 示意 modal header 是 `2026-04-11`，但目前 preview 庫存表標題仍是 `2026 / 02`；實作採「clicked date column」推導 title，因此 `11` 對應 `2026-02-11`。若設計要固定改成 4 月，需同步 table title 與 date column 資料。
+- QA 截圖擷取步驟被拒絕，未留下新 screenshot 檔。
+
+---
+
 ## Session 64 交接（2026-05-08 → 2026-05-09）
 
 ### 任務：iOS Safari mobile 爆版全 audit + Figma label-fluid pattern 還原 + 字體規範系統化 + Modal footer padding 統一 + Calendar dropdown 跟隨 trigger

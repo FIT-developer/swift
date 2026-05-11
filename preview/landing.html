@@ -4302,6 +4302,146 @@
                 });
             });
           });
+          // Inventory Excel export + date-details modal
+          (function () {
+            var tableInventory = root.querySelector("#tableInventory");
+            var excelBtn = root.querySelector("[data-inventory-excel]");
+            var dateModal = root.querySelector("[data-inventory-date-modal]");
+            var dateModalTitle = root.querySelector(
+              "[data-inventory-date-modal-title]",
+            );
+            var dateModalBody = root.querySelector(
+              "[data-inventory-date-modal-body]",
+            );
+            var dateModalClose = root.querySelector(
+              "[data-inventory-date-modal-close]",
+            );
+            var dateDetailRows = [
+              {
+                roomType: "義大利麵房",
+                official: 0,
+                unpaid: 0,
+                expired: 0,
+                waitlist: 0,
+              },
+              {
+                roomType: "香蕉船房",
+                official: 1,
+                unpaid: 1,
+                expired: 1,
+                waitlist: 1,
+              },
+            ];
+
+            function csvEscape(value) {
+              var text = String(value || "").replace(/\s+/g, " ").trim();
+              return '"' + text.replace(/"/g, '""') + '"';
+            }
+
+            function exportInventoryCsv() {
+              if (!tableInventory) return;
+              var rows = Array.prototype.slice.call(
+                tableInventory.querySelectorAll("table tr"),
+              );
+              if (!rows.length) return;
+              var csv = rows
+                .map(function (row) {
+                  return Array.prototype.slice
+                    .call(row.children)
+                    .map(function (cell) {
+                      return csvEscape(cell.innerText);
+                    })
+                    .join(",");
+                })
+                .join("\n");
+              var blob = new Blob(["\ufeff" + csv], {
+                type: "text/csv;charset=utf-8;",
+              });
+              var url = URL.createObjectURL(blob);
+              var link = document.createElement("a");
+              link.href = url;
+              link.download = "庫存表.csv";
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              URL.revokeObjectURL(url);
+            }
+
+            function renderDateDetails(dateText) {
+              if (dateModalTitle) dateModalTitle.textContent = dateText;
+              if (!dateModalBody) return;
+              dateModalBody.innerHTML = "";
+              dateDetailRows.forEach(function (row) {
+                var tr = document.createElement("tr");
+                [
+                  row.roomType,
+                  row.official,
+                  row.unpaid,
+                  row.expired,
+                  row.waitlist,
+                ].forEach(function (value) {
+                  var td = document.createElement("td");
+                  td.textContent = value;
+                  tr.appendChild(td);
+                });
+                dateModalBody.appendChild(tr);
+              });
+            }
+
+            function positionDateModal(trigger) {
+              if (!dateModal || !trigger) return;
+              var r = trigger.getBoundingClientRect();
+              var gutter = 8;
+              var modalWidth = dateModal.offsetWidth || 384;
+              var modalHeight = dateModal.offsetHeight || 189;
+              var left = r.left + r.width / 2 - modalWidth / 2;
+              var top = r.bottom + gutter;
+              if (left + modalWidth + gutter > window.innerWidth) {
+                left = window.innerWidth - modalWidth - gutter;
+              }
+              if (left < gutter) left = gutter;
+              if (top + modalHeight + gutter > window.innerHeight) {
+                top = Math.max(gutter, r.top - modalHeight - gutter);
+              }
+              dateModal.style.left = left + "px";
+              dateModal.style.top = top + "px";
+            }
+
+            function closeDateModal() {
+              if (!dateModal) return;
+              dateModal.classList.add("hidden");
+            }
+
+            function openDateModal(trigger) {
+              if (!dateModal || !trigger) return;
+              var dateText = trigger.dataset.invDate || "";
+              if (!/^\d{4}-\d{2}-\d{2}$/.test(dateText)) return;
+              renderDateDetails(dateText);
+              dateModal.classList.remove("hidden");
+              positionDateModal(trigger);
+            }
+
+            if (excelBtn) {
+              excelBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                exportInventoryCsv();
+              });
+            }
+
+            root
+              .querySelectorAll("[data-inv-date-trigger]")
+              .forEach(function (trigger) {
+                trigger.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openDateModal(trigger);
+                });
+              });
+
+            if (dateModalClose) {
+              dateModalClose.addEventListener("click", closeDateModal);
+            }
+          })();
           // Allocate row checkbox → toggle 分配數 input enabled/disabled
           root.querySelectorAll(".rb-alloc-cb").forEach(function (cb) {
             cb.addEventListener("change", function () {
@@ -4854,6 +4994,7 @@
           var btnInventory = document.getElementById("btnInventory");
           var tableAllocate = document.getElementById("tableAllocate");
           var tableInventory = document.getElementById("tableInventory");
+          var inventoryExcel = document.querySelector("[data-inventory-excel]");
           var invMetricToggle = document.getElementById("invMetricToggle");
           var rangeRow = document.getElementById("rangeRow");
 
@@ -5078,6 +5219,8 @@
               tableAllocate.classList.toggle("hidden", mode === "inventory");
             if (tableInventory)
               tableInventory.classList.toggle("hidden", mode === "room");
+            if (inventoryExcel)
+              inventoryExcel.classList.toggle("hidden", mode === "room");
             if (invMetricToggle)
               invMetricToggle.classList.toggle("hidden", mode === "room");
             if (rangeRow)
@@ -7130,10 +7273,24 @@
               <div
                 class="flex flex-col gap-3 flex-1 min-w-0 max-[899px]:w-full"
               >
-                <!-- Mode toggle (空房查詢 / 庫存表) — Figma button.md spec, r:28 pill -->
-                <div class="mode-toggle">
-                  <button class="mode-btn active" id="btnRoom">空房查詢</button>
-                  <button class="mode-btn" id="btnInventory">庫存表</button>
+                <!-- Mode toggle + Excel download — Figma type=table 2 + modal (1405:48344) -->
+                <div class="inventory-toolbar">
+                  <div class="mode-toggle">
+                    <button class="mode-btn active" id="btnRoom">空房查詢</button>
+                    <button class="mode-btn" id="btnInventory">庫存表</button>
+                  </div>
+                  <button
+                    type="button"
+                    class="inventory-excel-btn hidden"
+                    data-inventory-excel
+                  >
+                    <span>Excel</span>
+                    <img
+                      src="./assets/icons/download.svg"
+                      alt=""
+                      class="h-6 w-6"
+                    />
+                  </button>
                 </div>
                 <!-- 棟別 chips（橫向 scroll，no wrap） -->
                 <div class="rb-filter-tabs flex gap-4 flex-nowrap overflow-x-auto min-w-0">
@@ -7281,8 +7438,7 @@
                     2026 / 02
                   </div>
                   <table
-                    class="text-base text-text-default border-collapse"
-                    style="min-width: 1240px"
+                    class="w-[1240px] max-w-none border-collapse text-base text-text-default"
                   >
                     <thead>
                       <!-- Row 1: 日期 label (centered across 4 left cols) + date numbers -->
@@ -7290,16 +7446,75 @@
                         <th colspan="4" class="py-2 text-center font-normal">
                           日期
                         </th>
-                        <th class="w-[100px] py-2 text-center">11</th>
-                        <th class="w-[100px] py-2 text-center">12</th>
-                        <th class="w-[100px] py-2 text-center">13</th>
-                        <th class="w-[100px] py-2 text-center">14</th>
-                        <th class="w-[100px] py-2 text-center">15</th>
-                        <th class="w-[100px] py-2 text-center bg-accent-pink">
-                          16
+                        <th class="w-[100px] py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-11"
+                          >
+                            11
+                          </button>
+                        </th>
+                        <th class="w-[100px] py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-12"
+                          >
+                            12
+                          </button>
+                        </th>
+                        <th class="w-[100px] py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-13"
+                          >
+                            13
+                          </button>
+                        </th>
+                        <th class="w-[100px] py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-14"
+                          >
+                            14
+                          </button>
+                        </th>
+                        <th class="w-[100px] py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-15"
+                          >
+                            15
+                          </button>
                         </th>
                         <th class="w-[100px] py-2 text-center bg-accent-pink">
-                          17
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-16"
+                          >
+                            16
+                          </button>
+                        </th>
+                        <th class="w-[100px] py-2 text-center bg-accent-pink">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-17"
+                          >
+                            17
+                          </button>
                         </th>
                       </tr>
                       <!-- Row 2: 星期 label (centered across 4 left cols) + weekday letters -->
@@ -7307,20 +7522,79 @@
                         <th colspan="4" class="py-2 text-center font-normal">
                           星期
                         </th>
-                        <th class="py-1 text-center text-text-secondary">一</th>
-                        <th class="py-1 text-center text-text-secondary">二</th>
-                        <th class="py-1 text-center text-text-secondary">三</th>
-                        <th class="py-1 text-center text-text-secondary">四</th>
-                        <th class="py-1 text-center text-text-secondary">五</th>
-                        <th
-                          class="py-1 text-center text-text-secondary bg-accent-pink"
-                        >
-                          六
+                        <th class="py-1 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-11"
+                          >
+                            一
+                          </button>
+                        </th>
+                        <th class="py-1 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-12"
+                          >
+                            二
+                          </button>
+                        </th>
+                        <th class="py-1 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-13"
+                          >
+                            三
+                          </button>
+                        </th>
+                        <th class="py-1 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-14"
+                          >
+                            四
+                          </button>
+                        </th>
+                        <th class="py-1 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-15"
+                          >
+                            五
+                          </button>
                         </th>
                         <th
                           class="py-1 text-center text-text-secondary bg-accent-pink"
                         >
-                          日
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-16"
+                          >
+                            六
+                          </button>
+                        </th>
+                        <th
+                          class="py-1 text-center text-text-secondary bg-accent-pink"
+                        >
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-17"
+                          >
+                            日
+                          </button>
                         </th>
                       </tr>
                       <!-- Row 3: 4 left col-headers + 中秋連假 annotation (only in date 11 col) -->
@@ -7774,6 +8048,64 @@
                       </tr>
                     </tbody>
                   </table>
+                </div>
+                <div
+                  class="inventory-date-modal hidden"
+                  data-inventory-date-modal
+                  role="dialog"
+                  aria-modal="false"
+                  aria-labelledby="inventoryDateModalTitle"
+                >
+                  <div class="inventory-date-modal-header">
+                    <h3
+                      id="inventoryDateModalTitle"
+                      class="text-xl font-semibold text-text-default"
+                      data-inventory-date-modal-title
+                    >
+                      2026-02-11
+                    </h3>
+                    <button
+                      type="button"
+                      class="inventory-date-modal-close"
+                      data-inventory-date-modal-close
+                      aria-label="關閉"
+                    >
+                      <img
+                        src="./assets/icons/close.svg"
+                        alt=""
+                        class="h-6 w-6"
+                      />
+                    </button>
+                  </div>
+                  <div class="inventory-date-modal-body">
+                    <table class="inventory-date-detail-table">
+                      <thead>
+                        <tr>
+                          <th>房型</th>
+                          <th>正式</th>
+                          <th>未付款</th>
+                          <th>已過期</th>
+                          <th>候補</th>
+                        </tr>
+                      </thead>
+                      <tbody data-inventory-date-modal-body>
+                        <tr>
+                          <td>義大利麵房</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                        </tr>
+                        <tr>
+                          <td>香蕉船房</td>
+                          <td>1</td>
+                          <td>1</td>
+                          <td>1</td>
+                          <td>1</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <!-- Range: 數量分配（僅空房查詢模式；≤1080 viewport 時 wrap，slider 獨佔一行） -->
                 <div

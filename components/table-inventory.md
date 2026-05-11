@@ -97,3 +97,40 @@ Figma `Frame 346`（148×36）位於 Frame 348（filter row）右側 x:557，與
 ### 與 `table.md` 顏色語義表的關係
 
 `table.md` Variant 2 的 chip 色語義原為「可用/保留/警示」，是依 Figma 視覺反推的早期推測。本檔 2026-04-30 從 Figma `Frame 346` 讀到實際按鈕標籤後，**修正為訂/餘/保**，且僅適用於本表上下文。`table.md` 那份保留以追蹤變革歷史。
+
+---
+
+## Current Figma contract（2026-05-11）
+
+> Source：`1405:48344`，component name `type=table 2 + modal`，frame size `1019 × 514`。
+
+### Toolbar
+
+第一列右側 toolbar 由兩組內容構成：
+
+| 元素 | Figma node | 規格 |
+|---|---|---|
+| Mode toggle | `1405:48352` | `空房查詢` + `庫存表`，庫存表 selected state 為 blue fill (`Color/Radio/Default`) |
+| Excel download button | `1405:48355` | `98 × 36`，文字 `Excel` + `icons/download` 24px，fill `Color/Neutral/0`，stroke `Color/Neutral/200`，r:6，padding 6/12；只在「庫存表」mode 顯示，「空房查詢」mode 隱藏 |
+
+### Date details modal
+
+日期欄表頭中的「日期數字」與「星期」皆為同一日期 column 的 trigger。以 Figma 示意中的 `11` / `一` 為例，點擊任一者展開 `state=date details` modal。
+
+| Modal node | Size | Header | Body |
+|---|---:|---|---|
+| `1405:48924` | `384 × 189` | 完整日期文字（示意：`2026-04-11`）+ `icons/close` | 表格欄位：`房型 / 正式 / 未付款 / 已過期 / 候補` |
+
+Body 示意內容：
+
+| 房型 | 正式 | 未付款 | 已過期 | 候補 |
+|---|---:|---:|---:|---:|
+| 義大利麵房 | 0 | 0 | 0 | 0 |
+| 香蕉船房 | 1 | 1 | 1 | 1 |
+
+### 實作決策
+
+- Modal title 由使用者點擊的 date column 決定，不固定寫死 Figma 示意日期。
+- 目前 preview 無後端資料來源；modal body 先依 Figma 示意提供 static demo rows。
+- Modal 是庫存表內的 contextual dialog，不使用全頁 backdrop；關閉行為鎖在 modal 自己的 close button，不用 outside click / scroll / resize / Esc 關閉。
+- Modal content 若包含 table，body 預設 `overflow-x: auto`；table 採內容寬度與 `min-width: 100%`，小尺寸 viewport 不壓縮欄位、不讓 table 撐爆 modal。
