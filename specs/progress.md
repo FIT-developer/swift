@@ -4,6 +4,41 @@
 
 ---
 
+## Session 66 交接（2026-05-21）
+
+### 任務：統一 accordion 箭頭方向 — 展開用 down、收起用 up
+
+使用者以 `figma-go` 指定選取，讀取 Figma Component Set：
+- node `418:3834`，name `Accordion`，type `COMPONENT_SET`，page `components`
+- 變體驗證：`type=accordion none collapsed`（`418:3835`，只 header 無 content）= 收起 → `icons/up`；`type=accordion collapsed`（`957:16417`，含 `flexible content`）= 展開 → `icons/down`；`type=extend N` = 展開 → `icons/down`
+- ⚠️ Figma variant 命名與實際狀態相反，以「是否含 content child」判定狀態
+
+### 規則
+
+- 內容**展開**（顯示）→ `icons/down`（箭頭朝下）
+- 內容**收起**（隱藏）→ `icons/up`（箭頭朝上）
+
+### 已完成
+
+1. `components/accordion.md`：icon 行改「展開用 down、收起用 up」；「收折行為」段補展開/收起對應 icon + 加 Figma 來源註記段
+2. `preview/landing.html` 三類 accordion 全部對齊規則：
+   - `.rb-accordion`（[A] 空房與庫存查詢 / [C] 訂單條件 / [E] 正式單與候補單）：JS（`landing.html:4205`）`opening ? "down.svg" : "up.svg"`（原為相反）；3 個 static icon 由 `up.svg` 改 `down.svg`（皆預設展開）。⚠️ [E] 的 img 縮排比 [A]/[C] 深，replace_all 漏掉、補單獨 edit
+   - `.accordion-trigger`（sidebar 13 個 menu 類別）：13 個 static icon 由 `down.svg` 改 `up.svg`（皆預設收起）；CSS `.accordion-icon.open { rotate 180deg }` 不動 → 收起顯示 up、展開 rotate 180 顯示 down
+   - `[data-order-summary-accordion-icon]`（訂單摘要 modal 2 個）：JS 原本就是 `expanded ? down : up`，**已符合規則，未改**
+
+### 驗證
+
+- chrome-devtools：3 個 rb-accordion 預設展開 `down.svg`、click 收起 `up.svg`、再 click 展開 `down.svg`
+- sidebar accordion：收起 `up.svg` 無 transform、展開 `.open` + `transform: matrix(-1,0,0,-1,0,0)`（= rotate 180°）
+- `./scripts/lint-fonts.sh` exit 0
+- 截圖：`specs/qa-screenshots/session-66/`（rb-accordion-expanded-down.png、accordion-collapsed-up-sidebar-down.png）
+
+### 注意
+
+- 變更未 commit（使用者未說「commit & push」）
+
+---
+
 ## Session 65 交接（2026-05-11）
 
 ### 任務：Figma `type=table 2 + modal` 補 Excel 匯出按鈕 + 庫存日期 details modal

@@ -293,8 +293,8 @@
                 >
                   <span>前台作業</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -316,8 +316,8 @@
                 >
                   <span>訂單處理作業</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -344,8 +344,8 @@
                 >
                   <span>基本資料設定</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -373,8 +373,8 @@
                 >
                   <span>訂房資料設定</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -420,8 +420,8 @@
                 >
                   <span>其他消費設定</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -448,8 +448,8 @@
                 >
                   <span>財務專區</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -471,8 +471,8 @@
                 >
                   <span>會員管理</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -494,8 +494,8 @@
                 >
                   <span>簡訊管理</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -522,8 +522,8 @@
                 >
                   <span>報表</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -545,8 +545,8 @@
                 >
                   <span>系統設定</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -573,8 +573,8 @@
                 >
                   <span>對應設定</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -596,8 +596,8 @@
                 >
                   <span>多國語設定</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -636,8 +636,8 @@
                 >
                   <span>系統商服務</span>
                   <img
-                    src="./assets/icons/down.svg"
-                    alt="down"
+                    src="./assets/icons/up.svg"
+                    alt="up"
                     class="w-4 h-4 opacity-60 accordion-icon"
                   />
                 </div>
@@ -4201,7 +4201,8 @@
                 var opening = content.classList.contains("rb-hidden");
                 content.classList.toggle("rb-hidden");
                 var base = icon.src.replace(/[^/]*\.svg$/, "");
-                icon.src = opening ? base + "up.svg" : base + "down.svg";
+                // 展開 → down（箭頭朝下）；收起 → up（箭頭朝上）
+                icon.src = opening ? base + "down.svg" : base + "up.svg";
               });
             });
           // Toggle button pairs (空房查詢 / 庫存表)
@@ -7218,8 +7219,8 @@
               >空房與庫存查詢</span
             >
             <img
-              src="./assets/icons/up.svg"
-              alt="up"
+              src="./assets/icons/down.svg"
+              alt="down"
               class="rb-accordion-icon w-6 h-6"
             />
           </div>
@@ -8742,8 +8743,8 @@
           >
             <span class="text-xl font-semibold text-text-default">訂單條件</span>
             <img
-              src="./assets/icons/up.svg"
-              alt="up"
+              src="./assets/icons/down.svg"
+              alt="down"
               class="rb-accordion-icon w-6 h-6"
             />
           </div>
@@ -9685,8 +9686,8 @@
                 >正式單與候補單</span
               >
               <img
-                src="./assets/icons/up.svg"
-                alt="up"
+                src="./assets/icons/down.svg"
+                alt="down"
                 class="rb-accordion-icon w-6 h-6"
               />
             </div>
