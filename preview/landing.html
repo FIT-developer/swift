@@ -4186,6 +4186,9 @@
           subPageContent.classList.remove("hidden");
           subPageContent.innerHTML = html;
           initSubPageBehaviors(subPageContent);
+          if (typeof window.renderPurchaseAddonCart === "function") {
+            window.renderPurchaseAddonCart();
+          }
         }
 
         function initSubPageBehaviors(root) {
@@ -6111,12 +6114,58 @@
             .join("");
           initPurchaseAddonCalendars(modal);
         }
+        function purchaseAddonCartCardHtml(item, itemState) {
+          var quantity = itemState.quantity;
+          var lineAmount = Number(itemState.cost || 0) * quantity;
+          var timeChip = itemState.timeEnabled
+            ? '<span class="inline-flex h-6 items-center rounded-[40px] bg-accent-cart-time px-2 py-1 text-xs text-text-emphasis">' +
+              formatPurchaseTimePart(itemState.hour) +
+              "：" +
+              formatPurchaseTimePart(itemState.minute) +
+              "</span>"
+            : "";
+          return (
+            '<article class="rounded-lg border border-border-default bg-white p-4">' +
+            '<div class="flex items-start justify-between gap-2">' +
+            '<div class="flex min-w-0 items-baseline gap-1.5">' +
+            '<span class="text-base text-text-default whitespace-nowrap">' +
+            item.title +
+            "</span>" +
+            '<span class="text-xs text-text-default whitespace-nowrap">' +
+            quantity +
+            " 份</span>" +
+            "</div>" +
+            '<button type="button" class="flex h-6 w-6 shrink-0 items-center justify-center" data-purchase-remove="' +
+            item.id +
+            '" aria-label="刪除' +
+            item.title +
+            '">' +
+            '<img src="./assets/icons/trash-can.svg" alt="" class="h-6 w-6" />' +
+            "</button>" +
+            "</div>" +
+            '<div class="mt-3 flex items-center gap-2">' +
+            '<span class="inline-flex h-6 items-center rounded-[40px] bg-accent-cart-date px-2 py-1 text-xs text-text-emphasis">' +
+            itemState.date +
+            "</span>" +
+            timeChip +
+            '<span class="ml-auto text-base text-text-default whitespace-nowrap">' +
+            formatPurchaseAmount(lineAmount) +
+            "</span>" +
+            "</div>" +
+            "</article>"
+          );
+        }
         function renderPurchaseAddonCart() {
           var modal = document.getElementById("modalPurchaseAddonBackdrop");
           if (!modal) return;
           var cards = modal.querySelector("[data-purchase-cart-cards]");
           var details = modal.querySelector("[data-purchase-cart-details]");
           var totalEl = modal.querySelector("[data-purchase-cart-total]");
+          var pageCart = document.querySelector("[data-purchase-page-cart]");
+          var pageCartWrap = document.querySelector(
+            "[data-purchase-page-cart-wrap]",
+          );
+          var pageTotalEl = document.querySelector("[data-purchase-page-total]");
           if (!cards) return;
           var selected = purchaseAddonProducts.filter(function (item) {
             return (getPurchaseItemState(item).quantity || 0) > 0;
@@ -6129,79 +6178,33 @@
                 '<p class="text-base text-text-supporting">尚未選擇加購項目</p>';
             }
             if (totalEl) totalEl.textContent = "$ 0";
+            if (pageCart) pageCart.innerHTML = "";
+            if (pageCartWrap) pageCartWrap.hidden = true;
+            if (pageTotalEl) {
+              pageTotalEl.textContent = "";
+              pageTotalEl.hidden = true;
+            }
             return;
           }
           var total = selected.reduce(function (sum, item) {
             var itemState = getPurchaseItemState(item);
             return sum + Number(itemState.cost || 0) * itemState.quantity;
           }, 0);
-          cards.innerHTML = selected
+          var cardsHtml = selected
             .map(function (item) {
-              var itemState = getPurchaseItemState(item);
-              var quantity = itemState.quantity;
-              var timeChip = itemState.timeEnabled
-                ? '<span class="inline-flex h-6 items-center rounded-[40px] bg-accent-cart-time px-2 py-1 text-xs text-text-emphasis">' +
-                  formatPurchaseTimePart(itemState.hour) +
-                  "：" +
-                  formatPurchaseTimePart(itemState.minute) +
-                  "</span>"
-                : "";
-              return (
-                '<article class="rounded-lg border border-border-default bg-white p-4">' +
-                '<div class="mb-3 flex items-start justify-between gap-4">' +
-                "<div>" +
-                '<div class="text-base text-text-default">' +
-                item.title +
-                "</div>" +
-                '<div class="mt-1 text-xs text-text-default">' +
-                item.subtitle +
-                "</div>" +
-                "</div>" +
-                '<button type="button" class="flex h-6 w-6 items-center justify-center" data-purchase-remove="' +
-                item.id +
-                '" aria-label="刪除' +
-                item.title +
-                '">' +
-                '<img src="./assets/icons/trash-can.svg" alt="" class="h-6 w-6" />' +
-                "</button>" +
-                "</div>" +
-                '<div class="flex flex-wrap items-center gap-2">' +
-                '<span class="inline-flex h-6 items-center rounded-[40px] bg-accent-cart-date px-2 py-1 text-xs text-text-emphasis">' +
-                itemState.date +
-                "</span>" +
-                timeChip +
-                '<span class="ml-auto text-base font-semibold text-text-default">' +
-                formatPurchaseAmount(Number(itemState.cost || 0) * quantity) +
-                "</span>" +
-                "</div>" +
-                "</article>"
-              );
+              return purchaseAddonCartCardHtml(item, getPurchaseItemState(item));
             })
             .join("");
-          if (details) {
-            details.innerHTML = selected
-              .map(function (item) {
-                var itemState = getPurchaseItemState(item);
-                var quantity = itemState.quantity;
-                return (
-                  '<div class="flex items-center justify-between gap-3">' +
-                  '<div class="inline-flex min-w-0 items-center gap-3 text-base text-text-default">' +
-                  '<span class="truncate">' +
-                  item.title +
-                  "</span>" +
-                  "<span>x " +
-                  quantity +
-                  "</span>" +
-                  "</div>" +
-                  '<span class="shrink-0 text-base text-text-default">' +
-                  (Number(itemState.cost || 0) * quantity).toLocaleString("en-US") +
-                  "</span>" +
-                  "</div>"
-                );
-              })
-              .join("");
+          cards.innerHTML = cardsHtml;
+          if (details) details.innerHTML = cardsHtml;
+          if (pageCart) pageCart.innerHTML = cardsHtml;
+          if (pageCartWrap) pageCartWrap.hidden = false;
+          var totalText = formatPurchaseAmount(total);
+          if (totalEl) totalEl.textContent = totalText;
+          if (pageTotalEl) {
+            pageTotalEl.textContent = totalText;
+            pageTotalEl.hidden = false;
           }
-          if (totalEl) totalEl.textContent = formatPurchaseAmount(total);
         }
         function setPurchaseAddonCategory(category) {
           var modal = document.getElementById("modalPurchaseAddonBackdrop");
@@ -6924,6 +6927,21 @@
             getPurchaseItemState(product)[field.dataset.purchaseField] = field.value;
             renderPurchaseAddonCart();
           });
+
+          // Page-level cart trash (outside modal scope) — sync removal back to modal state
+          document.addEventListener("click", function (e) {
+            var trigger = e.target.closest("[data-purchase-remove]");
+            if (!trigger) return;
+            if (modal && modal.contains(trigger)) return;
+            var product = purchaseAddonProducts.find(function (item) {
+              return item.id === trigger.dataset.purchaseRemove;
+            });
+            if (product) getPurchaseItemState(product).quantity = 0;
+            renderPurchaseAddon();
+          });
+
+          // Expose render so dynamically-injected page templates can rehydrate the page cart
+          window.renderPurchaseAddonCart = renderPurchaseAddonCart;
 
           resetPurchaseAddonItems();
           renderPurchaseAddon();
@@ -8279,12 +8297,6 @@
                   </th>
                   <th
                     class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-                    style="width: 59px"
-                  >
-                    加購
-                  </th>
-                  <th
-                    class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
                     style="width: 144px"
                   >
                     操作
@@ -8391,22 +8403,6 @@
                     class="px-3 py-2 align-middle text-left whitespace-nowrap"
                   >
                     19999
-                  </td>
-                  <!-- 加購: purchase-item icon button (僅 row 1 有；其他列空 td) -->
-                  <td class="px-3 py-2 align-middle">
-                    <button
-                      type="button"
-                      class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
-                      data-modal-open="modalPurchaseAddonBackdrop"
-                      aria-label="開啟加購項目"
-                    >
-                      <img
-                        src="./assets/icons/purchase-item.svg"
-                        alt=""
-                        class="w-6 h-6"
-                        aria-hidden="true"
-                      />
-                    </button>
                   </td>
                   <!-- 操作: edit / duplicate / trash-can -->
                   <td class="px-3 py-2 align-middle">
@@ -8542,7 +8538,6 @@
                   >
                     19999
                   </td>
-                  <td class="px-3 py-2 align-middle"></td>
                   <td class="px-3 py-2 align-middle">
                     <div class="flex items-center justify-start gap-4">
                       <button
@@ -8676,7 +8671,6 @@
                   >
                     19999
                   </td>
-                  <td class="px-3 py-2 align-middle"></td>
                   <td class="px-3 py-2 align-middle">
                     <div class="flex items-center justify-start gap-4">
                       <button
@@ -8715,7 +8709,7 @@
                     </div>
                   </td>
                 </tr>
-                <!-- 總計列 (32 高)：加購欄總和顯示在這（無加購則 0） -->
+                <!-- 總計列 (32 高) -->
                 <tr style="height: 32px">
                   <td class="px-3 py-2"></td>
                   <td class="px-3 py-2"></td>
@@ -8726,11 +8720,45 @@
                   <td class="px-3 py-2 text-center whitespace-nowrap">15</td>
                   <td class="px-3 py-2 text-left whitespace-nowrap">2345678</td>
                   <td class="px-3 py-2 text-left whitespace-nowrap">9911929</td>
-                  <td class="px-3 py-2 text-left whitespace-nowrap">19999</td>
                   <td class="px-3 py-2"></td>
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <!-- 加購 button + 購物車總金額 + items 清單（cart 有值時整個 cart 容器才顯示） -->
+          <div class="mt-5">
+            <div class="flex items-center gap-4">
+              <button
+                type="button"
+                class="inline-flex h-[51px] items-center gap-2 rounded-[44px] border border-border-disabled bg-white px-5 py-3 text-base text-text-default hover:bg-surface-hover"
+                data-modal-open="modalPurchaseAddonBackdrop"
+                aria-label="開啟加購項目"
+              >
+                <img
+                  src="./assets/icons/purchase-item.svg"
+                  alt=""
+                  class="h-6 w-6"
+                  aria-hidden="true"
+                />
+                <span>加購</span>
+              </button>
+              <span
+                class="text-base text-text-default whitespace-nowrap"
+                data-purchase-page-total
+                hidden
+              ></span>
+            </div>
+            <div
+              class="mt-4 rounded-lg border border-border-disabled bg-white px-6 py-5"
+              data-purchase-page-cart-wrap
+              hidden
+            >
+              <div
+                class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-2.5 gap-y-5"
+                data-purchase-page-cart
+              ></div>
+            </div>
           </div>
         </div>
 
