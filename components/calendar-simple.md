@@ -59,11 +59,13 @@ CSS：
 
 ## HTML 實作
 
+> Text↔icon gap 為 **`gap-1.5`（6px）**，比照 Select/Input 內間距，節省欄寬空間。
+
 Default：
 
 ```html
 <div class="rb-cal-cell flex-1">
-  <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer">
+  <button type="button" class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer">
     <span class="rb-cal-date flex-1 text-left text-base text-text-default"></span>
     <img src="./assets/icons/calendar.svg" class="w-6 h-6" />
   </button>

@@ -2288,7 +2288,7 @@
                 <div class="rb-cal-cell min-w-0">
                   <button
                     type="button"
-                    class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-2 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5"
+                    class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-1.5 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5"
                   >
                     <span
                       class="rb-cal-date flex-1 text-left text-base text-text-default"
@@ -2306,7 +2306,7 @@
                 <div class="rb-cal-cell min-w-0">
                   <button
                     type="button"
-                    class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-2 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5"
+                    class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-1.5 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5"
                   >
                     <span
                       class="rb-cal-date flex-1 text-left text-base text-text-default"
@@ -6017,7 +6017,7 @@
                 '<div class="rb-cal-cell mt-1 min-w-0" data-purchase-calendar-cell data-purchase-item="' +
                 item.id +
                 '">' +
-                '<button type="button" class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-2 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default">' +
+                '<button type="button" class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-1.5 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default">' +
                 '<span class="rb-cal-date purchase-addon-date-text flex-1 text-left">' +
                 itemState.date +
                 "</span>" +
@@ -8285,15 +8285,25 @@
                   </th>
                   <th
                     class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-                    style="width: 123px"
+                    style="min-width: 123px"
                   >
                     單價
                   </th>
                   <th
                     class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-                    style="width: 111px"
+                    style="min-width: 165px"
                   >
-                    小計
+                    <div class="flex items-center gap-2">
+                      <span>小計</span>
+                      <select
+                        class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-base text-text-default font-normal"
+                      >
+                        <option>無折扣</option>
+                        <option>9 折</option>
+                        <option>8 折</option>
+                        <option>7 折</option>
+                      </select>
+                    </div>
                   </th>
                   <th
                     class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
@@ -8311,7 +8321,7 @@
                     <div class="rb-cal-cell">
                       <button
                         type="button"
-                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                       >
                         <span
                           class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
@@ -8330,7 +8340,7 @@
                       <div class="rb-cal-cell">
                         <button
                           type="button"
-                          class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                          class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                         >
                           <span
                             class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
@@ -8379,7 +8389,6 @@
                       >
                         <option>巴黎世家大套房</option>
                       </select>
-                      <span class="w-6 h-6 shrink-0" aria-hidden="true"></span>
                     </div>
                   </td>
                   <!-- 間數: stepper only (header 已說明) -->
@@ -8394,15 +8403,19 @@
                       </button>
                     </div>
                   </td>
-                  <td
-                    class="px-3 py-2 align-middle text-left whitespace-nowrap"
-                  >
-                    19999
+                  <td class="px-3 py-2 align-middle">
+                    <input
+                      type="text"
+                      value="19999"
+                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+                    />
                   </td>
-                  <td
-                    class="px-3 py-2 align-middle text-left whitespace-nowrap"
-                  >
-                    19999
+                  <td class="px-3 py-2 align-middle">
+                    <input
+                      type="text"
+                      value="19999"
+                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+                    />
                   </td>
                   <!-- 操作: edit / duplicate / trash-can -->
                   <td class="px-3 py-2 align-middle">
@@ -8449,7 +8462,7 @@
                     <div class="rb-cal-cell">
                       <button
                         type="button"
-                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                       >
                         <span
                           class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
@@ -8467,7 +8480,7 @@
                       <div class="rb-cal-cell">
                         <button
                           type="button"
-                          class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                          class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                         >
                           <span
                             class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
@@ -8514,7 +8527,6 @@
                       >
                         <option>巴黎世家大套房</option>
                       </select>
-                      <span class="w-6 h-6 shrink-0" aria-hidden="true"></span>
                     </div>
                   </td>
                   <td class="px-3 py-2 align-middle">
@@ -8528,15 +8540,19 @@
                       </button>
                     </div>
                   </td>
-                  <td
-                    class="px-3 py-2 align-middle text-left whitespace-nowrap"
-                  >
-                    19999
+                  <td class="px-3 py-2 align-middle">
+                    <input
+                      type="text"
+                      value="19999"
+                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+                    />
                   </td>
-                  <td
-                    class="px-3 py-2 align-middle text-left whitespace-nowrap"
-                  >
-                    19999
+                  <td class="px-3 py-2 align-middle">
+                    <input
+                      type="text"
+                      value="19999"
+                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+                    />
                   </td>
                   <td class="px-3 py-2 align-middle">
                     <div class="flex items-center justify-start gap-4">
@@ -8582,7 +8598,7 @@
                     <div class="rb-cal-cell">
                       <button
                         type="button"
-                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                       >
                         <span
                           class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
@@ -8600,7 +8616,7 @@
                       <div class="rb-cal-cell">
                         <button
                           type="button"
-                          class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                          class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                         >
                           <span
                             class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
@@ -8647,7 +8663,6 @@
                       >
                         <option>巴黎世家大套房</option>
                       </select>
-                      <span class="w-6 h-6 shrink-0" aria-hidden="true"></span>
                     </div>
                   </td>
                   <td class="px-3 py-2 align-middle">
@@ -8661,15 +8676,19 @@
                       </button>
                     </div>
                   </td>
-                  <td
-                    class="px-3 py-2 align-middle text-left whitespace-nowrap"
-                  >
-                    19999
+                  <td class="px-3 py-2 align-middle">
+                    <input
+                      type="text"
+                      value="19999"
+                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+                    />
                   </td>
-                  <td
-                    class="px-3 py-2 align-middle text-left whitespace-nowrap"
-                  >
-                    19999
+                  <td class="px-3 py-2 align-middle">
+                    <input
+                      type="text"
+                      value="19999"
+                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+                    />
                   </td>
                   <td class="px-3 py-2 align-middle">
                     <div class="flex items-center justify-start gap-4">
@@ -8718,8 +8737,20 @@
                   </td>
                   <td class="px-3 py-2"></td>
                   <td class="px-3 py-2 text-center whitespace-nowrap">15</td>
-                  <td class="px-3 py-2 text-left whitespace-nowrap">2345678</td>
-                  <td class="px-3 py-2 text-left whitespace-nowrap">9911929</td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2 align-top">
+                    <div class="flex flex-col gap-1">
+                      <div class="flex items-baseline gap-1 whitespace-nowrap">
+                        <span class="text-base text-text-default">原價</span>
+                        <span class="text-base text-text-muted line-through">8888</span>
+                      </div>
+                      <input
+                        type="text"
+                        value="19999"
+                        class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+                      />
+                    </div>
+                  </td>
                   <td class="px-3 py-2"></td>
                 </tr>
               </tbody>
@@ -8872,7 +8903,7 @@
                   <div class="rb-cal-cell flex-1">
                     <button
                       type="button"
-                      class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                      class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                     >
                       <span
                         class="rb-cal-date flex-1 text-left text-base text-text-default"
@@ -9090,7 +9121,7 @@
                     <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
                       <button
                         type="button"
-                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                       >
                         <span
                           class="rb-cal-date flex-1 text-left text-base text-text-default whitespace-nowrap"
@@ -9372,7 +9403,7 @@
                     <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
                       <button
                         type="button"
-                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-2 cursor-pointer"
+                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
                       >
                         <span
                           class="rb-cal-date flex-1 text-left text-base text-text-default whitespace-nowrap"

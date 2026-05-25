@@ -138,8 +138,10 @@ Table 欄位、Calendar 細節同 0428（保留段落，需與 0525 重新核對
 | 3 | Frame 191 房型 | 198.5 | 379 | 「房型」 | Select × 3 列；footer「統計」 |
 | 4 | Frame 194 專案 | 199 | 577.5 | 「專案」 | Select × 3 列 |
 | 5 | Frame 192 間數 | 169 | 776.5 | 「間數」+ sub「團體：8」 | DatePicker「訂房間數」、值 5 × 3 列；footer 總計 15 |
-| 6 | Frame 196 單價 | 123 | 945.5 | 「單價」 | Input × 3 列（19999） |
-| 7 | Frame 197 小計 | 165 | 1068.5 | 「小計」+ sub「無折扣」 | 19999 × 3；footer「原價 / 8888 / 19999」|
+| 6 | Frame 196 單價 | 123 | 945.5 | 「單價」 | Input × 3 列（19999）；footer 空 |
+| 7 | Frame 197 小計 | 165 | 1068.5 | 「小計」+ Select 「無折扣」（base 16, border-disabled, radius 6, padding 6/12） | Input × 3 列（19999）；footer 上：「原價」+ strikethrough「8888」(`text-text-muted`)、下：Input「19999」 |
+
+**th width 規則**：原 `style="width: …"` 改為 `style="min-width: …"`，避免 table 內容增多（如 select）時被 auto-layout 擠壓掉 input 寬度（曾出現 單價 → 56px）。
 | 8 | Frame 195 操作 | 144 | 1233.5 | 「操作」 | （操作按鈕，待 0525 補圖驗證）|
 
 **列高**：header 56、資料列 52、footer 74；交替背景 `Color/Neutral/0` / `Color/Neutral/75`。
