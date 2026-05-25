@@ -167,6 +167,7 @@ Table 欄位、Calendar 細節同 0428（保留段落，需與 0525 重新核對
 - 內框 Frame 548（1052×324）：3 欄 × 3 列 grid
   - 卡片寬 344、高 92；col gap 10、row gap ≈ 19.33
 - 右側有 `LINE 'scroll bar'` (`1751:44504`, 119×0 @ x:1087, y:99) — Figma 標示 scroll affordance；實作沿用瀏覽器原生 scrollbar（feedback_no_scroll_affordance）。
+- **行動版（< md）高度限制**：grid 動態長高，最多顯示 3 張卡片（`max-h-[322px]` = 3×94 + 2×20 gap），第 4 張起原生 scrollbar 處理；md+ 解除限制（`md:max-h-none md:overflow-visible`），維持 2/3 欄完整展開。
 
 **Cart item card 規格（每張 344×92）**
 
