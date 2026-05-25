@@ -24,3 +24,9 @@ When the user says `figma-go`, first use Figma MCP / figma-go to read the curren
 Do not implement Figma-sourced UI from memory or inference. Use the current Figma node as the source of truth, then follow:
 
 tokens -> icons -> components -> sections -> layouts -> preview HTML
+
+## Output formatting
+
+Please avoid using special Unicode characters, emoji, box-drawing characters, or decorative symbols in your responses. Use plain ASCII only.
+
+This applies to chat messages and to text written into .md files. CJK characters (Chinese) are allowed because they are normal content, but decorative symbols such as check marks, warning signs, arrows, bullets, table box-drawing, and emoji must not be used. Use plain words like "OK", "warning", "->", "-" instead.

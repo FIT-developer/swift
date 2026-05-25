@@ -205,70 +205,127 @@ Table 欄位、Calendar 細節同 0428（保留段落，需與 0525 重新核對
 
 ---
 
-## [C] 訂單條件 + 正式單與候補單 Accordion（Frame 452）
+## [C] 訂單條件 + 正式單與候補單 Accordion（Frame 452, `1751:43178`）
 
-**↺ 0525 變更**：原 1140 全寬 Order condition 收窄至 752；右側 388 區由原本放在 [D] 內的「正式單與候補單」Accordion 移過來，與 Order condition 同列排放。
+**↺ 0525-2 重讀**：上一輪 spec 為摘要；本次直接從 Figma 對位確認。
 
-**尺寸**：`1140 × 425` @ y:1340
+**尺寸**：`1140 × 425` @ y:1720
 
-### 左 — Order condition（752 × 425）
+### 左 — Order condition（752 × 425, `1751:43179`）
 - bg `Color/Neutral/75`、border `Color/Neutral/200`、radius 12、padding 20、@ x:0
-- Header（container2 slot, 712×27）：Texts「訂單條件」md + 右側 icons/down 24×24（@ x:688）
-- Content（container slot, 712×342）：bg `Color/Neutral/0`、pad 12、radius 12
-  - Frame 370（688×318）：2 欄 layout（gap 32）
-    - 欄 1 Frame 412：`328 × 318` — 人數大/小、到店方式、發票、統編、抬頭、繳款期限、訂單備註、需求備註（同 0428）
-      - **到店方式仍是 Button 不是 Select**（trailing icons/road，沿用 0428 註記）
-    - 欄 2 Frame 412：`328 × 196` — 折扣、總房價、加購項目併單、預付百分比、預付（部分欄位已移至 [B] Frame 559）
+- Header (container2, 712×27)：Texts「訂單條件」md 20px `#454545` + 右 icons/down 24×24
+- Content (container, 712×342)：bg `Color/Neutral/0`、pad 12、radius 12
+  - Frame 370 (688×318)：**2 欄 layout, col gap 32**
+    - **欄 1 Frame 412 (328×318)**：6 列（row gap 約 20）
+      | 列 | label (固定 100px) | 控制元件 | 備註 |
+      |---|---|---|---|
+      | 1 | 「人數」 | Select(78×36, `1`) + Texts sm「大」(x=202) + Select(78×36, `0`) + Texts sm「小」(x=316) | 兩個 Select 等寬 78 |
+      | 2 | 「到店方式」 | Select(216×36, label「自行到店」, trailing **icons/road**) | **Button 不是真 Select**（trailing icon 是 road，沿用 0428 規格）|
+      | 3 | 「發票」 | Select(216×36, 「不開發票」, trailing icons/down) |  |
+      | 4 | 「統編」 | Input(216×34, placeholder) | bg/disabled 跟「發票」select 連動：不開發票=disabled、開發票=active（既有規則） |
+      | 5 | 「抬頭」 | Input(216×34, placeholder) | 同上 |
+      | 6 | 「繳款期限」**stack** label base + 「3 天」sm 12px (y=26) | Calendar simple(216×36, `2026-02-27`, trailing icons/calendar) | label 占 2 行（直排） |
+    - **欄 2 Frame 412 (328×196)**：2 列（row gap 20）
+      | 列 | label (固定 100px, **label 19h**) | 控制元件 |
+      |---|---|---|
+      | 1 | 「訂單備註」 | Input/textarea (216×88, value `???`, bg `#ffffff`, 右下 resize handle 兩條 line `#b0b0b0`) |
+      | 2 | 「需求備註」 | Input/textarea (216×88, value `需要瓦斯爐`, 同上) |
 
-> ↺ 0525：欄 3（原 196px）已不存在；訂單條件區欄位精簡為 2 欄。
+> ⚠️ 本次重讀**否定**前 spec「欄 1 含訂單備註/需求備註」的記述；備註區是欄 2，且欄 2 已不含折扣/總房價/加購項目併單/預付百分比/預付（前者已移至 [B] Frame 559）。
 
-### 右 — Accordion「正式單與候補單」（364 × 425）
+### 右 — Accordion「正式單與候補單」（364 × 425, `1751:43180`）
 - bg `Color/Neutral/75`、border `Color/Neutral/200`、radius 12、padding 20、@ x:776
-- Header（Frame 99, 324×27）：Texts「正式單與候補單」md + icons/down @ x:300
-- flexible content slot（324×342）：bg `Color/Neutral/0`、pad 20、radius 12
-  - Frame 361（284×319）
-    - Frame 295（284×22, y:0）：（payment method radio？）
-    - Texts（284×277, y:42）：占位內容
+- Header (Frame 99, 324×27)：Texts「正式單與候補單」md 20px + icons/down @ x:300
+- flexible content slot (324×342)：bg `Color/Neutral/0`、pad 20、radius 12
+  - Frame 361 (284×319)
+    - **Frame 295 (284×22, y:0) — 訂單類型 row**：label「訂單類型」base 16px + 3 pill toggle (Nation-style, slot 寬 208)
+      - **無設定** (active, 圓圈 20×20 fill `#ffffff` stroke 內藍 `#2178cf`) + Texts「無設定」base
+      - **正式單** (inactive, 圓圈 fill `#ffffff` stroke `#d1d1d1`) + Texts「正式單」base
+      - **候補單** (inactive, 同上) + Texts「候補單」base
+    - **Texts 占位 (284×277, y:42)**：「未設定」md 20px `#454545` 置中 (x=124, y=125 in container)
 
-> 0525 狀態：accordion **展開**（content slot 有內容）。0428 時此 accordion 是收摺，且歸屬於 [D] 區右側。
+> 0525-2 狀態：accordion **展開**、訂單類型 default = **無設定**（不是「正式單」）。Payment method slot 已被三個 pill toggle 取代。
 
 ---
 
-## [D] 訂房資料 Section（Frame 453）
+## [D] 訂房資料 Section（Frame 453, `1751:43181`）
 
-**↺ 0525 變更**：原 1140×888 含右側 425 寬 Accordion；新版 1140×792、整段全寬 1100，內部改為 2×2 卡片排列。
+**↺ 0525-2 重讀**：本次重新對位 4 象限，內容大幅縮減（旅客習慣整段移除）。
 
-**尺寸**：`1140 × 792`，bg `Color/Neutral/75`、border `Color/Neutral/200`、radius 12、padding 20，@ y:1789
+**尺寸**：`1140 × 792`，bg `Color/Neutral/75`、border `Color/Neutral/200`、radius 12、padding 20，@ y:2169
 
-### Header 列（Frame 350）
-`1100 × 27` @ x:20, y:20
-
-- Frame 246（116×27）：Texts「訂房資料」md + icons/lock 24×24（vector fill `#e05216` → `Color/Brand/Brand-600`，紅 = inputs disabled，feedback_lock_toggle_input_state）
-- Frame 353（984×22）：右側 action 列
-  - Frame 352（56×22 @ x:636）：icons/eraser 16×16 + Texts「清除」
-  - Frame 349（134×22 @ x:712）：Checkbox（disabled 灰）+ Texts「入住人同訂房人」
-  - Frame 354（118×22 @ x:866）：Checkbox（disabled 灰）+ Texts「寄送訂房資訊」
+### Header 列（Frame 350，1100 × 27 @ x:20, y:20）
+- Frame 246（116×27）：Texts「訂房資料」md 20px + icons/lock 24×24（fill `#e05216` → `Color/Brand/Brand-600`，紅 = inputs disabled，[[feedback_lock_toggle_input_state]]）
+- Frame 353（1016×22 @ x:84, y:2）：右側 action 列（右對齊）
+  - Frame 352（56×22 @ x:668）：icons/eraser 16×16 + Texts「清除」base
+  - Frame 349（134×22 @ x:744）：Checkbox 14×14 disabled + Texts「入住人同訂房人」base
+  - Frame 354（118×22 @ x:898）：Checkbox 14×14 disabled + Texts「寄送訂房資訊」base
 
 ### Body（Frame 358，1100 × 709 @ y:63）
 
-**Tab 列（Frame 356）**：`184 × 42`，pad 0/12
-- Frame 354（72×42 @ x:12）：bg `Color/Neutral/0`、border `Color/Neutral/100`、radius mixed → **active tab「訂房」**
-- Frame 355（72×42 @ x:100）：bg `#d1d1d1`（`Color/Neutral/200`）、border `Color/Neutral/100` → **inactive tab「入住」**
+**Tab 列（Frame 356，184 × 42, pad 0/12）**
+- Frame 354（72×42 @ x:12）：bg `Color/Neutral/0`、border `Color/Neutral/100`、radius mixed → **active「訂房」**
+- Frame 355（72×42 @ x:100）：bg `#d1d1d1`（`Color/Neutral/200`）、border `Color/Neutral/100` → **inactive「入住」**
 
-> 0428 時這裡是「訂房／入住」tab；0525 維持，但底色處理略改（active 白、inactive 灰）。實作時需確認 design system 預設規則。
+> tab 只剩 2 個（訂房/入住），無「合約」tab（合約客戶是上層 [B] 的客戶類型切換，feedback_customer_toggle_links_order_tab 已記）。
 
-**表單內容（Frame 277）**：`1100 × 667`，bg `Color/Neutral/0`、border `Color/Neutral/100`、radius 12、pad 20/0/20/0
+**表單內容（Frame 277，1100 × 667）**：bg `Color/Neutral/0`、border `Color/Neutral/100`、radius 12、pad 20/0/20/0
 
-採 2 × 2 卡片排列（每張卡片 540 寬、pad 20）：
+採 **2 × 2 卡片排列**（每張卡片 540 寬、pad 20、cell gap 20）：
 
-| 位置 | Frame | 尺寸 | 內容（依 0525 排列） |
+#### 左上（Frame 275, 540×280, x:0, y:20）— 訂房人基本資料
+label 固定 64px、輸入欄寬至右邊界。
+
+> **橘字三件套**：名稱 / 證號 / 行動電話 label `#ef6f25` = 客戶識別必填欄+主搜尋鍵（[[feedback_orange_label_search_priority]]）。
+
+| 列 | label | 控制元件 | 備註 |
 |---|---|---|---|
-| 左上 | Frame 275 | 540 × 280 | 名稱、身份證號、護照號碼、生日（Calendar simple）、行動電話、國籍（Radio 臺灣/外籍） |
-| 右上 | Frame 272 | 540 × 332 | Nation（國籍補件）+ Location（縣市/行政區/街道地址）|
-| 左下 | Frame 276 | 540 × 295 | Frame 249 + Frame 251（性別 Radio、Email…）+ Frame 411（市話、傳真、會員備註）|
-| 右下 | Frame 350 | 540 × 108 | Frame 402（會員資訊）+ Frame 399（旅客習慣）|
+| 1 | 「名稱」**`#ef6f25` 橘字** | Input(333×34, `王大頭`) + 右側 Texts honorific (寬 79, @ x:421) | **honorific 依性別 radio 動態渲染**：男→「先生」、女→「小姐」（[[feedback_honorific_follows_gender]]）|
+| 2 | 「證號」**`#ef6f25` 橘字** | Input(424×34, `X111333555`) | 是「證號」不是「身份證號」/「護照號碼」|
+| 3 | 「行動電話」**`#ef6f25` 橘字** | Input(424×34, `0988777111`) |  |
+| 4 | 「生日」 | Calendar simple(424×36, `2026-02-27`) | birthday variant（[[feedback_calendar_use_reference_code]]）|
+| 5 | 「性別」(Nation 元件, slot 100寬) | Frame 253「男」(default selected) + Frame 254「女」 | radio 圓圈 20×20；性別會驅動列 1 的 honorific |
 
-> ↺ 0525：原 0428 的「右側正式單與候補單 Accordion」已不在此區，搬到 [C] 區（見上）。
+> 全部 input/calendar 的 bg 灰底由 [[feedback_lock_toggle_input_state]] 控制；Figma frame 為 lock=紅=disabled 狀態，所以一律灰底，不是欄位 baseline（[[feedback_locked_state_in_figma]]）。
+
+#### 右上（Frame 272, 540×332, x:560, y:20）— 國籍 + 地址
+| 列 | label | 控制元件 |
+|---|---|---|
+| 1 (y:20) | 「國籍」(Nation 元件) | Frame 253 [✱]「臺灣」(selected) + Frame 254 ○「外籍」(unselected) (slot 144寬) |
+| 2 (y:62, 250高) | 「地址」(Location 元件，424×250) | 3 stacked sub-rows： |
+|  |  | • **縣/市** label + Select(424×36, `台中` value 灰 `#888888`, trailing icons/down) |
+|  |  | • **行政區** label 左 + 「406」base 右對齊 / 下接 Select(424×36, `北屯區` value `#888888`) |
+|  |  | • **街道** label + Input(424×36, placeholder) |
+
+> 國籍切「外籍」時，地址結構需切「國家 Select」（沿用既有 nation-foreign-only 邏輯，未在這次 Figma 顯示）。
+
+#### 左下（Frame 276, 540×295, x:0, y:352）— Email/傳真/會員備註
+label 固定 64px。
+
+| 列 | label | 控制元件 |
+|---|---|---|
+| 1 (y:20) | 「Email」 | Input(424×34, `xyz@hotmail.com.tw`) |
+| 2 (y:74) | 「傳真」 | Input(424×34, `02-33331111`) |
+| 3 (y:128, 147高) | 「會員備註」**label 在 input 之上**（不是同列） | Input/textarea(500×113, placeholder, 右下 resize handle 兩條 line `#b0b0b0`) |
+
+> 灰底同 [[feedback_locked_state_in_figma]]，不重覆描述。
+
+#### 右下（Frame 350, 540×108, x:560, y:352）— **僅 2 行 read-only 顯示**
+| 列 | 左欄 (238 寬) | 右欄 (238 寬) |
+|---|---|---|
+| 1 (y:20, 28高) | Texts「訂房次數」base `#6d6d6d` (label 灰) | Texts「XYZ」base `#454545` 右對齊（x:198 in 自欄內） |
+| 2 (y:60, 28高) | Texts「累積消費」base `#6d6d6d` | Texts「XYZ」base 右對齊 |
+
+> ⚠️ **大幅縮減**：原 HTML 含「訂金保留 / 累積消費 / 住房次數 / 最新住宿日」4 個 stats 列 + 「旅客習慣」section + 消費方式 / 車位 / 住房安靜 三個 chip 列；新 Figma 只剩**訂房次數 + 累積消費 2 列**，其餘 6+ 元件全部移除。
+
+### 0525-2 區塊布局重組
+
+| 列 | xl 配置 | 元素 |
+|---|---|---|
+| 第 1 列 | `xl:grid-cols-3` → 752 + 364（≈ 2/3 + 1/3） | **[C] 訂單條件** + **[E] 正式單與候補單** |
+| 第 2 列 | 全寬 1100 | **[D] 訂房資料** |
+
+> 變更：原 layout 是 [C] 全寬 → [D](2/3)+[E](1/3)；新版改為 [C](2/3)+[E](1/3) → [D] 全寬。[E] 從 [D] 旁搬到 [C] 旁。
 
 ---
 

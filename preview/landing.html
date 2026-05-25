@@ -4798,6 +4798,28 @@
             });
             apply();
           })();
+          // 訂房資料 honorific (先生/小姐) 跟性別 radio 連動 (booking + checkin 各自獨立)
+          (function () {
+            var radios = root.querySelectorAll("[data-gender-panel]");
+            if (!radios.length) return;
+            function applyHonorific(panel) {
+              var checked = root.querySelector(
+                '[data-gender-panel="' + panel + '"]:checked',
+              );
+              var label = root.querySelector(
+                '[data-honorific-panel="' + panel + '"]',
+              );
+              if (!label) return;
+              label.textContent = checked && checked.value === "female" ? "小姐" : "先生";
+            }
+            radios.forEach(function (r) {
+              r.addEventListener("change", function () {
+                applyHonorific(r.dataset.genderPanel);
+              });
+            });
+            applyHonorific("booking");
+            applyHonorific("checkin");
+          })();
           // 訂房資料 tab switching (訂房 / 入住 / 合約)
           (function () {
             var tabs = root.querySelectorAll("#orderDataTabs .order-tab");
@@ -8793,10 +8815,12 @@
           </div>
         </div>
 
-        <!-- [C] 訂單條件 accordion (expanded by default) -->
-        <div
-          class="rb-accordion rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
-        >
+        <!-- [C]+[E] side-by-side at xl+ (2/3 + 1/3); stacked below xl -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+          <!-- [C] 訂單條件 accordion (expanded by default) -->
+          <div
+            class="rb-accordion xl:col-span-2 rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
+          >
           <div
             class="rb-accordion-header flex items-center justify-between cursor-pointer select-none"
           >
@@ -8917,60 +8941,7 @@
                   </div>
                 </div>
               </div>
-              <!-- Column 2 -->
-              <div class="flex flex-col gap-5 basis-full md:basis-[280px] grow">
-                <div class="flex items-center gap-3">
-                  <span class="text-base text-text-default w-[100px] shrink-0"
-                    >折扣</span
-                  >
-                  <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
-                  >
-                    <option>無折扣</option>
-                  </select>
-                </div>
-                <div class="flex items-center gap-3">
-                  <span class="text-base text-text-default w-[100px] shrink-0"
-                    >總房價</span
-                  >
-                  <input
-                    type="text"
-                    value="1444"
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
-                  />
-                </div>
-                <div class="flex items-center gap-3">
-                  <span class="text-base text-text-default w-[100px] shrink-0"
-                    >加購項目併單</span
-                  >
-                  <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
-                  >
-                    <option>併單</option>
-                  </select>
-                </div>
-                <div class="flex items-center gap-3">
-                  <span class="text-base text-text-default w-[100px] shrink-0"
-                    >預付百分比</span
-                  >
-                  <select
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
-                  >
-                    <option>100%</option>
-                  </select>
-                </div>
-                <div class="flex items-center gap-3">
-                  <span class="text-base text-text-default w-[100px] shrink-0"
-                    >預付</span
-                  >
-                  <input
-                    type="text"
-                    value="1444"
-                    class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
-                  />
-                </div>
-              </div>
-              <!-- Column 3 -->
+              <!-- Column 2 (was Column 3 pre-0525; old col 2 fields moved to [B]) -->
               <div class="flex flex-col gap-5 basis-full md:basis-[280px] grow">
                 <div class="flex items-start gap-3">
                   <span class="text-base text-text-default w-[100px] shrink-0 pt-1"
@@ -8996,744 +8967,6 @@
             </div>
           </div>
         </div>
-
-        <!-- [D] + [E] side-by-side at xl+ (2/3 + 1/3); stacked below xl -->
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
-          <!-- [D] 訂房資料 — Figma Frame 348 (1437:47107)：3 tabs (訂房/入住/合約) + 4-quadrant form -->
-          <div
-            class="xl:col-span-2 rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
-          >
-            <!-- Top header row：title + lock + 清除 + 2 checkboxes -->
-            <div class="flex items-center flex-wrap gap-x-6 gap-y-2 mb-3">
-              <div class="flex items-center gap-2">
-                <span class="text-xl font-semibold text-text-default"
-                  >訂房資料</span
-                >
-                <button
-                  type="button"
-                  id="orderDataLock"
-                  class="order-lock w-6 h-6 cursor-pointer"
-                  data-locked="true"
-                  aria-label="鎖定 / 解鎖 輸入欄位"
-                  aria-pressed="true"
-                >
-                  <img
-                    src="./assets/icons/lock.svg"
-                    alt="lock"
-                    class="order-lock-icon w-6 h-6"
-                  />
-                </button>
-              </div>
-              <button
-                id="orderDataClear"
-                type="button"
-                class="flex items-center gap-2 cursor-pointer text-base text-text-default"
-              >
-                <img
-                  src="./assets/icons/eraser.svg"
-                  alt="eraser"
-                  class="w-4 h-4"
-                />
-                <span>清除</span>
-              </button>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  id="orderSameAsBooker"
-                  class="w-3.5 h-3.5 align-middle bg-text-placeholder"
-                />
-                <span class="text-base text-text-default">入住人同訂房人</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  class="w-3.5 h-3.5 align-middle bg-text-placeholder"
-                />
-                <span class="text-base text-text-default">寄送訂房資訊</span>
-              </label>
-            </div>
-            <!-- Tabs (Frame 356)：訂房 active / 入住 / 合約 (合約 tab 僅當客戶為合約客戶時顯示) -->
-            <div
-              id="orderDataTabs"
-              class="flex gap-3 md:gap-7 px-2 md:px-3 mb-0 flex-wrap"
-            >
-              <button
-                type="button"
-                class="order-tab order-tab-active"
-                data-tab="booking"
-              >
-                訂房
-              </button>
-              <button type="button" class="order-tab" data-tab="checkin">
-                入住
-              </button>
-              <button
-                type="button"
-                class="order-tab hidden"
-                data-tab="contract"
-              >
-                合約
-              </button>
-            </div>
-            <!-- White content card (Frame 277) -->
-            <div class="bg-white rounded-xl border border-border-default p-3 md:p-5">
-              <!-- Tab panel: 訂房 -->
-              <div
-                data-panel="booking"
-                class="order-panel grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5"
-              >
-                <!-- TL: 名稱/身份證號/護照號碼/生日/行動電話 -->
-                <div class="flex flex-col gap-5">
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >名稱</span
-                    >
-                    <input
-                      type="text"
-                      value="王大頭"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >身份證號</span
-                    >
-                    <input
-                      type="text"
-                      value="X111333555"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >護照號碼</span
-                    >
-                    <input
-                      type="text"
-                      value="X111333555"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >生日</span
-                    >
-                    <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
-                      <button
-                        type="button"
-                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
-                      >
-                        <span
-                          class="rb-cal-date flex-1 text-left text-base text-text-default whitespace-nowrap"
-                        ></span>
-                        <img
-                          src="./assets/icons/calendar.svg"
-                          alt="calendar"
-                          class="w-6 h-6"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >行動電話</span
-                    >
-                    <input
-                      type="text"
-                      value="0988777111"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                </div>
-                <!-- TR: 國籍 + 地址 (隨 nation radio 切換 taiwan/foreign 變體) -->
-                <div
-                  class="flex flex-col gap-5 nation-group"
-                  data-nation-group="rb"
-                >
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >國籍</span
-                    >
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="rb-nation"
-                        value="tw"
-                        checked
-                        class="nation-radio w-5 h-5 rounded-full"
-                      />
-                      <span class="text-base text-text-default">臺灣</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="rb-nation"
-                        value="foreign"
-                        class="nation-radio w-5 h-5 rounded-full"
-                      />
-                      <span class="text-base text-text-default">外籍</span>
-                    </label>
-                  </div>
-                  <!-- 外籍 only：國家 select -->
-                  <div
-                    class="flex items-center gap-3 nation-foreign-only hidden"
-                  >
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >國家</span
-                    >
-                    <select
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    >
-                      <option>英國</option>
-                      <option>美國</option>
-                      <option>日本</option>
-                      <option>韓國</option>
-                    </select>
-                  </div>
-                  <!-- 臺灣 地址：縣/市 + 行政區 + 街道 -->
-                  <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
-                    <span
-                      class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
-                      >地址</span
-                    >
-                    <div class="flex flex-col gap-3 flex-1">
-                      <div class="flex flex-col gap-1 min-w-0">
-                        <span class="text-base text-text-default">縣/市</span>
-                        <select
-                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                        >
-                          <option>台中</option>
-                        </select>
-                      </div>
-                      <div class="flex flex-col gap-1 min-w-0">
-                        <div class="flex justify-between">
-                          <span class="text-base text-text-default">行政區</span>
-                          <span class="text-base text-text-default">406</span>
-                        </div>
-                        <select
-                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                        >
-                          <option>北屯區</option>
-                        </select>
-                      </div>
-                      <div class="flex flex-col gap-1 min-w-0">
-                        <span class="text-base text-text-default">街道</span>
-                        <input
-                          type="text"
-                          placeholder="placeholder"
-                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <!-- 外籍 地址：單一「住所」input -->
-                  <div
-                    class="flex gap-3 addr-foreign hidden"
-                    data-addr-mode="foreign"
-                  >
-                    <span
-                      class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
-                      >地址</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="住所"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                </div>
-                <!-- BL: 性別 + Email + 市話 + 傳真 + 會員備註 -->
-                <div class="flex flex-col gap-5">
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >性別</span
-                    >
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="rb-gender"
-                        value="male"
-                        checked
-                        class="w-5 h-5 rounded-full accent-menu"
-                      />
-                      <span class="text-base text-text-default">男</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="rb-gender"
-                        value="female"
-                        class="w-5 h-5 rounded-full accent-menu"
-                      />
-                      <span class="text-base text-text-default">女</span>
-                    </label>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >Email</span
-                    >
-                    <input
-                      type="text"
-                      value="xyz@hotmail.com.tw"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >市話</span
-                    >
-                    <input
-                      type="text"
-                      value="0988777111"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >傳真</span
-                    >
-                    <input
-                      type="text"
-                      value="02-33331111"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex flex-col gap-2">
-                    <span class="text-base text-text-default">會員備註</span>
-                    <textarea
-                      rows="4"
-                      placeholder="placeholder"
-                      class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
-                    ></textarea>
-                  </div>
-                </div>
-                <!-- BR: stats + 旅客習慣 -->
-                <div class="flex flex-col gap-3">
-                  <div
-                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
-                  >
-                    <span class="text-base text-text-muted">訂金保留</span>
-                    <span class="text-base text-text-default">XYZ</span>
-                  </div>
-                  <div
-                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
-                  >
-                    <span class="text-base text-text-muted">累積消費</span>
-                    <span class="text-base text-text-default">XYZ</span>
-                  </div>
-                  <div
-                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
-                  >
-                    <span class="text-base text-text-muted">住房次數</span>
-                    <span class="text-base text-text-default">XYZ</span>
-                  </div>
-                  <div
-                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
-                  >
-                    <span class="text-base text-text-muted">最新住宿日</span>
-                    <span class="text-base text-text-default">XYZ</span>
-                  </div>
-                  <div class="text-base text-text-default text-center mt-2">
-                    旅客習慣
-                  </div>
-                  <div class="flex items-center justify-between gap-3 px-3">
-                    <span class="text-base text-text-default">消費方式</span>
-                    <span
-                      class="border border-text-default rounded px-2 py-1 text-base text-text-default"
-                      >信用卡</span
-                    >
-                  </div>
-                  <div class="flex items-center justify-between gap-3 px-3">
-                    <span class="text-base text-text-default">車位</span>
-                    <span
-                      class="border border-text-default rounded px-2 py-1 text-base text-text-default"
-                      >必須</span
-                    >
-                  </div>
-                  <div class="flex items-center justify-between gap-3 px-3">
-                    <span class="text-base text-text-default">住房安靜</span>
-                    <span
-                      class="border border-text-default rounded px-2 py-1 text-base text-text-default"
-                      >要求高</span
-                    >
-                  </div>
-                </div>
-              </div>
-              <!-- Tab panel: 入住 — 入住人資料；結構同 訂房 (因「入住人同訂房人」可一鍵 copy) -->
-              <div
-                data-panel="checkin"
-                class="order-panel hidden grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5"
-              >
-                <!-- TL: 名稱/身份證號/護照號碼/生日/行動電話 -->
-                <div class="flex flex-col gap-5">
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >名稱</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="placeholder"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >身份證號</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="placeholder"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >護照號碼</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="placeholder"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >生日</span
-                    >
-                    <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
-                      <button
-                        type="button"
-                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
-                      >
-                        <span
-                          class="rb-cal-date flex-1 text-left text-base text-text-default whitespace-nowrap"
-                        ></span>
-                        <img
-                          src="./assets/icons/calendar.svg"
-                          alt="calendar"
-                          class="w-6 h-6"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >行動電話</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="placeholder"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                </div>
-                <!-- TR: 國籍 + 地址 (隨 nation radio 切換 taiwan/foreign 變體) -->
-                <div
-                  class="flex flex-col gap-5 nation-group"
-                  data-nation-group="ci"
-                >
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >國籍</span
-                    >
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="ci-nation"
-                        value="tw"
-                        checked
-                        class="nation-radio w-5 h-5 rounded-full"
-                      />
-                      <span class="text-base text-text-default">臺灣</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="ci-nation"
-                        value="foreign"
-                        class="nation-radio w-5 h-5 rounded-full"
-                      />
-                      <span class="text-base text-text-default">外籍</span>
-                    </label>
-                  </div>
-                  <div
-                    class="flex items-center gap-3 nation-foreign-only hidden"
-                  >
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >國家</span
-                    >
-                    <select
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    >
-                      <option>英國</option>
-                      <option>美國</option>
-                      <option>日本</option>
-                      <option>韓國</option>
-                    </select>
-                  </div>
-                  <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
-                    <span
-                      class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
-                      >地址</span
-                    >
-                    <div class="flex flex-col gap-3 flex-1">
-                      <div class="flex flex-col gap-1 min-w-0">
-                        <span class="text-base text-text-default">縣/市</span>
-                        <select
-                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                        >
-                          <option>台中</option>
-                        </select>
-                      </div>
-                      <div class="flex flex-col gap-1 min-w-0">
-                        <div class="flex justify-between">
-                          <span class="text-base text-text-default">行政區</span>
-                          <span class="text-base text-text-default">406</span>
-                        </div>
-                        <select
-                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                        >
-                          <option>北屯區</option>
-                        </select>
-                      </div>
-                      <div class="flex flex-col gap-1 min-w-0">
-                        <span class="text-base text-text-default">街道</span>
-                        <input
-                          type="text"
-                          placeholder="placeholder"
-                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="flex gap-3 addr-foreign hidden"
-                    data-addr-mode="foreign"
-                  >
-                    <span
-                      class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
-                      >地址</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="住所"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                </div>
-                <!-- BL: 性別 + Email + 市話 + 傳真 + 會員備註 -->
-                <div class="flex flex-col gap-5">
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >性別</span
-                    >
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="ci-gender"
-                        value="male"
-                        checked
-                        class="w-5 h-5 rounded-full accent-menu"
-                      />
-                      <span class="text-base text-text-default">男</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="ci-gender"
-                        value="female"
-                        class="w-5 h-5 rounded-full accent-menu"
-                      />
-                      <span class="text-base text-text-default">女</span>
-                    </label>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >Email</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="placeholder"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >市話</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="placeholder"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >傳真</span
-                    >
-                    <input
-                      type="text"
-                      placeholder="placeholder"
-                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-                    />
-                  </div>
-                  <div class="flex flex-col gap-2">
-                    <span class="text-base text-text-default">入住備註</span>
-                    <textarea
-                      rows="4"
-                      placeholder="placeholder"
-                      class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
-                    ></textarea>
-                  </div>
-                </div>
-                <!-- BR: 入住偏好 / 預計到達時間 -->
-                <div class="flex flex-col gap-3">
-                  <div
-                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
-                  >
-                    <span class="text-base text-text-muted">預計到達時間</span>
-                    <span class="text-base text-text-default">XYZ</span>
-                  </div>
-                  <div
-                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
-                  >
-                    <span class="text-base text-text-muted">同行人數</span>
-                    <span class="text-base text-text-default">XYZ</span>
-                  </div>
-                  <div
-                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
-                  >
-                    <span class="text-base text-text-muted">交通方式</span>
-                    <span class="text-base text-text-default">XYZ</span>
-                  </div>
-                  <div
-                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
-                  >
-                    <span class="text-base text-text-muted">早餐</span>
-                    <span class="text-base text-text-default">XYZ</span>
-                  </div>
-                  <div class="text-base text-text-default text-center mt-2">
-                    入住偏好
-                  </div>
-                  <div class="flex items-center justify-between gap-3 px-3">
-                    <span class="text-base text-text-default">床型</span>
-                    <span
-                      class="border border-text-default rounded px-2 py-1 text-base text-text-default"
-                      >大床</span
-                    >
-                  </div>
-                  <div class="flex items-center justify-between gap-3 px-3">
-                    <span class="text-base text-text-default">樓層</span>
-                    <span
-                      class="border border-text-default rounded px-2 py-1 text-base text-text-default"
-                      >高樓層</span
-                    >
-                  </div>
-                  <div class="flex items-center justify-between gap-3 px-3">
-                    <span class="text-base text-text-default">枕頭</span>
-                    <span
-                      class="border border-text-default rounded px-2 py-1 text-base text-text-default"
-                      >硬</span
-                    >
-                  </div>
-                </div>
-              </div>
-              <!-- Tab panel: 合約 — Figma "Ordering data" (1404:47296)；3 列；皆為 read-only 顯示 -->
-              <div
-                data-panel="contract"
-                class="order-panel hidden grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-5 gap-y-5"
-              >
-                <!-- 列 1 (Frame 374)：公司資料 -->
-                <div class="flex flex-col gap-5">
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >公司名稱</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >品保</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >統編</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >代號</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >公司別</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                </div>
-                <!-- 列 2 (Frame 375)：聯絡資料 -->
-                <div class="flex flex-col gap-5">
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >交觀甲</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >聯絡人一</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >連電一</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >聯絡人二</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >聯絡電話二</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                </div>
-                <!-- 列 3 (Frame 376)：傳真 + 備註 -->
-                <div class="flex flex-col gap-5">
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >傳真一</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >傳真二</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >備註</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- [E] 正式單與候補單 — Figma Frame 1437:47168 -->
           <div
             class="rb-accordion xl:col-span-1 rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
@@ -10114,7 +9347,648 @@
             </div>
           </div>
         </div>
-        <!-- end [D]+[E] grid -->
+
+        <!-- [D] 訂房資料 — Figma Frame 453 (1751:43181) full-width row -->
+        <div
+          class="rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
+        >
+            <!-- Top header row：title + lock + 清除 + 2 checkboxes -->
+            <div class="flex items-center flex-wrap gap-x-6 gap-y-2 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xl font-semibold text-text-default"
+                  >訂房資料</span
+                >
+                <button
+                  type="button"
+                  id="orderDataLock"
+                  class="order-lock w-6 h-6 cursor-pointer"
+                  data-locked="true"
+                  aria-label="鎖定 / 解鎖 輸入欄位"
+                  aria-pressed="true"
+                >
+                  <img
+                    src="./assets/icons/lock.svg"
+                    alt="lock"
+                    class="order-lock-icon w-6 h-6"
+                  />
+                </button>
+              </div>
+              <button
+                id="orderDataClear"
+                type="button"
+                class="flex items-center gap-2 cursor-pointer text-base text-text-default"
+              >
+                <img
+                  src="./assets/icons/eraser.svg"
+                  alt="eraser"
+                  class="w-4 h-4"
+                />
+                <span>清除</span>
+              </button>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="orderSameAsBooker"
+                  class="w-3.5 h-3.5 align-middle bg-text-placeholder"
+                />
+                <span class="text-base text-text-default">入住人同訂房人</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  class="w-3.5 h-3.5 align-middle bg-text-placeholder"
+                />
+                <span class="text-base text-text-default">寄送訂房資訊</span>
+              </label>
+            </div>
+            <!-- Tabs (Frame 356)：訂房 active / 入住 / 合約 (合約 tab 僅當客戶為合約客戶時顯示) -->
+            <div
+              id="orderDataTabs"
+              class="flex gap-3 md:gap-7 px-2 md:px-3 mb-0 flex-wrap"
+            >
+              <button
+                type="button"
+                class="order-tab order-tab-active"
+                data-tab="booking"
+              >
+                訂房
+              </button>
+              <button type="button" class="order-tab" data-tab="checkin">
+                入住
+              </button>
+              <button
+                type="button"
+                class="order-tab hidden"
+                data-tab="contract"
+              >
+                合約
+              </button>
+            </div>
+            <!-- White content card (Frame 277) -->
+            <div class="bg-white rounded-xl border border-border-default p-3 md:p-5">
+              <!-- Tab panel: 訂房 -->
+              <div
+                data-panel="booking"
+                class="order-panel grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5"
+              >
+                <!-- TL: 名稱/證號/行動電話/生日/性別 (3 橘字 label = required + search-priority) -->
+                <div class="flex flex-col gap-5">
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-brand-500 w-[76px] shrink-0"
+                      >名稱</span
+                    >
+                    <div class="flex flex-1 items-center gap-3 min-w-0">
+                      <input
+                        type="text"
+                        value="王大頭"
+                        class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                      />
+                      <span
+                        class="text-base text-text-default shrink-0 whitespace-nowrap"
+                        data-honorific-panel="booking"
+                        >先生</span
+                      >
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-brand-500 w-[76px] shrink-0"
+                      >證號</span
+                    >
+                    <input
+                      type="text"
+                      value="X111333555"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-brand-500 w-[76px] shrink-0"
+                      >行動電話</span
+                    >
+                    <input
+                      type="text"
+                      value="0988777111"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >生日</span
+                    >
+                    <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
+                      <button
+                        type="button"
+                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                      >
+                        <span
+                          class="rb-cal-date flex-1 text-left text-base text-text-default whitespace-nowrap"
+                        ></span>
+                        <img
+                          src="./assets/icons/calendar.svg"
+                          alt="calendar"
+                          class="w-6 h-6"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >性別</span
+                    >
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="rb-gender"
+                        value="male"
+                        checked
+                        class="w-5 h-5 rounded-full accent-menu"
+                        data-gender-panel="booking"
+                      />
+                      <span class="text-base text-text-default">男</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="rb-gender"
+                        value="female"
+                        class="w-5 h-5 rounded-full accent-menu"
+                        data-gender-panel="booking"
+                      />
+                      <span class="text-base text-text-default">女</span>
+                    </label>
+                  </div>
+                </div>
+                <!-- TR: 國籍 + 地址 (隨 nation radio 切換 taiwan/foreign 變體) -->
+                <div
+                  class="flex flex-col gap-5 nation-group"
+                  data-nation-group="rb"
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >國籍</span
+                    >
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="rb-nation"
+                        value="tw"
+                        checked
+                        class="nation-radio w-5 h-5 rounded-full"
+                      />
+                      <span class="text-base text-text-default">臺灣</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="rb-nation"
+                        value="foreign"
+                        class="nation-radio w-5 h-5 rounded-full"
+                      />
+                      <span class="text-base text-text-default">外籍</span>
+                    </label>
+                  </div>
+                  <!-- 外籍 only：國家 select -->
+                  <div
+                    class="flex items-center gap-3 nation-foreign-only hidden"
+                  >
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >國家</span
+                    >
+                    <select
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    >
+                      <option>英國</option>
+                      <option>美國</option>
+                      <option>日本</option>
+                      <option>韓國</option>
+                    </select>
+                  </div>
+                  <!-- 臺灣 地址：縣/市 + 行政區 + 街道 -->
+                  <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
+                    <span
+                      class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
+                      >地址</span
+                    >
+                    <div class="flex flex-col gap-3 flex-1">
+                      <div class="flex flex-col gap-1 min-w-0">
+                        <span class="text-base text-text-default">縣/市</span>
+                        <select
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                        >
+                          <option>台中</option>
+                        </select>
+                      </div>
+                      <div class="flex flex-col gap-1 min-w-0">
+                        <div class="flex justify-between">
+                          <span class="text-base text-text-default">行政區</span>
+                          <span class="text-base text-text-default">406</span>
+                        </div>
+                        <select
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                        >
+                          <option>北屯區</option>
+                        </select>
+                      </div>
+                      <div class="flex flex-col gap-1 min-w-0">
+                        <span class="text-base text-text-default">街道</span>
+                        <input
+                          type="text"
+                          placeholder="placeholder"
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 外籍 地址：單一「住所」input -->
+                  <div
+                    class="flex gap-3 addr-foreign hidden"
+                    data-addr-mode="foreign"
+                  >
+                    <span
+                      class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
+                      >地址</span
+                    >
+                    <input
+                      type="text"
+                      placeholder="住所"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                </div>
+                <!-- BL: Email / 傳真 / 會員備註 (label 在 textarea 之上) -->
+                <div class="flex flex-col gap-5">
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >Email</span
+                    >
+                    <input
+                      type="text"
+                      value="xyz@hotmail.com.tw"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >傳真</span
+                    >
+                    <input
+                      type="text"
+                      value="02-33331111"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <span class="text-base text-text-default">會員備註</span>
+                    <textarea
+                      rows="4"
+                      placeholder="placeholder"
+                      class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
+                    ></textarea>
+                  </div>
+                </div>
+                <!-- BR: 訂房次數 / 累積消費 -->
+                <div class="flex flex-col gap-3">
+                  <div
+                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
+                  >
+                    <span class="text-base text-text-muted">訂房次數</span>
+                    <span class="text-base text-text-default">XYZ</span>
+                  </div>
+                  <div
+                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
+                  >
+                    <span class="text-base text-text-muted">累積消費</span>
+                    <span class="text-base text-text-default">XYZ</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Tab panel: 入住 — 入住人資料；結構同 訂房 (因「入住人同訂房人」可一鍵 copy) -->
+              <div
+                data-panel="checkin"
+                class="order-panel hidden grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5"
+              >
+                <!-- TL: 名稱/證號/行動電話/生日/性別 (3 橘字 label = required + search-priority) -->
+                <div class="flex flex-col gap-5">
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-brand-500 w-[76px] shrink-0"
+                      >名稱</span
+                    >
+                    <div class="flex flex-1 items-center gap-3 min-w-0">
+                      <input
+                        type="text"
+                        placeholder="placeholder"
+                        class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                      />
+                      <span
+                        class="text-base text-text-default shrink-0 whitespace-nowrap"
+                        data-honorific-panel="checkin"
+                        >先生</span
+                      >
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-brand-500 w-[76px] shrink-0"
+                      >證號</span
+                    >
+                    <input
+                      type="text"
+                      placeholder="placeholder"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-brand-500 w-[76px] shrink-0"
+                      >行動電話</span
+                    >
+                    <input
+                      type="text"
+                      placeholder="placeholder"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >生日</span
+                    >
+                    <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
+                      <button
+                        type="button"
+                        class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                      >
+                        <span
+                          class="rb-cal-date flex-1 text-left text-base text-text-default whitespace-nowrap"
+                        ></span>
+                        <img
+                          src="./assets/icons/calendar.svg"
+                          alt="calendar"
+                          class="w-6 h-6"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >性別</span
+                    >
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="ci-gender"
+                        value="male"
+                        checked
+                        class="w-5 h-5 rounded-full accent-menu"
+                        data-gender-panel="checkin"
+                      />
+                      <span class="text-base text-text-default">男</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="ci-gender"
+                        value="female"
+                        class="w-5 h-5 rounded-full accent-menu"
+                        data-gender-panel="checkin"
+                      />
+                      <span class="text-base text-text-default">女</span>
+                    </label>
+                  </div>
+                </div>
+                <!-- TR: 國籍 + 地址 (隨 nation radio 切換 taiwan/foreign 變體) -->
+                <div
+                  class="flex flex-col gap-5 nation-group"
+                  data-nation-group="ci"
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >國籍</span
+                    >
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="ci-nation"
+                        value="tw"
+                        checked
+                        class="nation-radio w-5 h-5 rounded-full"
+                      />
+                      <span class="text-base text-text-default">臺灣</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="ci-nation"
+                        value="foreign"
+                        class="nation-radio w-5 h-5 rounded-full"
+                      />
+                      <span class="text-base text-text-default">外籍</span>
+                    </label>
+                  </div>
+                  <div
+                    class="flex items-center gap-3 nation-foreign-only hidden"
+                  >
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >國家</span
+                    >
+                    <select
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    >
+                      <option>英國</option>
+                      <option>美國</option>
+                      <option>日本</option>
+                      <option>韓國</option>
+                    </select>
+                  </div>
+                  <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
+                    <span
+                      class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
+                      >地址</span
+                    >
+                    <div class="flex flex-col gap-3 flex-1">
+                      <div class="flex flex-col gap-1 min-w-0">
+                        <span class="text-base text-text-default">縣/市</span>
+                        <select
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                        >
+                          <option>台中</option>
+                        </select>
+                      </div>
+                      <div class="flex flex-col gap-1 min-w-0">
+                        <div class="flex justify-between">
+                          <span class="text-base text-text-default">行政區</span>
+                          <span class="text-base text-text-default">406</span>
+                        </div>
+                        <select
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                        >
+                          <option>北屯區</option>
+                        </select>
+                      </div>
+                      <div class="flex flex-col gap-1 min-w-0">
+                        <span class="text-base text-text-default">街道</span>
+                        <input
+                          type="text"
+                          placeholder="placeholder"
+                          class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="flex gap-3 addr-foreign hidden"
+                    data-addr-mode="foreign"
+                  >
+                    <span
+                      class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
+                      >地址</span
+                    >
+                    <input
+                      type="text"
+                      placeholder="住所"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                </div>
+                <!-- BL: Email / 傳真 / 會員備註 (label 在 textarea 之上) -->
+                <div class="flex flex-col gap-5">
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >Email</span
+                    >
+                    <input
+                      type="text"
+                      placeholder="placeholder"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >傳真</span
+                    >
+                    <input
+                      type="text"
+                      placeholder="placeholder"
+                      class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <span class="text-base text-text-default">會員備註</span>
+                    <textarea
+                      rows="4"
+                      placeholder="placeholder"
+                      class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
+                    ></textarea>
+                  </div>
+                </div>
+                <!-- BR: 訂房次數 / 累積消費 -->
+                <div class="flex flex-col gap-3">
+                  <div
+                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
+                  >
+                    <span class="text-base text-text-muted">訂房次數</span>
+                    <span class="text-base text-text-default">XYZ</span>
+                  </div>
+                  <div
+                    class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
+                  >
+                    <span class="text-base text-text-muted">累積消費</span>
+                    <span class="text-base text-text-default">XYZ</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Tab panel: 合約 — Figma "Ordering data" (1404:47296)；3 列；皆為 read-only 顯示 -->
+              <div
+                data-panel="contract"
+                class="order-panel hidden grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-5 gap-y-5"
+              >
+                <!-- 列 1 (Frame 374)：公司資料 -->
+                <div class="flex flex-col gap-5">
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >公司名稱</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >品保</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >統編</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >代號</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >公司別</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                </div>
+                <!-- 列 2 (Frame 375)：聯絡資料 -->
+                <div class="flex flex-col gap-5">
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >交觀甲</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >聯絡人一</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >連電一</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >聯絡人二</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >聯絡電話二</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                </div>
+                <!-- 列 3 (Frame 376)：傳真 + 備註 -->
+                <div class="flex flex-col gap-5">
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >傳真一</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >傳真二</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >備註</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
       </div>
 
       <!-- ===== 產生訂單 submit button (full width on mobile/tablet, 137px right-aligned on desktop) ===== -->

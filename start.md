@@ -1,6 +1,17 @@
-# Start — 開發規則
+# Start - 開發規則
 
 > 本文件為此設計系統專案的總規則，所有 component / section / layout 的生成與維護皆遵循此規範。
+
+## 輸出格式 (Output formatting)
+
+Please avoid using special Unicode characters, emoji, box-drawing characters, or decorative symbols in your responses. Use plain ASCII only.
+
+- 適用範圍: chat 回覆與寫入 .md / spec / code comment 的文字
+- CJK (中文) 字元仍可使用, 因為是正常內容
+- 不可使用: emoji, check mark, warning sign, arrow glyph, bullet glyph, table box-drawing, 任何裝飾性符號
+- 改用純文字: "OK", "warning", "->", "-", "*"
+- 表格用標準 markdown pipe `|` 即可, 不用 box-drawing
+- 任何 ASCII 可表達的概念都應該用 ASCII; 「↺」改寫 "update" 或 "changed", 「✓」改 "OK", 「⚠」改 "warning", 「→」改 "->"
 
 ---
 
