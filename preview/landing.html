@@ -2790,219 +2790,41 @@
                   >
                     未付款
                   </div>
-                  <div class="order-summary-label">訂單類別</div>
-                  <div class="order-summary-value">一般會員</div>
-                  <div class="order-summary-label">訂單來源</div>
-                  <div class="order-summary-value">現場</div>
                   <div class="order-summary-label">訂購日期</div>
                   <div class="order-summary-value">2031-01-31 14：25：25</div>
                   <div class="order-summary-label">繳款期限</div>
                   <div class="order-summary-value">2031-01-31 14：25：25</div>
-                </div>
-              </section>
-
-              <section class="order-summary-section">
-                <h3 class="order-summary-section-title order-summary-section-title--underlined">付款與帳戶</h3>
-                <div class="order-summary-grid">
-                  <div class="order-summary-label">付款方式</div>
-                  <div class="order-summary-value">ATM</div>
-                  <div class="order-summary-label">應付訂金</div>
-                  <div class="order-summary-value order-summary-number">
-                    <span class="order-summary-money"><span>$</span><span>10,000</span></span>
-                  </div>
-                  <div class="order-summary-label">帳戶</div>
-                  <div class="order-summary-value whitespace-pre-line">玉山銀行
-分行：
-戶名：</div>
-                  <div class="order-summary-label">已付金額</div>
-                  <div class="order-summary-value order-summary-number">
-                    <span class="order-summary-money"><span>$</span><span>999</span></span>
-                  </div>
-                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
-                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
-                  <div class="order-summary-label">訂房總金額</div>
-                  <div class="order-summary-value order-summary-number">
-                    <span class="order-summary-money"><span>$</span><span>999</span></span>
-                  </div>
-                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
-                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
-                  <div class="order-summary-label">尚欠金額</div>
-                  <div class="order-summary-value order-summary-number font-semibold">
-                    <span class="order-summary-money"><span>$</span><span>999</span></span>
-                  </div>
+                  <div class="order-summary-label">付款資料</div>
+                  <div class="order-summary-value">xyz 123</div>
+                  <div class="order-summary-label">對帳單號</div>
+                  <div class="order-summary-value">BBBXXXYYY12345</div>
                   <div class="order-summary-label">訂單人員</div>
                   <div class="order-summary-value">Money</div>
                   <div class="order-summary-label">修改人員</div>
                   <div class="order-summary-value">Punchi</div>
-                </div>
-              </section>
-
-              <section
-                class="rounded-xl border border-border-disabled bg-surface-hover p-5"
-                data-order-summary-transfer-section
-              >
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between text-left text-xl leading-[27px] text-text-default"
-                  aria-expanded="true"
-                  aria-controls="orderSummaryTransferContent"
-                  data-order-summary-accordion-toggle
-                >
-                  <span>轉正式單</span>
-                  <img
-                    src="./assets/icons/down.svg"
-                    alt=""
-                    class="h-6 w-6"
-                    data-order-summary-accordion-icon
-                  />
-                </button>
-                <div
-                  id="orderSummaryTransferContent"
-                  class="mt-4 rounded-xl bg-white p-5"
-                  data-order-summary-accordion-content
-                >
-                  <div class="flex flex-nowrap gap-4 overflow-x-auto">
-                    <button type="button" class="rb-pay-chip rb-pay-active" data-order-summary-transfer-pay="transfer">轉帳</button>
-                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="fax">傳真刷卡</button>
-                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="ticket">票券</button>
-                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="frontdesk">前台自付</button>
-                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="credit">信用交易</button>
-                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="check">支票</button>
-                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="deposit">訂金</button>
-                    <button type="button" class="rb-pay-chip" data-order-summary-transfer-pay="bonus">紅利</button>
+                  <div class="order-summary-label order-summary-grid-late-4">其他需求</div>
+                  <div class="order-summary-value order-summary-grid-late-4">xyz 123</div>
+                  <div class="order-summary-label order-summary-grid-late-1">應付訂金</div>
+                  <div class="order-summary-value order-summary-grid-late-1">
+                    <span class="order-summary-money"><span>$</span><span>10,000</span></span>
                   </div>
-                  <div class="mt-5 space-y-5" data-order-summary-transfer-fields="transfer">
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">收款帳號</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">客支付帳號</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
+                  <div class="order-summary-label order-summary-grid-late-5">處理備註</div>
+                  <div class="order-summary-value order-summary-grid-late-5">xyz 123</div>
+                  <div class="order-summary-label order-summary-grid-late-2">已付訂金</div>
+                  <div class="order-summary-value order-summary-grid-late-2">
+                    <span class="order-summary-money"><span>$</span><span>10,000</span></span>
                   </div>
-                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="fax">
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">卡號</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">授權碼</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                  </div>
-                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="ticket">
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-start gap-3 sm:items-center">
-                      <span class="w-24 shrink-0 pt-1.5 sm:pt-0 text-base text-text-default">票券號碼</span>
-                      <div class="flex flex-1 min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
-                        <input type="text" placeholder="placeholder" class="min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default sm:flex-1" />
-                        <input type="text" placeholder="placeholder" class="min-w-0 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default sm:flex-1" />
-                        <button
-                          type="button"
-                          class="inline-flex h-auto min-h-[34px] items-center justify-center rounded-md border border-surface-hover bg-surface-accent px-3 py-1.5 text-base text-text-default sm:shrink-0"
-                        >
-                          檢查
-                        </button>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">備註</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                  </div>
-                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="frontdesk">
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">內容</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <span class="w-24 shrink-0 pt-1.5 text-base text-text-default">備註</span>
-                      <textarea rows="3" placeholder="placeholder" class="min-w-0 flex-1 resize-none rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"></textarea>
-                    </div>
-                  </div>
-                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="credit">
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">內容</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <span class="w-24 shrink-0 pt-1.5 text-base text-text-default">備註</span>
-                      <textarea rows="3" placeholder="placeholder" class="min-w-0 flex-1 resize-none rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"></textarea>
-                    </div>
-                  </div>
-                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="check">
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">內容</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <span class="w-24 shrink-0 pt-1.5 text-base text-text-default">備註</span>
-                      <textarea rows="3" placeholder="placeholder" class="min-w-0 flex-1 resize-none rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default"></textarea>
-                    </div>
-                  </div>
-                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="deposit">
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">訂金餘額</span>
-                      <span class="min-w-0 flex-1 text-base text-text-default">可用：11,044</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                  </div>
-                  <div class="mt-5 hidden space-y-5" data-order-summary-transfer-fields="bonus">
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">紅利餘額</span>
-                      <span class="min-w-0 flex-1 text-base text-text-default">可用：11,044</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <span class="w-24 shrink-0 text-base text-text-default">支付金額</span>
-                      <input type="text" placeholder="placeholder" class="min-w-0 flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default" />
-                    </div>
-                  </div>
-                  <div class="mt-5 flex justify-end gap-2">
-                    <button
-                      type="button"
-                      class="inline-flex h-auto min-h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default"
-                    >
-                      清除
-                    </button>
-                    <button
-                      type="button"
-                      class="inline-flex h-auto min-h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse"
-                    >
-                      改為正式單
-                    </button>
+                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
+                  <div class="order-summary-grid-spacer" aria-hidden="true"></div>
+                  <div class="order-summary-label order-summary-grid-late-3">尚欠金額</div>
+                  <div class="order-summary-value order-summary-grid-late-3">
+                    <span class="order-summary-money"><span>$</span><span>999</span></span>
                   </div>
                 </div>
               </section>
 
               <section class="order-summary-section">
-                <h3 class="order-summary-section-title">訂單明細</h3>
+                <h3 class="order-summary-section-title">訂房明細</h3>
                 <div class="overflow-x-auto">
                   <table class="order-summary-table order-summary-table--after-title">
                     <thead>
@@ -3117,7 +2939,7 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>訂單明細</td>
+                          <td>訂房明細</td>
                           <td class="order-summary-number">888</td>
                         </tr>
                         <tr>
@@ -3137,53 +2959,6 @@
                   </div>
                 </section>
               </div>
-
-              <section class="order-summary-section">
-                <h3 class="order-summary-section-title order-summary-section-title--underlined">飯店資料</h3>
-                <div>
-                  <div class="order-summary-hotel-name">旅宿 e 管家 DEMO</div>
-                  <div class="order-summary-hotel-row">
-                    <div class="order-summary-hotel-pair">
-                      <div class="order-summary-label text-right">Title</div>
-                      <div class="order-summary-value">Content</div>
-                    </div>
-                    <div class="order-summary-hotel-pair">
-                      <div class="order-summary-label text-right">Title</div>
-                      <div class="order-summary-value">Content</div>
-                    </div>
-                  </div>
-                  <div class="order-summary-hotel-row">
-                    <div class="order-summary-hotel-pair">
-                      <div class="order-summary-label text-right">Title</div>
-                      <div class="order-summary-value">Content</div>
-                    </div>
-                    <div class="order-summary-hotel-pair">
-                      <div class="order-summary-label text-right">Title</div>
-                      <div class="order-summary-value">Content</div>
-                    </div>
-                  </div>
-                  <div class="order-summary-hotel-row">
-                    <div class="order-summary-hotel-pair">
-                      <div class="order-summary-label text-right">Title</div>
-                      <div class="order-summary-value">Content</div>
-                    </div>
-                    <div class="order-summary-hotel-pair">
-                      <div class="order-summary-label text-right">Title</div>
-                      <div class="order-summary-value">Content</div>
-                    </div>
-                  </div>
-                  <div class="order-summary-hotel-row">
-                    <div class="order-summary-hotel-pair">
-                      <div class="order-summary-label text-right">Title</div>
-                      <div class="order-summary-value">Content</div>
-                    </div>
-                    <div class="order-summary-hotel-pair">
-                      <div class="order-summary-label text-right">Title</div>
-                      <div class="order-summary-value">Content</div>
-                    </div>
-                  </div>
-                </div>
-              </section>
 
               <section class="rounded-xl border border-border-disabled bg-surface-hover p-5">
                 <button
@@ -3223,7 +2998,7 @@
                       <span class="order-summary-value">XYZ</span>
                     </div>
                     <div class="order-summary-person-row">
-                      <span class="order-summary-label text-right">Email</span>
+                      <span class="order-summary-label text-right">生日</span>
                       <span class="order-summary-value">XYZ</span>
                     </div>
                     <div class="order-summary-person-row">
@@ -3231,15 +3006,11 @@
                       <span class="order-summary-value">XYZ</span>
                     </div>
                     <div class="order-summary-person-row">
-                      <span class="order-summary-label text-right">生日</span>
+                      <span class="order-summary-label text-right">地址</span>
                       <span class="order-summary-value">XYZ</span>
                     </div>
                     <div class="order-summary-person-row">
                       <span class="order-summary-label text-right">手機</span>
-                      <span class="order-summary-value">XYZ</span>
-                    </div>
-                    <div class="order-summary-person-row">
-                      <span class="order-summary-label text-right">地址</span>
                       <span class="order-summary-value">XYZ</span>
                     </div>
                   </div>
@@ -3260,7 +3031,7 @@
                       <span class="order-summary-value">XYZ</span>
                     </div>
                     <div class="order-summary-person-row">
-                      <span class="order-summary-label text-right">Email</span>
+                      <span class="order-summary-label text-right">生日</span>
                       <span class="order-summary-value">XYZ</span>
                     </div>
                     <div class="order-summary-person-row">
@@ -3268,32 +3039,17 @@
                       <span class="order-summary-value">XYZ</span>
                     </div>
                     <div class="order-summary-person-row">
-                      <span class="order-summary-label text-right">生日</span>
+                      <span class="order-summary-label text-right">地址</span>
                       <span class="order-summary-value">XYZ</span>
                     </div>
                     <div class="order-summary-person-row">
                       <span class="order-summary-label text-right">手機</span>
                       <span class="order-summary-value">XYZ</span>
                     </div>
-                    <div class="order-summary-person-row">
-                      <span class="order-summary-label text-right">地址</span>
-                      <span class="order-summary-value">XYZ</span>
-                    </div>
                   </div>
                 </div>
               </section>
 
-              <section class="order-summary-section">
-                <h3 class="order-summary-section-title order-summary-section-title--underlined">訂房須知</h3>
-                <div class="mt-0 bg-surface-hover py-1 text-center text-base text-text-default">
-                  （ntd-套用 xyz）
-                </div>
-                <textarea
-                  class="mt-2 block min-h-[199px] w-full resize-none rounded-lg border border-border-disabled bg-white px-3 py-2 text-base leading-6 text-text-default outline-none"
-                  readonly
-                  aria-label="訂房須知內容"
-                >我是內容</textarea>
-              </section>
             </div>
           </div>
         </div>
@@ -5636,29 +5392,6 @@
             .forEach(function (toggle) {
               setOrderSummaryAccordion(toggle, true);
             });
-          setOrderSummaryTransferPay("transfer");
-        }
-        function setOrderSummaryTransferPay(payKey) {
-          var modal = document.getElementById("modalOrderSummaryBackdrop");
-          if (!modal) return;
-          var section = modal.querySelector("[data-order-summary-transfer-section]");
-          if (!section) return;
-          section
-            .querySelectorAll("[data-order-summary-transfer-pay]")
-            .forEach(function (chip) {
-              chip.classList.toggle(
-                "rb-pay-active",
-                chip.dataset.orderSummaryTransferPay === payKey,
-              );
-            });
-          section
-            .querySelectorAll("[data-order-summary-transfer-fields]")
-            .forEach(function (fields) {
-              fields.classList.toggle(
-                "hidden",
-                fields.dataset.orderSummaryTransferFields !== payKey,
-              );
-            });
         }
         function setOrderSummaryVariant(variant) {
           var modal = document.getElementById("modalOrderSummaryBackdrop");
@@ -5670,7 +5403,6 @@
               pillClass: "bg-status-negative",
               basicStatus: "未付款",
               basicStatusClass: "text-status-negative",
-              showTransferOfficial: true,
             },
             paid: {
               pill: "已付款",
@@ -5678,7 +5410,6 @@
               pillClass: "bg-status-positive",
               basicStatus: "已付款",
               basicStatusClass: "text-status-positive",
-              showTransferOfficial: false,
             },
             waitlist: {
               pill: "候補單",
@@ -5686,7 +5417,6 @@
               pillClass: "bg-brand-active",
               basicStatus: "未付款",
               basicStatusClass: "text-status-negative",
-              showTransferOfficial: false,
             },
           };
           var state = variants[variant] || variants.unpaid;
@@ -5695,9 +5425,6 @@
           var copy = modal.querySelector("[data-order-summary-status-copy]");
           var basicStatus = modal.querySelector(
             "[data-order-summary-basic-status]",
-          );
-          var transferSection = modal.querySelector(
-            "[data-order-summary-transfer-section]",
           );
           modal.dataset.orderSummaryVariant = variant || "unpaid";
           if (pill) {
@@ -5717,9 +5444,6 @@
               "text-status-positive",
             );
             basicStatus.classList.add(state.basicStatusClass);
-          }
-          if (transferSection) {
-            transferSection.hidden = !state.showTransferOfficial;
           }
           return true;
         }
@@ -6269,16 +5993,6 @@
         }
 
         document.addEventListener("click", function (e) {
-          var transferPayChip = e.target.closest(
-            "[data-order-summary-transfer-pay]",
-          );
-          if (transferPayChip) {
-            e.preventDefault();
-            setOrderSummaryTransferPay(
-              transferPayChip.dataset.orderSummaryTransferPay,
-            );
-            return;
-          }
           var orderSummarySubmit = e.target.closest(
             "[data-order-summary-submit]",
           );
