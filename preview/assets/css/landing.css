@@ -1586,5 +1586,8 @@ body.mobile-sidebar-open {
   }
   .am-transfer-grid {
     grid-template-columns: 1fr;
+    /* mobile/tablet 滿版：移除外圍 12px padding，讓欄位邊緣與 modal body
+       對齊；卡內 calendar input 文字得以對齊其他 row */
+    padding: 0;
   }
 }
