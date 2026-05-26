@@ -4,6 +4,52 @@
 
 ---
 
+## Session 67 交接（2026-05-26）
+
+### 任務：加購 modal — 購物車明細解重複 + cart snapshot ledger + 補齊分類產品
+
+使用者以 `figma-go` 指定 Figma node：
+- node `I1332:28485;73:678;1332:28775`，name `Frame 516`（購物車明細區塊：早餐 x4 / 機票 x2 / 會議服務 x6 / 嬰兒用品 x1 / 總價）
+
+### 三項調整
+
+1. **購物車明細不可與上方購物車卡片重複**：modal 下方的 `data-purchase-cart-details` 還原為原本簡單 row（`name | x qty | amount`），上方 `data-purchase-cart-cards` 仍走 `purchaseAddonCartCardHtml` 大卡片 template。`cardsHtml` 不再寫回 details。
+2. **分類至少一個產品**：原本只有 dining x2 + tailetries x1 = 3 個產品覆蓋 3 個 category；補齊 tickets / coffee / tool / bed / promotion / wellness / gift / flight / service 各 1 個產品（`defaultQuantity: 0`），共 12 個產品 11 個分類。
+3. **calendar 日期與 cart 卡片解綁**：原本 `getPurchaseItemState(product).date = ds` 會同步動到右側 cart card。改為 cart snapshot ledger：
+   - state 拆 `editor`（per-product draft）+ `cart`（snapshot array）。
+   - `+` 按鈕：找 `(productId + editor.date)` line 累加 qty；找不到就 snapshot editor 全欄位生新 line。
+   - `-` 按鈕：對同 key line `qty--`；歸 0 自動移除。
+   - 垃圾桶按 `lineId` 移除單一 line（不再以 productId 整批清）。
+   - editor 改 date / time / cost / notice / timeEnabled 皆不動 cart 既有 snapshot。
+
+### 已完成
+
+1. `preview/landing.html`
+   - `purchaseAddonProducts` 補 9 個產品（theme-park-ticket / fresh-coffee / projector-rental / extra-bed / early-bird / indigo-dye / pineapple-cake / airport-shuttle / meeting-room）。
+   - 新 state model：`editor: {}`, `cart: []`, `nextLineId: 0`。helper：`getEditorState`、`findCartLine`、`snapshotEditorToCartLine`、`incrementCartFromEditor`、`decrementCartFromEditor`、`removeCartLineById`、`getEditorQuantity`、`resetPurchaseAddonItems`。
+   - `renderPurchaseAddonProducts`：qty source 改 `getEditorQuantity(item)`，editor 狀態走 `getEditorState`。
+   - `purchaseAddonCartCardHtml(line)` 簽名改吃 cart line snapshot；trash button `data-purchase-remove` 帶 `lineId`。
+   - `renderPurchaseAddonCart`：iterate `purchaseAddonState.cart` snapshot 陣列；details 區塊重新內聯 row template；total 對 cart line 累加。
+   - +/- / remove / time toggle / field input / change / calendar 全部 click handler 改用新 helper。
+
+### 驗證
+
+- chrome-devtools 互動驗證：
+  - 初始 3 line（line-1 早餐 05-26 qty=2、line-2 早餐 05-26 qty=2、line-3 嬰兒用品 05-26 qty=1）。
+  - 同日 + 早餐 → line-1 qty=3（無新 line）。
+  - 改 editor date 為 05-30 → counter 顯示 0；+ → 生 line-4 早餐 05-30 qty=1；line-1 仍 05-26 qty=3 不動。
+  - trash line-2 → 只 line-2 消失。
+  - 連加 fresh-coffee / extra-bed / indigo-dye / pineapple-cake / meeting-room → cart 8 筆獨立 snapshot。
+- 截圖：`specs/qa-screenshots/session-67/`（01-initial-modal / 02-after-date-change-add / 03-8-lines-mixed-dates）。
+- 無 console error（只剩 Tailwind CDN warning 與一支 404 unrelated asset）。
+
+### 注意
+
+- 分類左側計數 chip 仍是 hardcoded `12`（line 2548 起），不跟實際 product 數，這次未動；待要求時可改 dynamic count。
+- 改 cost / time / notice 不會再連動既有 cart line — 屬於 snapshot 行為的刻意設計；要修現有 line 需 trash 後重加。
+
+---
+
 ## Session 66 交接（2026-05-21）
 
 ### 任務：統一 accordion 箭頭方向 — 展開用 down、收起用 up

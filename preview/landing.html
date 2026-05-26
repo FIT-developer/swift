@@ -5506,6 +5506,150 @@
             cost: 9988,
             defaultQuantity: 1,
           },
+          {
+            id: "theme-park-ticket",
+            category: "tickets",
+            title: "主題公園門票",
+            subtitle: "全票一日券",
+            notice: "placeholder",
+            date: null,
+            hour: "9",
+            minute: "30",
+            timeEnabled: true,
+            originalPrice: 1500,
+            originalPriceMuted: false,
+            inventory: 20,
+            cost: 1350,
+            defaultQuantity: 0,
+          },
+          {
+            id: "fresh-coffee",
+            category: "coffee",
+            title: "現磨咖啡",
+            subtitle: "美式　拿鐵　卡布",
+            notice: "placeholder",
+            date: null,
+            hour: "8",
+            minute: "0",
+            timeEnabled: true,
+            originalPrice: 180,
+            originalPriceMuted: false,
+            inventory: 50,
+            cost: 150,
+            defaultQuantity: 0,
+          },
+          {
+            id: "projector-rental",
+            category: "tool",
+            title: "投影機租借",
+            subtitle: "全日　含布幕",
+            notice: "placeholder",
+            date: null,
+            hour: "10",
+            minute: "0",
+            timeEnabled: false,
+            originalPrice: 800,
+            originalPriceMuted: false,
+            inventory: 5,
+            cost: 600,
+            defaultQuantity: 0,
+          },
+          {
+            id: "extra-bed",
+            category: "bed",
+            title: "加床",
+            subtitle: "單人折疊床　含寢具",
+            notice: "placeholder",
+            date: null,
+            hour: "15",
+            minute: "0",
+            timeEnabled: false,
+            originalPrice: 1200,
+            originalPriceMuted: false,
+            inventory: 6,
+            cost: 1000,
+            defaultQuantity: 0,
+          },
+          {
+            id: "early-bird",
+            category: "promotion",
+            title: "早鳥優惠",
+            subtitle: "提前 30 天預訂九折",
+            notice: "placeholder",
+            date: null,
+            hour: "0",
+            minute: "0",
+            timeEnabled: false,
+            originalPrice: 0,
+            originalPriceMuted: true,
+            inventory: 99,
+            cost: 0,
+            defaultQuantity: 0,
+          },
+          {
+            id: "indigo-dye",
+            category: "wellness",
+            title: "藍染體驗",
+            subtitle: "手帕　束口袋",
+            notice: "placeholder",
+            date: null,
+            hour: "14",
+            minute: "0",
+            timeEnabled: true,
+            originalPrice: 980,
+            originalPriceMuted: false,
+            inventory: 10,
+            cost: 880,
+            defaultQuantity: 0,
+          },
+          {
+            id: "pineapple-cake",
+            category: "gift",
+            title: "鳳梨酥禮盒",
+            subtitle: "10 入　手工烘焙",
+            notice: "placeholder",
+            date: null,
+            hour: "0",
+            minute: "0",
+            timeEnabled: false,
+            originalPrice: 450,
+            originalPriceMuted: false,
+            inventory: 30,
+            cost: 380,
+            defaultQuantity: 0,
+          },
+          {
+            id: "airport-shuttle",
+            category: "flight",
+            title: "機場接駁",
+            subtitle: "桃園機場　單程",
+            notice: "placeholder",
+            date: null,
+            hour: "7",
+            minute: "0",
+            timeEnabled: true,
+            originalPrice: 1800,
+            originalPriceMuted: false,
+            inventory: 4,
+            cost: 1500,
+            defaultQuantity: 0,
+          },
+          {
+            id: "meeting-room",
+            category: "service",
+            title: "會議室租借",
+            subtitle: "可容 20 人　投影設備",
+            notice: "placeholder",
+            date: null,
+            hour: "10",
+            minute: "0",
+            timeEnabled: true,
+            originalPrice: 3500,
+            originalPriceMuted: false,
+            inventory: 3,
+            cost: 3000,
+            defaultQuantity: 0,
+          },
         ];
         var purchaseAddonCategoryLabels = {
           all: "所有",
@@ -5521,8 +5665,13 @@
           tailetries: "盥洗用品",
           service: "會議服務",
         };
-        var purchaseAddonState = { category: "all", items: {} };
-        function getPurchaseDefaults(item) {
+        var purchaseAddonState = {
+          category: "all",
+          editor: {},
+          cart: [],
+          nextLineId: 0,
+        };
+        function getPurchaseEditorDefaults(item) {
           return {
             notice: item.notice,
             date: item.date || dayjs().format("YYYY-MM-DD"),
@@ -5530,20 +5679,88 @@
             minute: item.minute,
             timeEnabled: item.timeEnabled,
             cost: item.cost,
-            quantity: item.defaultQuantity,
           };
         }
-        function resetPurchaseAddonItems() {
-          purchaseAddonState.items = {};
-          purchaseAddonProducts.forEach(function (item) {
-            purchaseAddonState.items[item.id] = getPurchaseDefaults(item);
-          });
-        }
-        function getPurchaseItemState(item) {
-          if (!purchaseAddonState.items[item.id]) {
-            purchaseAddonState.items[item.id] = getPurchaseDefaults(item);
+        function getEditorState(item) {
+          if (!purchaseAddonState.editor[item.id]) {
+            purchaseAddonState.editor[item.id] = getPurchaseEditorDefaults(item);
           }
-          return purchaseAddonState.items[item.id];
+          return purchaseAddonState.editor[item.id];
+        }
+        function findCartLine(productId, date) {
+          for (var i = 0; i < purchaseAddonState.cart.length; i += 1) {
+            var line = purchaseAddonState.cart[i];
+            if (line.productId === productId && line.date === date) return line;
+          }
+          return null;
+        }
+        function snapshotEditorToCartLine(item) {
+          var editor = getEditorState(item);
+          purchaseAddonState.nextLineId += 1;
+          return {
+            lineId: "line-" + purchaseAddonState.nextLineId,
+            productId: item.id,
+            title: item.title,
+            subtitle: item.subtitle,
+            date: editor.date,
+            hour: editor.hour,
+            minute: editor.minute,
+            timeEnabled: editor.timeEnabled,
+            cost: editor.cost,
+            notice: editor.notice,
+            quantity: 0,
+          };
+        }
+        function incrementCartFromEditor(item) {
+          var editor = getEditorState(item);
+          var line = findCartLine(item.id, editor.date);
+          if (!line) {
+            line = snapshotEditorToCartLine(item);
+            purchaseAddonState.cart.push(line);
+          }
+          line.quantity += 1;
+        }
+        function decrementCartFromEditor(item) {
+          var editor = getEditorState(item);
+          var idx = -1;
+          for (var i = 0; i < purchaseAddonState.cart.length; i += 1) {
+            var line = purchaseAddonState.cart[i];
+            if (line.productId === item.id && line.date === editor.date) {
+              idx = i;
+              break;
+            }
+          }
+          if (idx < 0) return;
+          purchaseAddonState.cart[idx].quantity -= 1;
+          if (purchaseAddonState.cart[idx].quantity <= 0) {
+            purchaseAddonState.cart.splice(idx, 1);
+          }
+        }
+        function removeCartLineById(lineId) {
+          for (var i = 0; i < purchaseAddonState.cart.length; i += 1) {
+            if (purchaseAddonState.cart[i].lineId === lineId) {
+              purchaseAddonState.cart.splice(i, 1);
+              return;
+            }
+          }
+        }
+        function getEditorQuantity(item) {
+          var editor = getEditorState(item);
+          var line = findCartLine(item.id, editor.date);
+          return line ? line.quantity : 0;
+        }
+        function resetPurchaseAddonItems() {
+          purchaseAddonState.editor = {};
+          purchaseAddonState.cart = [];
+          purchaseAddonState.nextLineId = 0;
+          purchaseAddonProducts.forEach(function (item) {
+            getEditorState(item);
+            if (item.defaultQuantity > 0) {
+              var line = snapshotEditorToCartLine(item);
+              line.quantity = item.defaultQuantity;
+              purchaseAddonState.cart.push(line);
+            }
+          });
         }
         function formatPurchaseAmount(value) {
           return "$ " + value.toLocaleString("en-US");
@@ -5635,10 +5852,10 @@
                       var product = purchaseAddonProducts.find(function (item) {
                         return item.id === cell.dataset.purchaseItem;
                       });
-                      if (product) getPurchaseItemState(product).date = ds;
+                      if (product) getEditorState(product).date = ds;
                       dropdown.classList.remove("active");
                       window.activeSimpleCalendar = null;
-                      renderPurchaseAddonCart();
+                      renderPurchaseAddon();
                     });
                   })(dateStr);
                   if (dateStr === selectedStr) dayBtn.classList.add("selected");
@@ -5723,8 +5940,8 @@
           }
           list.innerHTML = items
             .map(function (item) {
-              var itemState = getPurchaseItemState(item);
-              var quantity = itemState.quantity || 0;
+              var itemState = getEditorState(item);
+              var quantity = getEditorQuantity(item);
               var disabled = !itemState.timeEnabled;
               var selectClass = disabled
                 ? "bg-border-disabled text-text-secondary"
@@ -5860,14 +6077,14 @@
             .join("");
           initPurchaseAddonCalendars(modal);
         }
-        function purchaseAddonCartCardHtml(item, itemState) {
-          var quantity = itemState.quantity;
-          var lineAmount = Number(itemState.cost || 0) * quantity;
-          var timeChip = itemState.timeEnabled
+        function purchaseAddonCartCardHtml(line) {
+          var quantity = line.quantity;
+          var lineAmount = Number(line.cost || 0) * quantity;
+          var timeChip = line.timeEnabled
             ? '<span class="inline-flex h-6 items-center rounded-[40px] bg-accent-cart-time px-2 py-1 text-xs text-text-emphasis">' +
-              formatPurchaseTimePart(itemState.hour) +
+              formatPurchaseTimePart(line.hour) +
               "：" +
-              formatPurchaseTimePart(itemState.minute) +
+              formatPurchaseTimePart(line.minute) +
               "</span>"
             : "";
           return (
@@ -5875,23 +6092,23 @@
             '<div class="flex items-start justify-between gap-2">' +
             '<div class="flex min-w-0 items-baseline gap-1.5">' +
             '<span class="text-base text-text-default whitespace-nowrap">' +
-            item.title +
+            line.title +
             "</span>" +
             '<span class="text-xs text-text-default whitespace-nowrap">' +
             quantity +
             " 份</span>" +
             "</div>" +
             '<button type="button" class="flex h-6 w-6 shrink-0 items-center justify-center" data-purchase-remove="' +
-            item.id +
+            line.lineId +
             '" aria-label="刪除' +
-            item.title +
+            line.title +
             '">' +
             '<img src="./assets/icons/trash-can.svg" alt="" class="h-6 w-6" />' +
             "</button>" +
             "</div>" +
             '<div class="mt-3 flex items-center gap-2">' +
             '<span class="inline-flex h-6 items-center rounded-[40px] bg-accent-cart-date px-2 py-1 text-xs text-text-emphasis">' +
-            itemState.date +
+            line.date +
             "</span>" +
             timeChip +
             '<span class="ml-auto text-base text-text-default whitespace-nowrap">' +
@@ -5913,10 +6130,8 @@
           );
           var pageTotalEl = document.querySelector("[data-purchase-page-total]");
           if (!cards) return;
-          var selected = purchaseAddonProducts.filter(function (item) {
-            return (getPurchaseItemState(item).quantity || 0) > 0;
-          });
-          if (!selected.length) {
+          var lines = purchaseAddonState.cart;
+          if (!lines.length) {
             cards.innerHTML =
               '<p class="text-base text-text-supporting">尚未選擇加購項目</p>';
             if (details) {
@@ -5932,17 +6147,33 @@
             }
             return;
           }
-          var total = selected.reduce(function (sum, item) {
-            var itemState = getPurchaseItemState(item);
-            return sum + Number(itemState.cost || 0) * itemState.quantity;
+          var total = lines.reduce(function (sum, line) {
+            return sum + Number(line.cost || 0) * line.quantity;
           }, 0);
-          var cardsHtml = selected
-            .map(function (item) {
-              return purchaseAddonCartCardHtml(item, getPurchaseItemState(item));
-            })
-            .join("");
+          var cardsHtml = lines.map(purchaseAddonCartCardHtml).join("");
           cards.innerHTML = cardsHtml;
-          if (details) details.innerHTML = cardsHtml;
+          if (details) {
+            details.innerHTML = lines
+              .map(function (line) {
+                var quantity = line.quantity;
+                return (
+                  '<div class="flex items-center justify-between gap-3">' +
+                  '<div class="inline-flex min-w-0 items-center gap-3 text-base text-text-default">' +
+                  '<span class="truncate">' +
+                  line.title +
+                  "</span>" +
+                  "<span>x " +
+                  quantity +
+                  "</span>" +
+                  "</div>" +
+                  '<span class="shrink-0 text-base text-text-default">' +
+                  (Number(line.cost || 0) * quantity).toLocaleString("en-US") +
+                  "</span>" +
+                  "</div>"
+                );
+              })
+              .join("");
+          }
           if (pageCart) pageCart.innerHTML = cardsHtml;
           if (pageCartWrap) pageCartWrap.hidden = false;
           var totalText = formatPurchaseAmount(total);
@@ -6607,23 +6838,18 @@
                 return item.id === id;
               });
               if (!product) return;
-              var itemState = getPurchaseItemState(product);
-              var current = itemState.quantity || 0;
-              var next =
-                step.dataset.purchaseStep === "plus" ? current + 1 : current - 1;
-              itemState.quantity = Math.max(0, next);
+              if (step.dataset.purchaseStep === "plus") {
+                incrementCartFromEditor(product);
+              } else {
+                decrementCartFromEditor(product);
+              }
               renderPurchaseAddon();
               return;
             }
 
             var remove = e.target.closest("[data-purchase-remove]");
             if (remove) {
-              var removeProduct = purchaseAddonProducts.find(function (item) {
-                return item.id === remove.dataset.purchaseRemove;
-              });
-              if (removeProduct) {
-                getPurchaseItemState(removeProduct).quantity = 0;
-              }
+              removeCartLineById(remove.dataset.purchaseRemove);
               renderPurchaseAddon();
               return;
             }
@@ -6634,10 +6860,10 @@
                 return item.id === timeToggle.dataset.purchaseTimeToggle;
               });
               if (toggleProduct) {
-                var toggleState = getPurchaseItemState(toggleProduct);
-                toggleState.timeEnabled = !toggleState.timeEnabled;
+                var editor = getEditorState(toggleProduct);
+                editor.timeEnabled = !editor.timeEnabled;
               }
-              renderPurchaseAddon();
+              renderPurchaseAddonProducts();
             }
           });
 
@@ -6648,9 +6874,7 @@
               return item.id === field.dataset.purchaseItem;
             });
             if (!product) return;
-            var itemState = getPurchaseItemState(product);
-            itemState[field.dataset.purchaseField] = field.value;
-            if (field.dataset.purchaseField === "cost") renderPurchaseAddonCart();
+            getEditorState(product)[field.dataset.purchaseField] = field.value;
           });
 
           modal.addEventListener("change", function (e) {
@@ -6660,19 +6884,15 @@
               return item.id === field.dataset.purchaseItem;
             });
             if (!product) return;
-            getPurchaseItemState(product)[field.dataset.purchaseField] = field.value;
-            renderPurchaseAddonCart();
+            getEditorState(product)[field.dataset.purchaseField] = field.value;
           });
 
-          // Page-level cart trash (outside modal scope) — sync removal back to modal state
+          // Page-level cart trash (outside modal scope) — remove that specific cart line
           document.addEventListener("click", function (e) {
             var trigger = e.target.closest("[data-purchase-remove]");
             if (!trigger) return;
             if (modal && modal.contains(trigger)) return;
-            var product = purchaseAddonProducts.find(function (item) {
-              return item.id === trigger.dataset.purchaseRemove;
-            });
-            if (product) getPurchaseItemState(product).quantity = 0;
+            removeCartLineById(trigger.dataset.purchaseRemove);
             renderPurchaseAddon();
           });
 
