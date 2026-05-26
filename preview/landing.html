@@ -8746,6 +8746,49 @@
                 data-purchase-page-cart
               ></div>
             </div>
+            <!-- Figma Frame 584：預付/百分比 + 預付訂金 + 總售價 footer row -->
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
+              <div class="flex items-center gap-3">
+                <span class="w-[100px] shrink-0 text-base text-text-default">預付 / 百分比</span>
+                <div class="flex flex-1 min-w-0">
+                  <input
+                    type="text"
+                    value="1444"
+                    class="flex-1 min-w-0 h-9 rounded-l-[6px] rounded-r-none border border-r-0 border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none"
+                    aria-label="預付百分比金額"
+                  />
+                  <select
+                    class="w-[90px] h-9 rounded-l-none rounded-r-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none"
+                    aria-label="預付百分比"
+                  >
+                    <option value="100" selected>100%</option>
+                    <option value="75">75%</option>
+                    <option value="50">50%</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[100px] shrink-0 text-base text-text-default">預付訂金</span>
+                <input
+                  type="text"
+                  value="1444"
+                  class="flex-1 min-w-0 h-9 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none"
+                  aria-label="預付訂金"
+                />
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-[100px] shrink-0 flex flex-col">
+                  <span class="text-base text-text-default">總售價</span>
+                  <span class="text-xs text-text-default">99999</span>
+                </span>
+                <input
+                  type="text"
+                  value="1444"
+                  class="flex-1 min-w-0 h-9 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none"
+                  aria-label="總售價"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
