@@ -39,3 +39,34 @@
 > - `type=accordion collapsed`（`957:16417`，含 `flexible content`）= 展開態 → `icons/down`
 > - `type=extend N`（含 content）= 展開態 → `icons/down`
 > - ⚠️ Figma variant 命名與實際狀態相反（「none collapsed」其實是收起、「collapsed」其實是展開），以**是否含 content child** 判定狀態，勿被名稱誤導。
+
+---
+
+## Variants（Component Set `418:3834`，2026-05-27 重讀，15 個 variant）
+
+| # | variant 名 | id | w × h | 用途 |
+|---|---|---|---|---|
+| 0 | `type=calendar collapse table 2` | `418:3833` | 375 × 490 | mobile/窄欄 calendar 收折態 |
+| 1 | `type=calendar collapse table 1` | `557:9040` | 375 × 490 | 同上 table 1 變體 |
+| 2-7 | `type=extend 1..6` | `557:9851`-`557:11454` | 375 × 490/553 | mobile 展開態（不同 row 數） |
+| 8 | `type=table content 1` | `552:7932` | **1026 × 619** | desktop 含 inline calendar 351 + 右側 611（[A] 空房查詢 mode）|
+| 9 | **`type=table content 1 none calendar`** | `1773:45971` | **1622 × 619** | desktop **無 inline calendar**；右側面板擴為 1582 滿版（[A] 庫存表 mode）|
+| 10 | `type=table 2` | `557:8398` | **1019 × 514** | desktop 含 inline calendar 351 + 右側 1582 |
+| 11 | **`type=table 2 none calendar`** | `1773:46324` | **1622 × 502** | desktop **無 inline calendar**；右側面板擴為 1582 滿版 |
+| 12 | `type=table 2 + modal` | `1405:48344` | 1019 × 514 | table 2 帶 date detail modal（session 65）|
+| 13 | `type=accordion none collapsed` | `418:3835` | 1622 × 67 | 收起態（純 header）|
+| 14 | `type=accordion slot collapsed` | `957:16417` | 1622 × 483 | 展開態（含 `flexible content` slot）|
+
+### `none calendar` variants（**↺ 0527 新增**）
+
+`type=table content 1 none calendar`（`1773:45971`）與 `type=table 2 none calendar`（`1773:46324`）差別只在「移除左側 inline Calendar 351×431」：
+
+| 對照項 | 有 calendar | none calendar |
+|---|---|---|
+| 外層 w | 1026 / 1019 | **1622**（補回左側 calendar 寬 + gap）|
+| Frame 224 / 226 children | Calendar 351 @ x:0 + 右側面板 @ x:375 | 只有右側面板 @ x:0，**寬撐到 1582** |
+| 右側面板 id | Frame 223 / Frame 225 | 同名 Frame 223 / Frame 225 |
+
+**用途**：[A] 空房與庫存查詢在「庫存表」mode 顯示此 variant —— 對應 [pages/room-booking.md](../specs/pages/room-booking.md) 0527 段所述「庫存表 mode 左側 calendar 不顯示」。
+
+> 庫存表 mode 月曆改由 toolbar `Button 月曆` 觸發 → 開啟 [components/offcanvas.md](offcanvas.md)。inline calendar 在 Figma 標稿中是被整塊移除（不留空欄）。

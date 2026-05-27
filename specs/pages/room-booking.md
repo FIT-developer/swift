@@ -88,6 +88,47 @@
 
 Table 欄位、Calendar 細節同 0428（保留段落，需與 0525 重新核對的細項以註記補上）。
 
+### 0527 — 庫存表 mode 月曆改 offcanvas 觸發（↺ 新增）
+
+Figma source：`Content page - 房間預訂 default 0527-a1` (`1775:53143`)
+
+**Toolbar Frame 136**（[A] 右側面板上 toolbar，原為 Frame 97 mode toggle 176 × 42）擴增為 4 元件並排：
+
+| 位置 | 元件 | 尺寸 | 內容 |
+|---|---|---|---|
+| x:0 | Frame 97 mode toggle | 176 × 42 | `空房查詢` / `庫存表`（庫存表 active = bg `Color/Brand/600` `#005fcc`） |
+| x:192 | **Button 月曆**（**↺ 新增**） | 96 × 42 | `icons/calendar` 24 + 文字 `月曆`；只在「庫存表」mode 顯示；空房查詢 mode 隱藏 |
+| x:304 | Button Excel | 98 × 36 | `icons/download` + 文字 `Excel`（session 65 已有，只在庫存表 mode 顯示） |
+
+**月曆按鈕樣式**（2026-05-27 對位 `Content page - 房間預訂 default 0527-a2` `1775:54840` 確認）
+- 不是 toggle；只有 **hover / focus / active** 變色狀態。
+- baseline（0527-a1 `1775:53143`）：透明/白底、border `Color/Neutral/200` `#d1d1d1`、`icons/calendar` vector `#000000`（黑）、文字 `月曆` `Color/Neutral/800` `#454545`。
+- hover / focus / active（0527-a2 `1775:54840`）：**bg `Color/Chart/blue` `#86b7fe`（淺藍，與餘房 chip 同色）**、border `#d1d1d1`（不變）、`icons/calendar` vector `#ffffff`（白）、文字 `月曆` `#ffffff`（白）。
+- ⚠️ 此藍與庫存表 toggle active 用的 `Color/Brand/600` `#005fcc`（深藍）**不同**。
+
+**月曆顯示邏輯**
+
+| Mode | 左側 Calendar 351 × 431 | toolbar 月曆 button |
+|---|---|---|
+| 空房查詢 | inline 顯示（同舊版） | **不顯示** |
+| 庫存表 | **不顯示** | 顯示；點擊 → 開啟 offcanvas（從 viewport 底部往上展） |
+
+> 庫存表 mode：左側 calendar 區塊整塊「不顯示」（不是 collapse 留空），其餘 chip / table / 數量分配 / 底部 button 維持示意稿。
+
+**Offcanvas 內容**
+- Container spec → [components/offcanvas.md](../../components/offcanvas.md)
+- header title 文字：`月曆`
+- header 右上：`icons/close` 24×24，點擊 dismiss
+- body slot：嵌入 Calendar `1773:49925`（同既有 calendar-simple 共用 markup，size 351 × 431）
+- **行為加碼（↺ 0527 新增）**：calendar 內**任一日期 cell click → 自動 dismiss offcanvas**（除了原本的 close 按鈕外、使用者點日期即關）。詳見 [components/offcanvas.md](../../components/offcanvas.md) 「[A] 庫存表 mode 內 calendar 的特殊規則」段。
+
+**待補/待確認**
+- offcanvas 出現/關閉動畫時間 — 走專案既有 250ms ease-in-out 或另定
+
+**0527 使用者確認（offcanvas dismiss 路徑）**
+- 共 **2 條**：(1) 右上 `icons/close` 按鈕、(2) calendar 內任一日期 cell click
+- **不支援** backdrop click / Esc / 滑動 等其他 dismiss
+
 ---
 
 ## [B] 客戶類型 + 訂房資料（Frame 1140）
@@ -139,7 +180,7 @@ Table 欄位、Calendar 細節同 0428（保留段落，需與 0525 重新核對
 | 4 | Frame 194 專案 | 199 | 577.5 | 「專案」 | Select × 3 列 |
 | 5 | Frame 192 間數 | 169 | 776.5 | 「間數」+ sub「團體：8」 | DatePicker「訂房間數」、值 5 × 3 列；footer 總計 15 |
 | 6 | Frame 196 單價 | 123 | 945.5 | 「單價」 | Input × 3 列（19999）；footer 空 |
-| 7 | Frame 197 小計 | 165 | 1068.5 | 「小計」+ Select 「無折扣」（base 16, border-disabled, radius 6, padding 6/12） | Input × 3 列（19999）；footer 上：「原價」+ strikethrough「8888」(`text-text-muted`)、下：Input「19999」 |
+| 7 | Frame 197 小計 | 165 | 1068.5 | 「小計」+ Select 「無折扣」（base 16, border-disabled, radius 6, padding 6/12） | **純文字 sm × 3 列**（範例 `199999`、置中、`Color/Neutral/800`；**↺ 0527 改：原 Input × 3 改唯讀純文字，不讓使用者修改**）；footer 上：「原價」+ strikethrough「8888」(`text-text-muted`)、下：Input「19999」（footer 仍為 Input） |
 
 **th width 規則**：原 `style="width: …"` 改為 `style="min-width: …"`，避免 table 內容增多（如 select）時被 auto-layout 擠壓掉 input 寬度（曾出現 單價 → 56px）。
 | 8 | Frame 195 操作 | 144 | 1233.5 | 「操作」 | （操作按鈕，待 0525 補圖驗證）|
@@ -176,23 +217,30 @@ Table 欄位、Calendar 細節同 0428（保留段落，需與 0525 重新核對
 - bg `Color/Neutral/0`、border `Color/Neutral/100`（`#e1e1e0`）、radius 8、padding 16
 - Frame 474（312×60）兩行
   - **上行**（312×24）：
-    - 左 Frame 530（70×24）：Texts base 品名（如「機票」`Color/Neutral/800`）+ Texts sm 數量（「2 份」`Color/Neutral/800`）
+    - 左 Frame 530：3 個 Texts 並排（all `Color/Neutral/800`）
+      - 品名 Texts base 16px（如「機票」/「會議服務」/「嬰兒用品」）
+      - **單價 Texts sm 12px**（範例 `$ 999` / `$ 888` / `$ 777`）← **↺ 0527 新增**
+      - 數量 Texts sm 12px（範例 `2 份` / `2 間` / `2 個`）
     - 右 Frame 468（24×24）：`icons/trash-can`，vector stroke `#d90000`（紅色刪除）
   - **下行**（312×24 @ y:36）：
     - 左 Frame 470（143×24）：
       - 日期 chip（Frame 448, 79×24）：bg `Color/Brand/Brand-100`（`#fdebd7`）、radius 40、pad 4/8、Texts sm `Color/Neutral/900`（範例 `2026-03-01`）
       - 時間 chip（Frame 450, 56×24 @ x:87）：bg `Color/Neutral/100`（`#e1e1e0`）、radius 40、pad 4/8、Texts sm `Color/Neutral/900`（範例 `14：25`）
-    - 右 Frame 463（105×22 @ x:207）：Texts base 金額 `Color/Neutral/800`（範例 `$ 777,333,110`）
+    - 右 Frame 463（105×22 @ x:158）：Texts base 金額（line 小計）`Color/Neutral/800`（範例 `$ 777,333,110`）
 
-**品名範例對照**（Figma 9 張卡片示意）：
+**品名範例對照**（Figma 0527 modal `1774:65571` 三張卡片示意）：
 
-| Row | 品名 | 量詞 |
-|---|---|---|
-| 1（card 1–3） | 機票 | 份 |
-| 2（card 4–6） | 會議服務 | 間 |
-| 3（card 7–9） | 嬰兒用品 | 個 |
+| 卡 | 品名 | 單價 sm | 量詞 |
+|---|---|---|---|
+| 1 | 機票 | `$ 999` | 份 |
+| 2 | 會議服務 | `$ 888` | 間 |
+| 3 | 嬰兒用品 | `$ 777` | 個 |
 
-> ⚠️ card 8 / card 9 在 Figma 標的中時間 chip 缺漏（只有日期 + 金額）；本輪不腦補，實作時統一以「日期 + 時間 + 金額」為標準排法，若 backend 沒給時間則只顯示日期 chip。
+> 0527 對位：modal `1774:65571` Frame 444 / Frame 522 內 3 張卡片，上行從原本「品名 + 數量」改為「品名 + 單價 + 數量」三欄。
+>
+> ⚠️ 同樣的卡片 markup 也用在 **[B] 客戶+訂房資料下方的 cart preview grid**（Frame 583 內 cart-items）；該處需**同步**更新上行為三欄。
+>
+> ⚠️ 0525 Figma 標的中 card 8 / card 9 時間 chip 缺漏（只有日期 + 金額）；本輪不腦補，實作時統一以「日期 + 時間 + 金額」為標準排法，若 backend 沒給時間則只顯示日期 chip。
 
 ### Frame 559 / 584 — 預付/總價 footer 列（**↺ 0525 新增**）
 `1017 × 38` @ x:20。y 位置依購物車狀態而異（空 555 / 有值 935）。內含 3 個等寬欄（≈ 322.33）+ gap 25：

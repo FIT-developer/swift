@@ -252,14 +252,15 @@ Modal (560×390px)
 
 | 狀態 | Node ID | 尺寸 | 說明 |
 |---|---|---|---|
-| 預設 | `1272:27402` | 375×1004px | `lock` + 訂房間數 `1` + `已達最低間數` |
-| 上限 | `1272:27354` | 375×1004px | `lock` + 訂房間數 `5` + `已達上限間數` |
-| 可編輯價格 | `1272:27306` | 375×1004px | `unlock` + 定價調整 input active |
+| 預設 | `1272:27402` | 375×1004px | `lock` + 訂房間數 `1` + `已達最低間數`（**0505 標稿**） |
+| 上限 | `1272:27354` | 375×1004px | `lock` + 訂房間數 `5` + `已達上限間數`（**0505 標稿**） |
+| 可編輯價格 | `1272:27306` | 375×1004px | `unlock` + 定價調整 input active（**0505 標稿**） |
+| **↺ 0527 desktop 重整** | `1774:66050` | **646×724px** | 移除 date controller 整段；headline + metadata chips + price table + textarea + footer 四段；info chip 行可橫排 9 個（646 寬足夠 wrap） |
 
-### 結構
+### 結構（**↺ 0527 重整：移除 date controller 整段**）
 
 ```
-Modal (375×1004px reference)
+Modal (0527 reference: 646×724 desktop, 1774:66050)
 ├── Header Frame 10
 │   ├── "我是專案名稱"
 │   ├── status "鎖定"
@@ -267,10 +268,7 @@ Modal (375×1004px reference)
 ├── Frame 12
 │   ├── "義大利麵專屬房"
 │   └── 9 個 icon + text info chips（套用「單側 Border Info Item 規則」）
-├── Controller - date
-│   ├── 入住日：Calendar simple default
-│   ├── 退房日：Calendar simple default
-│   └── 訂房間數 stepper + min/max hint
+│   ── ↺ 0527 移除：Controller - date（入住日 + 退房日 calendar 對 + 訂房間數 stepper）
 ├── Table render - date list
 │   ├── 價格
 │   ├── semantic table：日期 / 定價調整 / 定價
@@ -280,6 +278,8 @@ Modal (375×1004px reference)
     ├── 清除
     └── 確定
 ```
+
+> **0527 重大變更**：原本中段「Controller - date」（入住日 calendar + 退房日 calendar + 訂房間數 stepper + 已達最低/上限間數 hint）整段**永久移除**。modal 從 metadata chips 直接接 Price table，省去日期挑選與數量調整。 Figma 標的高度從 1004 縮為 724（差 280，正好是被移除段落的視覺高度）。preview/landing.html `modalRoomEdit` 內 `Date controller` (`px-3 py-4`) 與 `訂房間數 stepper` 兩 block 須一併拿掉；對應 JS（`data-room-edit-step`, `data-room-edit-quantity`, `data-room-edit-quantity-hint`, calendar 初始化）也跟著清。
 
 ### 固定文字內容
 
@@ -298,17 +298,18 @@ Modal (375×1004px reference)
 
 | 行為 | 規則 |
 |---|---|
-| 開啟預設 | `edit.svg` click → 開啟 `lock + 已達最低間數 + 數量 1` |
+| 開啟預設 | `edit.svg` click → 開啟（0527 起無 stepper，預設為 lock + 定價調整 disabled） |
 | lock / unlock | 只控制價格表「定價調整」input 的 active / disabled，與訂房數量無關 |
 | lock 狀態 | 顯示 `icons/lock`，定價調整 input disabled，背景 `Color/Neutral/100`，文字 `Color/Text/400` |
 | unlock 狀態 | 顯示 `icons/unlock`，定價調整 input 可編輯，背景 `Color/Neutral/0`，文字 `Color/Text/800` |
-| 數量 stepper | 只控制訂房間數顯示與 +/- 狀態，不處理 `最少須訂間數：28` 的業務規則 |
-| 最低數量 | value `1`，minus disabled `Color/Neutral/300`，plus active `Color/Text/800`，顯示 `已達最低間數` |
-| 最高數量 | value `5`，plus disabled `Color/Neutral/300`，minus active `Color/Text/800`，顯示 `已達上限間數` |
-| `最少須訂間數：28` | 僅渲染文字；後端之後處理，不參與目前前端 stepper 邏輯 |
 | 清除 | 只清除目前非 disabled 的定價調整 input value 與 textarea；disabled input 不動 |
 | 關閉 | 點 header close、backdrop、Esc 關閉 |
-| 日期選擇 | 入住日 / 退房日皆套用 Calendar simple default 行為：預設今日、開啟 dropdown、今日 `.today`、選取 `.selected`、過去日期 disabled |
+
+> **↺ 0527 移除以下規則**（因 date controller 整段已拿掉）：
+> - 數量 stepper（不再存在）
+> - 最低數量 / 最高數量（不再存在）
+> - 「最少須訂間數：28」原為 stepper 區下方 hint，現該文字依然在 metadata chips 上方那行（`最少須訂間數：28` 仍是 info chip 之一），純顯示
+> - 日期選擇（入住日 / 退房日 calendar 對不再存在；對應的 `data-room-edit-quantity*`、calendar 初始化 JS 應一併移除）
 
 ### Layout / RWD
 
