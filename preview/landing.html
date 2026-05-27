@@ -2280,91 +2280,6 @@
             </div>
           </div>
 
-          <!-- Date controller -->
-          <div class="px-3 py-4">
-            <div class="grid grid-cols-2 gap-5">
-              <div>
-                <div class="mb-2 text-base text-text-default">入住日：</div>
-                <div class="rb-cal-cell min-w-0">
-                  <button
-                    type="button"
-                    class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-1.5 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5"
-                  >
-                    <span
-                      class="rb-cal-date flex-1 text-left text-base text-text-default"
-                    ></span>
-                    <img
-                      src="./assets/icons/calendar.svg"
-                      alt="calendar"
-                      class="h-6 w-6"
-                    />
-                  </button>
-                </div>
-              </div>
-              <div>
-                <div class="mb-2 text-base text-text-default">退房日：</div>
-                <div class="rb-cal-cell min-w-0">
-                  <button
-                    type="button"
-                    class="rb-cal-btn flex h-9 w-full cursor-pointer items-center gap-1.5 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5"
-                  >
-                    <span
-                      class="rb-cal-date flex-1 text-left text-base text-text-default"
-                    ></span>
-                    <img
-                      src="./assets/icons/calendar.svg"
-                      alt="calendar"
-                      class="h-6 w-6"
-                    />
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="mt-4">
-              <div class="mb-2 flex items-center justify-between gap-3">
-                <span class="text-base text-text-default">訂房間數</span>
-                <span
-                  class="text-xs text-text-supporting"
-                  data-room-edit-quantity-hint
-                  >已達最低間數</span
-                >
-              </div>
-              <div
-                class="flex h-9 items-center rounded-md border border-border-disabled bg-white px-3 py-1"
-              >
-                <button
-                  type="button"
-                  class="flex h-7 w-6 items-center justify-center text-text-placeholder"
-                  data-room-edit-step="minus"
-                  aria-label="減少訂房間數"
-                >
-                  <span
-                    class="icon-mask h-6 w-6"
-                    style="-webkit-mask-image: url('./assets/icons/outline-minus.svg'); mask-image: url('./assets/icons/outline-minus.svg')"
-                  ></span>
-                </button>
-                <input
-                  type="text"
-                  class="mx-auto h-7 w-9 rounded-md border-0 bg-white px-3 py-1.5 text-center text-xs text-text-default outline-none"
-                  value="1"
-                  data-room-edit-quantity
-                  aria-label="訂房間數"
-                />
-                <button
-                  type="button"
-                  class="flex h-7 w-6 items-center justify-center text-text-default"
-                  data-room-edit-step="plus"
-                  aria-label="增加訂房間數"
-                >
-                  <span
-                    class="icon-mask h-6 w-6"
-                    style="-webkit-mask-image: url('./assets/icons/outline-plus.svg'); mask-image: url('./assets/icons/outline-plus.svg')"
-                  ></span>
-                </button>
-              </div>
-            </div>
-          </div>
-
           <!-- Price table -->
           <div class="px-4 py-4">
             <div class="mb-2 text-base text-text-default">價格</div>
@@ -4419,14 +4334,7 @@
             window.initSimpleCalendarCell =
               window.initSimpleCalendarCell || initCell;
             // Init existing cells
-            Array.prototype.slice
-              .call(root.querySelectorAll(".rb-cal-cell"))
-              .concat(
-                Array.prototype.slice.call(
-                  document.querySelectorAll("#modalRoomEditBackdrop .rb-cal-cell"),
-                ),
-              )
-              .forEach(initCell);
+            root.querySelectorAll(".rb-cal-cell").forEach(initCell);
           })();
           // 訂房明細表 stepper（−/+ 按鈕調整訂房間數）
           root.querySelectorAll(".stepper").forEach(function (s) {
@@ -4779,6 +4687,18 @@
           var inventoryExcel = document.querySelector("[data-inventory-excel]");
           var invMetricToggle = document.getElementById("invMetricToggle");
           var rangeRow = document.getElementById("rangeRow");
+          var invCalendarLeft = document.getElementById("invCalendarLeft");
+          var invCalendarBtn = document.getElementById("invCalendarBtn");
+
+          // Populate intervalSelect options 1..31 (Figma 0527; before: 1/7/12/14/16/30)
+          (function () {
+            var opts = "";
+            for (var i = 1; i <= 31; i += 1) {
+              opts += '<option value="' + i + '">' + i + "</option>";
+            }
+            intervalSelect.innerHTML = opts;
+            intervalSelect.value = "1"; // default for 空房查詢 mode (initial)
+          })();
 
           // Equalize mode-toggle button widths — both set to the wider one's rendered width
           (function () {
@@ -4994,7 +4914,9 @@
           function setMode(m) {
             var prevSelStart = selStart;
             mode = m;
-            intervalSelect.disabled = mode === "room";
+            // intervalSelect 永遠 enabled（0527 規格：disabled 狀態移除）
+            // mode-specific default：空房查詢 1、庫存表 12，作為視覺差異
+            intervalSelect.value = mode === "inventory" ? "12" : "1";
             btnRoom.classList.toggle("active", mode === "room");
             btnInventory.classList.toggle("active", mode === "inventory");
             if (tableAllocate)
@@ -5007,6 +4929,11 @@
               invMetricToggle.classList.toggle("hidden", mode === "room");
             if (rangeRow)
               rangeRow.classList.toggle("hidden", mode === "inventory");
+            // 0527: 庫存表 mode 隱藏 inline calendar、顯示 月曆 button；空房查詢相反
+            if (invCalendarLeft)
+              invCalendarLeft.classList.toggle("hidden", mode === "inventory");
+            if (invCalendarBtn)
+              invCalendarBtn.classList.toggle("hidden", mode === "room");
             if (mode === "inventory") {
               selStart = prevSelStart ? prevSelStart.startOf("day") : today();
               currentMonth = selStart.startOf("month");
@@ -5059,6 +4986,54 @@
 
           window.setCalendarMode = setMode;
           buildGrid();
+
+          // 0527: 月曆 button (庫存表 only) → 開 offcanvas，teleport rb-cal-wrap 進去
+          var offcanvas = document.getElementById("invCalendarOffcanvas");
+          var offcanvasBody = document.getElementById("invCalendarOffcanvasBody");
+          var offcanvasClose = offcanvas && offcanvas.querySelector(
+            "[data-inv-calendar-close]",
+          );
+          var calWrap = invCalendarLeft; // already grabbed above
+          var calWrapHomeParent = calWrap && calWrap.parentNode;
+          var calWrapHomeNext = calWrap && calWrap.nextSibling;
+
+          function openInvCalendarOffcanvas() {
+            if (!offcanvas || !offcanvasBody || !calWrap) return;
+            // 把 rb-cal-wrap 移進 offcanvas body；移出時去 hidden 顯示
+            calWrap.classList.remove("hidden");
+            offcanvasBody.appendChild(calWrap);
+            offcanvas.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+          }
+          function closeInvCalendarOffcanvas() {
+            if (!offcanvas || !calWrap || !calWrapHomeParent) return;
+            // 移回原本父層的原本位置
+            if (calWrapHomeNext && calWrapHomeNext.parentNode === calWrapHomeParent) {
+              calWrapHomeParent.insertBefore(calWrap, calWrapHomeNext);
+            } else {
+              calWrapHomeParent.appendChild(calWrap);
+            }
+            // 回到 invCalendarLeft 原位後，依目前 mode 套 hidden 規則
+            if (mode === "inventory") calWrap.classList.add("hidden");
+            offcanvas.classList.add("hidden");
+            document.body.style.overflow = "";
+          }
+
+          if (invCalendarBtn) {
+            invCalendarBtn.addEventListener("click", openInvCalendarOffcanvas);
+          }
+          if (offcanvasClose) {
+            offcanvasClose.addEventListener("click", closeInvCalendarOffcanvas);
+          }
+          // Calendar 內任一日期 click → 自動關閉 offcanvas（0527 規則）
+          if (grid) {
+            grid.addEventListener("click", function (e) {
+              if (offcanvas && offcanvas.classList.contains("hidden")) return;
+              var dayEl = e.target.closest(".day");
+              if (!dayEl || dayEl.classList.contains("disabled")) return;
+              closeInvCalendarOffcanvas();
+            });
+          }
         }
 
         function showLanding() {
@@ -5329,44 +5304,12 @@
             input.classList.toggle("text-text-default", !locked);
           });
         }
-        function setRoomEditQuantity(value) {
-          var modal = document.getElementById("modalRoomEditBackdrop");
-          if (!modal) return;
-          var input = modal.querySelector("[data-room-edit-quantity]");
-          var hint = modal.querySelector("[data-room-edit-quantity-hint]");
-          var minus = modal.querySelector('[data-room-edit-step="minus"]');
-          var plus = modal.querySelector('[data-room-edit-step="plus"]');
-          var min = 1;
-          var max = 5;
-          var next = Math.max(min, Math.min(max, parseInt(value, 10) || min));
-          if (input) input.value = String(next);
-          if (hint) {
-            hint.textContent =
-              next === min ? "已達最低間數" : next === max ? "已達上限間數" : "";
-            hint.classList.toggle("text-text-supporting", next === min);
-            hint.classList.toggle("text-brand-active", next === max);
-          }
-          if (minus) {
-            minus.disabled = next === min;
-            minus.classList.toggle("text-text-placeholder", next === min);
-            minus.classList.toggle("text-text-default", next !== min);
-          }
-          if (plus) {
-            plus.disabled = next === max;
-            plus.classList.toggle("text-text-placeholder", next === max);
-            plus.classList.toggle("text-text-default", next !== max);
-          }
-        }
         function resetRoomEditModal() {
           var modal = document.getElementById("modalRoomEditBackdrop");
           if (!modal) return;
           setRoomEditLocked(true);
-          setRoomEditQuantity(1);
           modal.querySelectorAll(".room-edit-price-input").forEach(function (input) {
             input.value = "1999";
-          });
-          modal.querySelectorAll(".rb-cal-date").forEach(function (dateEl) {
-            dateEl.textContent = dayjs().format("YYYY-MM-DD");
           });
           var textarea = modal.querySelector("[data-room-edit-textarea]");
           if (textarea) textarea.value = "我是 textarea\n- 內容\n- 內容";
@@ -6090,9 +6033,12 @@
           return (
             '<article class="rounded-lg border border-border-default bg-white p-4">' +
             '<div class="flex items-start justify-between gap-2">' +
-            '<div class="flex min-w-0 items-baseline gap-1.5">' +
+            '<div class="flex min-w-0 items-baseline gap-2">' +
             '<span class="text-base text-text-default whitespace-nowrap">' +
             line.title +
+            "</span>" +
+            '<span class="text-xs text-text-default whitespace-nowrap">$ ' +
+            Number(line.cost || 0).toLocaleString("en-US") +
             "</span>" +
             '<span class="text-xs text-text-default whitespace-nowrap">' +
             quantity +
@@ -6759,20 +6705,6 @@
             lock.addEventListener("click", function () {
               setRoomEditLocked(lock.dataset.locked !== "true");
             });
-          modal.querySelectorAll("[data-room-edit-step]").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-              var input = modal.querySelector("[data-room-edit-quantity]");
-              var current = input ? parseInt(input.value, 10) || 1 : 1;
-              setRoomEditQuantity(
-                btn.dataset.roomEditStep === "plus" ? current + 1 : current - 1,
-              );
-            });
-          });
-          var quantity = modal.querySelector("[data-room-edit-quantity]");
-          quantity &&
-            quantity.addEventListener("input", function () {
-              setRoomEditQuantity(quantity.value);
-            });
           var clear = modal.querySelector("[data-room-edit-clear]");
           clear &&
             clear.addEventListener("click", function () {
@@ -7200,8 +7132,8 @@
           </div>
           <div class="rb-accordion-content bg-white rounded-xl p-3 mt-4">
             <div class="flex gap-4 items-start flex-wrap max-[899px]:flex-col">
-              <!-- LEFT: calendar (351px fixed) -->
-              <div class="rb-cal-wrap max-[899px]:mx-auto">
+              <!-- LEFT: calendar (351px fixed) — 庫存表 mode 整塊隱藏 -->
+              <div class="rb-cal-wrap max-[899px]:mx-auto" id="invCalendarLeft">
                 <!-- Row 1: 已選N天 + 今日 + interval select -->
                 <div class="rb-cal-row1">
                   <span class="rb-selected-count" id="count">已選 0 天</span>
@@ -7210,15 +7142,7 @@
                     <select
                       class="rb-interval-select"
                       id="intervalSelect"
-                      disabled
-                    >
-                      <option value="1">1</option>
-                      <option value="7">7</option>
-                      <option value="12" selected>12</option>
-                      <option value="14">14</option>
-                      <option value="16">16</option>
-                      <option value="30">30</option>
-                    </select>
+                    ></select>
                   </div>
                 </div>
                 <!-- Row 2: ← 2026年01月 → -->
@@ -7248,12 +7172,25 @@
               <div
                 class="flex flex-col gap-3 flex-1 min-w-0 max-[899px]:w-full"
               >
-                <!-- Mode toggle + Excel download — Figma type=table 2 + modal (1405:48344) -->
+                <!-- Mode toggle + 月曆 (庫存表 only) + Excel download — Figma 0527 a1/a2 -->
                 <div class="inventory-toolbar">
                   <div class="mode-toggle">
                     <button class="mode-btn active" id="btnRoom">空房查詢</button>
                     <button class="mode-btn" id="btnInventory">庫存表</button>
                   </div>
+                  <button
+                    type="button"
+                    class="inv-calendar-btn hidden"
+                    id="invCalendarBtn"
+                    aria-label="開啟月曆"
+                  >
+                    <img
+                      src="./assets/icons/calendar.svg"
+                      alt=""
+                      class="h-6 w-6"
+                    />
+                    <span>月曆</span>
+                  </button>
                   <button
                     type="button"
                     class="inventory-excel-btn hidden"
@@ -7413,15 +7350,115 @@
                     2026 / 02
                   </div>
                   <table
-                    class="w-[1240px] max-w-none border-collapse text-base text-text-default"
+                    class="w-max max-w-none border-collapse text-base text-text-default"
                   >
                     <thead>
-                      <!-- Row 1: 日期 label (centered across 4 left cols) + date numbers -->
+                      <!-- Row 1: 日期 label + 01-16 date numbers -->
                       <tr class="border-b border-text-default">
-                        <th colspan="4" class="py-2 text-center font-normal">
+                        <th colspan="2" class="py-2 px-3 text-center font-normal">
                           日期
                         </th>
-                        <th class="w-[100px] py-2 text-center">
+                        <th class="px-3 py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-01"
+                          >
+                            01
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-02"
+                          >
+                            02
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-03"
+                          >
+                            03
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-04"
+                          >
+                            04
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-05"
+                          >
+                            05
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center bg-accent-pink">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-06"
+                          >
+                            06
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center bg-accent-pink">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-07"
+                          >
+                            07
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-08"
+                          >
+                            08
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-09"
+                          >
+                            09
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-10"
+                          >
+                            10
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center">
                           <button
                             type="button"
                             class="inv-date-trigger"
@@ -7431,7 +7468,7 @@
                             11
                           </button>
                         </th>
-                        <th class="w-[100px] py-2 text-center">
+                        <th class="px-3 py-2 text-center">
                           <button
                             type="button"
                             class="inv-date-trigger"
@@ -7441,7 +7478,7 @@
                             12
                           </button>
                         </th>
-                        <th class="w-[100px] py-2 text-center">
+                        <th class="px-3 py-2 text-center bg-accent-pink">
                           <button
                             type="button"
                             class="inv-date-trigger"
@@ -7451,7 +7488,7 @@
                             13
                           </button>
                         </th>
-                        <th class="w-[100px] py-2 text-center">
+                        <th class="px-3 py-2 text-center bg-accent-pink">
                           <button
                             type="button"
                             class="inv-date-trigger"
@@ -7461,7 +7498,7 @@
                             14
                           </button>
                         </th>
-                        <th class="w-[100px] py-2 text-center">
+                        <th class="px-3 py-2 text-center">
                           <button
                             type="button"
                             class="inv-date-trigger"
@@ -7471,7 +7508,7 @@
                             15
                           </button>
                         </th>
-                        <th class="w-[100px] py-2 text-center bg-accent-pink">
+                        <th class="px-3 py-2 text-center">
                           <button
                             type="button"
                             class="inv-date-trigger"
@@ -7481,543 +7518,548 @@
                             16
                           </button>
                         </th>
-                        <th class="w-[100px] py-2 text-center bg-accent-pink">
+                      </tr>
+                      <!-- Row 2: 星期 label + weekday letters -->
+                      <tr class="border-b border-text-default">
+                        <th colspan="2" class="py-2 px-3 text-center font-normal">
+                          星期
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary">
                           <button
                             type="button"
                             class="inv-date-trigger"
                             data-inv-date-trigger
-                            data-inv-date="2026-02-17"
+                            data-inv-date="2026-02-01"
                           >
-                            17
+                            一
                           </button>
                         </th>
-                      </tr>
-                      <!-- Row 2: 星期 label (centered across 4 left cols) + weekday letters -->
-                      <tr class="border-b border-text-default">
-                        <th colspan="4" class="py-2 text-center font-normal">
-                          星期
+                        <th class="px-3 py-2 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-02"
+                          >
+                            二
+                          </button>
                         </th>
-                        <th class="py-1 text-center text-text-secondary">
+                        <th class="px-3 py-2 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-03"
+                          >
+                            三
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-04"
+                          >
+                            四
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-05"
+                          >
+                            五
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary bg-accent-pink">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-06"
+                          >
+                            六
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary bg-accent-pink">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-07"
+                          >
+                            日
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-08"
+                          >
+                            一
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-09"
+                          >
+                            二
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary">
+                          <button
+                            type="button"
+                            class="inv-date-trigger"
+                            data-inv-date-trigger
+                            data-inv-date="2026-02-10"
+                          >
+                            三
+                          </button>
+                        </th>
+                        <th class="px-3 py-2 text-center text-text-secondary">
                           <button
                             type="button"
                             class="inv-date-trigger"
                             data-inv-date-trigger
                             data-inv-date="2026-02-11"
                           >
-                            一
+                            四
                           </button>
                         </th>
-                        <th class="py-1 text-center text-text-secondary">
+                        <th class="px-3 py-2 text-center text-text-secondary">
                           <button
                             type="button"
                             class="inv-date-trigger"
                             data-inv-date-trigger
                             data-inv-date="2026-02-12"
                           >
-                            二
+                            五
                           </button>
                         </th>
-                        <th class="py-1 text-center text-text-secondary">
+                        <th class="px-3 py-2 text-center text-text-secondary bg-accent-pink">
                           <button
                             type="button"
                             class="inv-date-trigger"
                             data-inv-date-trigger
                             data-inv-date="2026-02-13"
                           >
-                            三
+                            六
                           </button>
                         </th>
-                        <th class="py-1 text-center text-text-secondary">
+                        <th class="px-3 py-2 text-center text-text-secondary bg-accent-pink">
                           <button
                             type="button"
                             class="inv-date-trigger"
                             data-inv-date-trigger
                             data-inv-date="2026-02-14"
                           >
-                            四
+                            日
                           </button>
                         </th>
-                        <th class="py-1 text-center text-text-secondary">
+                        <th class="px-3 py-2 text-center text-text-secondary">
                           <button
                             type="button"
                             class="inv-date-trigger"
                             data-inv-date-trigger
                             data-inv-date="2026-02-15"
                           >
-                            五
+                            一
                           </button>
                         </th>
-                        <th
-                          class="py-1 text-center text-text-secondary bg-accent-pink"
-                        >
+                        <th class="px-3 py-2 text-center text-text-secondary">
                           <button
                             type="button"
                             class="inv-date-trigger"
                             data-inv-date-trigger
                             data-inv-date="2026-02-16"
                           >
-                            六
-                          </button>
-                        </th>
-                        <th
-                          class="py-1 text-center text-text-secondary bg-accent-pink"
-                        >
-                          <button
-                            type="button"
-                            class="inv-date-trigger"
-                            data-inv-date-trigger
-                            data-inv-date="2026-02-17"
-                          >
-                            日
+                            二
                           </button>
                         </th>
                       </tr>
-                      <!-- Row 3: 4 left col-headers + 中秋連假 annotation (only in date 11 col) -->
+                      <!-- Row 3: 代號/房型 + 可用 col header + blank align row in date cols -->
                       <tr class="border-b border-text-default">
-                        <th class="w-[136px] py-2 px-2 text-left font-normal">
-                          棟別
+                        <th class="w-[137px] py-2 px-3 text-center font-normal">
+                          代號 / 房型
                         </th>
-                        <th class="w-[151px] py-2 px-2 text-left font-normal">
-                          房型
+                        <th class="w-[56px] py-2 px-3 text-center font-normal">
+                          可用
                         </th>
-                        <th class="w-[70px] py-2 text-center font-normal">
-                          代號
-                        </th>
-                        <th class="w-[104px] py-2 text-center font-normal">
-                          可用庫存數
-                        </th>
-                        <td
-                          class="py-2 text-center text-xs text-accent-celebration whitespace-nowrap"
-                        >
-                          中秋連假
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
+                        <td class="px-3 py-2"></td>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="border-b border-border-disabled">
-                        <td class="py-2 px-2">A 棟</td>
-                        <td class="py-2 px-2">義大利麵房</td>
-                        <td class="py-2 text-center">XYZ</td>
-                        <td class="py-2 text-center" data-inv-cap>99</td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >88</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >5</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >6</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >80</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >8</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >11</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >75</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >13</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >11</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >88</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >5</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >6</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >70</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >18</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >11</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >55</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >30</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >14</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >60</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >25</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >14</span
-                            >
-                          </span>
-                        </td>
-                      </tr>
-                      <tr class="border-b border-text-default">
-                        <td class="py-2 px-2">營地風馬牛啦啦</td>
-                        <td class="py-2 px-2">香蕉船房</td>
-                        <td class="py-2 text-center">XYZ</td>
-                        <td class="py-2 text-center" data-inv-cap>99</td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >40</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >3</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >2</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >38</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >4</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >3</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >35</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >7</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >3</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >40</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >3</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >2</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >30</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >10</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >5</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >20</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >17</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >8</span
-                            >
-                          </span>
-                        </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-0.5">
-                            <span
-                              class="border border-status-positive rounded px-1 text-xs"
-                              data-metric="ord"
-                              >22</span
-                            >
-                            <span
-                              class="border border-chart-blue rounded px-1 text-xs"
-                              data-metric="rem"
-                              >15</span
-                            >
-                            <span
-                              class="border border-brand-400 rounded px-1 text-xs"
-                              data-metric="rsv"
-                              >8</span
-                            >
-                          </span>
-                        </td>
-                      </tr>
-                      <!-- footer 總計行 — 可用庫存數 = sum(data rows); date 數值無外框 -->
+                      <!-- Row 4: 義大利麵房 chips (sm 12px, dark text) -->
                       <tr>
-                        <td></td>
-                        <td class="py-2 px-2 font-semibold">總計</td>
-                        <td></td>
-                        <td
-                          class="py-2 text-center text-brand-active font-semibold"
-                          data-inv-cap-total
-                        ></td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-1">
-                            <span
-                              class="text-base text-status-positive"
-                              data-metric="ord"
-                              >128</span
-                            >
-                            <span
-                              class="text-base text-chart-blue"
-                              data-metric="rem"
-                              >8</span
-                            >
-                            <span
-                              class="text-base text-brand-400"
-                              data-metric="rsv"
-                              >8</span
-                            >
+                        <td class="py-2 px-3">XYZ-義大利麵房</td>
+                        <td class="py-2 px-3 text-center" data-inv-cap>99</td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
                           </span>
                         </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-1">
-                            <span
-                              class="text-base text-status-positive"
-                              data-metric="ord"
-                              >118</span
-                            >
-                            <span
-                              class="text-base text-chart-blue"
-                              data-metric="rem"
-                              >12</span
-                            >
-                            <span
-                              class="text-base text-brand-400"
-                              data-metric="rsv"
-                              >14</span
-                            >
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
                           </span>
                         </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-1">
-                            <span
-                              class="text-base text-status-positive"
-                              data-metric="ord"
-                              >110</span
-                            >
-                            <span
-                              class="text-base text-chart-blue"
-                              data-metric="rem"
-                              >20</span
-                            >
-                            <span
-                              class="text-base text-brand-400"
-                              data-metric="rsv"
-                              >14</span
-                            >
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
                           </span>
                         </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-1">
-                            <span
-                              class="text-base text-status-positive"
-                              data-metric="ord"
-                              >128</span
-                            >
-                            <span
-                              class="text-base text-chart-blue"
-                              data-metric="rem"
-                              >8</span
-                            >
-                            <span
-                              class="text-base text-brand-400"
-                              data-metric="rsv"
-                              >8</span
-                            >
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
                           </span>
                         </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-1">
-                            <span
-                              class="text-base text-status-positive"
-                              data-metric="ord"
-                              >100</span
-                            >
-                            <span
-                              class="text-base text-chart-blue"
-                              data-metric="rem"
-                              >28</span
-                            >
-                            <span
-                              class="text-base text-brand-400"
-                              data-metric="rsv"
-                              >16</span
-                            >
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
                           </span>
                         </td>
-                        <td class="py-1.5 text-center">
-                          <span class="inline-flex gap-1">
-                            <span
-                              class="text-base text-status-positive"
-                              data-metric="ord"
-                              >75</span
-                            >
-                            <span
-                              class="text-base text-chart-blue"
-                              data-metric="rem"
-                              >47</span
-                            >
-                            <span
-                              class="text-base text-brand-400"
-                              data-metric="rsv"
-                              >22</span
-                            >
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
                           </span>
                         </td>
-                        <td class="py-1.5 text-center">
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                      </tr>
+                      <!-- Row 5: 香蕉船房 chips (sm 12px, dark text) -->
+                      <tr>
+                        <td class="py-1.5 px-3">abY-香蕉船房</td>
+                        <td class="py-1.5 px-3 text-center" data-inv-cap>99</td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-0.5">
+                            <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                            <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                            <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                      </tr>
+                      <!-- Row 6: 總計 (base 16px, chip-color text, no border) — day 02 rem=999 widens col -->
+                      <tr class="border-t border-text-default">
+                        <td class="py-2 px-3 font-semibold">總計</td>
+                        <td class="py-2 px-3 text-center text-brand-active font-semibold" data-inv-cap-total>200</td>
+                        <td class="px-1 py-1.5 text-center">
                           <span class="inline-flex gap-1">
-                            <span
-                              class="text-base text-status-positive"
-                              data-metric="ord"
-                              >82</span
-                            >
-                            <span
-                              class="text-base text-chart-blue"
-                              data-metric="rem"
-                              >40</span
-                            >
-                            <span
-                              class="text-base text-brand-400"
-                              data-metric="rsv"
-                              >22</span
-                            >
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">999</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                          </span>
+                        </td>
+                        <td class="px-1 py-1.5 text-center">
+                          <span class="inline-flex gap-1">
+                            <span class="text-base text-status-positive" data-metric="ord">0</span>
+                            <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                            <span class="text-base text-brand-400" data-metric="rsv">12</span>
                           </span>
                         </td>
                       </tr>
@@ -8367,11 +8409,7 @@
                     />
                   </td>
                   <td class="px-3 py-2 align-middle">
-                    <input
-                      type="text"
-                      value="19999"
-                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
-                    />
+                    <div class="w-full text-center text-xs text-text-default">199999</div>
                   </td>
                   <!-- 操作: edit / duplicate / trash-can -->
                   <td class="px-3 py-2 align-middle">
@@ -8504,11 +8542,7 @@
                     />
                   </td>
                   <td class="px-3 py-2 align-middle">
-                    <input
-                      type="text"
-                      value="19999"
-                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
-                    />
+                    <div class="w-full text-center text-xs text-text-default">199999</div>
                   </td>
                   <td class="px-3 py-2 align-middle">
                     <div class="flex items-center justify-start gap-4">
@@ -8640,11 +8674,7 @@
                     />
                   </td>
                   <td class="px-3 py-2 align-middle">
-                    <input
-                      type="text"
-                      value="19999"
-                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
-                    />
+                    <div class="w-full text-center text-xs text-text-default">199999</div>
                   </td>
                   <td class="px-3 py-2 align-middle">
                     <div class="flex items-center justify-start gap-4">
@@ -9875,17 +9905,11 @@
                 data-panel="contract"
                 class="order-panel hidden grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-5 gap-y-5"
               >
-                <!-- 列 1 (Frame 374)：公司資料 -->
+                <!-- 列 1 (Frame 374)：公司資料 — Figma 0527 (1774:64590) -->
                 <div class="flex flex-col gap-5">
                   <div class="flex items-center gap-3">
                     <span class="text-base text-text-default w-[76px] shrink-0"
                       >公司名稱</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >品保</span
                     >
                     <span class="contract-display flex-1">王大頭</span>
                   </div>
@@ -9903,12 +9927,24 @@
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="text-base text-text-default w-[76px] shrink-0"
+                      >品保</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
                       >公司別</span
                     >
                     <span class="contract-display flex-1">王大頭</span>
                   </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >地址</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
                 </div>
-                <!-- 列 2 (Frame 375)：聯絡資料 -->
+                <!-- 列 2 (Frame 375)：聯絡資料 — Figma 0527 (1774:64606) -->
                 <div class="flex flex-col gap-5">
                   <div class="flex items-center gap-3">
                     <span class="text-base text-text-default w-[76px] shrink-0"
@@ -9918,25 +9954,25 @@
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="text-base text-text-default w-[76px] shrink-0"
-                      >聯絡人一</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >連電一</span
-                    >
-                    <span class="contract-display flex-1">王大頭</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-base text-text-default w-[76px] shrink-0"
-                      >聯絡人二</span
+                      >聯絡電話一</span
                     >
                     <span class="contract-display flex-1">王大頭</span>
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="text-base text-text-default w-[76px] shrink-0"
                       >聯絡電話二</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >業務聯絡人</span
+                    >
+                    <span class="contract-display flex-1">王大頭</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-base text-text-default w-[76px] shrink-0"
+                      >財務聯絡人</span
                     >
                     <span class="contract-display flex-1">王大頭</span>
                   </div>
@@ -9980,5 +10016,33 @@
       </div>
     </div>
     <!-- ── end room-booking template ── -->
+
+    <!-- Offcanvas: 庫存表 月曆 (Figma Offcanvas 1774:50139 type=Default; instance 1776:51484) -->
+    <div
+      id="invCalendarOffcanvas"
+      class="inv-offcanvas hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="invCalendarOffcanvasTitle"
+    >
+      <div class="inv-offcanvas-header">
+        <span
+          id="invCalendarOffcanvasTitle"
+          class="text-base text-text-default"
+          >月曆</span
+        >
+        <button
+          type="button"
+          class="inv-offcanvas-close"
+          data-inv-calendar-close
+          aria-label="關閉月曆"
+        >
+          <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+        </button>
+      </div>
+      <div class="inv-offcanvas-body" id="invCalendarOffcanvasBody">
+        <!-- rb-cal-wrap teleports into here when offcanvas opens -->
+      </div>
+    </div>
   </body>
 </html>
