@@ -1591,3 +1591,12 @@ body.mobile-sidebar-open {
     padding: 0;
   }
 }
+
+/* ── bulletin / administer modal tabs ─────────────────────────────
+   touch 裝置點擊後 :hover sticky 殘留，會讓 active tab 從黃底變灰底
+   (inactive 的 `hover:bg-surface-default` 蓋過 active 的 `bg-tab-yellow`)。
+   提高 active tab 在 :hover 下的特異度，鎖死黃底。 */
+.bulletin-tab.bg-tab-yellow:hover,
+.administer-tab.bg-tab-yellow:hover {
+  background-color: var(--color-tab-yellow);
+}
