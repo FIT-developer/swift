@@ -717,6 +717,87 @@ body.mobile-sidebar-open {
 .inventory-excel-btn:hover {
   background: var(--color-modal-hover);
 }
+/* 0527: 月曆 button (only 庫存表 mode); hover/focus = light-blue chart fill + white text
+   pill radius 28（與相鄰 mode-toggle button 一致；Figma 對位）
+   左右 padding 24 配合 pill 圓角，避免內容貼邊 */
+.inv-calendar-btn {
+  display: inline-flex;
+  height: 42px;
+  align-items: center;
+  gap: var(--spacing-8);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 28px;
+  background: var(--color-neutral-0);
+  padding: 0 var(--spacing-24);
+  color: var(--color-text-800);
+  font-size: var(--font-size-base);
+  line-height: 1.375;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.inv-calendar-btn img {
+  filter: none;
+  transition: filter 150ms ease;
+}
+.inv-calendar-btn:hover,
+.inv-calendar-btn:focus,
+.inv-calendar-btn.active {
+  background: var(--color-chart-blue);
+  color: var(--color-neutral-0);
+  outline: none;
+}
+.inv-calendar-btn:hover img,
+.inv-calendar-btn:focus img,
+.inv-calendar-btn.active img {
+  /* 將 icon 色翻白：黑色 svg fill 借 filter brightness/invert 完成 */
+  filter: brightness(0) invert(1);
+}
+
+/* 0527: Offcanvas (bottom slide-in) — 庫存表 月曆 觸發 */
+.inv-offcanvas {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: var(--color-neutral-0);
+  border-top: 1px solid var(--color-neutral-200);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding: 12px 12px 20px;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(0);
+  transition: transform 250ms ease-in-out;
+}
+.inv-offcanvas.hidden {
+  /* 收起時往下滑出視口，並 pointer-events: none 避免擋到 */
+  transform: translateY(100%);
+  pointer-events: none;
+}
+.inv-offcanvas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+}
+.inv-offcanvas-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.inv-offcanvas-body {
+  margin-top: 10px;
+  /* Calendar 351x431 在 body 內水平置中 */
+  display: flex;
+  justify-content: center;
+}
 .inv-date-trigger {
   border: 0;
   background: transparent;
