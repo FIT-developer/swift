@@ -253,6 +253,129 @@ body.mobile-sidebar-open {
   flex-direction: column;
   overflow: hidden;
 }
+#modalMemberDataBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 1180px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalChangeContractCompanyBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 320px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── iOS-style toggle switch (member data modal: 常用會員 / 訂閱電子報) ── */
+.member-data-switch {
+  position: relative;
+  width: 64px;
+  height: 28px;
+  display: inline-block;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.member-data-switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+  margin: 0;
+}
+.member-data-switch-track {
+  position: absolute;
+  inset: 0;
+  background: rgba(60, 60, 67, 0.3);
+  border-radius: 100px;
+  transition: background-color 0.2s ease;
+}
+.member-data-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  border-radius: 100px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.member-data-switch input:checked ~ .member-data-switch-track {
+  background: #34c759;
+}
+.member-data-switch input:checked ~ .member-data-switch-knob {
+  transform: translateX(36px);
+}
+
+/* ── member-data Title chip (calcY pill — used in 訂房記錄 summary chips) ── */
+.member-data-title-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 44px;
+  background: var(--color-neutral-0);
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 16px;
+  color: var(--color-text-800);
+  font-family: inherit;
+  flex-shrink: 0;
+}
+.member-data-title-chip.is-selected {
+  background: #f7d275;
+}
+.member-data-title-chip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #2178cf;
+  font-size: 16px;
+}
+.member-data-title-chip-price {
+  color: var(--color-text-800);
+  font-size: 16px;
+}
+
+/* ── member-data filter tab (active = underline + semibold, no border) ── */
+.member-data-filter-tab {
+  padding: 4px 12px;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-800);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.member-data-filter-tab.is-active {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ── member-data accordion title badge (總消費 pill green) ── */
+.member-data-accordion-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: #bbf7d0;
+  color: var(--color-text-800);
+  font-size: 16px;
+  height: 22px;
+}
 .sms-modal-content {
   border: 1px solid var(--color-neutral-200);
   padding: 12px;

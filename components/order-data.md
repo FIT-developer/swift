@@ -96,3 +96,56 @@ Only visible when 「合約客戶」 button is active. Lock icon defaults to gre
 - 清除 → reset inputs in active tab
 - `入住人同訂房人` checkbox → copy 訂房 tab values into 入住 tab and disable 入住 inputs
 - All fields default to read-style (greyed inputs `Color/Neutral/100`) — match Figma
+
+---
+
+## 0528 新增：Data exists 按鈕（名稱 row 右側）
+
+Figma source：mobile mockup `1790:68448` (`Has data and show arrow button`) 與 `1790:68608` (`Arrow button hover`)，375 × 1227（[D] 訂房資料整段在 375 寬手機版的兩個狀態截圖）。
+
+### 觸發條件
+
+使用者在「名稱」input 輸入文字 → 後端回傳對應姓名候選的 dropdown → user 從 dropdown **選中一筆正確比對的人**後 → **「Data exists」按鈕才顯示**（=查有此人，可展開該客戶歷史資料 modal）。
+
+未匹配 / 還沒選的狀態下，按鈕**不存在於 DOM**（不是隱藏）。
+
+### 名稱 row 結構（mobile 375，Frame 245 內 295 寬，配 Data exists 按鈕時 4 元件 inline）
+
+| order | 元件 | w × h | 備註 |
+|---|---|---|---|
+| 1 | Texts 名稱 label | 64 × 22 | `#ef6f25` 橘字（必填+主搜尋鍵）|
+| 2 | Input `王大頭` | 119 × 34 | 寬被壓縮以挪位給按鈕（mobile only？desktop 待 spec） |
+| 3 | Texts 先生 | 32 × 22 | honorific（隨性別 radio 動態） |
+| 4 | **Data exists button** | **44 × 44** | 0528 新增；位於 row 末端 |
+
+### Button 規格（兩態）
+
+| 屬性 | Default (`1790:68604`) | Hover (`1790:68635`) |
+|---|---|---|
+| 尺寸 | 44 × 44 | 44 × 44 |
+| `cornerRadius` | 6 | 6 |
+| `padding` | 10 / 10 / 10 / 10 | 10 / 10 / 10 / 10 |
+| `fill` | 無（透明）| `#6d6d6d`（中灰）|
+| `stroke` | `#d1d1d1`（淺灰邊框）| `#d1d1d1`（不變）|
+| 內含 icon | `icons/attached-link` 24×24，vector stroke `#000000`（黑）| `icons/attached-link` 24×24，vector stroke `#f6f6f6`（淺白）|
+
+### 行為
+
+- click → 展開「客戶歷史資料」modal（**modal 規格待使用者提供後補上 Modal 段**）
+- modal 開啟期間此 button **是否切到 selected/active 黃底**？— 待 modal 給定後再看；目前只有 default + hover 兩態
+
+### Preview 實裝決策（2026-05-28）
+
+> **這是後端套用的條件渲染行為，preview 階段未串 DB，按使用者指示簡化：**
+>
+> - **永遠渲染 default 態 button** 在名稱 row 末端，**不**綁 input value gating
+> - **不**實作 click → modal（modal 規格未到）
+> - hover 態靠 CSS `:hover` 自動切（不需 JS）
+> - 等後端接通 + dropdown 比對邏輯實作後，再把 button 改為「條件渲染」（input 有值且 dropdown 選中對應人才出現）
+
+### 未確認
+
+- desktop 版（685 寬 [D] section）名稱 row 是否同樣帶 Data exists 按鈕？Input 寬度與按鈕位置會不同，待補 desktop 對位
+- 按鈕的 `aria-label`：暫定「客戶資料」，待最終命名確認
+
+關聯：[[input]]（名稱 input dropdown）、[[modal]]（待補 modal）、[[icons]] (`attached-link`)

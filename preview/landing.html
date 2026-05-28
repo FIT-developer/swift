@@ -3776,6 +3776,311 @@
     </div>
 
     <!-- ════════════════════════════════════
+         Member Data modal (Figma 1763:42341 / 1790:66210) — 觸發：[D] 訂房資料 Data exists button
+         Spec: components/member-data-modal.md
+    ════════════════════════════════════ -->
+    <div
+      id="modalMemberDataBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalMemberDataTitle"
+    >
+      <div class="modal-box">
+        <!-- Header -->
+        <div class="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-border-focus">
+          <div class="flex items-baseline gap-4 flex-wrap">
+            <span id="modalMemberDataTitle" class="text-xl font-semibold text-text-default">會員資料</span>
+            <span class="text-xs text-text-secondary">最後修改日期 <span class="text-text-default">2026-02-02</span></span>
+          </div>
+          <button
+            class="modal-close-btn w-6 h-6 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100"
+            data-modal="modalMemberDataBackdrop"
+            aria-label="關閉"
+          >
+            <img src="./assets/icons/close.svg" alt="close" class="w-6 h-6" />
+          </button>
+        </div>
+
+        <!-- Body (scrollable) -->
+        <div class="flex-1 overflow-y-auto min-h-0 bg-white p-5">
+          <!-- 2x2 form grid: 4 sub-cards -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
+            <!-- Card a (left-top): 帳號/密碼/名稱+honorific/證號/生日/行動電話/性別/會員備註 -->
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">帳號</span><input type="text" placeholder="placeholder" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /></div>
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">密碼</span><input type="password" placeholder="placeholder" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /></div>
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">名稱</span><input type="text" placeholder="placeholder" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /><span class="text-base text-text-default shrink-0 whitespace-nowrap" data-honorific-panel="memberData">先生</span></div>
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">證號</span><input type="text" placeholder="placeholder" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /></div>
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">生日</span><input type="text" value="2026-02-27" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /></div>
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">行動電話</span><input type="text" placeholder="placeholder" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /></div>
+              <div class="flex items-center gap-3">
+                <span class="text-base text-text-default w-[100px] shrink-0">性別</span>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="memberDataGender" value="M" checked data-gender-radio="memberData" class="nation-radio w-5 h-5 rounded-full" /><span class="text-base text-text-default">男</span></label>
+                <label class="flex items-center gap-2 cursor-pointer ml-4"><input type="radio" name="memberDataGender" value="F" data-gender-radio="memberData" class="nation-radio w-5 h-5 rounded-full" /><span class="text-base text-text-default">女</span></label>
+              </div>
+              <div class="flex items-start gap-3"><span class="text-base text-text-default w-[100px] shrink-0 pt-1.5">會員備註</span><textarea placeholder="???" rows="2" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize-y"></textarea></div>
+            </div>
+
+            <!-- Card b (right-top): Email/市話/傳真 + 國籍 (nation-group) + 地址 變體 -->
+            <div class="flex flex-col gap-3 nation-group" data-nation-group="memberData">
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">Email</span><input type="email" placeholder="placeholder" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /></div>
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">市話</span><input type="text" placeholder="placeholder" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /></div>
+              <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">傳真</span><input type="text" placeholder="placeholder" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" /></div>
+              <div class="flex items-center gap-3">
+                <span class="text-base text-text-default w-[100px] shrink-0">國籍</span>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="memberData-nation" value="tw" checked class="nation-radio w-5 h-5 rounded-full" /><span class="text-base text-text-default">臺灣</span></label>
+                <label class="flex items-center gap-2 cursor-pointer ml-4"><input type="radio" name="memberData-nation" value="foreign" class="nation-radio w-5 h-5 rounded-full" /><span class="text-base text-text-default">外籍</span></label>
+              </div>
+              <!-- 外籍 only: 國家 select -->
+              <div class="flex items-center gap-3 nation-foreign-only hidden">
+                <span class="text-base text-text-default w-[100px] shrink-0">國家</span>
+                <select class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base">
+                  <option>英國</option><option>美國</option><option>日本</option><option>韓國</option>
+                </select>
+              </div>
+              <!-- 臺灣 地址: 縣/市 + 行政區 + 街道 -->
+              <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
+                <span class="text-base text-text-default w-[100px] shrink-0 pt-1.5">地址</span>
+                <div class="flex flex-col gap-3 flex-1 min-w-0">
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <span class="text-base text-text-default">縣/市</span>
+                    <select class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"><option>台中</option></select>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <div class="flex justify-between"><span class="text-base text-text-default">行政區</span><span class="text-base text-text-default">406</span></div>
+                    <select class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"><option>北屯區</option></select>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <span class="text-base text-text-default">街道</span>
+                    <input type="text" placeholder="placeholder" class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" />
+                  </div>
+                </div>
+              </div>
+              <!-- 外籍 地址: 單一「住所」input -->
+              <div class="flex items-center gap-3 addr-foreign hidden" data-addr-mode="foreign">
+                <span class="text-base text-text-default w-[100px] shrink-0">地址</span>
+                <input type="text" placeholder="住所" class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base" />
+              </div>
+            </div>
+
+            <!-- Card c (left-bottom): 狀態/類別/常用會員(toggle)/訂閱電子報(toggle)/會員等級(plain text) -->
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <span class="text-base text-text-default w-[100px] shrink-0">狀態</span>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="memberDataStatus" value="formal" checked class="nation-radio w-5 h-5 rounded-full" /><span class="text-base text-text-default">正式</span></label>
+                <label class="flex items-center gap-2 cursor-pointer ml-4"><input type="radio" name="memberDataStatus" value="informal" class="nation-radio w-5 h-5 rounded-full" /><span class="text-base text-text-default">非正式</span></label>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-base text-text-default w-[100px] shrink-0">類別</span>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="memberDataCategory" value="physical" checked class="nation-radio w-5 h-5 rounded-full" /><span class="text-base text-text-default">實體</span></label>
+                <label class="flex items-center gap-2 cursor-pointer ml-4"><input type="radio" name="memberDataCategory" value="general" class="nation-radio w-5 h-5 rounded-full" /><span class="text-base text-text-default">一般</span></label>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-base text-text-default w-[100px] shrink-0">常用會員</span>
+                <span class="ml-auto member-data-switch">
+                  <input type="checkbox" aria-label="常用會員" />
+                  <span class="member-data-switch-track"></span>
+                  <span class="member-data-switch-knob"></span>
+                </span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-base text-text-default w-[100px] shrink-0">訂閱電子報</span>
+                <span class="ml-auto member-data-switch">
+                  <input type="checkbox" checked aria-label="訂閱電子報" />
+                  <span class="member-data-switch-track"></span>
+                  <span class="member-data-switch-knob"></span>
+                </span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-base text-text-default w-[100px] shrink-0">會員等級</span>
+                <span class="ml-auto text-base text-text-default">宇宙金卡</span>
+              </div>
+            </div>
+
+            <!-- Card d (right-bottom): 會員身份 title + 「會員」row label + 2 radios (一般/合約) on right -->
+            <div class="flex flex-col">
+              <h3 class="text-xl font-semibold text-text-default text-center mb-3">會員身份</h3>
+              <!-- 會員 row label LEFT + radios right-aligned -->
+              <div class="flex items-center gap-3 mb-4">
+                <span class="text-base text-text-default">會員</span>
+                <div class="ml-auto flex items-center gap-6" role="radiogroup" aria-label="會員身份">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="memberDataStatusType" value="一般" class="member-data-status-radio nation-radio w-5 h-5 rounded-full" />
+                    <span class="text-base text-text-default">一般</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="memberDataStatusType" value="合約" checked class="member-data-status-radio nation-radio w-5 h-5 rounded-full" />
+                    <span class="text-base text-text-default">合約</span>
+                  </label>
+                </div>
+              </div>
+              <!-- 合約 panel: 8 fields stacked single column -->
+              <div data-member-status-panel="合約" class="flex flex-col gap-3">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[100px] shrink-0">公司名稱</span>
+                  <span class="flex-1 min-w-0 text-base text-text-default">王大頭</span>
+                  <button type="button" class="shrink-0 w-8 h-8 flex items-center justify-center border border-border-disabled rounded-[6px] bg-white hover:bg-surface-default" aria-label="更換合約公司" data-change-contract-company-trigger>
+                    <img src="./assets/icons/edit.svg" alt="" class="w-5 h-5" />
+                  </button>
+                </div>
+                <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">統編</span><span class="flex-1 min-w-0 text-base text-text-default">王大頭</span></div>
+                <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">公司別</span><span class="flex-1 min-w-0 text-base text-text-default">王大頭</span></div>
+                <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">聯絡電話一</span><span class="flex-1 min-w-0 text-base text-text-default">王大頭</span></div>
+                <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">傳真一</span><span class="flex-1 min-w-0 text-base text-text-default">王大頭</span></div>
+                <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">聯絡電話二</span><span class="flex-1 min-w-0 text-base text-text-default">王大頭</span></div>
+                <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">傳真二</span><span class="flex-1 min-w-0 text-base text-text-default">王大頭</span></div>
+                <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">備註</span><span class="flex-1 min-w-0 text-base text-text-default">王大頭</span></div>
+              </div>
+              <!-- 一般 panel: blank per user requirement -->
+              <div data-member-status-panel="一般" class="hidden"></div>
+            </div>
+          </div>
+
+          <!-- 訂房記錄 accordion (Figma Frame 605 in Accordion 1790:67055) -->
+          <details class="mt-6 border border-border-disabled rounded-xl bg-surface-hover p-5" open>
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <div class="flex items-center gap-3 flex-wrap">
+                <span class="text-xl font-semibold text-text-default">訂房記錄</span>
+                <span class="member-data-accordion-badge">總消費</span>
+                <span class="text-base text-text-default">$ 199,299,399</span>
+              </div>
+              <img src="./assets/icons/down.svg" alt="" class="w-6 h-6" />
+            </summary>
+
+            <!-- Summary chips: 3 Title-pill chips (全部 selected yellow / 旅宿e管家 with pin / 分館 2 ...) -->
+            <div class="mt-4 flex flex-nowrap gap-4 overflow-x-auto" data-member-data-chip-group>
+              <button type="button" class="member-data-title-chip is-selected" data-chip="全部">
+                <span class="member-data-title-chip-badge">全部</span>
+                <span class="member-data-title-chip-price">$ 199,299,399</span>
+              </button>
+              <button type="button" class="member-data-title-chip" data-chip="旅宿e管家">
+                <span class="member-data-title-chip-badge">
+                  <img src="./assets/icons/pin.svg" alt="" class="w-4 h-4" />
+                  旅宿 e 管家
+                </span>
+                <span class="member-data-title-chip-price">$ 199,299,399</span>
+              </button>
+              <button type="button" class="member-data-title-chip" data-chip="分館2">
+                <span class="member-data-title-chip-badge">分館 2</span>
+                <span class="member-data-title-chip-price">$ 9,399</span>
+              </button>
+            </div>
+
+            <!-- Filter tabs (no border, active = underline + semibold) -->
+            <div class="mt-4 flex gap-3 flex-nowrap overflow-x-auto" role="tablist" data-member-data-filter-group>
+              <button type="button" class="member-data-filter-tab is-active" data-filter="全部">全部</button>
+              <button type="button" class="member-data-filter-tab" data-filter="未取消">未取消</button>
+              <button type="button" class="member-data-filter-tab" data-filter="正式單">正式單</button>
+              <button type="button" class="member-data-filter-tab" data-filter="未付款">未付款</button>
+              <button type="button" class="member-data-filter-tab" data-filter="取消單">取消單</button>
+            </div>
+
+            <!-- Records table — Figma 11 cols (#/來源/訂單編號/訂購日/入住日/退房日/天數/間夜數/房價/加購價/總金額) -->
+            <div class="mt-4 bg-white border border-border-disabled rounded-xl p-3 overflow-x-auto">
+              <table class="w-full min-w-[1000px] border-collapse text-base text-text-default">
+                <thead>
+                  <tr class="border-b border-text-default">
+                    <th class="py-2 px-2 text-center font-normal w-[34px]"></th>
+                    <th class="py-2 px-3 text-left font-normal">來源</th>
+                    <th class="py-2 px-3 text-left font-normal">訂單編號</th>
+                    <th class="py-2 px-3 text-left font-normal">訂購日</th>
+                    <th class="py-2 px-3 text-left font-normal">入住日</th>
+                    <th class="py-2 px-3 text-left font-normal">退房日</th>
+                    <th class="py-2 px-3 text-center font-normal">天數</th>
+                    <th class="py-2 px-3 text-center font-normal">間夜數</th>
+                    <th class="py-2 px-3 text-right font-normal">房價</th>
+                    <th class="py-2 px-3 text-right font-normal">加購價</th>
+                    <th class="py-2 px-3 text-right font-normal">總金額</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">1</td><td class="py-2 px-3 text-chart-blue"><span class="inline-flex items-center gap-1"><img src="./assets/icons/pin.svg" alt="" class="w-4 h-4" />旅宿 e 管家</span></td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">133449 <span class="px-1.5 py-0.5 text-xs rounded" style="color:#f44df4;border:1px solid #f44df4">加</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">2</td><td class="py-2 px-3 text-chart-blue">分館 2</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">133911 <span class="px-1.5 py-0.5 text-xs rounded" style="color:#2178cf;border:1px solid #2178cf">網</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">3</td><td class="py-2 px-3 text-chart-blue">分館 3</td><td class="py-2 px-3">443212</td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">4</td><td class="py-2 px-3 text-chart-blue">分館 4</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">933912 <span class="px-1.5 py-0.5 text-xs rounded" style="color:#00c8b3;border:1px solid #00c8b3">企</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                  <tr><td class="py-2 px-2 text-center">5</td><td class="py-2 px-3 text-chart-blue">分館 5</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">488212 <span class="px-1.5 py-0.5 text-xs rounded" style="color:#00c8b3;border:1px solid #00c8b3">企</span> <span class="px-1.5 py-0.5 text-xs rounded" style="color:#f44df4;border:1px solid #f44df4">加</span> <span class="px-1.5 py-0.5 text-xs rounded" style="color:#2178cf;border:1px solid #2178cf">網</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination footer (Frame 19) -->
+            <div class="mt-4 flex items-center justify-between text-base text-text-default flex-wrap gap-3">
+              <span>共 61 筆</span>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 border border-border-disabled rounded bg-white">1</button>
+                <button class="px-3 py-1 border border-border-disabled rounded bg-tab-yellow font-medium">2</button>
+                <span class="px-3 py-1">...</span>
+                <button class="px-3 py-1 border border-border-disabled rounded bg-white">4</button>
+                <button class="px-3 py-1 border border-border-disabled rounded bg-white">5</button>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex-shrink-0 flex justify-end gap-3 px-5 py-3 border-t border-border-focus">
+          <button
+            type="button"
+            class="modal-close-btn inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base cursor-pointer"
+            data-modal="modalMemberDataBackdrop"
+          >清除</button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer"
+          >修改</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         Sub modal: 更換合約公司 (Figma 1702:38552) — 觸發：公司名稱 row edit button
+    ════════════════════════════════════ -->
+    <div
+      id="modalChangeContractCompanyBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalChangeContractCompanyTitle"
+    >
+      <div class="modal-box">
+        <div class="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-border-focus">
+          <span id="modalChangeContractCompanyTitle" class="text-xl font-semibold text-text-default">更換合約公司</span>
+          <button
+            class="modal-close-btn w-6 h-6 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100"
+            data-modal="modalChangeContractCompanyBackdrop"
+            aria-label="關閉"
+          >
+            <img src="./assets/icons/close.svg" alt="close" class="w-6 h-6" />
+          </button>
+        </div>
+        <div class="bg-white p-4 flex flex-col gap-3">
+          <input
+            type="text"
+            value="22224332"
+            class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+            placeholder="統編"
+          />
+          <select class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base">
+            <option>合約公司</option>
+          </select>
+        </div>
+        <div class="flex-shrink-0 flex justify-end gap-2 px-4 py-3 border-t border-border-focus">
+          <button
+            type="button"
+            class="modal-close-btn inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base cursor-pointer"
+            data-modal="modalChangeContractCompanyBackdrop"
+          >取消</button>
+          <button
+            type="button"
+            class="modal-close-btn inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer"
+            data-modal="modalChangeContractCompanyBackdrop"
+          >確定</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
          Chart.js + Interaction scripts
     ════════════════════════════════════ -->
     <script>
@@ -6225,6 +6530,146 @@
               openModal("modalMemberBackdrop", btn);
             });
         });
+
+        // 0528 — event-delegated trigger for member-data modal
+        // Trigger button lives inside #tpl-room-booking template which is
+        // cloned into the page on demand; per-element listeners attached at
+        // script-load time would target the inert original, not the clone.
+        document.addEventListener("click", function (e) {
+          var dataExistsTrigger = e.target.closest(
+            "[data-data-exists-trigger]",
+          );
+          if (dataExistsTrigger) {
+            e.preventDefault();
+            openModal("modalMemberDataBackdrop", dataExistsTrigger);
+            return;
+          }
+          var contractTrigger = e.target.closest(
+            "[data-change-contract-company-trigger]",
+          );
+          if (contractTrigger) {
+            e.preventDefault();
+            openModal("modalChangeContractCompanyBackdrop", contractTrigger);
+            return;
+          }
+        });
+
+        // 會員資料 modal — nation-group / honorific / 會員身份 radio handlers
+        // Modal lives at body level (outside room-booking template), so wire
+        // listeners directly on the modal at script load.
+        (function () {
+          var modal = document.getElementById("modalMemberDataBackdrop");
+          window.__memberDataInit = {modal: !!modal};
+          if (!modal) return;
+
+          // nation-group (臺灣 / 外籍) → toggle 地址 變體
+          modal.querySelectorAll(".nation-group").forEach(function (group) {
+            function apply() {
+              var checked = group.querySelector(".nation-radio:checked");
+              var isForeign = checked && checked.value === "foreign";
+              group
+                .querySelectorAll(".nation-foreign-only")
+                .forEach(function (el) {
+                  el.classList.toggle("hidden", !isForeign);
+                });
+              group
+                .querySelectorAll('[data-addr-mode="taiwan"]')
+                .forEach(function (el) {
+                  el.classList.toggle("hidden", isForeign);
+                });
+              group
+                .querySelectorAll('[data-addr-mode="foreign"]')
+                .forEach(function (el) {
+                  el.classList.toggle("hidden", !isForeign);
+                });
+            }
+            group
+              .querySelectorAll('input[name="memberData-nation"]')
+              .forEach(function (r) {
+                r.addEventListener("change", apply);
+              });
+            apply();
+          });
+
+          // honorific (先生 / 小姐) follow 性別 radio
+          (function () {
+            var radios = modal.querySelectorAll(
+              '[data-gender-radio="memberData"]',
+            );
+            var label = modal.querySelector(
+              '[data-honorific-panel="memberData"]',
+            );
+            if (!radios.length || !label) return;
+            function apply() {
+              var checked = modal.querySelector(
+                '[data-gender-radio="memberData"]:checked',
+              );
+              if (!checked) return;
+              label.textContent = checked.value === "F" ? "小姐" : "先生";
+            }
+            radios.forEach(function (r) {
+              r.addEventListener("change", apply);
+            });
+            apply();
+          })();
+
+          // 會員身份 radio (一般 / 合約) → toggle panel
+          (function () {
+            var radios = modal.querySelectorAll(".member-data-status-radio");
+            var panels = modal.querySelectorAll("[data-member-status-panel]");
+            if (!radios.length) return;
+            function apply() {
+              var checked = modal.querySelector(
+                ".member-data-status-radio:checked",
+              );
+              var key = checked ? checked.value : "";
+              panels.forEach(function (p) {
+                p.classList.toggle(
+                  "hidden",
+                  p.dataset.memberStatusPanel !== key,
+                );
+              });
+            }
+            radios.forEach(function (r) {
+              r.addEventListener("change", apply);
+            });
+            apply();
+          })();
+
+          // 訂房記錄 — Title pill chip toggle (單選；click → 切到 is-selected 黃底)
+          (function () {
+            var group = modal.querySelector("[data-member-data-chip-group]");
+            if (!group) return;
+            group
+              .querySelectorAll(".member-data-title-chip")
+              .forEach(function (chip) {
+                chip.addEventListener("click", function () {
+                  group
+                    .querySelectorAll(".member-data-title-chip")
+                    .forEach(function (c) {
+                      c.classList.toggle("is-selected", c === chip);
+                    });
+                });
+              });
+          })();
+
+          // 訂房記錄 — Filter tab toggle (單選；click → 切到 is-active 底線+semibold)
+          (function () {
+            var group = modal.querySelector("[data-member-data-filter-group]");
+            if (!group) return;
+            group
+              .querySelectorAll(".member-data-filter-tab")
+              .forEach(function (tab) {
+                tab.addEventListener("click", function () {
+                  group
+                    .querySelectorAll(".member-data-filter-tab")
+                    .forEach(function (t) {
+                      t.classList.toggle("is-active", t === tab);
+                    });
+                });
+              });
+          })();
+        })();
 
         // Close buttons (class modal-close-btn, data-modal="id")
         document.querySelectorAll(".modal-close-btn").forEach(function (btn) {
@@ -9455,6 +9900,20 @@
                         data-honorific-panel="booking"
                         >先生</span
                       >
+                      <!-- Data exists button (Figma 1790:68604) — 0528 preview: 永遠顯示 default 態，
+                           等後端接通 dropdown 比對後改條件渲染。詳見 components/order-data.md 0528 段 -->
+                      <button
+                        type="button"
+                        class="shrink-0 flex items-center justify-center w-11 h-11 border border-border-disabled rounded-[6px] bg-white hover:bg-[var(--color-neutral-500)] group cursor-pointer"
+                        aria-label="客戶資料"
+                        data-data-exists-trigger
+                      >
+                        <img
+                          src="./assets/icons/attached-link.svg"
+                          alt=""
+                          class="w-6 h-6 group-hover:[filter:brightness(0)_invert(1)]"
+                        />
+                      </button>
                     </div>
                   </div>
                   <div class="flex items-center gap-3">

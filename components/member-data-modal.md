@@ -1,0 +1,174 @@
+# 會員資料 Modal
+
+Figma source：
+- Main modal（基本態）`Order condition` `1763:42341`，1140×1823，bg `#f6fafd`
+- Main modal（多分館態）`Order condition` `1790:66210`，1140×1823，bg `#f6fafd`（**0528 實作採用本態作為 default content**）
+- Sub modal（更換合約公司）`Modal` `1702:38552`，320×169，bg `#ffffff`
+
+由 [D] 訂房資料「名稱 row」末端的 **Data exists button** 點擊觸發（詳見 [order-data.md § 0528 新增](order-data.md)）。
+
+---
+
+## 整體結構（1140×1823）
+
+```
+Order condition (1140×1823, bg #f6fafd, padding 20)
+├── container2 (1100×27)         # header bar
+│   ├── Frame 451                # title "會員資料" 20px + 「最後修改日期 2026-02-02」12px
+│   └── icons/down               # collapse / close icon 24×24
+└── container (1100×1740, bg #ffffff, radius 12)
+    ├── Frame 370 (1076×995)     # 主表單區（4 個 sub-card，2×2 grid）
+    │   ├── Frame 412 a (518×466) @ 0,0       # 左上：帳號/密碼/名稱/證號/生日/行動電話/性別/會員備註
+    │   ├── Frame 412 b (518×466) @ 558,0     # 右上：Email/市話/傳真/國籍/地址(3列)/狀態/類別/常用會員/訂閱電子報/會員等級
+    │   ├── Frame 412 c (518×250) @ 0,498     # 左下：會員身份 + tabs(會員/一般/合約) + 合約內容
+    │   └── Frame 568   (518×497) @ 558,498   # 右下：（保留空間，待補）
+    ├── Accordion (1076×627)     # 訂房記錄 sub-section（折疊；展開後是 table + filter chips）
+    └── Frame 568 (1076×46)      # 底部 footer: 清除 + 修改 buttons
+```
+
+---
+
+## 主表單欄位（Frame 370）
+
+### 左上 Frame 412 a — 基本資料
+
+| 欄位 | 內容 |
+|---|---|
+| 帳號 | placeholder |
+| 密碼 | placeholder |
+| 名稱 | placeholder + Texts「先生 / 小姐」（隨性別 radio） |
+| 證號 | placeholder |
+| 生日 | calendar-simple `2026-02-27` |
+| 行動電話 | placeholder |
+| 性別 | radio 男 / 女 |
+| 會員備註 | textarea (`???` 為 placeholder) |
+
+### 右上 Frame 412 b — 聯絡 / 地址 / 屬性
+
+| 欄位 | 內容 |
+|---|---|
+| Email | placeholder |
+| 市話 | placeholder |
+| 傳真 | placeholder |
+| 國籍 | radio 臺灣 / 外籍 |
+| 地址 縣/市 | select `台中` |
+| 地址 行政區 | select `北屯區 / 406` |
+| 地址 街道 | input placeholder |
+| 狀態 | radio 正式 / 非正式 |
+| 類別 | radio 實體 / 一般 |
+| 常用會員 | checkbox |
+| 訂閱電子報 | checkbox |
+| 會員等級 | select `宇宙金卡` |
+
+### 左下 Frame 412 c — 會員身份
+
+```
+會員身份 (20px title)
+├── tabs: [會員] [一般] [合約]
+└── 內容區（**↓ 條件渲染**）
+    ├── 一般 selected → **空白**（按使用者規定）
+    └── 合約 selected → 8 個欄位（label + 唯讀文字 王大頭）：
+        ├── 公司名稱 + ✏️ **edit 按鈕**（點擊 → 觸發 sub modal）
+        ├── 統編
+        ├── 公司別
+        ├── 聯絡電話一
+        ├── 聯絡電話二
+        ├── 傳真一
+        ├── 傳真二
+        └── 備註
+```
+
+> **「一般」tab 規則（0528 使用者確認）**：選中時內容區**保持空白**，不渲染任何欄位。
+
+---
+
+## 訂房記錄 sub-section（Accordion 1076×627）
+
+可折疊（icons/down 控制）。展開後內容：
+
+### 頂部 summary chips（橫向排列）
+
+| chip | 來源 | 字色 |
+|---|---|---|
+| 總消費 | `$ 199,299,399` | `#454545` 黑 |
+| 旅宿 e 管家 | `$ 199,299,399` | `#2178cf` 藍 |
+| **分館 2** | `$ 199,299,399` | `#2178cf` 藍（**multi-location 變體 #2 才有**） |
+| **分館 3** | `$ 9,399` | `#2178cf` 藍（同上） |
+| **分館 4** | `$ ...` | 同 |
+| **分館 5** | `$ ...` | 同 |
+
+### Filter tab 列
+
+`全部 / 未取消 / 正式單 / 未付款 / 取消單`（橫向，active 視覺帶藍底/特殊樣式）
+
+### 來源 filter（multi-location #2 variant only）
+
+`旅宿 e 管家 / 分館 2 / 分館 3 / 分館 4 / 分館 5`（5 個藍字 chip，可勾選）
+
+### Table 欄位（10 column × 5 row demo）
+
+| 欄 | 範例 | 備註 |
+|---|---|---|
+| 訂單編號 | `133449` + 通路標記 chip（加/網/企）| 標記字色：加 `#f44df4` 紫紅、網 `#2178cf` 藍、企 `#00c8b3` 綠 |
+| 來源 | 旅宿e管家 / 分館 2-5 | |
+| 訂購日 | `2026-07-01\n15：33：41` | 雙行（日 + 時） |
+| 入住日 | `2026-07-01` | |
+| 退房日 | `2026-07-01` | |
+| 天數 | `1` | |
+| 間夜數 | `1` | |
+| 房價 | `1` | |
+| 加購價 | `1` | |
+| 總金額 | `1` | |
+
+### Footer
+
+`共 61 筆 ··· Pagination(1 2 ... 4 5)`
+
+---
+
+## Footer (Frame 568) — Modal 底部按鈕
+
+`清除`（淺灰 disabled-look，`#454545` 字）+ `修改`（深底，`#e1e1e0` 字，submit button）
+
+---
+
+## Sub Modal: 更換合約公司（`1702:38552`）
+
+由「公司名稱 row」右側 ✏️ edit button 點擊觸發；上一層 main modal 不關。
+
+### 結構
+
+```
+Modal (320×169, bg #ffffff, radius?)
+├── Frame 12 (320×111)
+│   ├── Frame 10 (header 320×51): 「更換合約公司」標題 20px
+│   └── content swap (320×60): 內含 input/select
+│       ├── Input/Select: `22224332`（統編）
+│       └── Texts: 「合約公司」
+└── Frame 11 (320×58, footer)
+    ├── Button Y/N: 「取消」（#d1d1d1 灰底）
+    └── Button Y/N: 「確定」（#454545 深底 / 字色 #e1e1e0）
+```
+
+> 結構待 Figma 對位細節（input/select 樣式、間距）；目前 spec 級別。
+
+---
+
+## 行為（0528 實作）
+
+1. **觸發**：[D] 訂房資料 名稱 row 末端的 Data exists button (`data-data-exists-trigger`) click → 開啟此 modal
+2. **內容 default**：採用「多分館態 #2」(`1790:66210`)，展示完整 chip 集合
+3. **會員身份 tabs**：default 選「合約」；選「一般」內容區空白；選「會員」（待 spec）
+4. **公司名稱 edit button**：click → 開啟 sub modal `更換合約公司`，sub modal 不蓋掉 main modal
+5. **close**：close icon / outside click / Esc（依專案 modal 慣例）
+6. **footer 修改**：暫定無 backend 串接，preview 階段點擊 = noop close
+
+---
+
+## 0528 未確認
+
+- 「會員」tab（除一般 / 合約之外的第三 tab）內容？目前 Figma 兩態都顯示合約資料，沒有「會員」tab 內容示意 → 暫時也保持空白與「一般」相同
+- Sub modal「更換合約公司」內部詳細 layout（input vs select、placeholder 文字）
+- Filter tab 列 active 視覺樣式（哪一個是 default active？樣式 token？）
+
+關聯：[[order-data]]（觸發按鈕來源）、[[modal]]、[[input]]、[[calendar-simple]]、[[checkbox]]、[[accordion]]、[[pagination]]
