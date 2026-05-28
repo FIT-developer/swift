@@ -61,6 +61,9 @@
   --color-accent-float-circle-filled-1: #f2befd;
   --color-accent-float-circle-filled-2: #ffb6b6;
 
+  /* iOS switch off track — system color (Figma frame instance reference, not yet in Variables) */
+  --color-switch-off-track: rgba(60, 60, 67, 0.3);
+
   /* Color/Icon */
   --color-icon-default: #000000;
 

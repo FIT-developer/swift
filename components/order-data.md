@@ -115,7 +115,7 @@ Figma source：mobile mockup `1790:68448` (`Has data and show arrow button`) 與
 |---|---|---|---|
 | 1 | Texts 名稱 label | 64 × 22 | `#ef6f25` 橘字（必填+主搜尋鍵）|
 | 2 | Input `王大頭` | 119 × 34 | 寬被壓縮以挪位給按鈕（mobile only？desktop 待 spec） |
-| 3 | Texts 先生 | 32 × 22 | honorific（隨性別 radio 動態） |
+| 3 | Texts 先生 | 32 × 22 | honorific 是 `<span>`，依性別 radio 動態渲染：男 -> 「先生」、女 -> 「小姐」。**不是**固定 Texts、不是 select、不是 「先生 / 小姐」斜線字面值。實作：在性別 radio 的 change handler 內更新該 span 內容；訂房/入住 panel 各自獨立；預設性別 = 男 -> 初始「先生」 |
 | 4 | **Data exists button** | **44 × 44** | 0528 新增；位於 row 末端 |
 
 ### Button 規格（兩態）

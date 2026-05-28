@@ -182,6 +182,101 @@ tokens → icons → components → sections → layout → 實作
 對的寫法: "Token 檢查: 使用了 Color/Surface/Brand-500-Default,
 Spacing/16, Radius/8,全部引用自 tokens.md"
 
+## 流程守則（防腦補與品管）
+
+這些是跨任務通用的工作流程規則，每個 AI agent 都要遵守：
+
+### 不自稱完成
+- 不要說「已完成」「都對了」「沒問題」這種斷言。改用：`verified`（dev 端 self-test pass）、`self-tested`、`pending review`、`待你驗收`
+- 視覺類功能必須主動跑多角度截圖（mobile/tablet/desktop viewport + state variations）給使用者驗收
+- 驗收前不可進入下一個 task，不可 commit
+
+### 讀 Figma 的硬性檢查
+- **必驗 styles.fills / strokes**：不從前例假設顏色；每個 Figma node 都要從當前 selection 的 styles 抓 hex，再對照 `tokens.md` 翻 token 名
+- **selection 防漏三動作**：
+  1. 讀完 root 後列 children checklist（編號 / id / name / type / size）
+  2. 對 spec 中已記錄的 frame 做 cross-check（有沒有漏 read）
+  3. 若 selection JSON 過大被 truncate，用 Python 強制 iterate 取得每個 child，不可只看 root summary
+- **腦補偵測點**：寫實作前自問「這個樣式 / 數值 / 結構是 Figma 給的還是我推測的？」若是推測，先停下回報為「未定義」
+
+### Variant 先讀 parent spec
+- 新 variant 不可從 Figma raw bottom-up 推，否則會重複父層規格
+- 先讀通對應 `components/{parent}.md` 共用段（外框、padding、typography、colors）
+- 在 variant spec 只記錄與 parent 不同的差異點，引用 parent spec 連結
+
+### 橫向 scroll
+- chip / tab 容器超寬時用 `flex-nowrap overflow-x-auto`，依賴瀏覽器原生 scrollbar
+- 不主動加 fade mask、不加 indicator chevron、不自訂 scrollbar 樣式
+- chip / tab 元素本身要 `flex-shrink: 0` + `white-space: nowrap`
+
+### QA 截圖路徑
+- 截圖存到 `specs/qa-screenshots/session-{N}/`，N = 當前 session 編號（讀 `progress.md` 確認）
+- 不可散落 `specs/qa-screenshots/` 根目錄
+- 命名格式：`{feature}-{state}-{viewport}.png`（如 `member-data-modal-foreign-1440.png`）
+
+## 元件 conventions（跨頁通用）
+
+實作元件時的固定規格與語意對照，避免每次重發明：
+
+### 外層 padding
+- 頁面 / 主要區塊外層 padding 左右 `20px = px-5`（**不是** `px-3` 12px）
+- 對應 token: `--spacing-20`
+
+### Pill chip button
+- gap 16px (`gap-4`)、padding `10px 16px` (`px-4 py-2.5`)、radius 28px
+- 不用 `gap-0`、不用 `rounded-full`（明確 r:28）
+- 黃藍語意分流見下
+
+### Chip yellow vs blue（語意不可混）
+- **黃** `#f7d275`（`--color-subitem-selected`）= tag / 付款指示 / 子項目 selected（如 `circle-selected-yellow` variant）
+- **藍** `#005fcc`（`--color-menuitem-default-strong` 或 brand-600）= toggle / mode 切換（如 mode-toggle active）
+- 不可互換、不可同時用在同一語意
+
+### Lock toggle（input 群組鎖定態）
+- lock icon 不是裝飾，是 toggle button：
+  - **紅鎖** `--color-brand-active` = inputs **disabled**，input bg 灰底
+  - **綠鎖** `--color-accent-green-positive` = inputs **active**，input bg 白
+- 點 lock icon 切換整段 inputs 的 disabled / active 狀態
+
+### Figma 灰底 input baseline
+- Figma 視覺稿出現灰底 input = lock disabled 態，**不是新的 input variant**
+- 實作 baseline 一律白底；灰底由 `.is-locked` class 套用，不可在 spec 內定義「灰底 input」
+
+### Checkbox 三色語意
+- Figma checkbox fill 對照：
+  - `#b0b0b0` = **disabled**（不可勾）
+  - `#ffffff` = enabled **未勾**
+  - `#2178cf` = enabled **已勾**
+- 不要看到灰就整批反灰，要分清三態
+
+## 可復用 UI patterns（持續累積）
+
+當實作中發現某段樣式 / JS 結構在未來會被多次使用，先在這裡登記類別 + scoped class 名 + 最早出現的 component，避免下次重發明：
+
+### Toggle switch（iOS-style）
+- CSS scoped class：`.member-data-switch` / `.member-data-switch-track` / `.member-data-switch-knob`
+- 結構：`<span class="member-data-switch"><input type="checkbox"><span class="member-data-switch-track"></span><span class="member-data-switch-knob"></span></span>`
+- on track 色 `--color-accent-green` / off track 色 `--color-switch-off-track` / knob `--color-neutral-0`
+- 來源：`components/member-data-modal.md`（會員資料 modal 常用會員、訂閱電子報）
+
+### Pill chip 單選 toggle（橫向 scroll）
+- CSS scoped class：`.member-data-title-chip` / `.is-selected`（黃底 `--color-subitem-selected`）
+- 容器：`flex-nowrap overflow-x-auto`，chip `flex-shrink: 0`
+- JS：delegated click handler，單選切 `is-selected`
+- 來源：`components/member-data-modal.md`（訂房記錄 3 chip 切館別）
+
+### Filter tab 底線 active（無框）
+- CSS scoped class：`.member-data-filter-tab` / `.is-active`（`text-decoration: underline; font-weight: 600; text-underline-offset: 4px`）
+- 與 pill button 不同：active 用底線 + semibold，沒有 border / radius / bg
+- 來源：`components/member-data-modal.md`（訂房記錄 5 filter）
+
+### Modal-scoped IIFE delegation pattern
+- Modal markup 放 `<body>` level（不在 `#tpl-room-booking` 內），listener 在 script load 時 `document.getElementById(modalId)` 找到後直接掛
+- 若 trigger button 在 template 內（會被 cloned）：用 `document.addEventListener("click", e => { var btn = e.target.closest("[data-...]"); ... })` event delegation，**不要** `querySelectorAll().forEach()` 預掛
+- 來源：`landing.html:6520` Data exists button + member-data modal handler
+
+---
+
 ## 全域樣式
 **非 Token 的全域樣式**放在 `preview/assets/css/base.css`,
 這個檔案在所有 preview HTML 的 `<head>` 用 `<link>` 引入。
@@ -240,6 +335,20 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 - 在檔案最上方新增最新 Session 交接
 - 記錄：已完成、驗證、下一步應做、重要決定、未解問題
 - 若只是小修，也要記錄會影響下一輪判斷的決策或規則變更
+- **每個 commit 後立即同步**，不要累積到 session 末才補。漏更新 progress.md 等同於沒做交接
+
+## commit & push flow（強制順序）
+當使用者打「commit & push」（或同義 keyword）時，**先做交接、再 commit、再 push**，一次性 flow，不要分階段等使用者再次確認：
+
+1. **寫 / 更新 `specs/progress.md`** — 在檔案最上方新增本次 Session 段（已完成 / 驗證 / 重要決定 / 未解問題）
+2. **`git add`** — staging 本次改動的檔案，含 `specs/progress.md`
+3. **`git commit`** — commit message 包含主要修改說明
+4. **`git push origin main`** — push 到遠端
+
+只打「commit」不打「push」、或只說「push」不說「commit」時，沿用其字面意思，不擴張為完整 flow。
+若 session 中已經事先寫過 progress.md 該段，不需重寫，直接 staging 既有變更 commit。
+
+> **Why 強制這順序**：之前曾連續多個 commit 漏寫 progress.md，其他 AI agent 接手時無法從 progress.md 得知上下文，必須翻 git log 推測，浪費 context 與容易再次腦補。Progress.md 必須與 git history 同步。
 
 **交接時還要 audit 三份規範檔是否同步**（漏一份就有 drift 風險）：
 - `specs/progress.md`：本輪完成、決策、未解問題

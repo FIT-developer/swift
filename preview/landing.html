@@ -3787,6 +3787,8 @@
       aria-labelledby="modalMemberDataTitle"
     >
       <div class="modal-box">
+       <!-- Inner white card wrapper (Figma container 1100x1740, fill #ffffff, r:12) -->
+       <div class="member-data-inner-card">
         <!-- Header -->
         <div class="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-border-focus">
           <div class="flex items-baseline gap-4 flex-wrap">
@@ -3920,8 +3922,8 @@
                 <div class="flex items-center gap-3">
                   <span class="text-base text-text-default w-[100px] shrink-0">公司名稱</span>
                   <span class="flex-1 min-w-0 text-base text-text-default">王大頭</span>
-                  <button type="button" class="shrink-0 w-8 h-8 flex items-center justify-center border border-border-disabled rounded-[6px] bg-white hover:bg-surface-default" aria-label="更換合約公司" data-change-contract-company-trigger>
-                    <img src="./assets/icons/edit.svg" alt="" class="w-5 h-5" />
+                  <button type="button" class="shrink-0 w-8 h-8 flex items-center justify-center rounded-[6px] bg-[var(--color-brand-100)] hover:opacity-80" aria-label="更換合約公司" data-change-contract-company-trigger>
+                    <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
                   </button>
                 </div>
                 <div class="flex items-center gap-3"><span class="text-base text-text-default w-[100px] shrink-0">統編</span><span class="flex-1 min-w-0 text-base text-text-default">王大頭</span></div>
@@ -3995,24 +3997,31 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">1</td><td class="py-2 px-3 text-chart-blue"><span class="inline-flex items-center gap-1"><img src="./assets/icons/pin.svg" alt="" class="w-4 h-4" />旅宿 e 管家</span></td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">133449 <span class="px-1.5 py-0.5 text-xs rounded" style="color:#f44df4;border:1px solid #f44df4">加</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
-                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">2</td><td class="py-2 px-3 text-chart-blue">分館 2</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">133911 <span class="px-1.5 py-0.5 text-xs rounded" style="color:#2178cf;border:1px solid #2178cf">網</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">1</td><td class="py-2 px-3 text-chart-blue"><span class="inline-flex items-center gap-1"><img src="./assets/icons/pin.svg" alt="" class="w-4 h-4" />旅宿 e 管家</span></td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">133449 <span class="order-channel-chip order-channel-chip--add">加</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">2</td><td class="py-2 px-3 text-chart-blue">分館 2</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">133911 <span class="order-channel-chip order-channel-chip--web">網</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
                   <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">3</td><td class="py-2 px-3 text-chart-blue">分館 3</td><td class="py-2 px-3">443212</td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
-                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">4</td><td class="py-2 px-3 text-chart-blue">分館 4</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">933912 <span class="px-1.5 py-0.5 text-xs rounded" style="color:#00c8b3;border:1px solid #00c8b3">企</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
-                  <tr><td class="py-2 px-2 text-center">5</td><td class="py-2 px-3 text-chart-blue">分館 5</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">488212 <span class="px-1.5 py-0.5 text-xs rounded" style="color:#00c8b3;border:1px solid #00c8b3">企</span> <span class="px-1.5 py-0.5 text-xs rounded" style="color:#f44df4;border:1px solid #f44df4">加</span> <span class="px-1.5 py-0.5 text-xs rounded" style="color:#2178cf;border:1px solid #2178cf">網</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                  <tr class="border-b border-border-disabled"><td class="py-2 px-2 text-center">4</td><td class="py-2 px-3 text-chart-blue">分館 4</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">933912 <span class="order-channel-chip order-channel-chip--corp">企</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
+                  <tr><td class="py-2 px-2 text-center">5</td><td class="py-2 px-3 text-chart-blue">分館 5</td><td class="py-2 px-3"><span class="inline-flex items-center gap-2">488212 <span class="order-channel-chip order-channel-chip--corp">企</span> <span class="order-channel-chip order-channel-chip--add">加</span> <span class="order-channel-chip order-channel-chip--web">網</span></span></td><td class="py-2 px-3 whitespace-pre">2026-07-01<br>15：33：41</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3">2026-07-01</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-center">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td><td class="py-2 px-3 text-right">1</td></tr>
                 </tbody>
               </table>
             </div>
 
-            <!-- Pagination footer (Frame 19) -->
+            <!-- Pagination footer (Figma Frame 19 + Pagination INSTANCE 320x46) -->
             <div class="mt-4 flex items-center justify-between text-base text-text-default flex-wrap gap-3">
               <span>共 61 筆</span>
-              <div class="flex gap-2">
-                <button class="px-3 py-1 border border-border-disabled rounded bg-white">1</button>
-                <button class="px-3 py-1 border border-border-disabled rounded bg-tab-yellow font-medium">2</button>
-                <span class="px-3 py-1">...</span>
-                <button class="px-3 py-1 border border-border-disabled rounded bg-white">4</button>
-                <button class="px-3 py-1 border border-border-disabled rounded bg-white">5</button>
+              <!-- Pagination 7 cells: ← / 1 / 2(active) / ... / 4 / 5 / →，merged 邊框 -->
+              <div class="input-group flex">
+                <button class="w-[34px] h-[34px] flex items-center justify-center bg-white">
+                  <img src="./assets/icons/arrow-left.svg" alt="prev" class="w-4 h-4" />
+                </button>
+                <button class="w-[50px] h-[34px] flex items-center justify-center bg-white text-text-default">1</button>
+                <button class="member-data-pagination-page--active w-[50px] h-[34px] flex items-center justify-center text-text-default">2</button>
+                <button class="w-[50px] h-[34px] flex items-center justify-center bg-white text-text-default">...</button>
+                <button class="w-[50px] h-[34px] flex items-center justify-center bg-white text-text-default">4</button>
+                <button class="w-[50px] h-[34px] flex items-center justify-center bg-white text-text-default">5</button>
+                <button class="w-[34px] h-[34px] flex items-center justify-center bg-white">
+                  <img src="./assets/icons/arrow-right.svg" alt="next" class="w-4 h-4" />
+                </button>
               </div>
             </div>
           </details>
@@ -4030,6 +4039,7 @@
             class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer"
           >修改</button>
         </div>
+       </div><!-- /.member-data-inner-card -->
       </div>
     </div>
 
@@ -4054,16 +4064,19 @@
             <img src="./assets/icons/close.svg" alt="close" class="w-6 h-6" />
           </button>
         </div>
-        <div class="bg-white p-4 flex flex-col gap-3">
-          <input
-            type="text"
-            value="22224332"
-            class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
-            placeholder="統編"
-          />
-          <select class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base">
-            <option>合約公司</option>
-          </select>
+        <!-- content swap (Figma): Input + Select 並排為 merged input-group，shared border -->
+        <div class="bg-white p-3 border-b border-border-disabled">
+          <div class="input-group flex w-full">
+            <input
+              type="text"
+              value="22224332"
+              class="md:basis-[127px] basis-2/5 grow-0 shrink-0 min-w-0 px-3 py-1.5 text-base text-text-default"
+              placeholder="統編"
+            />
+            <select class="flex-1 min-w-0 px-3 py-1.5 text-base text-text-default bg-white">
+              <option>合約公司</option>
+            </select>
+          </div>
         </div>
         <div class="flex-shrink-0 flex justify-end gap-2 px-4 py-3 border-t border-border-focus">
           <button

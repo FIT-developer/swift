@@ -324,11 +324,15 @@ Figma source：`Content page - 房間預訂 default 0527-a1` (`1775:53143`)
 #### 左上（Frame 275, 540×280, x:0, y:20）— 訂房人基本資料
 label 固定 64px、輸入欄寬至右邊界。
 
-> **橘字三件套**：名稱 / 證號 / 行動電話 label `#ef6f25` = 客戶識別必填欄+主搜尋鍵（[[feedback_orange_label_search_priority]]）。
+> **橘字三件套**：名稱 / 證號 / 行動電話 label `#ef6f25` = **客戶識別必填欄 + 後續客戶搜尋主要欄位**。
+> - Figma label 為 `#ef6f25` 橘色的就這 3 欄；其餘（生日 / 性別 / Email / 傳真 / 會員備註等）label 為 `#454545` 黑、非必填
+> - 實作時這 3 欄套 `text-brand-active`（對應 `--color-text-brand` `#ef6f25` token），其他套 `text-text-default`
+> - **不要外推**到其他 section 同名欄位（例如 [B] 客戶區若也有名稱，不一定也是橘）；只有 Figma 顯式上色的才上色
+> - 將來 client filter / search UI 要把這 3 欄當主篩選鍵
 
 | 列 | label | 控制元件 | 備註 |
 |---|---|---|---|
-| 1 | 「名稱」**`#ef6f25` 橘字** | Input(333×34, `王大頭`) + 右側 Texts honorific (寬 79, @ x:421) | **honorific 依性別 radio 動態渲染**：男→「先生」、女→「小姐」（[[feedback_honorific_follows_gender]]）|
+| 1 | 「名稱」**`#ef6f25` 橘字** | Input(333×34, `王大頭`) + 右側 Texts honorific (寬 79, @ x:421) | **honorific 是依「性別」radio 動態渲染的 `<span>`，不是固定 Texts 也不是 select**：男 -> 顯示「先生」、女 -> 顯示「小姐」。Figma 視覺稿出現「先生 / 小姐」是並列展示兩個變體，不是斜線串接的字面值。實作：性別 radio 的 change handler 內更新該 span。訂房 / 入住 panel 各自獨立，互不影響。預設性別 = 男 -> 初始「先生」。|
 | 2 | 「證號」**`#ef6f25` 橘字** | Input(424×34, `X111333555`) | 是「證號」不是「身份證號」/「護照號碼」|
 | 3 | 「行動電話」**`#ef6f25` 橘字** | Input(424×34, `0988777111`) |  |
 | 4 | 「生日」 | Calendar simple(424×36, `2026-02-27`) | birthday variant（[[feedback_calendar_use_reference_code]]）|
@@ -418,7 +422,12 @@ label 固定 64px。
 - **訂單條件 → 到店方式：是 Button 不是 Select**（trailing icons/road；模板沿用 Select 但需自訂 modal，0428 已記錄細節，0525 未變）。
 - **正式單與候補單 Accordion**：所在區塊改變，內容 slot 改為 padding 20、radius 12 的內框（0428 為 padding 20 直接放 radio）。0525 展開狀態下 slot 內含 Frame 361；需另行讀單筆內容元件確認 radio/option 與「未設定」文字。
 - **lock toggle**：紅鎖 = inputs disabled（紅 vector fill `#e05216`）。綠色版本未在 0525 frame 中出現；切換規則沿用 feedback_lock_toggle_input_state。
-- **客戶類型按鈕 ↔ 訂房 tab 連動**：合約客戶 ↔ Frame 277 tab 切「合約」，沿用 feedback_customer_toggle_links_order_tab。
+- **客戶類型按鈕 ↔ 訂房 tab 連動規則**（完整內容）：
+  - 點 **「一般客戶」** -> 隱藏 #contractFields + **隱藏合約 tab 按鈕** + 訂房資料 tab 切回「訂房」
+  - 點 **「合約客戶」** -> 顯示 #contractFields + **顯示合約 tab 按鈕** + 訂房資料 tab 切到「合約」
+  - 合約 tab **不是常駐 tab**，存在條件 = 目前訂單為合約客戶；預設（一般客戶）狀態下 [D] 訂房資料只有 2 個 tab（訂房 / 入住）
+  - 實作：customer-toggle click handler 除了 toggle `#contractFields` 之外要呼叫 `switchOrderTab(key)`（contract -> 'contract', general -> 'booking'）。tab 上的 `.order-tab-active` 樣式跟 panel 的 `hidden` 都要同步切。
+  - **Why**：這兩個 UI 元件描述同一個業務概念（「這張訂單是不是合約客戶」），不可獨立操作。
 - **未補項**（待後續單獨讀取）：
   - Frame 195「操作」欄的具體 icon / button（目前只有 header「操作」文字）
   - Frame 192 間數欄的 DatePicker 與「訂房間數」變體細節

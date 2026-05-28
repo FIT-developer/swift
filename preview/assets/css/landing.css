@@ -260,6 +260,19 @@ body.mobile-sidebar-open {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  /* Figma Order condition 外框 fill = #f6fafd (var --color-neutral-75) */
+  background: var(--color-neutral-75);
+  padding: 20px;
+}
+/* Inner white card wrapper (Figma container 1100x1740 fill #ffffff r:12) */
+#modalMemberDataBackdrop .member-data-inner-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-neutral-0);
+  border-radius: 12px;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
 }
 #modalChangeContractCompanyBackdrop .modal-box {
   width: min(calc(100vw - 24px), 320px);
@@ -290,7 +303,7 @@ body.mobile-sidebar-open {
 .member-data-switch-track {
   position: absolute;
   inset: 0;
-  background: rgba(60, 60, 67, 0.3);
+  background: var(--color-switch-off-track);
   border-radius: 100px;
   transition: background-color 0.2s ease;
 }
@@ -306,7 +319,7 @@ body.mobile-sidebar-open {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 .member-data-switch input:checked ~ .member-data-switch-track {
-  background: #34c759;
+  background: var(--color-accent-green);
 }
 .member-data-switch input:checked ~ .member-data-switch-knob {
   transform: translateX(36px);
@@ -330,7 +343,7 @@ body.mobile-sidebar-open {
   flex-shrink: 0;
 }
 .member-data-title-chip.is-selected {
-  background: #f7d275;
+  background: var(--color-subitem-selected);
 }
 .member-data-title-chip-badge {
   display: inline-flex;
@@ -338,7 +351,7 @@ body.mobile-sidebar-open {
   gap: 4px;
   padding: 4px 8px;
   border-radius: 6px;
-  color: #2178cf;
+  color: var(--color-menuitem-default);
   font-size: 16px;
 }
 .member-data-title-chip-price {
@@ -346,9 +359,10 @@ body.mobile-sidebar-open {
   font-size: 16px;
 }
 
-/* ── member-data filter tab (active = underline + semibold, no border) ── */
+/* ── member-data filter tab (Figma Frame 607: text 22h + 4 top + 4 bottom = 30h)
+   active = underline + semibold, no border ── */
 .member-data-filter-tab {
-  padding: 4px 12px;
+  padding: 4px 8px;
   font-size: 16px;
   font-weight: 400;
   color: var(--color-text-800);
@@ -371,10 +385,39 @@ body.mobile-sidebar-open {
   align-items: center;
   padding: 0 8px;
   border-radius: 4px;
-  background: #bbf7d0;
+  background: var(--color-accent-light-green);
   color: var(--color-text-800);
   font-size: 16px;
   height: 22px;
+}
+
+/* ── member-data pagination active page bg (Figma #b0b0b0 = neutral-300) ── */
+.member-data-pagination-page--active {
+  background: var(--color-neutral-300);
+}
+
+/* ── 訂單編號 row-chip badges (加/網/企) — used in member-data 訂房記錄 table ── */
+.order-channel-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  border-width: 1px;
+  border-style: solid;
+}
+.order-channel-chip--add {
+  color: var(--color-accent-celebration);
+  border-color: var(--color-accent-celebration);
+}
+.order-channel-chip--web {
+  color: var(--color-menuitem-default);
+  border-color: var(--color-menuitem-default);
+}
+.order-channel-chip--corp {
+  /* warning: #00c8b3 not in Figma Variables / base.css yet — keep inline ref for now */
+  color: #00c8b3;
+  border-color: #00c8b3;
 }
 .sms-modal-content {
   border: 1px solid var(--color-neutral-200);

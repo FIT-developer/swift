@@ -310,6 +310,24 @@
 
 ---
 
+## 系統色 (System Colors, 非 Figma Variables)
+
+> Figma 元件直接從 iOS / Material 系統色匯出而非走 Variables 路徑的個案。需顯式記錄避免散落於 component CSS。
+
+| CSS variable | 值 | 用途 | 來源 |
+|---|---|---|---|
+| `--color-switch-off-track` | `rgba(60, 60, 67, 0.3)` | iOS toggle switch off state track | Figma `Toggle - Switch` instance frame (`member-data-modal` 常用會員 / 訂閱電子報) |
+
+---
+
+## 未解問題 / 待補 Figma Variables
+
+| Hex | 出現位置 | 用途 | 狀態 |
+|---|---|---|---|
+| `#00c8b3` | `landing.css .order-channel-chip--corp`；`Title COMPONENT_SET 43:328` 的 `button-active` fill | 「企」channel badge 邊框/文字色；Title pill active green | Figma 視覺存在但 `figma-variables.json` / `base.css` 未匯入；下次 Figma Variables sync 時若有對應 variable，補上正式 token 名 |
+
+---
+
 ## 命名規範說明
 
 1. **分組層級**：`Category/SubCategory/Scale`，以斜線分隔、大寫開頭
