@@ -134,6 +134,10 @@ Order condition (1140×1823, bg #f6fafd, padding 20)
 
 `清除`（淺灰 disabled-look，`#454545` 字）+ `修改`（深底，`#e1e1e0` 字，submit button）
 
+**行為（2026-06-01 使用者確認）：**
+- `清除` — 不關 modal；reset 用（preview 階段 noop，待後端串接欄位 reset）
+- `修改` — submit + **關閉 modal**（preview 階段直接 close；未來掛串接後仍關閉）
+
 ---
 
 ## Sub Modal: 更換合約公司（`1702:38552`）
@@ -165,7 +169,8 @@ Modal (320×169, bg #ffffff, radius?)
 3. **會員身份 tabs**：default 選「合約」；選「一般」內容區空白；選「會員」（待 spec）
 4. **公司名稱 edit button**：click → 開啟 sub modal `更換合約公司`，sub modal 不蓋掉 main modal
 5. **close**：close icon / outside click / Esc（依專案 modal 慣例）
-6. **footer 修改**：暫定無 backend 串接，preview 階段點擊 = noop close
+6. **footer 修改**：點擊 = 關閉 modal（preview 階段無 backend 串接；未來補 submit 邏輯後仍 close）
+7. **footer 清除**：點擊不關 modal；reset 欄位（preview 階段 noop，待 form binding）
 
 ---
 

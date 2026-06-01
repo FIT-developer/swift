@@ -27,6 +27,12 @@
 - 實作：button 容器加 `id="rbAllocActions"`、`setMode()` 加 `allocActions.classList.toggle("hidden", mode === "inventory")`（沿用 `rangeRow` 相同 pattern）
 - spec：`specs/pages/room-booking.md` Frame 11 row + 0527 section 都註明「僅空房查詢 mode 顯示」
 
+#### Commit 3：會員資料 modal footer close 行為 swap
+
+- 使用者指出舊版 `清除` 掛 `modal-close-btn`、`修改` noop，行為相反。我先回報確認，使用者一字「修」確認後修
+- 改為：`修改` 掛 `modal-close-btn` + `data-modal="modalMemberDataBackdrop"`（click = 關 modal）；`清除` 移除 close 屬性 → 暫 noop（待後端串接欄位 reset）
+- `components/member-data-modal.md` Footer section 補行為說明 + 行為清單第 6/7 點對齊
+
 ### 反省
 
 - Figma `get_node` 回傳 `strokes:["#hex"]` 我直接判定四邊框，使用者糾正才知 chip/tab 常用 single-side underline。已寫入新 memory `feedback_figma_stroke_can_be_single_side` 並更新 MEMORY.md index
