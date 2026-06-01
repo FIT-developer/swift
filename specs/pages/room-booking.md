@@ -285,6 +285,7 @@ Figma source：`Content page - 房間預訂 default 0527-a1` (`1775:53143`)
 - bg `Color/Neutral/75`、border `Color/Neutral/200`、radius 12、padding 20、@ x:776
 - Header (Frame 99, 324×27)：Texts「正式單與候補單」md 20px + icons/down @ x:300
 - flexible content slot (324×342)：bg `Color/Neutral/0`、pad 20、radius 12
+- **height 對齊規則（2026-06-01）**：外框 `.rb-accordion` 設 `flex flex-col`、內白底 `.rb-accordion-content` 加 `flex-1` → 白卡吃滿剩餘高度，與左側 [C] 訂單條件白卡同高，避免下方露灰底
   - Frame 361 (284×319)
     - **Frame 295 (284×22, y:0) — 訂單類型 row**：label「訂單類型」base 16px + 3 pill toggle (Nation-style, slot 寬 208)
       - **無設定** (active, 圓圈 20×20 fill `#ffffff` stroke 內藍 `#2178cf`) + Texts「無設定」base

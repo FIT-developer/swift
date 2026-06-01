@@ -33,6 +33,13 @@
 - 改為：`修改` 掛 `modal-close-btn` + `data-modal="modalMemberDataBackdrop"`（click = 關 modal）；`清除` 移除 close 屬性 → 暫 noop（待後端串接欄位 reset）
 - `components/member-data-modal.md` Footer section 補行為說明 + 行為清單第 6/7 點對齊
 
+#### Commit 4：[E] 正式單與候補單 內白卡高度對齊 [C]
+
+- bug：[C] 訂單條件 + [E] 正式單與候補單 在 xl grid 並排，CSS grid 預設 stretch 兩邊外框（灰底）同高，但 [E] 內白底 `.rb-accordion-content` 只 size 到內容（訂單類型 row + 「未設定」200px 占位區），下方露出灰底跟左側 [C] 不齊
+- fix：[E] 外框加 `flex flex-col`、內白卡加 `flex-1` → 白卡吃滿剩餘高度貼齊 [C]。collapsed 態靠 `.rb-hidden { display: none }` 蓋過 flex 行為，不衝突
+- 流程：使用者要求先回報再修，照 [[feedback_completion_user_confirms]] flow；回報後一字「修」核可
+- spec：`specs/pages/room-booking.md` [E] section 補「height 對齊規則 (2026-06-01)」一條
+
 ### 反省
 
 - Figma `get_node` 回傳 `strokes:["#hex"]` 我直接判定四邊框，使用者糾正才知 chip/tab 常用 single-side underline。已寫入新 memory `feedback_figma_stroke_can_be_single_side` 並更新 MEMORY.md index

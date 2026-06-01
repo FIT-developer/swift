@@ -9438,9 +9438,10 @@
             </div>
           </div>
         </div>
-          <!-- [E] 正式單與候補單 — Figma Frame 1437:47168 -->
+          <!-- [E] 正式單與候補單 — Figma Frame 1437:47168
+               outer flex-col + content flex-1 → 白底吃滿剩餘高度與 [C] 對齊 -->
           <div
-            class="rb-accordion xl:col-span-1 rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
+            class="rb-accordion xl:col-span-1 rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5 flex flex-col"
           >
             <div
               class="rb-accordion-header flex items-center justify-between cursor-pointer select-none"
@@ -9455,7 +9456,7 @@
               />
             </div>
             <div
-              class="rb-accordion-content bg-white rounded-xl p-3 md:p-5 mt-4"
+              class="rb-accordion-content bg-white rounded-xl p-3 md:p-5 mt-4 flex-1"
             >
               <!-- 訂單類型 radio group -->
               <div class="flex items-center gap-3 flex-wrap mb-5">
