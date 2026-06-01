@@ -5007,6 +5007,7 @@
           var inventoryExcel = document.querySelector("[data-inventory-excel]");
           var invMetricToggle = document.getElementById("invMetricToggle");
           var rangeRow = document.getElementById("rangeRow");
+          var allocActions = document.getElementById("rbAllocActions");
           var invCalendarLeft = document.getElementById("invCalendarLeft");
           var invCalendarBtn = document.getElementById("invCalendarBtn");
 
@@ -5249,6 +5250,8 @@
               invMetricToggle.classList.toggle("hidden", mode === "room");
             if (rangeRow)
               rangeRow.classList.toggle("hidden", mode === "inventory");
+            if (allocActions)
+              allocActions.classList.toggle("hidden", mode === "inventory");
             // 0527: 庫存表 mode 隱藏 inline calendar、顯示 月曆 button；空房查詢相反
             if (invCalendarLeft)
               invCalendarLeft.classList.toggle("hidden", mode === "inventory");
@@ -8613,8 +8616,9 @@
                     />
                   </button>
                 </div>
-                <!-- Action buttons：對齊 Figma Button Y/N component（h 34、radius 6、padding 6/12、font 16） -->
-                <div class="flex justify-end gap-2">
+                <!-- Action buttons：對齊 Figma Button Y/N component（h 34、radius 6、padding 6/12、font 16）
+                     僅空房查詢模式顯示；庫存表模式整列隱藏 -->
+                <div id="rbAllocActions" class="flex justify-end gap-2">
                   <button
                     id="rbAllocClear"
                     type="button"

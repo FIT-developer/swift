@@ -6,7 +6,11 @@
 
 ## Session 69 交接（2026-06-01）
 
-### 任務：會員資料 modal 對 Figma 0601 微調
+### 任務：會員資料 modal 對 Figma 0601 微調 + [A] 庫存表 mode 隱藏底部按鈕
+
+兩波請求，2 commits：
+
+#### Commit 1：會員資料 modal 0601 sync
 
 使用者貼 Figma 兩個 Order condition variants 後逐項點問題：
 
@@ -17,6 +21,12 @@
 | 3 | Card a row 順序 | 行動電話 與 生日 互換 → 帳號/密碼/名稱/證號/**行動電話/生日**/性別/會員備註 |
 | 4 | 訂房記錄 filter tab active 樣式 | 原 `text-decoration: underline` 改為 `border-bottom: 1px solid var(--color-brand-400)`（#f28b45）；first attempt 寫成四邊框被使用者抓出，改成 border-bottom only |
 
+#### Commit 2：[A] 空房與庫存查詢 - 庫存表 mode 隱藏底部按鈕
+
+- 「清除 / 加入訂單」按鈕列現在只在「空房查詢」mode 顯示；切到「庫存表」mode 整列隱藏
+- 實作：button 容器加 `id="rbAllocActions"`、`setMode()` 加 `allocActions.classList.toggle("hidden", mode === "inventory")`（沿用 `rangeRow` 相同 pattern）
+- spec：`specs/pages/room-booking.md` Frame 11 row + 0527 section 都註明「僅空房查詢 mode 顯示」
+
 ### 反省
 
 - Figma `get_node` 回傳 `strokes:["#hex"]` 我直接判定四邊框，使用者糾正才知 chip/tab 常用 single-side underline。已寫入新 memory `feedback_figma_stroke_can_be_single_side` 並更新 MEMORY.md index
@@ -25,6 +35,7 @@
 
 ### Post-push 待 user 驗收
 - preview/landing.html 開 會員資料 modal 視覺確認 4 項
+- [A] 切庫存表 mode → 確認 數量分配 row 與 清除/加入訂單 按鈕都消失；切回空房查詢 → 兩列重現
 
 ---
 

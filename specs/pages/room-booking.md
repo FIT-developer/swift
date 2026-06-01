@@ -84,7 +84,7 @@
 | Payment method | 541 × 42 | y:58 | 棟別 filter chip 列（全部/A棟/B棟/C棟…） |
 | Table（庫存表） | 725 × 263 | y:116 | bg `Color/Neutral/0`、pad 12/16 |
 | Frame 119（數量分配） | 725 × 62 | y:395 | bg `Color/Neutral/0`、pad 12/16 |
-| Frame 11（底部按鈕） | 725 × 63 | y:473 | 「清除」/「加入訂單」Button Y/N |
+| Frame 11（底部按鈕） | 725 × 63 | y:473 | 「清除」/「加入訂單」Button Y/N — **僅空房查詢 mode 顯示；庫存表 mode 整列隱藏（2026-06-01 使用者要求）** |
 
 Table 欄位、Calendar 細節同 0428（保留段落，需與 0525 重新核對的細項以註記補上）。
 
@@ -113,7 +113,7 @@ Figma source：`Content page - 房間預訂 default 0527-a1` (`1775:53143`)
 | 空房查詢 | inline 顯示（同舊版） | **不顯示** |
 | 庫存表 | **不顯示** | 顯示；點擊 → 開啟 offcanvas（從 viewport 底部往上展） |
 
-> 庫存表 mode：左側 calendar 區塊整塊「不顯示」（不是 collapse 留空），其餘 chip / table / 數量分配 / 底部 button 維持示意稿。
+> 庫存表 mode：左側 calendar 區塊整塊「不顯示」（不是 collapse 留空），chip / table 維持；**「數量分配」slider row 與「清除 / 加入訂單」底部按鈕列也隱藏**（2026-06-01 使用者確認，只有空房查詢 mode 才出現這兩列）。
 
 **Offcanvas 內容**
 - Container spec → [components/offcanvas.md](../../components/offcanvas.md)
