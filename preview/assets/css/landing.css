@@ -359,8 +359,9 @@ body.mobile-sidebar-open {
   font-size: 16px;
 }
 
-/* ── member-data filter tab (Figma Frame 607: text 22h + 4 top + 4 bottom = 30h)
-   active = underline + semibold, no border ── */
+/* ── member-data filter tab (Figma Frame 606: 全部/未取消/正式單/未付款/取消單)
+   Figma: active = bottom-only stroke #f28b45 (brand-400) + SemiBold, inactive = no border + Regular.
+   Transparent bottom border on inactive prevents 1px layout shift on toggle. ── */
 .member-data-filter-tab {
   padding: 4px 8px;
   font-size: 16px;
@@ -368,15 +369,14 @@ body.mobile-sidebar-open {
   color: var(--color-text-800);
   cursor: pointer;
   border: none;
+  border-bottom: 1px solid transparent;
   background: transparent;
-  text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
 }
 .member-data-filter-tab.is-active {
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  border-bottom-color: var(--color-brand-400);
 }
 
 /* ── member-data accordion title badge (總消費 pill green) ── */

@@ -4,6 +4,30 @@
 
 ---
 
+## Session 69 交接（2026-06-01）
+
+### 任務：會員資料 modal 對 Figma 0601 微調
+
+使用者貼 Figma 兩個 Order condition variants 後逐項點問題：
+
+| 改動 | 位置 | 內容 |
+|---|---|---|
+| 1 | Card c 類別 row | radio (實體/一般) -> 三段靜態文字 `一般 / 實體 / B2B`；註：未來會改成擇一 select/radio，本版先放假文字 |
+| 2 | Card d 合約 panel | 9 欄位（在 備註 之後補 `地址 / 王大頭`，從 8 -> 9） |
+| 3 | Card a row 順序 | 行動電話 與 生日 互換 → 帳號/密碼/名稱/證號/**行動電話/生日**/性別/會員備註 |
+| 4 | 訂房記錄 filter tab active 樣式 | 原 `text-decoration: underline` 改為 `border-bottom: 1px solid var(--color-brand-400)`（#f28b45）；first attempt 寫成四邊框被使用者抓出，改成 border-bottom only |
+
+### 反省
+
+- Figma `get_node` 回傳 `strokes:["#hex"]` 我直接判定四邊框，使用者糾正才知 chip/tab 常用 single-side underline。已寫入新 memory `feedback_figma_stroke_can_be_single_side` 並更新 MEMORY.md index
+- 規格本來標「active 視覺帶藍底/特殊樣式」是 0528 還沒對齊就先寫的猜測，這次對位後已改寫實際樣式
+- `components/member-data-modal.md` 同步更新：類別 cell、合約 panel 欄位數、Frame 412 a 順序、Filter tab 列、移除「Filter tab default active 未確認」這條 open question
+
+### Post-push 待 user 驗收
+- preview/landing.html 開 會員資料 modal 視覺確認 4 項
+
+---
+
 ## Session 68 交接（2026-05-27 to 2026-05-28）
 
 ### 任務：庫存表 0527 重做 / bulletin tab focus 修 / 0527 spec sync / Data exists button + 會員資料 modal

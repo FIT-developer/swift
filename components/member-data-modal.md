@@ -18,7 +18,7 @@ Order condition (1140×1823, bg #f6fafd, padding 20)
 │   └── icons/down               # collapse / close icon 24×24
 └── container (1100×1740, bg #ffffff, radius 12)
     ├── Frame 370 (1076×995)     # 主表單區（4 個 sub-card，2×2 grid）
-    │   ├── Frame 412 a (518×466) @ 0,0       # 左上：帳號/密碼/名稱/證號/生日/行動電話/性別/會員備註
+    │   ├── Frame 412 a (518×466) @ 0,0       # 左上：帳號/密碼/名稱/證號/行動電話/生日/性別/會員備註
     │   ├── Frame 412 b (518×466) @ 558,0     # 右上：Email/市話/傳真/國籍/地址(3列)/狀態/類別/常用會員/訂閱電子報/會員等級
     │   ├── Frame 412 c (518×250) @ 0,498     # 左下：會員身份 + tabs(會員/一般/合約) + 合約內容
     │   └── Frame 568   (518×497) @ 558,498   # 右下：（保留空間，待補）
@@ -38,8 +38,8 @@ Order condition (1140×1823, bg #f6fafd, padding 20)
 | 密碼 | placeholder |
 | 名稱 | placeholder + Texts「先生 / 小姐」（隨性別 radio） |
 | 證號 | placeholder |
-| 生日 | calendar-simple `2026-02-27` |
 | 行動電話 | placeholder |
+| 生日 | calendar-simple `2026-02-27` |
 | 性別 | radio 男 / 女 |
 | 會員備註 | textarea (`???` 為 placeholder) |
 
@@ -55,7 +55,7 @@ Order condition (1140×1823, bg #f6fafd, padding 20)
 | 地址 行政區 | select `北屯區 / 406` |
 | 地址 街道 | input placeholder |
 | 狀態 | radio 正式 / 非正式 |
-| 類別 | radio 實體 / 一般 |
+| 類別 | 靜態文字 `一般 / 實體 / B2B`（占位；未來改為擇一 select/radio） |
 | 常用會員 | checkbox |
 | 訂閱電子報 | checkbox |
 | 會員等級 | select `宇宙金卡` |
@@ -67,7 +67,7 @@ Order condition (1140×1823, bg #f6fafd, padding 20)
 ├── tabs: [會員] [一般] [合約]
 └── 內容區（**↓ 條件渲染**）
     ├── 一般 selected → **空白**（按使用者規定）
-    └── 合約 selected → 8 個欄位（label + 唯讀文字 王大頭）：
+    └── 合約 selected → 9 個欄位（label + 唯讀文字 王大頭）：
         ├── 公司名稱 + ✏️ **edit 按鈕**（點擊 → 觸發 sub modal）
         ├── 統編
         ├── 公司別
@@ -75,7 +75,8 @@ Order condition (1140×1823, bg #f6fafd, padding 20)
         ├── 聯絡電話二
         ├── 傳真一
         ├── 傳真二
-        └── 備註
+        ├── 備註
+        └── 地址
 ```
 
 > **「一般」tab 規則（0528 使用者確認）**：選中時內容區**保持空白**，不渲染任何欄位。
@@ -99,7 +100,10 @@ Order condition (1140×1823, bg #f6fafd, padding 20)
 
 ### Filter tab 列
 
-`全部 / 未取消 / 正式單 / 未付款 / 取消單`（橫向，active 視覺帶藍底/特殊樣式）
+`全部 / 未取消 / 正式單 / 未付款 / 取消單`（橫向，gap 12px、各 chip padding 4 8）。
+- inactive：純文字，無 border、無 fill，`#454545` Regular 16px。
+- active：底線 1px `#f28b45`（`--color-brand-400`）+ SemiBold；只有 border-bottom、無 fill、非四邊框。
+- default active = 全部。
 
 ### 來源 filter（multi-location #2 variant only）
 
@@ -169,6 +173,5 @@ Modal (320×169, bg #ffffff, radius?)
 
 - 「會員」tab（除一般 / 合約之外的第三 tab）內容？目前 Figma 兩態都顯示合約資料，沒有「會員」tab 內容示意 → 暫時也保持空白與「一般」相同
 - Sub modal「更換合約公司」內部詳細 layout（input vs select、placeholder 文字）
-- Filter tab 列 active 視覺樣式（哪一個是 default active？樣式 token？）
 
 關聯：[[order-data]]（觸發按鈕來源）、[[modal]]、[[input]]、[[calendar-simple]]、[[checkbox]]、[[accordion]]、[[pagination]]
