@@ -1,11 +1,11 @@
 /* Page-specific styles for preview/landing.html. */
 
-/* Nav sub-item selected state — same bg as hover */
+/* Nav sub-item selected state - same bg as hover */
 .sub-item-selected {
   background: var(--color-modal-hover);
 }
 /* Page tab chip */
-/* Page tab chip — inactive (default) and active states match Figma spec */
+/* Page tab chip - inactive (default) and active states match Figma spec */
 .page-tab {
   display: inline-flex;
   align-items: center;
@@ -105,7 +105,7 @@
   border-color: var(--color-menuitem-default);
 }
 
-/* Desktop sidebar collapsed state — only hides at md+; mobile uses drawer state */
+/* Desktop sidebar collapsed state - only hides at md+; mobile uses drawer state */
 @media (min-width: 768px) {
   #sidebar.md-collapsed {
     display: none !important;
@@ -184,7 +184,7 @@ body.mobile-sidebar-open {
   overflow: hidden;
 }
 
-/* Member modal — desktop: 320px centered; mobile: fullscreen */
+/* Member modal - desktop: 320px centered; mobile: fullscreen */
 #modalMemberBackdrop .modal-box {
   display: flex;
   flex-direction: column;
@@ -202,7 +202,7 @@ body.mobile-sidebar-open {
   }
 }
 
-/* Bulletin vendor + Administer modals — desktop: max-width centered; mobile: fullscreen */
+/* Bulletin vendor + Administer modals - desktop: max-width centered; mobile: fullscreen */
 #modalBulletinBackdrop .modal-box {
   width: 100%;
   max-width: 681px;
@@ -281,7 +281,7 @@ body.mobile-sidebar-open {
   overflow: hidden;
 }
 
-/* ── iOS-style toggle switch (member data modal: 常用會員 / 訂閱電子報) ── */
+/* -- iOS-style toggle switch (member data modal: 常用會員 / 訂閱電子報) -- */
 .member-data-switch {
   position: relative;
   width: 64px;
@@ -325,7 +325,7 @@ body.mobile-sidebar-open {
   transform: translateX(36px);
 }
 
-/* ── member-data Title chip (calcY pill — used in 訂房記錄 summary chips) ── */
+/* -- member-data Title chip (calcY pill - used in 訂房記錄 summary chips) -- */
 .member-data-title-chip {
   display: inline-flex;
   align-items: center;
@@ -359,9 +359,9 @@ body.mobile-sidebar-open {
   font-size: 16px;
 }
 
-/* ── member-data filter tab (Figma Frame 606: 全部/未取消/正式單/未付款/取消單)
+/* -- member-data filter tab (Figma Frame 606: 全部/未取消/正式單/未付款/取消單)
    Figma: active = bottom-only stroke #f28b45 (brand-400) + SemiBold, inactive = no border + Regular.
-   Transparent bottom border on inactive prevents 1px layout shift on toggle. ── */
+   Transparent bottom border on inactive prevents 1px layout shift on toggle. -- */
 .member-data-filter-tab {
   padding: 4px 8px;
   font-size: 16px;
@@ -379,7 +379,7 @@ body.mobile-sidebar-open {
   border-bottom-color: var(--color-brand-400);
 }
 
-/* ── member-data accordion title badge (總消費 pill green) ── */
+/* -- member-data accordion title badge (總消費 pill green) -- */
 .member-data-accordion-badge {
   display: inline-flex;
   align-items: center;
@@ -391,12 +391,12 @@ body.mobile-sidebar-open {
   height: 22px;
 }
 
-/* ── member-data pagination active page bg (Figma #b0b0b0 = neutral-300) ── */
+/* -- member-data pagination active page bg (Figma #b0b0b0 = neutral-300) -- */
 .member-data-pagination-page--active {
   background: var(--color-neutral-300);
 }
 
-/* ── 訂單編號 row-chip badges (加/網/企) — used in member-data 訂房記錄 table ── */
+/* -- 訂單編號 row-chip badges (加/網/企) - used in member-data 訂房記錄 table -- */
 .order-channel-chip {
   display: inline-flex;
   align-items: center;
@@ -415,9 +415,8 @@ body.mobile-sidebar-open {
   border-color: var(--color-menuitem-default);
 }
 .order-channel-chip--corp {
-  /* warning: #00c8b3 not in Figma Variables / base.css yet — keep inline ref for now */
-  color: #00c8b3;
-  border-color: #00c8b3;
+  color: var(--color-accent-cart-button-active);
+  border-color: var(--color-accent-cart-button-active);
 }
 .sms-modal-content {
   border: 1px solid var(--color-neutral-200);
@@ -829,7 +828,7 @@ body.mobile-sidebar-open {
     gap: 20px;
   }
 }
-/* ── Room-booking: mode toggle (calendar JS managed) ─── */
+/* -- Room-booking: mode toggle (calendar JS managed) --- */
 .mode-toggle {
   display: inline-flex;
   align-self: flex-start;
@@ -858,7 +857,7 @@ body.mobile-sidebar-open {
   background: var(--color-modal-hover);
 }
 
-/* ── Room-booking: inventory toolbar + date-details modal ─────────────── */
+/* -- Room-booking: inventory toolbar + date-details modal --------------- */
 .inventory-toolbar {
   display: flex;
   align-items: center;
@@ -920,7 +919,7 @@ body.mobile-sidebar-open {
   filter: brightness(0) invert(1);
 }
 
-/* 0527: Offcanvas (bottom slide-in) — 庫存表 月曆 觸發 */
+/* 0527: Offcanvas (bottom slide-in) - 庫存表 月曆 觸發 */
 .inv-offcanvas {
   position: fixed;
   left: 0;
@@ -1043,10 +1042,10 @@ body.mobile-sidebar-open {
   text-align: center;
 }
 
-/* ── Payment method chip (正式單 panel) ───────────── */
+/* -- Payment method chip (正式單 panel) ------------- */
 /* Figma Button component-set:
-   circle-none-selected (974:12453) → padding 10/16, r:28, stroke Color/Neutral/200, no fill
-   circle-selected-yellow (1482:26085) → padding 10/16, r:28, fill+stroke Color/SubItem/Selected */
+   circle-none-selected (974:12453) -> padding 10/16, r:28, stroke Color/Neutral/200, no fill
+   circle-selected-yellow (1482:26085) -> padding 10/16, r:28, fill+stroke Color/SubItem/Selected */
 .rb-pay-chip {
   padding: 10px 16px;
   border-radius: 28px;
@@ -1067,12 +1066,12 @@ body.mobile-sidebar-open {
   color: var(--color-text-800);
 }
 
-/* ── Nation radio (selected = 藍框) ───────────────── */
+/* -- Nation radio (selected = 藍框) ----------------- */
 .nation-radio {
   accent-color: var(--color-menuitem-default);
 }
 
-/* ── Order data lock toggle ──────────────────────── */
+/* -- Order data lock toggle ------------------------ */
 /* 紅鎖 = inputs disabled (灰底)；綠鎖 = inputs active (白底) */
 .order-lock {
   background: transparent;
@@ -1132,8 +1131,8 @@ body.mobile-sidebar-open {
   line-height: 22px;
 }
 
-/* ── Order data tabs (訂房 / 入住 / 合約) ─────────── */
-/* Figma Frame 356：72×42, padding 10/20, gap 28, radius top-only */
+/* -- Order data tabs (訂房 / 入住 / 合約) ----------- */
+/* Figma Frame 356：72x42, padding 10/20, gap 28, radius top-only */
 .order-tab {
   height: 42px;
   padding: 10px 20px;
@@ -1153,8 +1152,8 @@ body.mobile-sidebar-open {
   margin-bottom: -1px;
 }
 
-/* ── Customer type toggle (一般客戶 / 合約客戶) ───── */
-/* 視覺參考 mode-toggle（pill r:28），尺寸保持 Figma Frame 97 (176×42)：兩顆 88×42 */
+/* -- Customer type toggle (一般客戶 / 合約客戶) ----- */
+/* 視覺參考 mode-toggle（pill r:28），尺寸保持 Figma Frame 97 (176x42)：兩顆 88x42 */
 .customer-toggle {
   display: inline-flex;
   border: 1px solid var(--color-neutral-200);
@@ -1181,7 +1180,7 @@ body.mobile-sidebar-open {
   background: var(--color-modal-hover);
 }
 
-/* ── Merged input group (Bootstrap-style) ─────────── */
+/* -- Merged input group (Bootstrap-style) ----------- */
 /* 統編 / 合約公司 / 新的訂房人：共邊框，外圓角僅在首尾 */
 .input-group {
   display: inline-flex;
@@ -1242,8 +1241,8 @@ body.mobile-sidebar-open {
   border-bottom-right-radius: 6px;
 }
 
-/* ── Stepper input (table 間數欄) ──────────────────── */
-/* 對應 Figma 間數 cell：145×36 box，內含 [−] [N] [+] */
+/* -- Stepper input (table 間數欄) -------------------- */
+/* 對應 Figma 間數 cell：145x36 box，內含 [-] [N] [+] */
 .stepper {
   display: inline-flex;
   align-items: center;
@@ -1280,10 +1279,10 @@ body.mobile-sidebar-open {
   padding: 0;
 }
 
-/* ── Room-booking: filter tabs (棟別 chips) ─────────── */
+/* -- Room-booking: filter tabs (棟別 chips) ----------- */
 /* Figma Button component-set:
-   circle-none-selected (974:12453)  → transparent + stroke Color/Neutral/200, padding 10/16, r:28
-   circle-selected-yellow (1482:26085) → fill+stroke Color/SubItem/Selected, padding 10/16, r:28 */
+   circle-none-selected (974:12453)  -> transparent + stroke Color/Neutral/200, padding 10/16, r:28
+   circle-selected-yellow (1482:26085) -> fill+stroke Color/SubItem/Selected, padding 10/16, r:28 */
 .rb-filter-tab {
   height: 42px;
   padding: 10px 16px;
@@ -1305,8 +1304,8 @@ body.mobile-sidebar-open {
   color: var(--color-text-800);
 }
 
-/* ── Inventory metric toggle (訂/餘/保) ───────────── */
-/* 對應 Figma Frame 346：36×36、r:4、border 同 --c、active 時填 --c；文字統一 Text/800 */
+/* -- Inventory metric toggle (訂/餘/保) ------------- */
+/* 對應 Figma Frame 346：36x36、r:4、border 同 --c、active 時填 --c；文字統一 Text/800 */
 .inv-metric-btn {
   width: 36px;
   height: 36px;
@@ -1326,12 +1325,12 @@ body.mobile-sidebar-open {
   background: var(--c);
 }
 
-/* ── Room-booking: accordion ───────────────────────── */
+/* -- Room-booking: accordion ------------------------- */
 .rb-accordion-content.rb-hidden {
   display: none;
 }
 
-/* ── Calendar component ────────────────────────────── */
+/* -- Calendar component ------------------------------ */
 /* width 封頂 351px；容器更窄時等比縮（cell 用 1fr 分配） */
 .rb-cal-wrap {
   width: 351px;
@@ -1421,7 +1420,7 @@ body.mobile-sidebar-open {
   row-gap: 8px;
   touch-action: none;
 }
-/* Day cells — scoped under .rb-cal-wrap */
+/* Day cells - scoped under .rb-cal-wrap */
 .rb-cal-wrap .day {
   height: 55px;
   border-radius: 12px;
@@ -1520,7 +1519,7 @@ body.mobile-sidebar-open {
   color: var(--color-neutral-0) !important;
 }
 
-/* ── Arrival method modal ─────────────────────────── */
+/* -- Arrival method modal --------------------------- */
 /* Spec: components/arrival-method-modal.md
    - States A/B/C 寬 507；State D（接送）寬 834
    - Phase A: shell + chip 切換
@@ -1560,9 +1559,9 @@ body.mobile-sidebar-open {
   font-size: 16px;
   color: var(--color-text-800);
 }
-/* Stepper Input — text + up-and-down icon
+/* Stepper Input - text + up-and-down icon
    Spec: components/input.md Group B `number`（1057:18817）
-   Distinct from existing .stepper（[−][N][+] 兩側按鈕） */
+   Distinct from existing .stepper（[-][N][+] 兩側按鈕） */
 .am-stepper {
   display: flex;
   align-items: center;
@@ -1590,9 +1589,9 @@ body.mobile-sidebar-open {
   flex-shrink: 0;
 }
 
-/* ── Phase C: 接送 雙 swiper card stack（State D） ─────────────── */
+/* -- Phase C: 接送 雙 swiper card stack（State D） --------------- */
 /* Spec: components/arrival-method-modal.md L145-244
-   外層 798×810 / 接 + 送 並排 gap 24 / 卡片 393 wide / inner stack bg #f6fafd */
+   外層 798x810 / 接 + 送 並排 gap 24 / 卡片 393 wide / inner stack bg #f6fafd */
 .am-transfer-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1755,7 +1754,7 @@ body.mobile-sidebar-open {
   cursor: not-allowed;
 }
 /* trash-can.svg ships with stroke #D90000 (red, active state).
-   Disabled state needs #B0B0B0 — use mask-image so color comes from CSS,
+   Disabled state needs #B0B0B0 - use mask-image so color comes from CSS,
    driven by currentColor. */
 .am-transfer-delete-icon {
   width: 24px;
@@ -1839,7 +1838,7 @@ body.mobile-sidebar-open {
   }
 }
 
-/* ── bulletin / administer modal tabs ─────────────────────────────
+/* -- bulletin / administer modal tabs -----------------------------
    touch 裝置點擊後 :hover sticky 殘留，會讓 active tab 從黃底變灰底
    (inactive 的 `hover:bg-surface-default` 蓋過 active 的 `bg-tab-yellow`)。
    提高 active tab 在 :hover 下的特異度，鎖死黃底。 */

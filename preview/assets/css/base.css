@@ -2,18 +2,18 @@
    Page-specific layout/component CSS stays in each preview file unless promoted explicitly.
 
    :root structure:
-   1. Strict Figma mirror — token name = lowercase kebab of Figma path; raw hex tokens
+   1. Strict Figma mirror - token name = lowercase kebab of Figma path; raw hex tokens
       hold values, derived/alias tokens use var() to reference canonical paths.
       Source of truth: specs/assets/figma-variables.json + specs/assets/tokens.md.
-   2. Effect / z-index variables — no Figma source; project-local conventions.
+   2. Effect / z-index variables - no Figma source; project-local conventions.
 */
 
 :root {
   /* ════════════════════════════════════════════════════════════════════════════
-     1. STRICT FIGMA MIRROR (specs/assets/figma-variables.json · synced 2026-05-07)
+     1. STRICT FIGMA MIRROR (specs/assets/figma-variables.json - synced 2026-06-03)
      ════════════════════════════════════════════════════════════════════════════ */
 
-  /* Color/Neutral — full grayscale ramp */
+  /* Color/Neutral - full grayscale ramp */
   --color-neutral-0:   #ffffff;
   --color-neutral-50:  #f6f6f6;
   --color-neutral-75:  #f6fafd;
@@ -29,18 +29,29 @@
   --color-neutral-900: #3d3d3d;
   --color-neutral-950: #262626;
 
-  /* Color/Brand — orange ramp */
-  --color-brand-50:  #fef6ee;
-  --color-brand-100: #fdebd7;
-  --color-brand-200: #fad4ae;
-  --color-brand-300: #f7b57a;
-  --color-brand-400: #f28b45;
-  --color-brand-500: #ef6f25;
-  --color-brand-600: #e05216;
-  --color-brand-700: #ba3d14;
-  --color-brand-800: #943218;
-  --color-brand-900: #772b17;
-  --color-brand-950: #40140a;
+  /* Color/Brand - orange ramp */
+  --color-brand-brand-50:  #fef6ee;
+  --color-brand-brand-100: #fdebd7;
+  --color-brand-brand-200: #fad4ae;
+  --color-brand-brand-300: #f7b57a;
+  --color-brand-brand-400: #f28b45;
+  --color-brand-brand-500: #ef6f25;
+  --color-brand-brand-600: #e05216;
+  --color-brand-brand-700: #ba3d14;
+  --color-brand-brand-800: #943218;
+  --color-brand-brand-900: #772b17;
+  --color-brand-brand-950: #40140a;
+  --color-brand-50:  var(--color-brand-brand-50);
+  --color-brand-100: var(--color-brand-brand-100);
+  --color-brand-200: var(--color-brand-brand-200);
+  --color-brand-300: var(--color-brand-brand-300);
+  --color-brand-400: var(--color-brand-brand-400);
+  --color-brand-500: var(--color-brand-brand-500);
+  --color-brand-600: var(--color-brand-brand-600);
+  --color-brand-700: var(--color-brand-brand-700);
+  --color-brand-800: var(--color-brand-brand-800);
+  --color-brand-900: var(--color-brand-brand-900);
+  --color-brand-950: var(--color-brand-brand-950);
 
   /* Color/Bootstrap */
   --color-bootstrap-focus-background:   #d3ebfd;
@@ -53,6 +64,8 @@
   --color-accent-green:                 #34c759;
   --color-accent-cart-date:             #fdebd7;
   --color-accent-cart-time:             #e1e1e0;
+  --color-accent-cart-button-active:    #00c8b3;
+  --color-accent-calc-result-background: var(--color-menuitem-default);
   --color-accent-celebration:           #f44df4;
   --color-accent-linear-pos-left:       #e376f9;
   --color-accent-linear-pos-right:      #ff7878;
@@ -61,7 +74,7 @@
   --color-accent-float-circle-filled-1: #f2befd;
   --color-accent-float-circle-filled-2: #ffb6b6;
 
-  /* iOS switch off track — system color (Figma frame instance reference, not yet in Variables) */
+  /* iOS switch off track - system color (Figma frame instance reference, not yet in Variables) */
   --color-switch-off-track: rgba(60, 60, 67, 0.3);
 
   /* Color/Icon */
@@ -73,12 +86,13 @@
   /* Color/SubItem */
   --color-subitem-selected: #f7d275;
 
-  /* Color/Chart — separate semantic from Bootstrap/Accent even when hex overlaps */
+  /* Color/Chart - separate semantic from Bootstrap/Accent even when hex overlaps */
   --color-chart-blue:        #86b7fe;
-  --color-chart-purple-red:  #ff0bd6;
+  --color-chart-purplered:   #ff0bd6;
+  --color-chart-purple-red:  var(--color-chart-purplered);
   --color-chart-green:       #34c759;
 
-  /* Color/Text — TEXT_FILL scope; full ramp parallel to Neutral */
+  /* Color/Text - TEXT_FILL scope; full ramp parallel to Neutral */
   --color-text-50:  #f6f6f6;
   --color-text-75:  #f6fafd;
   --color-text-100: #e1e1e0;
@@ -93,7 +107,7 @@
   --color-text-900: #3d3d3d;
   --color-text-950: #262626;
 
-  /* Color/Surface — semantic surfaces; some derived from Brand ramp */
+  /* Color/Surface - semantic surfaces; some derived from Brand ramp */
   --color-surface-default:         var(--color-neutral-50);
   --color-surface-brand-default:   var(--color-brand-500);
   --color-surface-brand-hover:     var(--color-brand-400);
@@ -111,7 +125,7 @@
   --color-border-plugin-focus:   var(--color-surface-brand-default);
   --color-border-plugin-invalid: #d90000;
 
-  /* Color/Modal — Figma key "Text-hightlight" preserved verbatim (typo in source) */
+  /* Color/Modal - Figma key "Text-hightlight" preserved verbatim (typo in source) */
   --color-modal-default-today:   var(--color-neutral-500);
   --color-modal-text-hightlight: var(--color-surface-brand-default);
   --color-modal-hover:           var(--color-neutral-75);
@@ -129,11 +143,15 @@
   --spacing-4:   4px;
   --spacing-6:   6px;
   --spacing-8:   8px;
+  --spacing-10:  10px;
   --spacing-12:  12px;
   --spacing-16:  16px;
+  --spacing-17:  17px;
   --spacing-18:  18px;
+  --spacing-19:  19px;
   --spacing-20:  20px;
   --spacing-24:  24px;
+  --spacing-26:  26px;
   --spacing-28:  28px;
   --spacing-32:  32px;
   --spacing-36:  36px;
@@ -146,7 +164,7 @@
   --spacing-80:  80px;
   --spacing-100: 100px;
 
-  /* Radius — alias of Spacing per tokens.md, only up to 72 */
+  /* Radius - alias of Spacing per tokens.md, only up to 72 */
   --radius-0:  var(--spacing-0);
   --radius-2:  var(--spacing-2);
   --radius-4:  var(--spacing-4);
@@ -193,9 +211,9 @@
   font-family: "Noto Sans TC", sans-serif;
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Font-size scale — 全域文字大小規範
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* ------------------------------------------------------------
+   Font-size scale - 全域文字大小規範
+   ------------------------------------------------------------
    全域最小字體 = text-xs (12px)。
    不允許任何 < 12px 的字（含 Tailwind arbitrary value 與 inline font-size）。
    寫法：用 Tailwind utility（text-xs/text-sm/text-base/text-lg/text-xl）

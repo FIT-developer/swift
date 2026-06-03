@@ -1,6 +1,60 @@
-# Progress — 當前進度與決策紀錄
+# Progress - 當前進度與決策紀錄
 
 > 每次交接時更新此檔。格式：最新紀錄在最上方。
+
+---
+
+## Session 71 交接 (2026-06-03)
+
+### 任務: 清理 startup rules 與現行內容衝突
+
+使用者要求繼續處理 `start.md` / `AGENTS.md` / `progress.md` 內有規範, 但與現行內容互相衝突的部分。本輪聚焦規範源頭與本輪 touched files, 不全量改寫歷史交接。
+
+### 本輪改動
+
+- `start.md`: 將專案結構 tree、箭頭 glyph、warning / no-go 裝飾符號、dimension symbol、section sign 等改成 ASCII 寫法。
+- `start.md`: 補明確規則: 既有歷史交接內容可保留到被編輯時再清理; 新增或本輪修改的 `.md` / spec / code comment 必須符合 ASCII-only。
+- `start.md`: 將「不自稱完成」限定為 chat / final / 驗證報告中的狀態斷言; progress 交接欄位改用「本輪改動」或「本次處理」, 避免和模板中的「已完成」互相衝突。
+- `specs/progress.md`: 最新交接欄位由「已完成」改為「本輪改動」; 檔案標題 dash 改 ASCII。
+- `components/member-data-modal.md` / `components/title.md` / `preview/assets/css/base.css` / `preview/assets/css/landing.css` / `specs/assets/tokens.md`: 清理本輪 touched content 中的裝飾符號與 box-drawing 形式。
+
+### 驗證
+
+- `rg` 掃描本輪 touched files 的 arrow glyph / check mark / warning sign / box-drawing / dimension symbol / pencil emoji: exit 1, 沒有命中。
+- `./scripts/lint-fonts.sh` exit 0。
+- `git diff --check` exit 0。
+
+### 注意
+
+- `specs/progress.md` 歷史段落仍保留舊符號; 依 `start.md` 新規則, archival history 等被編輯時再清。
+- 本輪尚未 commit。
+
+---
+
+## Session 70 交接 (2026-06-03)
+
+### 任務: 盤點使用者貼上的 Figma Variables JSON 並補齊 token mirror
+
+使用者說「先處理 figma variants」，附件實際內容是 Figma Variables JSON。按 Variables 處理, 盤點 Color / Spacing / Radius 後補齊 `tokens.md` 與 `base.css` strict mirror, 未讀 Figma selection, 未改 UI layout。
+
+### 本輪改動
+
+- `specs/assets/tokens.md`: 上次同步日期改為 2026-06-03 局部同步; `Color/Accent/cart-date` / `cart-time` 對齊附件 export; 新增 `Color/Accent/cart-button-active` (`#00C8B3`) 與 `Color/Accent/calc-result-background` (`#2178CF` -> MenuItem/Default); 新增 `Spacing/10` / `17` / `19` / `26`; 移除 `#00c8b3` 未解問題段。
+- `preview/assets/css/base.css`: 補 `--color-accent-cart-button-active` / `--color-accent-calc-result-background`; 補 `--spacing-10` / `--spacing-17` / `--spacing-19` / `--spacing-26`; 新增 exact mirror `--color-brand-brand-*` 與 `--color-chart-purplered`, 舊 `--color-brand-*` / `--color-chart-purple-red` 保留為相容引用。
+- `preview/assets/css/landing.css`: `.order-channel-chip--corp` 改用 `var(--color-accent-cart-button-active)`, 不再直接寫 `#00c8b3`。
+- `components/member-data-modal.md` / `components/title.md`: 將「企」chip 與 Title pill active green 補上 `Color/Accent/cart-button-active`; calcY badge 背景補上 `Color/Accent/calc-result-background`。
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `git diff --check` exit 0
+- `rg` 確認 `landing.css` 只使用 `var(--color-accent-cart-button-active)`, raw `#00c8b3` 只留在 token definition / spec 對照值。
+- `jq` + shell coverage check: 附件 JSON 內全部 Color / Spacing / Radius path 轉成 strict CSS variable name 後, `preview/assets/css/base.css` 沒有缺漏。
+
+### 注意
+
+- 本輪尚未 commit。
+- 這次沒有處理 component variants 的 Figma selection; 若使用者真的是要整理 component variants, 下一步需用 figma-go 讀目前 selection, 再走 Read -> Spec checkpoint -> Write flow。
 
 ---
 

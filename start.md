@@ -11,29 +11,30 @@ Please avoid using special Unicode characters, emoji, box-drawing characters, or
 - 不可使用: emoji, check mark, warning sign, arrow glyph, bullet glyph, table box-drawing, 任何裝飾性符號
 - 改用純文字: "OK", "warning", "->", "-", "*"
 - 表格用標準 markdown pipe `|` 即可, 不用 box-drawing
-- 任何 ASCII 可表達的概念都應該用 ASCII; 「↺」改寫 "update" 或 "changed", 「✓」改 "OK", 「⚠」改 "warning", 「→」改 "->"
+- 任何 ASCII 可表達的概念都應該用 ASCII; 裝飾性 update icon 改寫 "update" 或 "changed", check mark 改 "OK", warning sign 改 "warning", arrow glyph 改 "->"
+- 既有歷史交接內容可保留到被編輯時再清理; 新增或本輪有修改的 .md / spec / code comment 必須符合本規則。
 
 ---
 
 ## 專案結構
 
 Figma/
-├── start.md ← 本文件，開發規則入口
-├── components/ ← 各獨立元件規格 (e.g., button.md)
-├── sections/ ← 區塊組合規格 (e.g., desktop-statistics.md)
-├── layouts/ ← 頁面佈局規格 (e.g., desktop.md)
-├── specs/
-│ ├── progress.md ← 核心：當前進度、決策、交接紀錄
-│ ├── icons.md ← 核心：Icon 系統語意對照表
-│ └── assets/
-│ └── tokens.md ← 核心：Design Tokens (色彩、間距、圓角)
-└── preview/
-├── *.html ← 實作產出 (e.g., landing.html)
-└── assets/
-├── icons/ ← SVG 檔案庫
-├── images/ ← 靜態圖檔 (如 QR Code)
-└── css/
-└── base.css ← 全域樣式 (Scrollbar, Tailwind Reset 等)
+- start.md: 本文件, 開發規則入口
+- components/: 各獨立元件規格 (e.g., button.md)
+- sections/: 區塊組合規格 (e.g., desktop-statistics.md)
+- layouts/: 頁面佈局規格 (e.g., desktop.md)
+- specs/
+  - progress.md: 核心, 當前進度、決策、交接紀錄
+  - icons.md: 核心, Icon 系統語意對照表
+  - assets/
+    - tokens.md: 核心, Design Tokens (色彩、間距、圓角)
+- preview/
+  - *.html: 實作產出 (e.g., landing.html)
+  - assets/
+    - icons/: SVG 檔案庫
+    - images/: 靜態圖檔 (如 QR Code)
+    - css/
+      - base.css: 全域樣式 (Scrollbar, Tailwind Reset 等)
 
 ---
 
@@ -51,7 +52,7 @@ Figma/
 **不要在讀完後就停下來等指令**。主動報告理解、主動引導下一步。
 
 ## 專案 swift
-**名稱**: swift — 房間預訂系統後台 
+**名稱**: swift - 房間預訂系統後台
 **類型**: 複雜 SaaS dashboard,繁體中文介面（將來會新增英文，至少二個語系）
  **主要使用者**: 飯店櫃檯 / 業務人員 
 **技術棧**:
@@ -72,7 +73,7 @@ Figma/
 - 發現規格不清楚時,先補規格,再實作
 - 不要在實作階段自己腦補規格沒講的東西
 **分層實作順序**:
-tokens → icons → components → sections → layout → 實作
+tokens -> icons -> components -> sections -> layout -> 實作
 上游沒做完,下游不動。
 **Figma 讀取與寫檔 checkpoint**:
 - 使用者說 `figma-go` 時，代表先讀目前 Figma selection / frame / section / component。
@@ -99,14 +100,14 @@ tokens → icons → components → sections → layout → 實作
 - Figma selection 中的 currently selected / active visual state 不可自動推論為 default state；如果 active state 可能只是為了展示、檢查某個 variant、或讀取特規 layout，必須列為疑點並詢問使用者。
 - 實作後的驗證必須包含 contract-specific checks；不可只跑 script parse / duplicate id / diff check。
 - 需要寫檔時：
-  - component → `components/{name}.md`
-  - section → `sections/{name}.md`
-  - layout → `layouts/{name}.md`
+  - component -> `components/{name}.md`
+  - section -> `sections/{name}.md`
+  - layout -> `layouts/{name}.md`
 
 **Figma MCP 漸層限制**:
 - `get_node` / `get_design_context` 只序列化純色 paint
-- 漸層 **stroke** → 靜默省略（`styles.strokes` 欄位消失，無任何提示）
-- 漸層 **fill** → 回傳佔位符 `"s1"` 而非 hex
+- 漸層 **stroke** -> 靜默省略（`styles.strokes` 欄位消失，無任何提示）
+- 漸層 **fill** -> 回傳佔位符 `"s1"` 而非 hex
 - 遇到上述情況，立刻補一步 `save_screenshots(format: SVG)`，從 SVG `<defs>` 讀取完整漸層定義再實作
 **粒度原則**:
 - 複雜元件分開做,不要一次實作整頁
@@ -122,31 +123,31 @@ tokens → icons → components → sections → layout → 實作
 **RWD 衝突處理**:
 當元件與佈局出現 RWD 衝突時:
 1. 先查 `components/{元件名}.md` 看該元件是否定義了對應斷點行為
-2. 有定義 → 照該檔案執行
-3. 沒定義 → 中止開發,通知我去 Figma 補該元件的 RWD 規格
+2. 有定義 -> 照該檔案執行
+3. 沒定義 -> 中止開發,通知我去 Figma 補該元件的 RWD 規格
 4. 絕不自己決定元件在不同斷點該怎麼變
 
 ## 檔案地圖
 所有設計權威來源,優先順序由上到下:
-1. **specs/assets/tokens.md** — Design tokens (色彩/間距/圓角/字體)
+1. **specs/assets/tokens.md** - Design tokens (色彩/間距/圓角/字體)
    - 單一檔案,所有設計變數的唯一權威
    - 顏色必須來自 Figma Variables；若 `specs/assets/figma-variables.json` 有新匯出內容，需如實轉換進 tokens.md 後才能在 HTML/CSS/JS 使用
    - 實作前至少讀 token 使用規則；只有在改顏色、間距、圓角、字體、effect 或新增對應值時，才讀相關 token section
    - 只有使用者說 Figma Variables 有變動或要求同步時，才重新同步 / 比對完整 tokens
-2. **specs/icons.md** + **preview/assets/icons/** — Icon 系統
+2. **specs/icons.md** + **preview/assets/icons/** - Icon 系統
    - icons.md 是 icon 語意對應表
    - 實體 SVG 放在 preview/assets/icons/
-3. **components/{name}.md** — 元件規格 (每個元件獨立檔案)
+3. **components/{name}.md** - 元件規格 (每個元件獨立檔案)
    - 例如 components/toggle.md, components/input.md
    - 檔名一律 kebab-case
    - 查詢元件規格時先找這個資料夾
-4. **sections/{name}.md** — 區塊組合規格 (每個區塊獨立檔案)
+4. **sections/{name}.md** - 區塊組合規格 (每個區塊獨立檔案)
    - 區塊會引用 components/ 的元件
    - 區塊層級的排版與互動
-5. **layouts/{name}.md** — 頁面骨架 (每個頁面獨立檔案)
+5. **layouts/{name}.md** - 頁面骨架 (每個頁面獨立檔案)
    - 整頁的主框架、RWD 行為
    - 引用 sections/ 組成完整頁面
-6. **specs/progress.md** — 當前進度與決策紀錄
+6. **specs/progress.md** - 當前進度與決策紀錄
    - 單一檔案,做到哪、為什麼這樣決定
 **衝突處理**: 如果 Figma 和 md 檔衝突,先停下來問我,不要自己決定。
 **檔案命名規範**:
@@ -165,7 +166,7 @@ tokens → icons → components → sections → layout → 實作
   改用完整字串模板 (例如 `"您有 {n} 筆訂單"`)
 - 避免圖片內嵌文字,文字應該是真實的 DOM 節點
 
-## 產出驗證 (每個 HTML 完成後必做)
+## 產出驗證 (每個 HTML 產出後必做)
 產出 HTML 後,AI agent / Codex 必須對照對應的規格檔 (components/sections/layouts 下的 .md) 執行自我檢查
 並在對話中用 checklist 形式報告結果:
 - [ ] **Token 檢查**: 所有顏色/間距/圓角都引用 tokens.md 的 token 名稱,沒有寫死 hex 或任意數值
@@ -187,7 +188,8 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 這些是跨任務通用的工作流程規則，每個 AI agent 都要遵守：
 
 ### 不自稱完成
-- 不要說「已完成」「都對了」「沒問題」這種斷言。改用：`verified`（dev 端 self-test pass）、`self-tested`、`pending review`、`待你驗收`
+- 在 chat / final / 驗證報告中, 不要說「已完成」「都對了」「沒問題」這種狀態斷言。改用: `verified`（dev 端 self-test pass）、`self-tested`、`pending review`、`待你驗收`
+- `progress.md` 交接可記錄客觀產出, 欄位名稱用「本輪改動」或「本次處理」, 不用「已完成」作為狀態保證。
 - 視覺類功能必須主動跑多角度截圖（mobile/tablet/desktop viewport + state variations）給使用者驗收
 - 驗收前不可進入下一個 task，不可 commit
 
@@ -286,7 +288,7 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 - 字體平滑化 (`-webkit-font-smoothing`)
 - 系統對話框樣式
 - 列印樣式 (`@media print`)
-- Typography token：`:root` 定義 `--font-size-min/sm/base/lg/xl`（12/14/16/18/20px），`body` 預設 `font-size: var(--font-size-base)`。詳見 `specs/assets/tokens.md § 字體 / Font-size 規範`
+- Typography token：`:root` 定義 `--font-size-min/sm/base/lg/xl`（12/14/16/18/20px），`body` 預設 `font-size: var(--font-size-base)`。詳見 `specs/assets/tokens.md` 的字體 / Font-size 規範
 **不要**在 base.css 裡:
 - 重新定義 Tailwind 已經有的 utility
 - 放元件樣式 (元件樣式優先用 Tailwind class；Tailwind 無法表達時，使用 scoped CSS class)
@@ -296,7 +298,7 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 - 禁止任意 inline style 與 hard-coded color / spacing / radius / font value。
 - 顏色、間距、圓角、字體等可 token 化的值，必須先在 `specs/assets/tokens.md` 有對應，再透過 CSS variable 或 Tailwind semantic class 使用。
 - 字體大小：**全域最小 12px**，禁用 `text-[10px]`、`font-size: 10px`、`text-[11px]` 等 < 12px 的寫法。用 `text-xs/text-sm/text-base/text-lg/text-xl` 或 `var(--font-size-min/sm/base/lg/xl)`。違規由 `scripts/lint-fonts.sh` + git pre-commit hook 自動攔截。
-- Mobile RWD：`min-width` 不得寫死 fixed 值。所有 `min-w-[Npx]` 需 `md:` 前綴（如 `md:min-w-[280px]`）或包 `@media (min-width: 768px)`；偏好寬度用 `basis-[Npx]` 不用 hard min。原因：iOS Safari 對 fixed `min-width` 在窄 viewport 不會 shrink/wrap，會直接溢出，且 Chrome devtools mobile mode 看不出來（Blink ≠ iOS WebKit）。
+- Mobile RWD：`min-width` 不得寫死 fixed 值。所有 `min-w-[Npx]` 需 `md:` 前綴（如 `md:min-w-[280px]`）或包 `@media (min-width: 768px)`；偏好寬度用 `basis-[Npx]` 不用 hard min。原因：iOS Safari 對 fixed `min-width` 在窄 viewport 不會 shrink/wrap，會直接溢出，且 Chrome devtools mobile mode 看不出來（Blink != iOS WebKit）。
 - 單一 preview 頁面或元件專用、Tailwind 不好表達的樣式，可放在該 HTML 的 `<style>`，但必須用明確 scoped class（例如 `.room-edit-price-table`），不可散落 inline style。
 - 若 AI agent 判斷某個效果必須使用 inline style 或非 token 固定值，必須先向使用者報告原因、替代方案、影響差異，取得同意後才可使用，並把差異寫入對應 spec 或 `specs/progress.md`。
 
@@ -307,48 +309,48 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 
 ## 禁區
 絕對不要做的事:
-- ❌ 在 components / sections / layout 實作中寫死 hex 值
-  → 一律用 tokens.md 定義的 token 名稱
-- ❌ 套用非 Figma Variables 來源的顏色
-  → Figma 沒有定義的顏色先停下來問使用者，不可用近似色或 Tailwind 預設色代替
-- ❌ 在 Figma 未定義的狀態下自己畫 hover / disabled / error
-  → 標記「Figma 未定義」,問我要不要補
-- ❌ 產出內容時省略重複 (例如用 "其他卡片同上" 帶過)
-  → 全部完整寫出,token 壓力大就分段做
-- ❌ 沒讀過 tokens.md / icons.md 就開始實作
-  → 先讀使用規則與相關章節再動；不需要每次全量重讀或同步
-- ❌ 任意加入 inline style 或 hard-coded design value
-  → 先使用 token / CSS variable / Tailwind semantic class；例外必須先報告並取得同意
-- ❌ 寫 < 12px 的字體（`text-[10px]`、`font-size: 10px`、`text-[11px]` 等）
-  → 全域最小 = `text-xs` (12px)；用 Tailwind utility 或 `var(--font-size-min/sm/base/lg/xl)`。pre-commit hook 會擋
-- ❌ 寫死的 `min-width: Npx` 在 mobile context 沒有 mobile-gate
-  → `min-w-[280px]` 必須是 `md:min-w-[280px]`；或改用 `basis-[Npx]` 讓 mobile 可 shrink。違反的話 iOS Safari 會直接溢出 viewport（Chrome devtools 看不出來）
-- ❌ 刪除任何 specs/ 底下的檔案
-  → 改內容可以,刪檔要我同意
-- ❌ 產出 React / Next / 其他框架的 code
-  → 這個專案堅持原生 HTML + Tailwind CDN
-- ❌ Commit / push 沒有使用者明確指示
-  → 修完就 commit & push 是自作主張；使用者打「commit & push」/「推」才動作
+- NO: 在 components / sections / layout 實作中寫死 hex 值
+  - 一律用 tokens.md 定義的 token 名稱
+- NO: 套用非 Figma Variables 來源的顏色
+  - Figma 沒有定義的顏色先停下來問使用者，不可用近似色或 Tailwind 預設色代替
+- NO: 在 Figma 未定義的狀態下自己畫 hover / disabled / error
+  - 標記「Figma 未定義」,問我要不要補
+- NO: 產出內容時省略重複 (例如用 "其他卡片同上" 帶過)
+  - 全部完整寫出,token 壓力大就分段做
+- NO: 沒讀過 tokens.md / icons.md 就開始實作
+  - 先讀使用規則與相關章節再動；不需要每次全量重讀或同步
+- NO: 任意加入 inline style 或 hard-coded design value
+  - 先使用 token / CSS variable / Tailwind semantic class；例外必須先報告並取得同意
+- NO: 寫 < 12px 的字體（`text-[10px]`、`font-size: 10px`、`text-[11px]` 等）
+  - 全域最小 = `text-xs` (12px)；用 Tailwind utility 或 `var(--font-size-min/sm/base/lg/xl)`。pre-commit hook 會擋
+- NO: 寫死的 `min-width: Npx` 在 mobile context 沒有 mobile-gate
+  - `min-w-[280px]` 必須是 `md:min-w-[280px]`；或改用 `basis-[Npx]` 讓 mobile 可 shrink。違反的話 iOS Safari 會直接溢出 viewport（Chrome devtools 看不出來）
+- NO: 刪除任何 specs/ 底下的檔案
+  - 改內容可以,刪檔要我同意
+- NO: 產出 React / Next / 其他框架的 code
+  - 這個專案堅持原生 HTML + Tailwind CDN
+- NO: Commit / push 沒有使用者明確指示
+  - 修完就 commit & push 是自作主張；使用者打「commit & push」/「推」才動作
 
-## 進度同步（每次任務完成後立刻執行）
-每完成一個 spec 或實作，立刻更新 `specs/progress.md`：
+## 進度同步（每次任務收尾時立刻執行）
+每處理完一個 spec 或實作，立刻更新 `specs/progress.md`：
 - 在檔案最上方新增最新 Session 交接
-- 記錄：已完成、驗證、下一步應做、重要決定、未解問題
+- 記錄：本輪改動、驗證、下一步應做、重要決定、未解問題
 - 若只是小修，也要記錄會影響下一輪判斷的決策或規則變更
 - **每個 commit 後立即同步**，不要累積到 session 末才補。漏更新 progress.md 等同於沒做交接
 
 ## commit & push flow（強制順序）
 當使用者打「commit & push」（或同義 keyword）時，**先做交接、再 commit、再 push**，一次性 flow，不要分階段等使用者再次確認：
 
-1. **寫 / 更新 `specs/progress.md`** — 在檔案最上方新增本次 Session 段（已完成 / 驗證 / 重要決定 / 未解問題）
-2. **`git add`** — staging 本次改動的檔案，含 `specs/progress.md`
-3. **`git commit`** — commit message 包含主要修改說明
-4. **`git push origin main`** — push 到遠端
+1. **寫 / 更新 `specs/progress.md`** - 在檔案最上方新增本次 Session 段（本輪改動 / 驗證 / 重要決定 / 未解問題）
+2. **`git add`** - staging 本次改動的檔案，含 `specs/progress.md`
+3. **`git commit`** - commit message 包含主要修改說明
+4. **`git push origin main`** - push 到遠端
 
 只打「commit」不打「push」、或只說「push」不說「commit」時，沿用其字面意思，不擴張為完整 flow。
 若 session 中已經事先寫過 progress.md 該段，不需重寫，直接 staging 既有變更 commit。
 
-> **Why 強制這順序**：之前曾連續多個 commit 漏寫 progress.md，其他 AI agent 接手時無法從 progress.md 得知上下文，必須翻 git log 推測，浪費 context 與容易再次腦補。Progress.md 必須與 git history 同步。
+> **Why 強制這順序**: 之前曾連續多個 commit 漏寫 progress.md，其他 AI agent 接手時無法從 progress.md 得知上下文，必須翻 git log 推測，浪費 context 與容易再次腦補。Progress.md 必須與 git history 同步。
 
 **交接時還要 audit 三份規範檔是否同步**（漏一份就有 drift 風險）：
 - `specs/progress.md`：本輪完成、決策、未解問題
@@ -365,7 +367,7 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 **停下時，將本次進度寫入 `specs/progress.md` 的「交接筆記區」**，格式如下:
 
 ### 本次進度交接
-**已完成**:
+**本輪改動**:
 - (條列今天完成的具體項目)
 **進行中**:
 - (正在做但還沒完成的事)
@@ -402,9 +404,9 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 4. [ ] 列出這次任務預計會動到哪些檔案
 5. [ ] 問我:「這次開工要不要同步 tokens?
          (如果我最近有改 Figma variables 才需要)」
-6. [ ] 我回答要 → 讀 Figma variables 跟 tokens.md 比對,
+6. [ ] 我回答要 -> 讀 Figma variables 跟 tokens.md 比對,
       產出 diff 給我確認
-      我回答不要 → 直接進入實際工作
+      我回答不要 -> 直接進入實際工作
 7. [ ] 等我確認 OK,才開始實際工作
 
 **不要跳過任何一步**。

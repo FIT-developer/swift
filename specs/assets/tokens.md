@@ -3,15 +3,15 @@
 > 來源：Figma Variables（Collection: **Semantic**, Mode: **Mode 1**）  
 > 本地匯出參考：`specs/assets/figma-variables.json`（不進版控，內容需如實轉換到本檔）
 > Local Styles 全部為空，所有 token 皆來自 Variables。  
-> 上次同步：2026-05-07
+> 上次同步：2026-06-03（局部同步 Color/Accent cart tokens，來源為使用者貼上的 Figma Variables export）
 
 ## Token 使用規則（Strict Mirror）
 
-- **base.css `:root` 嚴格鏡像 Figma Variables**：CSS variable 命名直接走 Figma 路徑（`Color/Group/Key` → `--color-{group}-{key}` 全小寫 kebab）。實作時優先使用 strict 名稱，不再走「語意 alias」過渡層。
+- **base.css `:root` 嚴格鏡像 Figma Variables**：CSS variable 命名直接走 Figma 路徑（`Color/Group/Key` -> `--color-{group}-{key}` 全小寫 kebab）。實作時優先使用 strict 名稱，不再走「語意 alias」過渡層。
 - 專案不允許套用非 Figma Variables 來源的顏色（`rgba(...)` / box-shadow / drop-shadow / modal backdrop 等 Effect 例外，但仍須命名 CSS var 管理）。
 - HTML / CSS / JavaScript 中的顏色必須對應到 Figma Variable，再透過以下方式使用：
   - CSS：`var(--color-{group}-{key})`，名稱與 Figma 路徑 1:1 對應
-  - Tailwind CDN `theme.extend.colors`：值必須指向 strict CSS var；class 名可保留語意 label（例 `text-text-default` → `var(--color-text-800)`），便於 markup 不大改
+  - Tailwind CDN `theme.extend.colors`：值必須指向 strict CSS var；class 名可保留語意 label（例 `text-text-default` -> `var(--color-text-800)`），便於 markup 不大改
   - JavaScript：`getComputedStyle(document.documentElement).getPropertyValue("--color-{group}-{key}")`
 - 如果 Figma 視覺稿出現本檔沒有的顏色，先更新 Figma Variables 並同步 `figma-variables.json` + `base.css` + 本檔；不得直接寫 hex。
 - 若舊實作仍有 `text-[#...]`、`bg-[#...]`、`border-[#...]`，只能在能 1:1 對應本檔 token 時替換；無對應者需列入未解問題。
@@ -57,8 +57,8 @@
 | Color/Neutral/200 | `#D1D1D1` | 停用狀態邊框 | `gray-300` |
 | Color/Neutral/300 | `#B0B0B0` | placeholder 文字、border focus | `gray-400` |
 | Color/Neutral/400 | `#888888` | 次要說明文字 | `gray-500` |
-| Color/Neutral/450 | `#6B6B6B` | 次要說明文字（深）— 有獨立元件使用 | `gray-500` |
-| Color/Neutral/500 | `#6D6D6D` | 中性文字 — 有獨立元件使用 | `gray-500` |
+| Color/Neutral/450 | `#6B6B6B` | 次要說明文字（深）- 有獨立元件使用 | `gray-500` |
+| Color/Neutral/500 | `#6D6D6D` | 中性文字 - 有獨立元件使用 | `gray-500` |
 | Color/Neutral/600 | `#5D5D5D` | 次標題 | `gray-600` |
 | Color/Neutral/700 | `#4F4F4F` | 副標題文字 | `gray-700` |
 | Color/Neutral/800 | `#454545` | 主要內文 | `gray-700` |
@@ -91,10 +91,10 @@
 
 | Variable 名稱 | 解析值 | 語意用途 | Tailwind 對應建議 |
 |---|---|---|---|
-| Color/Surface/Default | `#F6F6F6` → Neutral/50 | 頁面預設背景 | `gray-100` |
-| Color/Surface/Brand-Default | `#EF6F25` → Brand-500 | **主品牌色 / 主按鈕預設** | `orange-500` |
-| Color/Surface/Brand-Hover | `#F28B45` → Brand-400 | 主按鈕 Hover | `orange-400` |
-| Color/Surface/Brand-Active | `#E05216` → Brand-600 | 主按鈕按下 / Active | `orange-600` |
+| Color/Surface/Default | `#F6F6F6` -> Neutral/50 | 頁面預設背景 | `gray-100` |
+| Color/Surface/Brand-Default | `#EF6F25` -> Brand-500 | **主品牌色 / 主按鈕預設** | `orange-500` |
+| Color/Surface/Brand-Hover | `#F28B45` -> Brand-400 | 主按鈕 Hover | `orange-400` |
+| Color/Surface/Brand-Active | `#E05216` -> Brand-600 | 主按鈕按下 / Active | `orange-600` |
 | Color/Surface/Action-Default | `#005FCC` | 動作按鈕（藍色系）| `blue-600` |
 | Color/Surface/Secondary | `#F9E616` | 輔助強調（鮮黃） | `yellow-400` |
 | Color/Surface/Accent | `#42EBE9` | 強調色（青色） | `cyan-400` |
@@ -138,10 +138,10 @@
 
 | Variable 名稱 | 解析值 | 語意用途 |
 |---|---|---|
-| Color/Border/Default | `#E1E1E0` → Neutral/100 | 一般元件邊框 |
-| Color/Border/Focus | `#B0B0B0` → Neutral/300 | Focus ring（淺） |
-| Color/Border/Plugin-Default | `#6D6D6D` → Neutral/500 | 輸入框預設邊框 |
-| Color/Border/Plugin-Focus | `#EF6F25` → Brand-500 | 輸入框 focus 邊框（品牌色） |
+| Color/Border/Default | `#E1E1E0` -> Neutral/100 | 一般元件邊框 |
+| Color/Border/Focus | `#B0B0B0` -> Neutral/300 | Focus ring（淺） |
+| Color/Border/Plugin-Default | `#6D6D6D` -> Neutral/500 | 輸入框預設邊框 |
+| Color/Border/Plugin-Focus | `#EF6F25` -> Brand-500 | 輸入框 focus 邊框（品牌色） |
 | Color/Border/Plugin-Invalid | `#D90000` | 驗證失敗邊框（紅） |
 
 ---
@@ -150,9 +150,9 @@
 
 | Variable 名稱 | 解析值 | 語意用途 |
 |---|---|---|
-| Color/Modal/Default-Today | `#6D6D6D` → Neutral/500 | 日曆「今天」預設標示 |
-| Color/Modal/Text-hightlight | `#EF6F25` → Brand-Default | 選單選中項目文字高亮 |
-| Color/Modal/Hover | `#F6FAFD` → Neutral/75 | 選單 hover 背景 |
+| Color/Modal/Default-Today | `#6D6D6D` -> Neutral/500 | 日曆「今天」預設標示 |
+| Color/Modal/Text-hightlight | `#EF6F25` -> Brand-Default | 選單選中項目文字高亮 |
+| Color/Modal/Hover | `#F6FAFD` -> Neutral/75 | 選單 hover 背景 |
 
 ---
 
@@ -184,8 +184,10 @@
 | Color/Accent/pink | `#FFC0CB` | 粉紅點綴 |
 | Color/Accent/light-green | `#BBF7D0` | 淡綠點綴 |
 | Color/Accent/Green | `#34C759` | 綠色標籤/chip（Input component Green variant） |
-| Color/Accent/cart-date | `#BDFFF6` | 加購 cart date chip 背景 |
-| Color/Accent/cart-time | `#EAFFC5` | 加購 cart time chip 背景 |
+| Color/Accent/cart-date | `#FDEBD7` -> Brand-100 | 加購 cart date chip 背景 |
+| Color/Accent/cart-time | `#E1E1E0` -> Neutral/100 | 加購 cart time chip 背景 |
+| Color/Accent/cart-button-active | `#00C8B3` | cart / Title pill active green；例如「企」channel badge |
+| Color/Accent/calc-result-background | `#2178CF` -> MenuItem/Default | calc result / inline amount 背景 |
 | Color/Accent/celebration | `#F44DF4` | 節慶/特殊日期提示；同值來源：Color/Bootstrap/aside/Notification |
 | Color/Accent/linear-pos-left | `#E376F9` | POS 入口外框漸層起點 |
 | Color/Accent/linear-pos-right | `#FF7878` | POS 入口外框漸層終點 |
@@ -225,19 +227,23 @@
 | Spacing/4 | `4px` | 超小 | `p-1` |
 | Spacing/6 | `6px` | 小 | `p-1.5` |
 | Spacing/8 | `8px` | 小 | `p-2` |
+| Spacing/10 | `10px` | 特殊用途（非 4px 格線） | `p-2.5` |
 | Spacing/12 | `12px` | 元件內 padding | `p-3` |
 | Spacing/16 | `16px` | 預設間距 | `p-4` / `gap-4` |
-| Spacing/18 | `18px` | 特殊用途（非 4px 格線） | — |
+| Spacing/17 | `17px` | 特殊用途（非 4px 格線） | `p-[17px]` |
+| Spacing/18 | `18px` | 特殊用途（非 4px 格線） | - |
+| Spacing/19 | `19px` | 特殊用途（非 4px 格線） | `p-[19px]` |
 | Spacing/20 | `20px` | 元件外 padding | `p-5` |
 | Spacing/24 | `24px` | Section 內間距 | `p-6` |
-| Spacing/28 | `28px` | — | `p-7` |
+| Spacing/26 | `26px` | 特殊用途（非 4px 格線） | `p-[26px]` |
+| Spacing/28 | `28px` | - | `p-7` |
 | Spacing/32 | `32px` | 較大間距 | `p-8` |
-| Spacing/36 | `36px` | — | `p-9` |
+| Spacing/36 | `36px` | - | `p-9` |
 | Spacing/40 | `40px` | Section 間距 | `p-10` |
-| Spacing/44 | `44px` | — | `p-11` |
+| Spacing/44 | `44px` | - | `p-11` |
 | Spacing/56 | `56px` | 大間距 | `p-14` |
-| Spacing/60 | `60px` | — | `p-[60px]` |
-| Spacing/72 | `72px` | — | `p-18` |
+| Spacing/60 | `60px` | - | `p-[60px]` |
+| Spacing/72 | `72px` | - | `p-18` |
 | Spacing/76 | `76px` | 特殊用途（非 4px 格線） | `p-[76px]` |
 | Spacing/80 | `80px` | 區塊最大 padding | `p-20` |
 | Spacing/100 | `100px` | 大區塊間距 | `p-[100px]` |
@@ -276,9 +282,9 @@
 
 | 觀察名稱 | 大小 | 推測行高 | 用途 |
 |---|---|---|---|
-| `sm` | ~14–16px | ~20px | 輔助說明、badge、日期 |
-| `base` | ~20–22px | ~28px | 主要內文、選單項目 |
-| `md` | ~24–27px | ~32px | Section 標題 |
+| `sm` | ~14-16px | ~20px | 輔助說明、badge、日期 |
+| `base` | ~20-22px | ~28px | 主要內文、選單項目 |
+| `md` | ~24-27px | ~32px | Section 標題 |
 
 ### Font-size 規範
 
@@ -320,23 +326,15 @@
 
 ---
 
-## 未解問題 / 待補 Figma Variables
-
-| Hex | 出現位置 | 用途 | 狀態 |
-|---|---|---|---|
-| `#00c8b3` | `landing.css .order-channel-chip--corp`；`Title COMPONENT_SET 43:328` 的 `button-active` fill | 「企」channel badge 邊框/文字色；Title pill active green | Figma 視覺存在但 `figma-variables.json` / `base.css` 未匯入；下次 Figma Variables sync 時若有對應 variable，補上正式 token 名 |
-
----
-
 ## 命名規範說明
 
 1. **分組層級**：`Category/SubCategory/Scale`，以斜線分隔、大寫開頭
 2. **色彩 Scale**：使用數字（50/100…950），對應 Tailwind shade 系統
-3. **Brand vs Surface**：`Color/Brand/*` 為完整色階（50–950）；`Color/Surface/Brand-*` 只有 3 個語意 alias（Default/Hover/Active）
+3. **Brand vs Surface**：`Color/Brand/*` 為完整色階（50-950）；`Color/Surface/Brand-*` 只有 3 個語意 alias（Default/Hover/Active）
 4. **Radius 對應 Spacing**：Radius token 全部 alias 同名 Spacing，各有元件使用故保留
 5. **Text / Neutral 並存**：兩組色階數值高度重疊，但各有元件獨立綁定，維持拆分
 6. **Bootstrap 子群組**：`Color/Bootstrap/` 前綴標示源自 Bootstrap 規範的互動狀態色
 
 ---
 
-*Generated from Figma file Variables · 2026-04-21*
+*Generated from Figma file Variables - 2026-04-21*
