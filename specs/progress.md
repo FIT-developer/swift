@@ -39,10 +39,22 @@
 - HTML script parse check
 - 待 commit 前再跑 staged hook 等同檢查
 
+### 更正 + Batch 6 完成記錄（本 entry 初版誤記 Batch 6 為待辦，實際已完成）
+
+**Batch 6 RWD 收尾已完成**（在 review 修正之前做的，xl 斷點與 body min-width 移除都是 Batch 6 的產出）：
+
+1. 掃描 6 個 viewport（360/375/768/1024/1280/1440），檢查橫向溢出 + 版面模式 + 修改 modal，全數通過
+2. **移除 base.css 全域 `body { min-width: 375px }`**（2026-04-14 initial commit 就存在，與 start.md RWD 規則矛盾；360 裝置全站右緣裁切 15px。使用者裁決移除；已回歸抽查房間預定頁 360 表現正常）
+3. **篩選面板 3 欄斷點 lg -> xl**（1024-1279 帶 sidebar 時 col3 塞不下國籍 nowrap 列；Figma 未定義此區間，使用者裁決 1280 才進 3 欄）- 即上方「本輪處理」第 1 點所列同一件事，起因是 Batch 6 掃描發現
+4. QA 截圖 9 張存 `specs/qa-screenshots/session-74/`（目錄 gitignored，本地驗收材料）
+5. 各寬度結果：360/375/768 accordion + bottom sheet + modal 全螢幕（768 視窗化 744px）；1024 accordion + dropdown；1280/1440 三欄 + dropdown，modal 1192px 內部無溢出
+
+**訂單處理頁 Batch 1-6 全部完成**（self-tested + code review 修正完畢，等使用者最終驗收）。
+
 ### 下一步
 
-1. Batch 6 仍是下一個產品工作：訂單處理全頁與訂單修改 modal 的多 viewport RWD 系統性收尾。
-2. 視覺類驗收仍需 mobile / tablet / desktop 截圖與狀態變化檢查。
+1. 訂單處理頁無剩餘批次；等使用者驗收回饋
+2. `CLAUDE.md`（使用者新建，`@start.md` import）下個 session 生效，start.md 將自動載入 context
 
 ---
 
