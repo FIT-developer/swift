@@ -22,7 +22,9 @@
 | 屬性 | 值 | Token |
 |---|---|---|
 | 背景 | `#4f4f4f`（截圖像素取樣驗證，5 個狀態列皆同色，**不隨狀態變色**） | `Color/Neutral/700` |
-| 形狀 | 完全圓角 pill | `Radius/72` 或近似全圓 |
+| 形狀 | 完全圓角 pill，cornerRadius 44（`get_node` 2026-07-03 確認） | 近似全圓 |
+| 邊框 | 1px，`#f6f6f6` | `Color/Neutral/50` |
+| Padding | 4px 10px（`get_node` 2026-07-03 確認） | - |
 | 文字色 | 近白 | `Color/Text/50`（`#f6f6f6`） |
 | Triangle icon 色 | 白 | - |
 | 內部順序 | 色點 -> 訂單編號文字 -> `icons/triangle`（dropdown 箭頭） | - |
@@ -74,9 +76,30 @@
 
 ## 次要 badge（訂單編號欄下方，pill 底下一列或多列小標籤）
 
-- 樣式：白底灰框小 pill（e.g. `Booking` / `Agoda` / 加購 / 對帳 / 註 / 修改 / 團體 / 企業 / 國旅 / 促銷 / 網路訂房 / 開發票...）
-- **來源類 badge**（`Booking` / `Agoda`，弧形括號邊框樣式，橘色調外框，跟其他次要 badge 樣式不同）：代表訂單「來源」（Booking / Agoda 等 OTA 通路）。**條件式渲染** - 訂單有來源值才顯示，沒有就不顯示，不是固定規則（2026-07-03 使用者確認）
-- **分類 badge**（加購/對帳/註/修改/團體/企業/國旅/促銷/網路訂房/開發票...）：**不需要現在釐清每個 badge 對應篩選面板哪個欄位分類**（2026-07-03 使用者確認）。前端照 Figma UI layout 直出 HTML、視覺示意給足即可，badge 跟資料欄位的對應邏輯留給後端渲染時處理
+**垂直順序（2026-07-03 使用者確認）**：由上到下固定是 **pill（訂單編號）→ 來源 badge（有值才顯示）→ 分類 badge 群組**，不是同一列並排。
+
+**兩種 badge 樣式不同，`get_node` 2026-07-03 逐項確認過，不是同一套樣式改顏色：**
+
+| 屬性 | 分類 badge（加購/對帳/註/修改/團體/企業/國旅/促銷/網路訂房/開發票...） | 來源 badge（`Booking` / `Agoda`） |
+|---|---|---|
+| Figma component | `Status buttons`（e.g. `2004:63505`） | `Status buttons`（e.g. `2026:68595`） |
+| cornerRadius | `2px` | `6px` |
+| Padding | `2px 6px` | `4px 12px` |
+| 背景 | `Color/Neutral/0` 純白 | **linear 漸層**：白 -> `Color/Brand/Brand-200`（`#fad4ae`），左下往右上對角線 |
+| 邊框 | 四邊 1px，`Color/Neutral/500`（`#6d6d6d`） | **只有左邊** 2px，`Color/Brand/Brand-400`（`#f28b45`）；上/下/右無邊框 |
+| 文字色 | `Color/Neutral/500`（`#6d6d6d`，跟邊框同色） | `Color/Neutral/800`（`#454545`） |
+| 字級 | **16px（base）** | 12px（sm） |
+
+**來源 badge 讀取陷阱（2026-07-03 SVG export 覆核）**：`get_selection` 對此節點回報 `strokes:["#f28b45"]` 且完全沒有 `fills` key。實際上 stroke 是「僅左邊單邊」（SVG 中上/下/右是零面積退化路徑）、fill 是被靜默省略的漸層。單邊 stroke + 漸層 fill 消失兩個已知陷阱同時出現在同一個節點。
+
+**來源 badge 條件式渲染**：代表訂單「來源」（Booking / Agoda 等 OTA 通路）。訂單有來源值才顯示，沒有就不顯示，不是固定規則（2026-07-03 使用者確認）
+**分類 badge 分類歸屬**：不需要現在釐清每個 badge 對應篩選面板哪個欄位分類（2026-07-03 使用者確認）。前端照 Figma UI layout 直出 HTML、視覺示意給足即可，badge 跟資料欄位的對應邏輯留給後端渲染時處理
+
+---
+
+## 表格 rowspan 視覺規則
+
+`n-1`/`n-2` 子訂單群組之間**不畫分隔線**（視覺上合併成一組），只有整個群組結束後（最後一個子列，例如 `n-2`）才畫底線，避免看起來像獨立的兩筆訂單（2026-07-03 使用者確認）。
 
 ---
 
@@ -91,6 +114,6 @@
 
 ## 未定義 / 待補
 
-- Pill/次要 badge 精確 padding、圓角數值（本次讀取靠像素估算，未用 `get_node` 精確驗證）
+- ~~Pill/次要 badge 精確 padding、圓角數值~~ -> **已確認（2026-07-03，`get_node` 覆核）**，見上方表格
 - Offcanvas dismiss 行為 cross-check `components/offcanvas.md`
 - 下拉選單 hover/pressed 態在 mobile 觸控情境下的視覺回饋（mobile 沒有 hover，需另外定義 active/pressed 態，本次未見 Figma 示範）

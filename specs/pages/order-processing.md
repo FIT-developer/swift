@@ -79,7 +79,7 @@ floatIcons/ai（浮動客服，全站共用）
 
 **欄 3**：
 - `房型` select，default `全部`
-- `國籍` radio：`臺灣`（default selected）/ `外籍`（沿用 `Nation` 元件）
+- `國籍` radio：`臺灣`（default selected）/ `外籍`（沿用 `Nation` 元件）。選 `外籍` 時額外顯示 `國家` select（英國/美國/日本/韓國），沿用既有 `.nation-group` / `.nation-foreign-only` 邏輯（跟會員資料 modal 同一套）。**已確認（2026-07-03）**：原始 Figma 稿漏畫這個「國家」欄位的 label 文字，使用者確認實作補上的 `國家` label 是對的，不是我腦補
 - `專案` toggle + input/select 合併群組：關閉時旁邊小字顯示「所有專案」，**開啟時變成「僅有效專案」**（toggle 狀態標籤，2026-07-03 截圖驗證確認，非固定文案）
 - `條件查詢` input/select 合併群組
 
@@ -90,6 +90,10 @@ floatIcons/ai（浮動客服，全站共用）
 欄 1 的日期區間/快速區間鍵/日期狀態/訂單編號/名稱/行動電話維持展開顯示；欄 2 + 欄 3 全部（11 個欄位）收進「更多條件」accordion。
 
 **Accordion 圖示慣例澄清**：讀取時發現兩個示範 frame 的**標題文字**跟畫面實際的 icon/內容是反的（一個標題寫「not collapsed」但畫面是收起態，另一個標題寫「collapsed」但畫面是展開態） - 這是 Figma frame **命名寫反**，不是既有的「`icons/up`=收起／`icons/down`=展開」慣例錯誤。寫 spec / 實作時一律以「畫面實際 icon + 內容」為準，不採用 frame 標題字面意思。
+
+**外殼漸層背景（2026-07-03 補讀確認）**：「更多條件」accordion 外殼（含 header 跟白色內容卡外面那圈）不是純色，是**對角線漸層**：`Color/Neutral/75`（`#F6FAFD`）到 `Color/Brand/Brand-50`（`#FEF6EE`），方向左下到右上（CSS `linear-gradient(to top right, ...)`）。這個漸層 `get_selection` 完全沒有序列化出來（`styles` 連 `fills` key 都沒有，不是常見的 `"s1"` 佔位符），是使用者肉眼看穿透截圖才發現，改用 `save_screenshots(SVG)` 讀 `<linearGradient>` defs 才抓到精確色值/方向。CSS 已實作為 `.op-accordion-gradient`（`preview/assets/css/landing.css`），只在 `<1024px`（accordion 收合態）套用，`>=1024px`（桌機三欄展開態）用 `lg:bg-none` 清除。
+
+**待確認（尚未查證）**：desktop 版篩選面板外殼（`shirnk-model-1`）在讀取 1 記錄為純色 `#f6fafd`，鑑於這次「更多條件」的教訓（純色記錄可能其實是被靜默省略的漸層），這個記錄**沒有 100%把握**，需要之後回 Figma 用 `save_screenshots(SVG)` 驗證桌機版外殼是否也是漸層。
 
 ### 日期狀態 select 選項（來自讀取 11 tooltip 內容，高可信度推測）
 
@@ -130,11 +134,15 @@ Mobile/tablet：tabs 跟快篩 button 分成兩行，各自橫向 scroll 容器�
 
 | 元素 | 內容 |
 |---|---|
-| `統計` label + timestamp | 純文字 |
-| chip 1 | `Color/Brand/Brand-100` 底，`N 間` |
-| chip 2 | `Color/Neutral/100` 底，`N 夜` |
-| `加購 $` / `房價 $` | 純文字金額 |
+| `統計` label | 純文字 16px `Color/Neutral/800` |
+| chip 1 | `Color/Brand/Brand-100` 底，`N 間`，radius 40 / padding 4 8 / 12px `Color/Text/900` |
+| chip 2 | `Color/Neutral/100` 底，`N 夜`，同 chip 1 規格 |
+| `加購 $` / `房價 $` | 純文字金額 16px，彼此間距 16 |
 | `總計`（橘字 `Color/Surface/Brand-Default`）+ `$` | 總計金額 |
+
+排列：全部靠左單列，`統計` / chips / 金額三組之間留大間距（約 90-130px），不是平均分佈也不是推到兩端。
+
+**隱藏圖層陷阱（2026-07-03 PNG export 覆核）**：Frame 672 內有一個 timestamp（`2026-07-01\n15：33：41`）的 Texts instance，`get_node`/`get_selection` 會照樣序列化它、無任何 visible 標記，但實際渲染**不顯示**（隱藏圖層）。不要實作。組間大間距即隱藏 timestamp 佔位遺留的空間。
 
 ---
 

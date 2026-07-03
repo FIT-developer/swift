@@ -4,6 +4,45 @@
 
 ---
 
+## Session 73 交接 (2026-07-03)
+
+### 任務: 訂單處理 頁面分批實作 Batch 1-4（篩選面板 / tabs+快篩 / 表格+pill / footer 統計）
+
+延續 Session 72 的 spec，開始 HTML 實作。進度：**Batch 1-4 完成（self-tested，待使用者最終驗收），Batch 5-6 未動**。
+
+### 本輪產出
+
+1. `preview/landing.html`：
+   - `PAGE_TEMPLATES` 新增 `訂單處理: "tpl-order-processing"`，新 template 塊（搜 `tpl-order-processing`）
+   - Batch 1 篩選面板：desktop 3 欄（col1 固定 340px + col2/col3 均分）、mobile(<1024) 收合為「更多條件」accordion（`.op-accordion-gradient` 漸層外殼）；日期狀態 tooltip、國籍外籍連動國家 select（沿用 `.nation-group` 既有機制）
+   - Batch 2 tabs+快篩：狀態 tabs 沿用 `.member-data-filter-tab`；快篩 5 顆沿用 `.rb-filter-tab`（circle-selected-yellow 黃底選中），預設不選中、單選、再點取消選取，緊接 tabs 右邊不用 justify-between
+   - Batch 3 表格：`.op-table` 全欄位垂直水平置中、9 欄 6 列（含 5-1/5-2 rowspan 子訂單，5-1 不畫底線）、狀態 pill（`.op-status-pill`）+ 下拉選單（`.op-row-menu`，desktop dropdown / mobile offcanvas 同一份 DOM breakpoint 切換）、訂單狀態圖例 tooltip、入住人欄姓名純文字不帶 link（訂購人欄才有 link）
+   - Batch 4 footer 統計列：統計 label + 2間/3夜 chips + 加購/房價/總計，三組間大間距 `lg:gap-x-24`
+   - JS 皆掛在 `initSubPageBehaviors` 內：quick-filter 切換、op tabs、tooltip click/outside、row menu 開關定位、專案 toggle 文案
+2. `preview/assets/css/landing.css`：新增 `.op-table`/`.op-status-pill`/`.op-status-dot`/`.op-badge`/`.op-badge-source`/`.op-row-menu` 系列 + `.op-accordion-gradient`；`.rb-filter-tab` 補 inline-flex 置中（共用 class，棟別 chips 一併受惠）
+3. `components/order-status-pill.md`：補 get_node 覆核後的精確數值（pill radius 44/padding 4 10/邊框 Neutral-50；兩種 badge 完整對照表）、badge 垂直順序（pill -> 來源 -> 分類）、rowspan 不畫分隔線規則、來源 badge 讀取陷阱
+4. `specs/pages/order-processing.md`：footer 段補精確規格 + 隱藏 timestamp 圖層警告
+5. `start.md`：「漸層限制」段擴充為「JSON 不等於視覺」限制（新增 fills key 消失/單邊 stroke/隱藏圖層 3 個模式）；新增「實作前每元素三步驟門檻」（渲染截圖 ground truth -> 查 notes 未驗證標記 -> JSON 只信結構文字）
+6. Memory 新增：`feedback_figma_hidden_layer_serialized`（隱藏圖層照樣序列化）、`feedback_implement_screenshot_first`（三步驟門檻）
+
+### 本輪踩雷記錄（全部是使用者發現後修正，檢討見 start.md 新規則）
+
+- 快篩 chips 圓角憑感覺寫 6px，實際是 circle-selected-yellow pill（28px、黃底選中態）
+- 表格欄位對齊猜左對齊，實際全部置中；badge 順序（pill/來源/分類垂直排列）也漏了
+- 來源 badge（Booking/Agoda）：`strokes:["#f28b45"]` 實際是**只有左邊 2px**（SVG 其餘三邊是零面積退化路徑）；fills key 整個消失，實際是白->Brand-200 對角漸層。SVG export 覆核抓出
+- footer 把 Figma **隱藏圖層** timestamp 做出來（get_node 對 visible:false 節點照樣序列化無標記）；PNG 渲染圖比對抓出
+- 分類 badge 字級是 16px 不是 12px；來源 badge radius 6 不是全圓角
+
+### 未完成 / 下一步
+
+1. **Batch 5：modal 接線**（最大塊）- 下拉選單「訂單」「簡訊」接既有 `modalOrderSummaryBackdrop`/`modalSmsBackdrop`；「修改」新建訂單修改大 modal（spec: `components/order-edit-modal.md`，只做一般會員版）
+2. **Batch 6：RWD 收尾** - 系統性多 viewport 掃全頁
+3. **待補驗**：desktop 篩選面板外殼記錄為純色 `#f6fafd`，未用截圖覆核是否也有漸層（mobile accordion 有）；照三步驟門檻補驗
+4. 日期狀態 tooltip 9 條說明文字 = Figma 佔位文案，等真實文案
+5. Batch 5 開工前先對本批元素過 start.md 新的三步驟門檻
+
+---
+
 ## Session 72 交接 (2026-07-03)
 
 ### 任務: 訂單處理作業 > 訂單處理 頁面 - 完整 figma-go 讀取 + Spec checkpoint + 正式 spec

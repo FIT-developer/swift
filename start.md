@@ -104,11 +104,13 @@ tokens -> icons -> components -> sections -> layout -> 實作
   - section -> `sections/{name}.md`
   - layout -> `layouts/{name}.md`
 
-**Figma MCP 漸層限制**:
+**Figma MCP「JSON 不等於視覺」限制**（get_node / get_selection / get_design_context 皆適用）:
 - `get_node` / `get_design_context` 只序列化純色 paint
 - 漸層 **stroke** -> 靜默省略（`styles.strokes` 欄位消失，無任何提示）
-- 漸層 **fill** -> 回傳佔位符 `"s1"` 而非 hex
-- 遇到上述情況，立刻補一步 `save_screenshots(format: SVG)`，從 SVG `<defs>` 讀取完整漸層定義再實作
+- 漸層 **fill** -> 回傳佔位符 `"s1"` 而非 hex；**也可能整個 `fills` key 直接消失**，連佔位符都沒有
+- **單邊 stroke** -> `strokes:["#hex"]` 看起來像四邊框，實際可能只有一邊（tab underline、badge 左邊框都出過）
+- **隱藏圖層（visible:false）** -> 照樣完整序列化、無任何標記，跟可見節點無法區分
+- 對策：漸層用 `save_screenshots(format: SVG)` 讀 `<defs>`；單邊框與隱藏圖層用 `get_screenshot` / `save_screenshots(PNG)` 渲染圖比對，JSON 有、圖上沒有的節點不要實作
 **粒度原則**:
 - 複雜元件分開做,不要一次實作整頁
 - 每個區塊做完立刻產預覽 HTML,存到 preview/ 資料夾
@@ -200,6 +202,12 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
   2. 對 spec 中已記錄的 frame 做 cross-check（有沒有漏 read）
   3. 若 selection JSON 過大被 truncate，用 Python 強制 iterate 取得每個 child，不可只看 root summary
 - **腦補偵測點**：寫實作前自問「這個樣式 / 數值 / 結構是 Figma 給的還是我推測的？」若是推測，先停下回報為「未定義」
+
+### 實作前每元素三步驟門檻（分批實作時每批開工前逐一過，不因趕進度跳過）
+1. 對本批每個新視覺元素（chip/badge/pill/容器底色框線等）抓 `get_screenshot` 或 `save_screenshots(PNG)` 渲染圖當 ground truth，樣式一律以渲染圖為準
+2. 回查 reading notes / spec 中該元素的「未驗證」「待確認」標記；有標記就先驗證再實作，不可照「很可能是」的猜測直接做
+3. JSON 只拿結構、文字、bounds；fill / stroke / 圓角必須跟渲染圖交叉比對（JSON 說謊模式見上方「JSON 不等於視覺」段）
+- 沿用既有 class（chip/tab 等通用 pattern）的前提是 Figma 節點確認為同一個 component instance；否則一律當新元素走三步驟
 
 ### Variant 先讀 parent spec
 - 新 variant 不可從 Figma raw bottom-up 推，否則會重複父層規格
