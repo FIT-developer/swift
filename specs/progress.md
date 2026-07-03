@@ -4,6 +4,41 @@
 
 ---
 
+## Session 77 交接 (2026-07-03)
+
+### 任務: B1 頁面架構調整（landing.html 凍結 + multi-page 架構 + aside 單一化）
+
+背景：公司要求原生技術（無框架），單檔會持續膨脹（使用者原話「將來還會恐怖的大包」），故執行 audit B1。核心論點：**原生不等於單檔** - ES modules 與 fetch partial 都是瀏覽器原生能力。
+
+### 本輪產出
+
+1. **前置實測（全過）**：Tailwind Play CDN 的 MutationObserver 對 runtime 注入內容完整生成樣式（arbitrary value / CSS var arbitrary / config 自訂色三種都驗證）；原生 ES modules 經 python http.server 直接可用
+2. **`specs/page-architecture.md`**（新 spec）：目標結構（`preview/{page}.html` + `partials/` + `js/`）、新頁面固定骨架、partial 載入機制、id 命名空間（跨頁無碰撞 = 核心收益）、CSS 歸屬、遷移策略
+3. **start.md 凍結規則**：landing.html 不再新增頁面 template / modal / 大段 JS；新頁面一律走新架構
+4. **aside 單一化（使用者裁決選 b 單一事實來源）**：
+   - `preview/partials/aside.html`（新）：全站唯一 aside，668 行自 landing.html 抽出，純 markup
+   - landing.html 改 `asideMount` + **sync XHR 同步注入**：sidebar 綁定散佈於 load-time 多個 IIFE，async 注入會全部落空；同步注入讓主 script 一行不動。代價 = console 1 筆 deprecation warning（已知且接受，記錄於注入點註解）
+   - `preview/js/partials.js`（新）：新頁面用的 async `loadPartials()`（掃 `[data-partial]`、標 aside active 態依 `body[data-page]`、dispatch `partials:loaded`）
+5. landing.html 11583 -> 10931 行（-652），且從此凍結
+
+### 回歸驗證（全過）
+
+aside 注入（26 選單項目）、選單導航（開訂單處理）、accordion 收合、收合全部、mobile drawer 開關、backdrop 關閉；JS parse check、雙 lint。console 無錯誤（既有 CDN warning + 已知 1 筆 deprecation）。
+
+### lint 加強（commit 時 hook 攔截後順手修）
+
+- aside.html 的 mobile 關閉鈕 `\u2715` glyph 改 HTML entity `&#x2715;`（source 變 ASCII、渲染完全相同，瀏覽器驗證過）
+- **lint-conventions worktree 模式盲點修補**：`git diff HEAD` 不含 untracked 新檔（partials/ js/ 曾因此漏掃），改為另以 `git diff --no-index /dev/null` 產生偽 diff 一併餵入
+
+### 未完成 / 下一步
+
+1. **audit 剩餘中型項目**：B2 progress.md archive（本檔即將 3600 行，建議下次做）、B3 start.md 瘦身（conventions 段搬 html-conventions.md）、B4 token drift check script
+2. 下一個新頁面實作時：照 page-architecture.md 骨架 + 建 `js/tailwind-config.js` + aside 選單加新頁連結（只改 partials/aside.html 一份）+ landing 舊三頁連結機制（hash 指定，屆時定義）
+3. 訂單處理頁 Batch 1-6 完成，等使用者最終驗收
+4. 未 push 的 commit：ee06dfb（repo hygiene）+ 本輪
+
+---
+
 ## Session 76 交接 (2026-07-03)
 
 ### 任務: repo 結構體檢（Fable agent audit）+ 5 項止血執行

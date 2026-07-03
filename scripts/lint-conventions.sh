@@ -25,6 +25,13 @@ if [[ "$mode" == "--staged" ]]; then
   git diff --cached --unified=0 --diff-filter=ACMR -- '*.md' '*.html' '*.css' '*.js' \
     | python3 scripts/lint-conventions.py
 else
-  git diff HEAD --unified=0 --diff-filter=ACMR -- '*.md' '*.html' '*.css' '*.js' \
-    | python3 scripts/lint-conventions.py
+  # worktree 模式：git diff HEAD 不含 untracked 新檔，需另外以
+  # --no-index 產生偽 diff 一併餵入（曾因此漏掃新增的 partial 檔）
+  {
+    git diff HEAD --unified=0 --diff-filter=ACMR -- '*.md' '*.html' '*.css' '*.js'
+    git ls-files --others --exclude-standard -- '*.md' '*.html' '*.css' '*.js' \
+      | while IFS= read -r f; do
+          git diff --no-index --unified=0 -- /dev/null "$f" || true
+        done
+  } | python3 scripts/lint-conventions.py
 fi

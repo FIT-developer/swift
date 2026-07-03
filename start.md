@@ -119,6 +119,13 @@ tokens -> icons -> components -> specs/pages -> 實作
 - 預覽用 `python3 -m http.server 8000 --directory preview` 背景執行
 - 第一次跑需要我授權,選 "always allow",之後不再問
 - 一次實作不超過一個 section
+
+**頁面架構（2026-07-03 起強制，詳見 specs/page-architecture.md）**:
+- **landing.html 凍結**：不再新增頁面 template、modal、大段 JS；既有三頁
+  （dashboard/房間預定/訂單處理）只接受 bug 修正與使用者指名的調整
+- 新頁面一律獨立 html 檔 + `partials/` 共用區塊 + `js/` 原生 ES modules
+  （公司要求「原生」；原生不等於單檔，ES modules 與 fetch partial 都是
+  瀏覽器原生能力，已實測與 Tailwind Play CDN 相容）
 **決策原則**:
 - 不確定時問我,不要猜
 - Figma 沒定義的狀態標記為「未定義」,不要腦補

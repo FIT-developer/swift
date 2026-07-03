@@ -1,0 +1,674 @@
+<!-- partials/aside.html - 全站共用側欄選單（單一事實來源）
+     規範：specs/page-architecture.md
+     - 本檔為純 markup，不含 script；行為由各頁面自己綁定
+     - landing.html 以同步注入載入（sidebar 綁定散佈於 load-time IIFE）
+     - 新頁面以 js/partials.js 的 loadPartials() 載入
+     - 選單項目變動只改這一份，全站生效 -->
+        <aside
+          id="sidebar"
+          class="flex w-[240px] shrink-0 flex-col bg-white border border-border-default rounded-lg p-3"
+          aria-labelledby="mobileSidebarTitle"
+        >
+          <div class="mobile-sidebar-header md:hidden">
+            <div class="flex items-center gap-2">
+              <img
+                src="./assets/icons/logo.svg"
+                class="h-6 w-auto"
+                alt="Swift"
+              />
+              <h2
+                id="mobileSidebarTitle"
+                class="text-base font-semibold text-text-default"
+              >
+                功能選單
+              </h2>
+            </div>
+            <button
+              id="mobileSidebarClose"
+              class="mobile-sidebar-close"
+              aria-label="關閉選單"
+            >
+              &#x2715;
+            </button>
+          </div>
+
+          <!-- Mobile function icons row -->
+          <div
+            class="md:hidden flex items-center justify-around px-4 py-3"
+          >
+            <button
+              id="mobileBulletinBtn"
+              type="button"
+              class="relative cursor-pointer border-0 bg-transparent p-0"
+              aria-label="開啟公告"
+            >
+              <img
+                src="./assets/icons/bulletin.svg"
+                class="w-6 h-6"
+                alt=""
+              />
+              <span
+                class="absolute -top-1.5 -right-2 bg-brand-500 text-white text-xs rounded-full px-1 py-0.5 leading-none"
+                >99</span
+              >
+            </button>
+            <button
+              id="mobileMessageBtn"
+              type="button"
+              class="relative cursor-pointer border-0 bg-transparent p-0"
+              aria-label="開啟訊息"
+            >
+              <img
+                src="./assets/icons/message.svg"
+                class="w-6 h-6"
+                alt=""
+              />
+              <span
+                class="absolute -top-1.5 -right-1 bg-border-disabled text-text-default text-xs rounded-full px-1 py-0.5 leading-none"
+                >0</span
+              >
+            </button>
+            <button
+              id="mobileMemberBtn"
+              type="button"
+              class="relative cursor-pointer border-0 bg-transparent p-0"
+              aria-label="開啟會員安全管理"
+            >
+              <img
+                src="./assets/icons/person-md.svg"
+                class="w-6 h-6"
+                alt=""
+              />
+            </button>
+            <div class="relative">
+              <img
+                src="./assets/icons/system.svg"
+                class="w-6 h-6"
+                alt="系統"
+              />
+            </div>
+          </div>
+
+          <!-- Folder / collapse toggle -->
+          <div class="hidden md:flex justify-end mb-3">
+            <img
+              id="foldBtn"
+              src="./assets/icons/folder.svg"
+              alt="folder"
+              class="w-6 h-5 cursor-pointer opacity-60 hover:opacity-100"
+              title="收折選單"
+            />
+          </div>
+
+          <!-- Logo -->
+          <div class="hidden md:block mb-3">
+            <img
+              src="./assets/icons/logo.svg"
+              alt="logo"
+              class="w-full h-auto max-h-[80px] object-contain"
+            />
+          </div>
+
+          <div class="px-4 pb-6 md:px-0 md:pb-0">
+          <!-- Account row -->
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-text-default">elaon999</span>
+            <div class="flex gap-3">
+              <!-- Logout: tooltip on hover -->
+              <div class="group relative">
+                <img
+                  data-modal-open="modalLogoutBackdrop"
+                  src="./assets/icons/logout.svg"
+                  class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
+                  alt="登出"
+                />
+                <span
+                  class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-text-subtitle text-text-inverse text-xs rounded-md px-3 py-0.5 whitespace-nowrap pointer-events-none z-10"
+                >
+                  登出
+                  <span
+                    class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-text-subtitle"
+                  ></span>
+                </span>
+              </div>
+              <!-- Switch account -->
+              <img
+                data-modal-open="modalSwitchBackdrop"
+                src="./assets/icons/switch.svg"
+                class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
+                alt="更換帳號"
+              />
+            </div>
+          </div>
+
+          <!-- Selects -->
+          <div class="flex flex-col gap-3 mb-4">
+            <select class="sidebar-select" data-role-select>
+              <option>188 ｜ 總部</option>
+              <option>189 ｜ 台北館</option>
+              <option>190 ｜ 高雄館</option>
+            </select>
+            <select class="sidebar-select">
+              <option>199 地球村美日語太平洋旅店</option>
+              <option>200 大安旅館</option>
+              <option>201 台南福灣</option>
+            </select>
+          </div>
+
+          <!-- 系統操作 -->
+          <div class="mb-4">
+            <div
+              class="flex items-center justify-between mb-2 text-xl font-semibold text-text-default"
+            >
+              <div class="flex items-center gap-2">
+                <img
+                  src="./assets/icons/operation-system.svg"
+                  alt="operation-system"
+                  class="w-6 h-6"
+                />
+                <span>系統操作</span>
+              </div>
+              <button
+                type="button"
+                class="menu-collapse-all px-1 py-1 rounded-lg bg-brand-50 text-base font-normal text-text-default cursor-pointer"
+                aria-label="收合所有選單"
+                title="收合所有選單"
+              >
+                收合
+              </button>
+            </div>
+            <div class="flex flex-col gap-1 pl-1">
+              <!-- 1. 前台作業 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>前台作業</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    房間預定
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. 訂單處理作業 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>訂單處理作業</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    自動對帳紀錄查詢
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    訂單處理
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. 基本資料設定 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>基本資料設定</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                    data-role="hotel"
+                  >
+                    房型資料設定
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    須知設定
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. 訂房資料設定 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>訂房資料設定</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                    data-role="hotel"
+                  >
+                    房間數量設定
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    定義日期種類
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                    data-role="hotel"
+                  >
+                    專案價格數量設定
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                    data-role="hotel"
+                  >
+                    數量價格表
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                    data-role="hotel"
+                  >
+                    通路庫存設定
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. 其他消費設定 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>其他消費設定</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    類別設定
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    產品設定
+                  </div>
+                </div>
+              </div>
+
+              <!-- 6. 財務專區（飯店限定）-->
+              <div class="menu-category" data-role="hotel">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>財務專區</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    訂金處理
+                  </div>
+                </div>
+              </div>
+
+              <!-- 7. 會員管理 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>會員管理</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    會員資料查詢
+                  </div>
+                </div>
+              </div>
+
+              <!-- 8. 簡訊管理 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>簡訊管理</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    訂單簡訊及樣本管理
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    定時簡訊管理
+                  </div>
+                </div>
+              </div>
+
+              <!-- 9. 報表 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>報表</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    住房統計表
+                  </div>
+                </div>
+              </div>
+
+              <!-- 10. 系統設定 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>系統設定</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    帳號及權限設定
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    系統基本設定
+                  </div>
+                </div>
+              </div>
+
+              <!-- 11. 對應設定（飯店限定）-->
+              <div class="menu-category" data-role="hotel">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>對應設定</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    OTA串接設定
+                  </div>
+                </div>
+              </div>
+
+              <!-- 12. 多國語設定 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>多國語設定</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    飯店基本設定
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    規約設定
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                    data-role="hotel"
+                  >
+                    房型設定
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                    data-role="hotel"
+                  >
+                    套裝設定
+                  </div>
+                </div>
+              </div>
+
+              <!-- 13. 系統商服務 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-menu cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>系統商服務</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    線上授權單
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    請款紀錄查詢
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 客服 -->
+          <div class="mb-4 border-t border-border-default pt-3">
+            <div class="flex items-center gap-2 mb-2">
+              <img
+                src="./assets/icons/service.svg"
+                alt="service"
+                class="w-6 h-6"
+              />
+              <span class="text-xl font-semibold text-text-default">客服</span>
+              <span class="text-xs font-normal text-text-default ml-auto"
+                >平日 09:00~18:00</span
+              >
+            </div>
+            <div
+              class="border border-border-disabled rounded-lg p-3 flex flex-col gap-2"
+            >
+              <div class="flex justify-center">
+                <img
+                  src="./assets/images/service_line.png"
+                  class="w-[120px] h-[120px] object-contain"
+                  alt="LINE 客服 QR Code"
+                />
+              </div>
+              <div class="flex flex-col gap-2 text-base text-text-default">
+                <div class="flex">
+                  <span class="w-[68px] shrink-0">電話</span
+                  ><span>02-2826-3881</span>
+                </div>
+                <div class="flex">
+                  <span class="w-[68px] shrink-0">傳真</span
+                  ><span>02-2821-8289</span>
+                </div>
+                <div class="flex">
+                  <span class="w-[68px] shrink-0">北客服</span
+                  ><span>#13 紅樹林</span>
+                </div>
+                <div class="flex">
+                  <span class="w-[68px] shrink-0">西客服</span
+                  ><span>#12 Jimmy</span>
+                </div>
+                <div class="flex">
+                  <span class="w-[68px] shrink-0">東客服</span
+                  ><span>#22 Luka</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs text-text-default">
+                <img
+                  src="./assets/icons/email.svg"
+                  alt="email"
+                  class="w-5 h-5 shrink-0"
+                />
+                <span class="truncate">service@bbnet.gmail.com</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 檔案 -->
+          <div class="border-t border-border-default pt-3">
+            <div class="flex items-center gap-2 mb-2">
+              <img
+                src="./assets/icons/download.svg"
+                alt="download"
+                class="w-6 h-6"
+              />
+              <span class="text-xl font-semibold text-text-default">檔案</span>
+            </div>
+            <div
+              class="border border-border-disabled rounded-lg p-3 flex flex-col gap-3"
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-base text-text-default">教育訓練手冊</span>
+                  <span class="text-xs text-text-secondary">2018-09-06</span>
+                </div>
+                <img
+                  src="./assets/icons/download.svg"
+                  alt="download"
+                  class="w-5 h-5 cursor-pointer shrink-0"
+                />
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-base text-text-default">套件</span>
+                  <span class="text-xs text-text-secondary">1.0.13</span>
+                </div>
+                <img
+                  src="./assets/icons/download.svg"
+                  alt="download"
+                  class="w-5 h-5 cursor-pointer shrink-0"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- POS 入口 (state=POS - pattern) -->
+          <div class="mt-4 pos-entrance-btn">
+            <div
+              class="p-[3px] rounded-full"
+              style="background: linear-gradient(to right, var(--color-accent-linear-pos-left), var(--color-accent-linear-pos-right))"
+            >
+              <div
+                class="pos-entrance-inner grid grid-cols-3 items-center px-3 h-[33px] rounded-full cursor-pointer"
+              >
+                <span
+                  class="icon-mask w-6 h-6 shrink-0 justify-self-start text-icon-default"
+                  style="-webkit-mask-image: url('./assets/icons/pos.svg'); mask-image: url('./assets/icons/pos.svg')"
+                  aria-hidden="true"
+                ></span>
+                <span class="text-sm font-semibold text-text-default text-center"
+                  >POS</span
+                >
+                <span
+                  class="icon-mask w-6 h-6 shrink-0 justify-self-end text-icon-default"
+                  style="-webkit-mask-image: url('./assets/icons/attached-link.svg'); mask-image: url('./assets/icons/attached-link.svg')"
+                  aria-hidden="true"
+                ></span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </aside>
