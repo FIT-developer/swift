@@ -134,7 +134,9 @@ Header 內容，由左至右：
 ### 巢狀 modal 規則（2026-07-03 使用者要求）
 
 - **modal 內觸發的次層 modal 一律不共用房間預定頁的 instance**，改用 `orderEdit_` 前綴的專屬副本（`ensureOrderEditModalClone()` runtime 建立，body 內 `data-modal-open` 於 build 時全數改寫；`data-data-exists-trigger` 等寫死 id 的 delegated handler 以 `closest("#modalOrderEditBackdrop")` 分流）
-- 副本層級：`.modal-layer-2`（`--z-modal-layer-2: 65`，介於 modal 60 與 popover 70 之間），蓋在修改 modal 之上；修改 modal 維持開啟於下層
+- 副本層級（2026-07-04 改為動態疊層）：`openModal` 依「當下已開 modal 數 N」給 z = 60 + N*5，任意深度成立（修改 60 -> 會員資料副本 65 -> 合約公司副本 70），`closeModal` 清 inline z。`.modal-layer-2` class 保留但 z 以動態為準
+- scope 判定：副本 append 在 body、不在 `#modalOrderEditBackdrop` 內，故 delegated trigger 的分流檢查是 `closest('#modalOrderEditBackdrop, [id^="orderEdit_"]')` 兩種祖先都認（2026-07-04 修正：原本只認前者，導致會員資料副本內的「更換合約公司」開到原版壓在下層）
+- Escape 只關「最上層」（依 computed z-index 判定）；最上層若標 `data-no-dismiss`（會員資料/合約公司系）則整個不動作，不可穿透關下層
 - 庫存月曆 offcanvas 同樣有專屬副本 `orderEditInvCalendarOffcanvas`（calendar JS 依 grid 所在 scope 自動解析）；offcanvas z 1000 本來就在 modal 之上
 - 內容為 JS 動態渲染的 modal（加購/房型編輯）clone 前先跑 reset/render 填滿內容再拷貝
 - per-ID 的 modal-box CSS 已補 `#orderEdit_` 對應 selector（landing.css）；`.modal-close-btn` 關閉改為 document 層 delegated（副本的關閉鈕才有效）

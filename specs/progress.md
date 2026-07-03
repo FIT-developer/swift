@@ -7,6 +7,26 @@
 
 ---
 
+## Session 79 交接 (2026-07-04)
+
+### 任務: B3 start.md 瘦身 + 驗收材料 + 三層 modal 疊層修正
+
+1. **B3**：start.md「元件 conventions」「可復用 UI patterns」兩段（60 行，無界增長區）整段移至 specs/html-conventions.md（現 229 行），start.md 留指標段（450 -> 396 行）；memory 的行號引用改段落名引用
+2. **驗收材料**：11 張多角度截圖存 specs/qa-screenshots/session-78/（accept-01~11：1440 篩選/表格/dropdown/修改 modal 三區塊/tooltip + 390 頁面/bottom sheet/modal/月曆 offcanvas），等使用者實際操作驗收
+3. **三層 modal 疊層修正**（使用者回報：會員資料內「公司名稱 edit」開出的 modal 層級不對）：
+   - 根因：orderEdit_ 副本 append 在 body 不在 #modalOrderEditBackdrop 內，副本內 delegated trigger 過不了 scope 檢查，開到原版（z60）壓在副本（z65）下
+   - 修正：scope 檢查改 `closest('#modalOrderEditBackdrop, [id^="orderEdit_"]')`；z 改動態疊層（openModal 依已開數 N 給 60+N*5，任意深度）；Esc 只認 computed z 最上層、最上層 no-dismiss 則不動作（修掉穿透關底層的衍生 bug）；data-order-summary-submit 加防禦性分流
+   - 驗證：三層鏈 60/65/70、原版全程未動、Esc/按鈕逐層關、房間預定頁原路徑回歸全過
+   - spec：order-edit-modal.md 巢狀規則段更新為動態疊層版
+
+### 下一步
+
+1. 使用者操作驗收訂單處理頁（截圖組在 session-78/）
+2. 未 push commits：ee06dfb / b9722a8 / 26fedd1 / 本輪
+3. audit 項目全數完成（B1-B4 + 5 項止血）
+
+---
+
 ## Session 78 交接 (2026-07-03)
 
 ### 任務: audit B2 + B4（B3 start.md 瘦身留待下個 session）

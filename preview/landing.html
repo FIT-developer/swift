@@ -5170,6 +5170,14 @@
           var el = document.getElementById(id);
           if (!el) return;
           rememberModalReturnFocus(id, returnFocusTarget);
+          // 動態疊層：已有 N 個 modal 開著時，本層 z = 60 + N*5，
+          // 任意深度（修改 -> 會員資料 -> 合約公司 = 60/65/70）都正確蓋疊
+          var openBackdrops = document.querySelectorAll(
+            ".modal-backdrop.open",
+          ).length;
+          el.style.zIndex = openBackdrops
+            ? String(60 + openBackdrops * 5)
+            : "";
           if (id === "modalRoomEditBackdrop") resetRoomEditModal();
           if (id === "modalPurchaseAddonBackdrop") resetPurchaseAddonModal();
           if (id === "modalOrderSummaryBackdrop") resetOrderSummaryModal();
@@ -5182,6 +5190,7 @@
           if (!el) return;
           var wasOpen = el.classList.contains("open");
           el.classList.remove("open");
+          el.style.zIndex = "";
           // 疊層感知：關第二層 modal 時，若下層還有開著的 modal，
           // body scroll 必須維持鎖定
           document.body.style.overflow = document.querySelector(
@@ -6205,7 +6214,15 @@
             e.preventDefault();
             var variant = getOrderSummaryVariantFromOrderType();
             if (!setOrderSummaryVariant(variant)) return;
-            openModal("modalOrderSummaryBackdrop", orderSummarySubmit);
+            // 修改 modal 內的 [E] 送出也要開副本，不可開原版壓在下層
+            openModal(
+              orderSummarySubmit.closest(
+                '#modalOrderEditBackdrop, [id^="orderEdit_"]',
+              )
+                ? ensureOrderEditModalClone("modalOrderSummaryBackdrop")
+                : "modalOrderSummaryBackdrop",
+              orderSummarySubmit,
+            );
             return;
           }
           // 訂單處理頁：狀態 pill 下拉選單動作 -> modal 接線
@@ -6277,10 +6294,11 @@
         // cloned into the page on demand; per-element listeners attached at
         // script-load time would target the inert original, not the clone.
         document.addEventListener("click", function (e) {
-          // 觸發點在訂單修改 modal 內時，一律開 orderEdit_ 副本（第二層），
-          // 不共用房間預定的 instance
+          // 觸發點在訂單修改 modal 內、或任何 orderEdit_ 副本內時，
+          // 一律開 orderEdit_ 副本，不共用原 instance（副本 append 在 body，
+          // 不在 #modalOrderEditBackdrop 內，故兩種祖先都要認）
           function resolveScopedModalId(trigger, origId) {
-            return trigger.closest("#modalOrderEditBackdrop")
+            return trigger.closest('#modalOrderEditBackdrop, [id^="orderEdit_"]')
               ? ensureOrderEditModalClone(origId)
               : origId;
           }
@@ -6461,21 +6479,21 @@
           closeModal(el.id);
         });
 
-        // ESC key - delegated: 一次只關最上層（第二層 modal 優先），
-        // 疊層時第一下關子層、第二下關父層
+        // ESC key - delegated: 一次只關「最上層」（依 computed z-index 判定，
+        // 動態疊層下任意深度成立）。最上層若標 data-no-dismiss 則整個不動作
+        // -- 不可穿透去關下層，否則會出現上層開著、底層先消失
         document.addEventListener("keydown", function (e) {
           if (e.key !== "Escape") return;
-          var open = Array.prototype.filter.call(
+          var open = Array.prototype.slice.call(
             document.querySelectorAll(".modal-backdrop.open"),
-            function (m) {
-              return !m.hasAttribute("data-no-dismiss");
-            },
           );
           if (!open.length) return;
-          var top =
-            open.filter(function (m) {
-              return m.classList.contains("modal-layer-2");
-            })[0] || open[open.length - 1];
+          var top = open.reduce(function (a, b) {
+            var za = parseInt(getComputedStyle(a).zIndex, 10) || 0;
+            var zb = parseInt(getComputedStyle(b).zIndex, 10) || 0;
+            return zb >= za ? b : a;
+          });
+          if (top.hasAttribute("data-no-dismiss")) return;
           closeModal(top.id);
         });
 

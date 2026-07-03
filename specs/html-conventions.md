@@ -162,3 +162,68 @@
 ---
 
 *Updated 2026-04-15*
+
+---
+
+## 元件 conventions（跨頁通用）
+
+實作元件時的固定規格與語意對照，避免每次重發明：
+
+### 外層 padding
+- 頁面 / 主要區塊外層 padding 左右 `20px = px-5`（**不是** `px-3` 12px）
+- 對應 token: `--spacing-20`
+
+### Pill chip button
+- gap 16px (`gap-4`)、padding `10px 16px` (`px-4 py-2.5`)、radius 28px
+- 不用 `gap-0`、不用 `rounded-full`（明確 r:28）
+- 黃藍語意分流見下
+
+### Chip yellow vs blue（語意不可混）
+- **黃** `#f7d275`（`--color-subitem-selected`）= tag / 付款指示 / 子項目 selected（如 `circle-selected-yellow` variant）
+- **藍** `#005fcc`（`--color-menuitem-default-strong` 或 brand-600）= toggle / mode 切換（如 mode-toggle active）
+- 不可互換、不可同時用在同一語意
+
+### Lock toggle（input 群組鎖定態）
+- lock icon 不是裝飾，是 toggle button：
+  - **紅鎖** `--color-brand-active` = inputs **disabled**，input bg 灰底
+  - **綠鎖** `--color-accent-green-positive` = inputs **active**，input bg 白
+- 點 lock icon 切換整段 inputs 的 disabled / active 狀態
+
+### Figma 灰底 input baseline
+- Figma 視覺稿出現灰底 input = lock disabled 態，**不是新的 input variant**
+- 實作 baseline 一律白底；灰底由 `.is-locked` class 套用，不可在 spec 內定義「灰底 input」
+
+### Checkbox 三色語意
+- Figma checkbox fill 對照：
+  - `#b0b0b0` = **disabled**（不可勾）
+  - `#ffffff` = enabled **未勾**
+  - `#2178cf` = enabled **已勾**
+- 不要看到灰就整批反灰，要分清三態
+
+## 可復用 UI patterns（持續累積）
+
+當實作中發現某段樣式 / JS 結構在未來會被多次使用，先在這裡登記類別 + scoped class 名 + 最早出現的 component，避免下次重發明：
+
+### Toggle switch（iOS-style）
+- CSS scoped class：`.member-data-switch` / `.member-data-switch-track` / `.member-data-switch-knob`
+- 結構：`<span class="member-data-switch"><input type="checkbox"><span class="member-data-switch-track"></span><span class="member-data-switch-knob"></span></span>`
+- on track 色 `--color-accent-green` / off track 色 `--color-switch-off-track` / knob `--color-neutral-0`
+- 來源：`components/member-data-modal.md`（會員資料 modal 常用會員、訂閱電子報）
+
+### Pill chip 單選 toggle（橫向 scroll）
+- CSS scoped class：`.member-data-title-chip` / `.is-selected`（黃底 `--color-subitem-selected`）
+- 容器：`flex-nowrap overflow-x-auto`，chip `flex-shrink: 0`
+- JS：delegated click handler，單選切 `is-selected`
+- 來源：`components/member-data-modal.md`（訂房記錄 3 chip 切館別）
+
+### Filter tab 底線 active（無框）
+- CSS scoped class：`.member-data-filter-tab` / `.is-active`（`text-decoration: underline; font-weight: 600; text-underline-offset: 4px`）
+- 與 pill button 不同：active 用底線 + semibold，沒有 border / radius / bg
+- 來源：`components/member-data-modal.md`（訂房記錄 5 filter）
+
+### Modal-scoped IIFE delegation pattern
+- Modal markup 放 `<body>` level（不在 `#tpl-room-booking` 內），listener 在 script load 時 `document.getElementById(modalId)` 找到後直接掛
+- 若 trigger button 在 template 內（會被 cloned）：用 `document.addEventListener("click", e => { var btn = e.target.closest("[data-...]"); ... })` event delegation，**不要** `querySelectorAll().forEach()` 預掛
+- 來源：`landing.html:6520` Data exists button + member-data modal handler
+
+> 以上「元件 conventions」「可復用 UI patterns」兩段 2026-07-04 自 start.md 移入（B3 瘦身）；新增 pattern 一律登記於本檔。
