@@ -153,7 +153,7 @@ Mobile/tablet：tabs 跟快篩 button 分成兩行，各自橫向 scroll 容器�
 | Tooltip | 觸發位置 | 內容 |
 |---|---|---|
 | 訂單狀態圖例 | 表格「訂單編號」欄標題旁 `icons/info` | 5 個狀態 dot + 中文標籤（`Color/Dots/*` 圖例），見 `components/order-status-pill.md` |
-| 日期狀態說明 | 篩選面板「日期狀態」select 旁 `icons/info` | 9 個日期狀態選項 + 各自說明文字（**說明文字本身是 Figma 佔位文案，尚未寫真實文案**，見 `feedback_figma_placeholder_text_conventions`） |
+| 日期狀態說明 | 篩選面板「日期狀態」select 旁 `icons/info` | 9 個日期狀態選項 + 各自說明文字（說明文字是 Figma 佔位文案；**已確認 2026-07-03：真實文案由後端實作，前端維持佔位不再追蹤**） |
 
 **已確認（2026-07-03）**：考量手機版沒有 hover，兩個 tooltip **一律用 click 觸發**（不做 hover 版本），點擊 `(i)` icon 展開，**點擊 tooltip 以外的範圍收起**（click-outside dismiss）。
 

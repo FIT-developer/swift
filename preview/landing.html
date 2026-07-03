@@ -4096,6 +4096,69 @@
     </div>
 
     <!-- ════════════════════════════════════
+         訂單修改 modal (Figma 2032:81567, 一般會員版) — 觸發：訂單處理頁狀態 pill 下拉選單「修改」。
+         Body = room-booking [A]-[E] 區塊 runtime clone（見 buildOrderEditModalBody），
+         規格 components/order-edit-modal.md。合約會員版差異只記錄於 .md，不出 HTML。
+         ════════════════════════════════════ -->
+    <div
+      id="modalOrderEditBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalOrderEditTitle"
+    >
+      <div class="modal-box mx-3">
+        <!-- Header：標題 + 還原（整頁還原，行為後端實作）+ close -->
+        <div
+          class="modal-header-shadow flex h-[66px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+        >
+          <span
+            id="modalOrderEditTitle"
+            class="text-xl font-semibold text-text-default"
+            >訂單修改</span
+          >
+          <div class="flex items-center gap-4">
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 rounded-[28px] border border-border-disabled bg-[var(--color-neutral-75)] px-4 py-2.5 text-base text-text-default cursor-pointer"
+              aria-label="還原整頁資料"
+            >
+              <img src="./assets/icons/restore.svg" alt="" class="w-6 h-6" />
+              <span>還原</span>
+            </button>
+            <button
+              type="button"
+              class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+              data-modal="modalOrderEditBackdrop"
+              aria-label="關閉"
+            >
+              <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Body：room-booking [A]-[E] runtime clone 注入點 -->
+        <div class="min-h-0 flex-1 overflow-y-auto bg-white p-3">
+          <div data-order-edit-body class="flex flex-col gap-4"></div>
+        </div>
+
+        <!-- Footer：取消 / 確定（皆 active，可編輯表單） -->
+        <div class="flex-shrink-0 flex justify-end gap-2 px-4 py-3 border-t border-border-focus">
+          <button
+            type="button"
+            class="modal-close-btn inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base cursor-pointer"
+            data-modal="modalOrderEditBackdrop"
+          >取消</button>
+          <button
+            type="button"
+            class="modal-close-btn inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer"
+            data-modal="modalOrderEditBackdrop"
+          >確定</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
          Chart.js + Interaction scripts
     ════════════════════════════════════ -->
     <script>
@@ -4182,6 +4245,12 @@
           }
         }
 
+        // 訂單修改 modal 的 body 是 tpl-room-booking 的 runtime clone，
+        // clone 後需要跨 IIFE 重跑行為綁定，故曝露到 window（同 renderPurchaseAddonCart 先例）
+        window.initSubPageBehaviors = function (root) {
+          initSubPageBehaviors(root);
+        };
+
         function initSubPageBehaviors(root) {
           // Accordion toggles
           root
@@ -4267,19 +4336,20 @@
             if (closeBtn) {
               closeBtn.addEventListener("click", closeMenu);
             }
-            menu.addEventListener("click", function (e) {
-              e.stopPropagation();
-            });
+            // 注意：選單內不可 stopPropagation —— 選單項目的 modal 接線靠
+            // document 層 delegated handler（[data-op-menu-action] 分支），
+            // outside-close 改用 closest 檢查排除選單內點擊
             menu.querySelectorAll("[data-op-menu-action]").forEach(function (item) {
               item.addEventListener("click", function () {
-                // 連結/複製/取消/訂單/修改/簡訊 行為留給後端與各自 modal 接入，
-                // 這裡先只收起選單（見 components/order-status-pill.md 下拉選單內容）
+                // 選單收合在此；訂單/修改/簡訊 的 modal 開啟在 document 層
+                // delegated handler，連結/複製/取消 留給後端
                 closeMenu();
               });
             });
             if (!window.__opRowMenuOutsideBound) {
               window.__opRowMenuOutsideBound = true;
-              document.addEventListener("click", function () {
+              document.addEventListener("click", function (e) {
+                if (e.target.closest("[data-op-row-menu]")) return;
                 document
                   .querySelectorAll("[data-op-row-menu]")
                   .forEach(function (m) {
@@ -4326,6 +4396,22 @@
               if (willOpen) {
                 panel.classList.remove("hidden");
                 trigger.setAttribute("aria-expanded", "true");
+                // 水平夾取：panel 錨在 trigger 左緣（left-0）、固定寬，
+                // trigger 靠右時會超出視窗（手機版必現），量測後平移回可視範圍。
+                // 基準用 documentElement.clientWidth：mobile 下 innerWidth
+                // 會跟著 content overflow 浮動（633 vs 真實 390），不可靠
+                panel.style.marginLeft = "";
+                var rect = panel.getBoundingClientRect();
+                var viewportW = document.documentElement.clientWidth;
+                var margin = 12;
+                var shift = 0;
+                if (rect.right > viewportW - margin) {
+                  shift = viewportW - margin - rect.right;
+                }
+                if (rect.left + shift < margin) {
+                  shift = margin - rect.left;
+                }
+                if (shift) panel.style.marginLeft = shift + "px";
               }
             });
           });
@@ -5446,8 +5532,19 @@
           buildGrid();
 
           // 0527: 月曆 button (庫存表 only) → 開 offcanvas，teleport rb-cal-wrap 進去
-          var offcanvas = document.getElementById("invCalendarOffcanvas");
-          var offcanvasBody = document.getElementById("invCalendarOffcanvasBody");
+          // scope 分流：訂單修改 modal 內的 [A] 用自己的 offcanvas 副本
+          // （orderEditInvCalendarOffcanvas，見 buildOrderEditModalBody），
+          // 不共用房間預定的 singleton，避免跨頁面共用 instance 的維護問題
+          var isOrderEditScope = !!(
+            grid.closest && grid.closest("#modalOrderEditBackdrop")
+          );
+          var offcanvas = document.getElementById(
+            isOrderEditScope
+              ? "orderEditInvCalendarOffcanvas"
+              : "invCalendarOffcanvas",
+          );
+          var offcanvasBody =
+            offcanvas && offcanvas.querySelector(".inv-offcanvas-body");
           var offcanvasClose = offcanvas && offcanvas.querySelector(
             "[data-inv-calendar-close]",
           );
@@ -5474,7 +5571,12 @@
             // 回到 invCalendarLeft 原位後，依目前 mode 套 hidden 規則
             if (mode === "inventory") calWrap.classList.add("hidden");
             offcanvas.classList.add("hidden");
-            document.body.style.overflow = "";
+            // 疊層感知：修改 modal 還開著時 body scroll 維持鎖定
+            document.body.style.overflow = document.querySelector(
+              ".modal-backdrop.open",
+            )
+              ? "hidden"
+              : "";
           }
 
           if (invCalendarBtn) {
@@ -5728,7 +5830,13 @@
           if (!el) return;
           var wasOpen = el.classList.contains("open");
           el.classList.remove("open");
-          document.body.style.overflow = "";
+          // 疊層感知：關第二層 modal 時，若下層還有開著的 modal，
+          // body scroll 必須維持鎖定
+          document.body.style.overflow = document.querySelector(
+            ".modal-backdrop.open",
+          )
+            ? "hidden"
+            : "";
           if (wasOpen) restoreModalReturnFocus(id);
         }
         function resetModalScroll(modal) {
@@ -6630,6 +6738,113 @@
           renderPurchaseAddonCart();
         }
 
+        // 訂單修改 modal 的巢狀 modal 副本：modal 內觸發的次層 modal 一律用
+        // orderEdit_ 前綴的專屬副本（z-index 高一階，蓋在修改 modal 之上），
+        // 不共用房間預定頁的 instance。副本為視覺示意：原生表單可操作、
+        // 開/關可用，但不接原 id-based 互動 JS（後端接手時重寫）。
+        function ensureOrderEditModalClone(origId) {
+          var cloneId = "orderEdit_" + origId;
+          if (document.getElementById(cloneId)) return cloneId;
+          var orig = document.getElementById(origId);
+          if (!orig) return origId;
+          // 內容為 JS 動態渲染的 modal：clone 前先跑一次 reset/render
+          // 讓原 modal DOM 填滿預設內容，副本才不會是空殼
+          if (origId === "modalPurchaseAddonBackdrop") {
+            resetPurchaseAddonModal();
+          }
+          if (origId === "modalRoomEditBackdrop") {
+            resetRoomEditModal();
+          }
+          var clone = orig.cloneNode(true);
+          clone.id = cloneId;
+          clone.classList.add("modal-layer-2");
+          // 先掛進 DOM 再改寫內部觸發，避免 modal 互開造成無窮遞迴
+          document.body.appendChild(clone);
+          // 內部 id 全數移除，避免與原 modal 重複
+          clone.querySelectorAll("[id]").forEach(function (el) {
+            el.removeAttribute("id");
+          });
+          // 關閉鈕 data-modal 指向副本自己
+          clone.querySelectorAll("[data-modal]").forEach(function (el) {
+            el.dataset.modal = cloneId;
+          });
+          // modal 內又開 modal 的觸發，遞迴改寫成副本
+          clone.querySelectorAll("[data-modal-open]").forEach(function (el) {
+            el.dataset.modalOpen = ensureOrderEditModalClone(
+              el.dataset.modalOpen,
+            );
+          });
+          return cloneId;
+        }
+
+        // 訂單修改 modal body：tpl-room-booking [A]-[E] 4 個區塊 runtime clone。
+        // 只建一次（示意 demo，不需要 per-order 重置）；規格 components/order-edit-modal.md
+        var orderEditBodyBuilt = false;
+        function buildOrderEditModalBody() {
+          if (orderEditBodyBuilt) return;
+          var modal = document.getElementById("modalOrderEditBackdrop");
+          var body = modal && modal.querySelector("[data-order-edit-body]");
+          var tpl = document.getElementById("tpl-room-booking");
+          if (!body || !tpl || !tpl.firstElementChild) return;
+          Array.from(tpl.firstElementChild.children).forEach(function (section) {
+            body.appendChild(section.cloneNode(true));
+          });
+          // [A] 差異：標題「空房與庫存查詢」改「庫存」；modal 內只有庫存模式
+          // （mode 切換/Excel/棟別 chips 由 CSS 隱藏，init 後程式切到庫存模式）
+          var aHeader = body.children[0]
+            ? body.children[0].querySelector(".rb-accordion-header span")
+            : null;
+          if (aHeader) aHeader.textContent = "庫存";
+          // [B] 差異 1：移除客戶類型 toggle（會員類型在訂單生成時已定，modal 內無切換路徑）
+          var customerToggle = body.querySelector(".customer-toggle");
+          if (customerToggle) customerToggle.remove();
+          // [B] 差異 2：cart 區塊頂部加「訂單編號」列
+          var cartBlock = body.children[1];
+          if (cartBlock) {
+            cartBlock.insertAdjacentHTML(
+              "afterbegin",
+              '<p class="text-base text-text-default mb-4">訂單編號：BXY00322212AZZ</p>',
+            );
+          }
+          // [D] 差異：header 清除右邊加「還原」（範圍只限訂房資料區塊，行為後端實作）
+          var orderDataClear = body.querySelector("#orderDataClear");
+          if (orderDataClear) {
+            orderDataClear.insertAdjacentHTML(
+              "afterend",
+              '<button type="button" class="flex items-center gap-2 cursor-pointer text-base text-text-default" aria-label="還原訂房資料區塊">' +
+                '<img src="./assets/icons/restore.svg" alt="" class="w-4 h-4" />' +
+                "<span>還原</span></button>",
+            );
+          }
+          // 巢狀 modal：body 內所有 data-modal-open 觸發改指向 orderEdit_ 副本
+          body.querySelectorAll("[data-modal-open]").forEach(function (el) {
+            el.dataset.modalOpen = ensureOrderEditModalClone(
+              el.dataset.modalOpen,
+            );
+          });
+          // [A] 庫存月曆 offcanvas：建 modal 專屬副本（calendar block 依
+          // grid 所在 scope 自動解析到這個 id，不共用房間預定 singleton）
+          if (!document.getElementById("orderEditInvCalendarOffcanvas")) {
+            var offcanvasOrig = document.getElementById("invCalendarOffcanvas");
+            if (offcanvasOrig) {
+              var offcanvasClone = offcanvasOrig.cloneNode(true);
+              offcanvasClone.id = "orderEditInvCalendarOffcanvas";
+              offcanvasClone.querySelectorAll("[id]").forEach(function (el) {
+                el.removeAttribute("id");
+              });
+              document.body.appendChild(offcanvasClone);
+            }
+          }
+          orderEditBodyBuilt = true;
+          if (typeof window.initSubPageBehaviors === "function") {
+            window.initSubPageBehaviors(body);
+          }
+          // init 後把 [A] 切到庫存模式（月曆按鈕 + 庫存表 + 訂/餘/保）；
+          // btnInventory 為 modal 副本（初始化時以 document 順序解析到 clone）
+          var btnInventory = body.querySelector("#btnInventory");
+          if (btnInventory) btnInventory.click();
+        }
+
         document.addEventListener("click", function (e) {
           var orderSummarySubmit = e.target.closest(
             "[data-order-summary-submit]",
@@ -6639,6 +6854,24 @@
             var variant = getOrderSummaryVariantFromOrderType();
             if (!setOrderSummaryVariant(variant)) return;
             openModal("modalOrderSummaryBackdrop", orderSummarySubmit);
+            return;
+          }
+          // 訂單處理頁：狀態 pill 下拉選單動作 -> modal 接線
+          // （選單自身的收合由 initSubPageBehaviors 的 item listener 處理）
+          var opMenuItem = e.target.closest("[data-op-menu-action]");
+          if (opMenuItem) {
+            var opAction = opMenuItem.dataset.opMenuAction;
+            if (opAction === "訂單") {
+              // variant 與訂單實際狀態的對應留給後端，demo 一律開 unpaid
+              setOrderSummaryVariant("unpaid");
+              openModal("modalOrderSummaryBackdrop", opMenuItem);
+            } else if (opAction === "簡訊") {
+              openModal("modalSmsBackdrop", opMenuItem);
+            } else if (opAction === "修改") {
+              buildOrderEditModalBody();
+              openModal("modalOrderEditBackdrop", opMenuItem);
+            }
+            // 連結 / 複製 / 取消：後端功能，前端僅收合選單
             return;
           }
           var btn = e.target.closest("[data-modal-open]");
@@ -6692,12 +6925,22 @@
         // cloned into the page on demand; per-element listeners attached at
         // script-load time would target the inert original, not the clone.
         document.addEventListener("click", function (e) {
+          // 觸發點在訂單修改 modal 內時，一律開 orderEdit_ 副本（第二層），
+          // 不共用房間預定的 instance
+          function resolveScopedModalId(trigger, origId) {
+            return trigger.closest("#modalOrderEditBackdrop")
+              ? ensureOrderEditModalClone(origId)
+              : origId;
+          }
           var dataExistsTrigger = e.target.closest(
             "[data-data-exists-trigger]",
           );
           if (dataExistsTrigger) {
             e.preventDefault();
-            openModal("modalMemberDataBackdrop", dataExistsTrigger);
+            openModal(
+              resolveScopedModalId(dataExistsTrigger, "modalMemberDataBackdrop"),
+              dataExistsTrigger,
+            );
             return;
           }
           var contractTrigger = e.target.closest(
@@ -6705,7 +6948,13 @@
           );
           if (contractTrigger) {
             e.preventDefault();
-            openModal("modalChangeContractCompanyBackdrop", contractTrigger);
+            openModal(
+              resolveScopedModalId(
+                contractTrigger,
+                "modalChangeContractCompanyBackdrop",
+              ),
+              contractTrigger,
+            );
             return;
           }
         });
@@ -6828,11 +7077,13 @@
         })();
 
         // Close buttons (class modal-close-btn, data-modal="id")
-        document.querySelectorAll(".modal-close-btn").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            var id = btn.dataset.modal;
-            if (id) closeModal(id);
-          });
+        // delegated：orderEdit_ runtime 副本的關閉鈕也要有效，
+        // 不能用 script-load 時的 per-element 綁定
+        document.addEventListener("click", function (e) {
+          var btn = e.target.closest(".modal-close-btn");
+          if (!btn) return;
+          var id = btn.dataset.modal;
+          if (id) closeModal(id);
         });
 
         document
@@ -11042,7 +11293,7 @@
                     <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="133449">
                       <span class="op-status-dot" style="background: var(--color-dots-overdues)"></span>
                       <span class="op-status-pill-text">133449</span>
-                      <img src="./assets/icons/arrow-down-drop.svg" alt="" class="op-status-pill-triangle" />
+                      <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
                     </button>
                     <span class="op-badge-source">Booking</span>
                     <div class="flex flex-wrap justify-center gap-1.5">
@@ -11083,7 +11334,7 @@
                     <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="133391">
                       <span class="op-status-dot" style="background: var(--color-dots-alternative)"></span>
                       <span class="op-status-pill-text">133391</span>
-                      <img src="./assets/icons/arrow-down-drop.svg" alt="" class="op-status-pill-triangle" />
+                      <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
                     </button>
                     <span class="op-badge-source">Agoda</span>
                     <div class="flex flex-wrap justify-center gap-1.5">
@@ -11124,7 +11375,7 @@
                     <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="443212">
                       <span class="op-status-dot" style="background: var(--color-dots-cancel)"></span>
                       <span class="op-status-pill-text">443212</span>
-                      <img src="./assets/icons/arrow-down-drop.svg" alt="" class="op-status-pill-triangle" />
+                      <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
                     </button>
                     <span class="op-badge-source">Agoda</span>
                     <div class="flex flex-wrap justify-center gap-1.5">
@@ -11166,7 +11417,7 @@
                     <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="933921">
                       <span class="op-status-dot" style="background: var(--color-dots-validated)"></span>
                       <span class="op-status-pill-text">933921</span>
-                      <img src="./assets/icons/arrow-down-drop.svg" alt="" class="op-status-pill-triangle" />
+                      <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
                     </button>
                     <div class="flex flex-wrap justify-center gap-1.5">
                       <span class="op-badge">企業</span>
@@ -11208,7 +11459,7 @@
                     <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="488212">
                       <span class="op-status-dot" style="background: var(--color-dots-unpaid)"></span>
                       <span class="op-status-pill-text">488212</span>
-                      <img src="./assets/icons/arrow-down-drop.svg" alt="" class="op-status-pill-triangle" />
+                      <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
                     </button>
                     <div class="flex flex-wrap justify-center gap-1.5">
                       <span class="op-badge">企業</span>

@@ -219,6 +219,19 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 - 不主動加 fade mask、不加 indicator chevron、不自訂 scrollbar 樣式
 - chip / tab 元素本身要 `flex-shrink: 0` + `white-space: nowrap`
 
+### Tooltip 視窗自適應（強制）
+- tooltip / popover 內容**必須完整顯示在螢幕內，不可超出任何一邊的螢幕邊緣**（手機版尤其必現：trigger 靠右 + 固定寬 panel）
+- 固定錨點（如 `absolute left-0`）+ 固定寬度的 panel 一律在**開啟時量測夾取**：超出視窗就平移回可視範圍（左右各留 12px 邊距），每次開啟重算
+- 夾取基準用 `document.documentElement.clientWidth`，**不可用 `window.innerWidth`**：emulated/真機 mobile 下 innerWidth 會跟著 content overflow 浮動，不可靠
+- 參考實作：訂單處理頁 `.op-tooltip-trigger` 開啟 handler（preview/landing.html）
+
+### Modal 開子 modal（巢狀 modal，強制）
+- **權重**：子 modal 必須蓋在父 modal 之上（`--z-modal-layer-2`，介於 `--z-modal` 與 `--z-popover` 之間）；父 modal 維持開啟於下層，關閉子層時 body scroll 維持鎖定（疊層感知，見 `closeModal`）
+- **實例隔離**：子 modal **不得直接調用非屬其父層情境的既有 modal instance**（例如訂單修改 modal 內不可觸發房間預定頁共用的加購/會員資料 modal），共用 instance 會造成跨情境資料混亂與維護災難
+- 做法：為父 modal 建立專屬副本（id 加情境前綴如 `orderEdit_`），觸發屬性於 build 時改寫指向副本；寫死 id 的 delegated handler 用 `closest("#父modal-id")` 分流
+- 副本注意事項：per-ID 的 CSS 要補前綴 selector 對應；`.modal-close-btn` 等關閉機制必須是 delegated（副本才有效）；內容為 JS 動態渲染的 modal 先 reset/render 再 clone
+- 參考實作：`components/order-edit-modal.md` 「巢狀 modal 規則」段
+
 ### QA 截圖路徑
 - 截圖存到 `specs/qa-screenshots/session-{N}/`，N = 當前 session 編號（讀 `progress.md` 確認）
 - 不可散落 `specs/qa-screenshots/` 根目錄

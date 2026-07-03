@@ -47,10 +47,24 @@ Header（1192 x 66）內容，由左至右：
 
 | 順序 | 區塊 | 對應既有 spec | 差異 |
 |---|---|---|---|
-| 1 | Accordion「庫存」 | `specs/pages/room-booking.md` [A] 空房與庫存查詢 | 無差異，逐項沿用（月曆/庫存表 mode toggle、日期格、訂/餘/保 圖例） |
+| 1 | Accordion「庫存」 | `specs/pages/room-booking.md` [A] 空房與庫存查詢 | **差異多，見下方「[A] 庫存差異」段**（~~無差異逐項沿用~~ 為初讀誤記，2026-07-03 使用者指正） |
 | 2 | 訂房明細 cart 表格（Figma instance 名 `1140`） | `specs/pages/room-booking.md` 「頂部資料列（Frame 367）」+「訂房資料 Grid（Frame 557）」（該檔 line 154-179 一帶） | 無差異，欄位/checkbox 邏輯完全沿用；合約會員版在此區塊頂部多一列（見下方「會員版本差異」） |
 | 3 | Order condition + Accordion「正式單與候補單」（左右並排） | 左：`components/order-condition.md`；右：`components/order-status.md`（**注意**：檔名雖是 order-status，內容才是 [E] 正式單與候補單；`components/order.md` 是另一個完全無關的首頁 widget） | 無差異，欄位逐項一致 |
 | 4 | 訂房資料（Frame 453） | `components/order-data.md` [D] | Header 多一顆「還原」按鈕（原規格只有「清除」），位置在「清除」右邊；其餘欄位/tab/lock icon/橘字三件套一致 |
+
+### 0. [A] 庫存差異（2026-07-03 使用者確認）
+
+modal 內的 [A] 只有「庫存」單一模式，與房間預定頁的雙模式版本差異如下：
+
+| 項目 | 房間預定頁 [A] | 訂單修改 modal [A] |
+|---|---|---|
+| 標題 | 空房與庫存查詢 | **庫存** |
+| 空房/庫存 mode 切換 | 有（pill toggle） | **無**（固定庫存模式） |
+| 月曆 | 空房模式 inline / 庫存模式按鈕觸發 | **一律「月曆」按鈕觸發，從下往上 offcanvas** |
+| Excel 下載 | 庫存模式有 | **無** |
+| 全部/A/B/C 棟 chips | 有 | **無** |
+| 訂/餘/保 圖例 | 庫存模式有 | 有（唯一保留的工具列元素） |
+| 庫存表 | 庫存模式有 | 有 |
 
 ### 1. 訂房明細 cart 表格重點欄位
 
@@ -104,6 +118,27 @@ Header 內容，由左至右：
 
 - 這階段 **HTML 示意只做「一般會員版」**
 - 「合約會員版」的差異內容（上表）**寫進本檔（.md）即可**，讓之後接手的後端工程師看得到；不需要另外做一份可互動的合約會員版 HTML
+
+---
+
+## 實作備註（2026-07-03，preview/landing.html）
+
+- Modal id：`modalOrderEditBackdrop`（外殼靜態 HTML，desktop 1192 寬 / <768 全螢幕，同其他 modal pattern）
+- Body 不是靜態複製：開啟時 runtime clone `tpl-room-booking` 的 [A]-[E] 4 個區塊（`buildOrderEditModalBody()`，只建一次），clone 後跑 `initSubPageBehaviors` 重綁互動
+- Clone 後差異調整：[A] 標題改「庫存」+ init 後程式切到庫存模式（`btnInventory.click()`）、移除 `.customer-toggle`、cart 頂部插入「訂單編號」列、[D] header 清除右邊插入「還原」button（icon `icons/restore.svg`）
+- [A] 的 mode 切換/Excel/棟別 chips 用 CSS 隱藏（`[data-order-edit-body]` scope，見 landing.css），**DOM 保留**：共用 calendar JS 以 `document.getElementById` 解析這些節點，若從 clone 移除會 fallback 到 template 副本、污染日後開啟的房間預定頁
+- 觸發鏈：訂單處理頁 pill 下拉選單 -> document 層 delegated handler（`[data-op-menu-action]` 分支）。**選單容器不可 stopPropagation**，否則 delegated handler 收不到
+- 「訂單」開 `modalOrderSummaryBackdrop`（demo 一律 unpaid variant，實際對應留給後端）、「簡訊」開 `modalSmsBackdrop`
+
+### 巢狀 modal 規則（2026-07-03 使用者要求）
+
+- **modal 內觸發的次層 modal 一律不共用房間預定頁的 instance**，改用 `orderEdit_` 前綴的專屬副本（`ensureOrderEditModalClone()` runtime 建立，body 內 `data-modal-open` 於 build 時全數改寫；`data-data-exists-trigger` 等寫死 id 的 delegated handler 以 `closest("#modalOrderEditBackdrop")` 分流）
+- 副本層級：`.modal-layer-2`（`--z-modal-layer-2: 65`，介於 modal 60 與 popover 70 之間），蓋在修改 modal 之上；修改 modal 維持開啟於下層
+- 庫存月曆 offcanvas 同樣有專屬副本 `orderEditInvCalendarOffcanvas`（calendar JS 依 grid 所在 scope 自動解析）；offcanvas z 1000 本來就在 modal 之上
+- 內容為 JS 動態渲染的 modal（加購/房型編輯）clone 前先跑 reset/render 填滿內容再拷貝
+- per-ID 的 modal-box CSS 已補 `#orderEdit_` 對應 selector（landing.css）；`.modal-close-btn` 關閉改為 document 層 delegated（副本的關閉鈕才有效）
+- `closeModal`/offcanvas close 為疊層感知：關第二層時若下層還有開著的 modal，body scroll 維持鎖定
+- 副本為視覺示意：原生表單可操作、開/關可用，但**不接原 id-based 互動 JS**（副本內部 id 已全數移除避免重複），正式版由後端重寫
 
 ---
 

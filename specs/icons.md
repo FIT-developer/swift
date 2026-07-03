@@ -49,6 +49,7 @@
 | eye-close | assets/icons/eye-close.svg | 24×24 | 隱藏密碼 | icons/eye-close |
 | eye-open | assets/icons/eye-open.svg | 24×24 | 顯示密碼 | icons/eye-open |
 | failure-red | assets/icons/failure-red.svg | 24×24 | 失敗/錯誤 🔴 fill #E12129 | icons/failure |
+| file-work-history | assets/icons/file-work-history.svg | 24x24 | 檔案/異動記錄 | icons/file-work-history |
 | flow | assets/icons/flow.svg | 16×16 | 流程 | icons/flow |
 | focus | assets/icons/focus.svg | 24×24 | 焦點/聚焦 | icons/focus |
 | google | assets/icons/google.svg | 24×24 | Google 登入 🎨 品牌四色 | icons/google |
@@ -61,6 +62,7 @@
 | label | assets/icons/label.svg | 24×24 | 標籤 | icons/label |
 | language | assets/icons/language.svg | 24×24 | 語言切換 | icons/language |
 | left | assets/icons/left.svg | 16×16 | 向左（小箭頭） | icons/left |
+| link | assets/icons/link.svg | 24x24 | 連結（訂單處理下拉選單「連結」） | icons/link |
 | list | assets/icons/list.svg | 24×24 | 清單 | icons/list |
 | lock | assets/icons/lock.svg | 24×24 | 鎖定 ⚠️ fill #E05216（橙色，建議改 currentColor） | icons/lock |
 | logo | assets/icons/logo.svg | 24×24 | 品牌 Logo 🎨 #00A5E3 + #8FC31F | icons/logo |
@@ -69,12 +71,14 @@
 | night | assets/icons/night.svg | 24×24 | 夜晚/夜數 | icons/night |
 | ~~none~~ | *(未匯出)* | — | 空狀態佔位符（無可見圖層） | icons/none |
 | operation-system | assets/icons/operation-system.svg | 24×24 | 作業系統/系統操作（方形+圓形設計） | icons/operation-system |
+| order | assets/icons/order.svg | 24x24 | 訂單（訂單處理下拉選單「訂單」） | icons/order |
 | order-info | assets/icons/order-info.svg | 24×24 | 訂單資訊 | icons/order-info |
 | outline-minus | assets/icons/outline-minus.svg | 24×24 | 減少（外框樣式） | icons/outline-minus |
 | outline-plus | assets/icons/outline-plus.svg | 24×24 | 增加（外框樣式） | icons/outline-plus |
 | payment-limited-time | assets/icons/payment-limited-time.svg | 24×24 | 限時付款 | icons/payment-limited time |
 | person | assets/icons/person.svg | 24×24 | 個人/用戶（小） | icons/person |
 | person-md | assets/icons/person-md.svg | 24×24 | 個人/用戶（中，替代造型） | icons/person-md |
+| phone | assets/icons/phone.svg | 20x20 | 電話 | icons/phone |
 | pin | assets/icons/pin.svg | 16×16 | 定位/圖釘 | icons/pin |
 | plus-list | assets/icons/plus-list.svg | 24×24 | 新增清單項目 | icons/plus-list |
 | pos | assets/icons/pos.svg | 24×24 | POS 系統入口 | icons/pos |
@@ -84,6 +88,7 @@
 | ranking | assets/icons/ranking.svg | 20×20 | 排名/排行 | icons/ranking |
 | refund | assets/icons/refund.svg | 24×24 | 退款 | icons/refund |
 | reservations | assets/icons/reservations.svg | 16×16 | 預約/訂房 | icons/reservations |
+| restore | assets/icons/restore.svg | 24x24 | 還原（訂單修改 modal header / [D] 訂房資料） | icons/restore |
 | return | assets/icons/return.svg | 16×16 | 返回/退回 | icons/return |
 | right | assets/icons/right.svg | 16×16 | 向右（小箭頭） | icons/right |
 | road | assets/icons/road.svg | 24×24 | 道路/路線 | icons/road |
@@ -93,14 +98,17 @@
 | switch | assets/icons/switch.svg | 24×24 | 切換帳號 | icons/switch |
 | system | assets/icons/system.svg | 24×24 | 系統設定（齒輪造型） | icons/system |
 | tasks-day | assets/icons/tasks-day.svg | 24×24 | 每日任務 | icons/tasks-day |
+| thumbtack | assets/icons/thumbtack.svg | 20x20 | 圖釘/釘選 | icons/thumbtack |
 | transit | assets/icons/transit.svg | 25×25 | 交通轉乘 | icons/transit |
 | trash-can | assets/icons/trash-can.svg | 24×24 | 刪除 🔴 stroke #D90000 | icons/trash-can |
 | trend-down-green | assets/icons/trend-down-green.svg | 24×24 | 趨勢下降（綠=正向）🟢 stroke #2ACA18 | icons/trend-down |
 | trend-up-red | assets/icons/trend-up-red.svg | 24×24 | 趨勢上升（紅=負向）🔴 stroke #E12129 | icons/trend-up |
+| triangle | assets/icons/triangle.svg | 16x16 | 下拉三角（訂單狀態 pill 專用） | icons/triangle |
 | unlock | assets/icons/unlock.svg | 24×24 | 解鎖 | icons/unlock |
 | up | assets/icons/up.svg | 24×24 | 向上（小箭頭） | icons/up |
 | up-and-down | assets/icons/up-and-down.svg | 16×16 | 雙向排序 | icons/up-and-down |
 | warning-orange | assets/icons/warning-orange.svg | 24×24 | 警告 🟠 fill #E05216 | icons/warning |
+| yes | assets/icons/yes.svg | 20x20 | 確認/勾選（黑勾） | icons/yes |
 
 ---
 

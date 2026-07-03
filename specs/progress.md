@@ -4,6 +4,43 @@
 
 ---
 
+## Session 74 交接 (2026-07-03)
+
+### 任務: 訂單處理 Batch 5（modal 接線 + 訂單修改 modal）+ icons 補充 + tooltip 修正
+
+延續 Session 73（同日）。進度：**Batch 5 完成（self-tested，使用者已逐項回饋修正），僅剩 Batch 6 RWD 系統性收尾**。
+
+### 本輪產出
+
+1. **Batch 5a 下拉選單接線**（preview/landing.html）：
+   - 「訂單」-> 既有 `modalOrderSummaryBackdrop`（demo 固定 unpaid variant，實際對應留給後端）；「簡訊」-> 既有 `modalSmsBackdrop`；連結/複製/取消維持只收合（後端）
+   - 踩雷：op-row-menu 原本的 `stopPropagation` 擋掉 document 層 delegated handler，改為 closest 檢查式 outside-close
+2. **Batch 5b 訂單修改 modal**（`modalOrderEditBackdrop`）：
+   - 外殼靜態 HTML（header 訂單修改+還原+close / footer 取消/確定，desktop 1192 / <768 全螢幕）
+   - body = `buildOrderEditModalBody()` runtime clone tpl-room-booking [A]-[E]（避免 ~2900 行靜態複製），clone 後 `initSubPageBehaviors(body)` 重綁（已曝露到 window）
+   - 差異調整：[A] 標題改「庫存」+ 程式切庫存模式、移除 customer-toggle、cart 頂部插訂單編號列、[D] 插「還原」
+3. **[A] 庫存模式鎖定**（使用者指正 spec 初讀「無差異」是錯的）：
+   - 無 空房/庫存 切換、無 Excel、無棟別 chips、只剩 訂/餘/保 + 庫存表；月曆按鈕觸發 bottom offcanvas
+   - mode toggle/Excel/chips 用 CSS 隱藏（`[data-order-edit-body]` scope）**不可移除 DOM**：共用 calendar JS 用 document.getElementById 解析，移除會 fallback 到 template 副本、污染日後開的房間預定頁
+4. **巢狀 modal 權重 + 實例隔離**（使用者要求，已寫入 start.md 規則 + memory）：
+   - 子 modal 一律 `orderEdit_` 前綴副本（`ensureOrderEditModalClone()`），不共用房間預定 instance；z 用新 token `--z-modal-layer-2: 65`
+   - 配套修正：closeModal/offcanvas close 疊層感知（下層還開著就維持 body scroll 鎖定）、`.modal-close-btn` 改 delegated、動態渲染 modal（加購/房型編輯）clone 前先 reset/render、per-ID modal-box CSS 補 `#orderEdit_` selector（9 條）
+   - 庫存月曆 offcanvas 也有專屬副本 `orderEditInvCalendarOffcanvas`，calendar JS 依 grid scope 自動分流
+5. **icons 補充**（使用者以 figma-go 提供 Icons master frame）：
+   - 匯出 7 顆真缺口：`triangle`（狀態 pill 正牌三角，已替換 arrow-down-drop 代用品）、`order`/`link`/`file-work-history`/`phone`/`yes`/`thumbtack`（**先入庫存著不接**，2026-07-03 使用者確認）
+   - `specs/icons.md` 補 8 列（含前批漏登記的 `restore`）
+6. **tooltip 視窗夾取**：兩顆 info tooltip 開啟時量測平移、不超出螢幕（手機版 390 驗證）；基準用 `documentElement.clientWidth`（innerWidth 在 mobile 會跟 content overflow 浮動，不可靠）
+7. **規則/memory**：start.md 新增「Tooltip 視窗自適應」「Modal 開子 modal」兩段強制規則；memory 新增 `feedback_tooltip_clamp_viewport`、`feedback_nested_modal_scoping`
+8. 已補驗關閉：desktop 篩選面板外殼 = 純色 `#f6fafd` 無漸層（PNG 網格取樣）；日期狀態 tooltip 文案 pass 歸後端
+
+### 未完成 / 下一步
+
+1. **Batch 6：RWD 系統性收尾** - 多 viewport 掃 訂單處理 全頁（含修改 modal 內各區塊），唯一剩餘工作
+2. 驗收：全部 self-tested，等使用者最終過一輪
+3. 已知 demo 限制（記錄於 order-edit-modal.md）：orderEdit_ 副本不接原 id-based 互動 JS（視覺示意 + 原生表單）；訂單明細 unpaid variant 對應留給後端
+
+---
+
 ## Session 73 交接 (2026-07-03)
 
 ### 任務: 訂單處理 頁面分批實作 Batch 1-4（篩選面板 / tabs+快篩 / 表格+pill / footer 統計）
@@ -37,8 +74,8 @@
 
 1. **Batch 5：modal 接線**（最大塊）- 下拉選單「訂單」「簡訊」接既有 `modalOrderSummaryBackdrop`/`modalSmsBackdrop`；「修改」新建訂單修改大 modal（spec: `components/order-edit-modal.md`，只做一般會員版）
 2. **Batch 6：RWD 收尾** - 系統性多 viewport 掃全頁
-3. **待補驗**：desktop 篩選面板外殼記錄為純色 `#f6fafd`，未用截圖覆核是否也有漸層（mobile accordion 有）；照三步驟門檻補驗
-4. 日期狀態 tooltip 9 條說明文字 = Figma 佔位文案，等真實文案
+3. ~~待補驗：desktop 篩選面板外殼是否有漸層~~ -> **已補驗（2026-07-03）**：PNG 渲染圖 25x25 網格取樣，背景均勻純色 `#f6fafd` 無漸層，現有實作正確（外殼 = 查詢區大圓角容器，Figma node `shirnk-model-1` 2026:64181）
+4. ~~日期狀態 tooltip 9 條說明文字~~ -> **pass（2026-07-03 使用者確認）**：佔位文案維持現狀，真實文案將來由後端實作，前端不再追蹤
 5. Batch 5 開工前先對本批元素過 start.md 新的三步驟門檻
 
 ---

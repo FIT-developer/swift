@@ -197,6 +197,9 @@
   --z-mobile-sidebar-backdrop: 40;
   --z-mobile-sidebar: 50;
   --z-modal: 60;
+  /* 第二層 modal（modal 內開 modal：訂單修改 內的 加購/會員資料/房型 副本）
+     介於一般 modal 與 popover 之間 */
+  --z-modal-layer-2: 65;
   /* popover (calendar dropdown 等) 必須高於 modal，
      因為 dropdown 會 portal 到 body 跨 modal 顯示 */
   --z-popover: 70;
