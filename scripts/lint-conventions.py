@@ -42,6 +42,12 @@ for raw in sys.stdin:
     m = re.match(r'\+\+\+ b/(.*)', raw)
     if m:
         cur_file = m.group(1)
+        # 歷史封存檔豁免：內容為搬移的舊交接紀錄，start.md 明文
+        # 「既有歷史內容可保留到被編輯時再清理」
+        if 'progress-archive' in cur_file:
+            cur_file = None
+        continue
+    if cur_file is None and not raw.startswith('@@') and not raw.startswith('+++'):
         continue
     m = re.match(r'@@ -\d+(?:,\d+)? \+(\d+)', raw)
     if m:

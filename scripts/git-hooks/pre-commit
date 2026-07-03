@@ -9,3 +9,4 @@ set -e
 root="$(git rev-parse --show-toplevel)"
 "$root/scripts/lint-fonts.sh" --staged
 "$root/scripts/lint-conventions.sh" --staged
+"$root/scripts/lint-tokens.sh"

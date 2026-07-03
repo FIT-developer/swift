@@ -161,7 +161,8 @@ tokens -> icons -> components -> specs/pages -> 實作
      specs/pages/ + components/ 的 3 層做法
    - 各檔頭已標 frozen-reference，不可作為新實作依據
 7. **specs/progress.md** - 當前進度與決策紀錄
-   - 單一檔案,做到哪、為什麼這樣決定
+   - 只保留最近約 15 個 session；更早的在 specs/progress-archive-*.md
+   - archive 內的決策可能已被推翻，一律以 progress.md 最新 session 為準
 **衝突處理**: 如果 Figma 和 md 檔衝突,先停下來問我,不要自己決定。
 **檔案命名規範**:
 - 一律 kebab-case (例如 bulletin-administer.md, sidebar-default.md)
