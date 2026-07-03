@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__figma-mcp-go__get_selection",
+      "Bash(python3 scripts/figma-read.py *)"
+    ]
+  }
+}

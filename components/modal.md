@@ -29,11 +29,12 @@
 | `state=purchase add-on / desktop` | `1392:17122` | 1194×893px | 加購 modal；desktop RWD reference |
 | `state=purchase add-on / tablet` | `1393:18281` | 768×1959px | 加購 modal；tablet RWD reference |
 | `state=purchase add-on / mobile` | `1393:19196` | 375×3139px | 加購 modal；mobile RWD reference |
-| `state=order summary / default unpaid` | `1411:20866` | 1019×2911px | `產生訂單` 後顯示的預設訂單內容 modal |
+| `state=order summary / default unpaid` | `1411:20866` | 1019×2911px | `產生訂單` 後顯示的預設訂單內容 modal；**另一觸發入口**：`訂單處理` 頁表格列狀態 pill 下拉選單「訂單」選項（同一 modal，內容逐字元一致，見 `specs/pages/order-processing.md`） |
 | `state=order summary / paid` | `1437:44343` | 1019×2506px | 已付款交易狀態；目前不由 `產生訂單` 直接開啟 |
 | `state=order summary / waitlist` | `1437:45408` | 1019×2506px | 候補單交易狀態；上方狀態與基本資訊付款狀態分離 |
 | `state=order summary / transfer official` | `1437:46152` | 1019×2935px | 候補轉正式單交易狀態，含 `轉正式單` section action area |
-| `state=sms / order summary` | `1436:43555` | 648×1161px | Order summary header `簡訊` action opens this SMS modal |
+| `state=sms / order summary` | `1436:43555` | 648×1161px | Order summary header `簡訊` action opens this SMS modal；**另一觸發入口**：`訂單處理` 頁表格列狀態 pill 下拉選單「簡訊」選項（同一 modal，見 `specs/pages/order-processing.md`） |
+| `state=order edit` | `2032:81567`（一般會員版）/ 讀取合約會員版另一 instance | 1192x2474px（一般會員版；合約會員版因多一列高度略增） | `訂單處理` 頁表格列狀態 pill 下拉選單「修改」action 開啟；把房間預訂頁 [A]/[B]/[C]/[D]/[E] 全部區塊搬進 modal、預填該筆訂單資料供編輯。詳見 `components/order-edit-modal.md` |
 | `state=arrival method` | `1106:19329` / `1109:19460` / `1110:19603` / `1121:16398` / `1124:17174` / `1135:16863` | 175–993 × 507/834 | 訂單條件 → 到店方式 button 觸發；4 個 chip 切 4 個 sub-state（自行到店 / 自駕 / 包車或專車 / 接送），State D 接送含並排 swiper card stack。詳見 `components/arrival-method-modal.md` |
 
 ---
@@ -599,7 +600,7 @@ Modal (1019px wide reference)
 
 | 行為 | 規則 |
 |---|---|
-| 開啟 | `產生訂單` click → read `rb-order-type` radio and open `modalOrderSummaryBackdrop` with mapped variant: `無設定` → default unpaid, `正式單` → paid, `候補單` → waitlist；every modal open resets scrollable body position to top |
+| 開啟 | `產生訂單` click -> read `rb-order-type` radio and open `modalOrderSummaryBackdrop` with mapped variant: `無設定` -> default unpaid, `正式單` -> paid, `候補單` -> waitlist；every modal open resets scrollable body position to top。**另一開啟路徑**：`訂單處理` 頁（`specs/pages/order-processing.md`）表格列狀態 pill 下拉選單「訂單」項目點擊，同樣開啟 `modalOrderSummaryBackdrop`，variant 由該筆訂單實際狀態決定（backend 資料驅動，前端不需另寫開啟邏輯） |
 | 關閉 | header close、footer `取消` / `確定`、backdrop、Esc 關閉 |
 | Header actions | `簡訊` opens `state=sms / order summary`; `列印` remains visual prototype，尚未接後端或瀏覽器 print API |
 | Accordion sections | `訂房與入住人資訊` header toggles its content open/closed; icon switches between `down.svg` and `up.svg`; modal open resets to expanded |
@@ -617,12 +618,12 @@ Modal (1019px wide reference)
 
 | 項目 | 規則 |
 |---|---|
-| Open trigger | order summary header `簡訊` button opens `modalSmsBackdrop` |
+| Open trigger | order summary header `簡訊` button opens `modalSmsBackdrop`。**另一開啟路徑**：`訂單處理` 頁（`specs/pages/order-processing.md`）表格列狀態 pill 下拉選單「簡訊」項目點擊，同樣開啟 `modalSmsBackdrop` |
 | Modal size | desktop max width follows 648px reference; viewport narrower than reference uses `calc(100vw - 24px)` |
 | Header | title `簡訊`, close icon `icons/close` |
 | 發送號碼 | section label `發送號碼`; first radio is default checked; first option select text `0999111222`; second radio label `自行設定` with single input placeholder |
-| 訂單內容 | section label `訂單內容`; fields: `訂單編號`, `飯店名稱`, `銀行`, `虛擬帳號`, `入住日`, `訂單總額`, `應付訂金`, `已付金額`, `訂房人`, `入住人`, `訂房人生日`, `繳款期限`, `取消日期`, `入住夜數`; data is backend-rendered in production |
-| 發送內容 | section label `發送內容`; stats card contains `字數統計 25` and `簡訊通數 1` separated by a vertical divider; sample select label `樣本` with value `sample`; textarea placeholder |
+| 訂單內容 | section label `訂單內容`; fields: `訂單編號`, `飯店名稱`, `銀行`, `虛擬帳號`, `入住日`, `訂單總額`, `應付訂金`, `已付金額`, `訂房人`, `入住人`, `訂房人生日`, `繳款期限`, `取消日期`, `入住夜數`; data is backend-rendered in production；these 14 fields are **writable inputs** (front-desk staff can type into them) and are **independent from the 發送內容 textarea below** - editing a field here does NOT insert/change the textarea content（使用者 2026-07-03 確認） |
+| 發送內容 | section label `發送內容`; stats card contains `字數統計 25` and `簡訊通數 1` separated by a vertical divider; sample select label `樣本` with value `sample`; textarea placeholder; textarea 是獨立輸入區，供前台人員套用 `樣本` 模版或自行輸入文字，跟上方「訂單內容」欄位不連動 |
 | 歷史紀錄 | card title `歷史紀錄`; table columns `#`, `登錄類別`, `登錄日期`, `登錄號碼`, `登錄內容`; prototype rows use placeholder and `111` |
 | Footer | `取消`, `確定`; both close modal in preview |
 | Active-state caveat | first radio default was confirmed by user; do not infer other active/default states from visual selection alone |

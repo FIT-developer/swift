@@ -137,6 +137,13 @@
   --color-radio-default: #005fcc;
   --color-radio-hover:   #3b78d5;
 
+  /* Color/Dots - order status indicator dots (訂單處理 status pill) */
+  --color-dots-validated:  var(--color-surface-status-positive);
+  --color-dots-unpaid:     var(--color-neutral-300);
+  --color-dots-overdues:   var(--color-tab-yellow);
+  --color-dots-cancel:     var(--color-surface-status-negative);
+  --color-dots-alternative: var(--color-chart-blue);
+
   /* Spacing */
   --spacing-0:   0;
   --spacing-2:   2px;

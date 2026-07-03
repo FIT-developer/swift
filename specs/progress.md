@@ -4,6 +4,49 @@
 
 ---
 
+## Session 72 交接 (2026-07-03)
+
+### 任務: 訂單處理作業 > 訂單處理 頁面 - 完整 figma-go 讀取 + Spec checkpoint + 正式 spec
+
+新頁面（訂單處理作業 > 訂單處理），使用者以 `figma-go` 分兩批（desktop 7 輪 + mobile~tablet 4 輪 + component cross-check 1 輪，共 12 輪）讀完，接著逐項 Spec checkpoint 討論，最後寫入正式 spec。**本輪只寫 spec，尚未動 HTML 實作**。
+
+### 本輪產出
+
+1. `specs/order-processing-reading-notes.md`（新檔）：12 輪 figma-go 讀取的原始工作記錄 + Spec checkpoint 討論後的確認事項，spec 撰寫依據
+2. `specs/pages/order-processing.md`（新檔）：頁面主規格 - 頂部工具列、篩選面板（desktop 3 欄 / mobile accordion）、tabs + 快篩 button、9 欄表格、footer 統計、2 個 tooltip、RWD 差異、未定義清單
+3. `components/order-status-pill.md`（新檔）：表格「訂單編號」欄狀態 pill + 下拉選單元件，含 `Color/Dots/*` 狀態色點對照表、6 個選單項目行為、desktop dropdown vs mobile offcanvas 差異、表格列編號規則（`n` vs `n-1`/`n-2` 子訂單）
+4. `components/order-edit-modal.md`（新檔）：「訂單修改」大 modal，大量 cross-reference 既有 `room-booking.md`/`order-condition.md`/`order-status.md`/`order-data.md`，只記錄 modal 外殼跟會員版本差異
+5. `components/modal.md`（修改）：新增 `state=order edit` variant 條目；在既有 `state=order summary` / `state=sms / order summary` 段補註「訂單處理頁下拉選單也會開啟這兩個既有 modal」的新觸發入口；簡訊 modal 補「訂單內容 14 欄位跟 textarea 不連動」的確認細節
+6. `specs/assets/tokens.md` / `specs/assets/figma-variables.json` / `preview/assets/css/base.css`：新增 `Color/Dots/*` 5 個 token（狀態圓點色，對應訂單處理頁的 5 種訂單狀態），修正 `cart-date`/`cart-time` 舊快取的錯誤 raw hex（tokens.md 本來就是對的，只同步 json 快取）
+7. `scripts/figma-read.py`（新檔）+ `scripts/README.md`：讀取大型 `get_selection`/`get_screenshot` tool-result 檔案的固定工具（tree/texts/node/screenshot/crop/pixel 6 個子指令），取代逐次手寫 python heredoc
+8. `.claude/settings.json`（新檔，非 local）：`/fewer-permission-prompts` 產出，放行 `mcp__figma-mcp-go__get_selection` 跟 `Bash(python3 scripts/figma-read.py *)`
+
+### 關鍵發現（避免下一輪重新踩雷）
+
+- **這頁大量重用既有元件，不是全新頁面**：
+  - 「訂單修改」modal 幾乎整個是房間預訂頁 [A]-[E] 搬進 modal（`room-booking.md`/`order-condition.md`/`order-status.md`/`order-data.md`）
+  - 「訂單明細」「簡訊」modal 是既有 `modalOrderSummaryBackdrop`/`modalSmsBackdrop`，訂單處理頁只是多一個開啟入口，不是新 modal
+  - 頂部分頁 tab chip 是既有 `#pageTabsInline` 機制，非新功能
+- **檔名陷阱**：`components/order-status.md` 內容其實是房間預訂頁 [E] 正式單與候補單，跟訂單狀態無關；`components/order.md` 才是首頁訂單快覽小工具。本輪初次讀取時記錯了，Spec checkpoint 階段才發現並修正（`order-processing-reading-notes.md` 已加註警示）
+- **Figma frame 標題不可信**：mobile~tablet 有兩個 frame 標題（「more conditions not collapsed」/「collapsed」）跟畫面實際 accordion 展開/收起狀態剛好寫反，已在 spec 註明「一律以畫面實際 icon 為準，不採 frame 標題字面」
+- **佔位文字慣例**：新增 memory `feedback_figma_placeholder_text_conventions`，統整 `xxoo`/`icons/cursor`/標題括號/重複佔位文案 4 種讀取時要排除的非正式內容
+- **Color/Dots token**：`validated`/`unpaid`/`overdues`/`cancel`/`alternative` 5 個 alias token，對應表格狀態 dot；tooltip 圖例中文 vs 篩選 tabs 中文用語不同但**使用者已確認差異是允許的**，不強制統一
+
+### 業務規則確認（後續實作/後端交接要點）
+
+- 表格編號 `n` = 獨立列；`n-1`/`n-2` = 同一筆訂單的子訂單分列顯示
+- Tabs 篩選、次要 badge 分類歸屬、下拉選單「連結/複製/取消」行為 = 全部後端邏輯，前端這階段只要視覺示意給足、照 Figma layout 直出 HTML
+- 訂單修改 modal 會員版本（一般/合約）由訂單生成時的客戶類型決定，非 modal 內可切換；**這階段 HTML 只做一般會員版**，合約會員版差異已寫入 `order-edit-modal.md` 供後端工程師參考
+- Modal header「還原」= 整頁還原；[D] 訂房資料內建「還原」= 只還原該區塊
+
+### 下一步
+
+- 尚未實作 HTML（`preview/order-processing.html` 或併入 `landing.html`，命名待下一輪確認）
+- `order-edit-modal.md` / `order-status-pill.md` 內各有列「未定義 / 待補」清單（合約公司三控制項是否合併邊框、function icons cross-check、側欄收合 icon 命名等），下一輪開工前可以先去 Figma 補這些技術細節
+- 尚未 commit（本輪只完成 spec，使用者未說「commit & push」）
+
+---
+
 ## Session 71 交接 (2026-06-03)
 
 ### 任務: 清理 startup rules 與現行內容衝突

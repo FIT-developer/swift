@@ -12,6 +12,21 @@ Shared dev scripts for this repo.
 ./scripts/lint-fonts.sh --staged  # 只掃已 staged 的檔案（pre-commit 用）
 ```
 
+## `figma-read.py`
+
+Read-only helper for inspecting large `figma-mcp-go` `get_selection` / `get_screenshot` results（超過 inline token 上限時會存成 `tool-results/*.txt`）。取代逐次寫 `python3` heredoc，讓重複的 `figma-go` 讀取都走同一個固定指令。
+
+```bash
+python3 scripts/figma-read.py tree <selection.txt> [--id NODE_ID] [--depth N]        # 階層結構摘要
+python3 scripts/figma-read.py texts <selection.txt> [--id NODE_ID]                    # 全部 TEXT node 內容 + 樣式
+python3 scripts/figma-read.py node <selection.txt> <NODE_ID> [--depth N]              # 單一 node 完整樣式/結構細節
+python3 scripts/figma-read.py screenshot <screenshot.txt> <output.png> [--index N]    # 解碼 get_screenshot 結果存成 PNG
+python3 scripts/figma-read.py crop <image.png> <x> <y> <w> <h> <output.png> [--zoom N]  # 裁切+放大局部截圖
+python3 scripts/figma-read.py pixel <image.png> <x,y> [<x,y> ...]                     # 讀取指定座標的 RGBA 值
+```
+
+`crop` / `pixel` 需要 Pillow（`pip3 install Pillow`）。
+
 ## `git-hooks/pre-commit`
 
 Pre-commit hook：commit 前自動跑 `lint-fonts.sh --staged`。違規會 exit 1 擋 commit。

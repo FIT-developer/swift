@@ -3,7 +3,7 @@
 > 來源：Figma Variables（Collection: **Semantic**, Mode: **Mode 1**）  
 > 本地匯出參考：`specs/assets/figma-variables.json`（不進版控，內容需如實轉換到本檔）
 > Local Styles 全部為空，所有 token 皆來自 Variables。  
-> 上次同步：2026-06-03（局部同步 Color/Accent cart tokens，來源為使用者貼上的 Figma Variables export）
+> 上次同步：2026-07-03（新增 Color/Dots 群組 5 個 token；cart-date/cart-time 由 raw hex 更正為 alias 參照；來源為使用者貼上的 Figma Variables export）
 
 ## Token 使用規則（Strict Mirror）
 
@@ -203,6 +203,22 @@
 | Variable 名稱 | Hex 值 | 語意用途 |
 |---|---|---|
 | Color/Tab/yellow | `#FFCC00` | 選中 tab 背景色（Bulletin 分類篩選） |
+
+---
+
+### Dots（狀態圓點 — 訂單處理頁）
+
+> `訂單處理` 頁表格「訂單編號」欄 status pill 左側色點。5 個 token 全部是 alias，指向既有 Surface/Neutral/Tab/Chart 語意色，不是新的原始色值。經 `specs/order-processing-reading-notes.md` 讀取 11 的 tooltip 圖例截圖交叉驗證，中文標籤對照如下。
+
+| Variable 名稱 | 解析值 | 語意用途（tooltip 圖例中文標籤） |
+|---|---|---|
+| Color/Dots/validated | `#2ACA18` -> Surface/Status-Positive | 正式單 |
+| Color/Dots/unpaid | `#B0B0B0` -> Neutral/300 | 未付單 |
+| Color/Dots/overdues | `#FFCC00` -> Tab/yellow | 逾期單 |
+| Color/Dots/cancel | `#E12129` -> Surface/Status-Negative | 取消單 |
+| Color/Dots/alternative | `#86B7FE` -> Chart/blue | 替代單 |
+
+**注意**：篩選 tabs 用語（正式單/未付款/已過期/取消單/候補單）跟這組 tooltip 圖例用語（正式單/未付單/逾期單/取消單/替代單）有 3 處字面不同（未付款≠未付單、已過期≠逾期單、候補單≠替代單）。**已確認（2026-07-03）**：兩組用語對應不同顯示情境，差異是允許的設計決定，實作時兩套字串各自照字面顯示，不要合併成同一個。
 
 ---
 
