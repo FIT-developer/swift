@@ -62,7 +62,9 @@ floatIcons/ai（浮動客服，全站共用）
 
 ## 篩選面板
 
-### Desktop（3 欄並排）
+**斷點（2026-07-03 使用者裁決）**：3 欄並排在 **`xl:` 1280px 以上**才啟用；1279px 以下（含 1024-1279 的未定義區間）一律用單欄 + accordion 版面。原因：Figma 只定義 1400 desktop / 768 tablet 兩個參考尺寸，1024-1279 帶 sidebar 時 col3 寬度塞不下國籍 radio 列（nowrap）的最小寬度，會橫向爆版。注意：狀態 pill 下拉選單的 dropdown/offcanvas 切換維持 1024（該元件 1024 無空間問題，不跟隨面板斷點）。
+
+### Desktop（3 欄並排，`>=1280px`）
 
 **欄 1**：
 - 日期區間（2 個 date input：起 - 迄）
@@ -85,15 +87,15 @@ floatIcons/ai（浮動客服，全站共用）
 
 底部：`清除` / `查詢` button（靠右）
 
-### Mobile ~ Tablet（單欄 + accordion）
+### Mobile ~ Tablet（單欄 + accordion，`<1280px`）
 
 欄 1 的日期區間/快速區間鍵/日期狀態/訂單編號/名稱/行動電話維持展開顯示；欄 2 + 欄 3 全部（11 個欄位）收進「更多條件」accordion。
 
 **Accordion 圖示慣例澄清**：讀取時發現兩個示範 frame 的**標題文字**跟畫面實際的 icon/內容是反的（一個標題寫「not collapsed」但畫面是收起態，另一個標題寫「collapsed」但畫面是展開態） - 這是 Figma frame **命名寫反**，不是既有的「`icons/up`=收起／`icons/down`=展開」慣例錯誤。寫 spec / 實作時一律以「畫面實際 icon + 內容」為準，不採用 frame 標題字面意思。
 
-**外殼漸層背景（2026-07-03 補讀確認）**：「更多條件」accordion 外殼（含 header 跟白色內容卡外面那圈）不是純色，是**對角線漸層**：`Color/Neutral/75`（`#F6FAFD`）到 `Color/Brand/Brand-50`（`#FEF6EE`），方向左下到右上（CSS `linear-gradient(to top right, ...)`）。這個漸層 `get_selection` 完全沒有序列化出來（`styles` 連 `fills` key 都沒有，不是常見的 `"s1"` 佔位符），是使用者肉眼看穿透截圖才發現，改用 `save_screenshots(SVG)` 讀 `<linearGradient>` defs 才抓到精確色值/方向。CSS 已實作為 `.op-accordion-gradient`（`preview/assets/css/landing.css`），只在 `<1024px`（accordion 收合態）套用，`>=1024px`（桌機三欄展開態）用 `lg:bg-none` 清除。
+**外殼漸層背景（2026-07-03 補讀確認）**：「更多條件」accordion 外殼（含 header 跟白色內容卡外面那圈）不是純色，是**對角線漸層**：`Color/Neutral/75`（`#F6FAFD`）到 `Color/Brand/Brand-50`（`#FEF6EE`），方向左下到右上（CSS `linear-gradient(to top right, ...)`）。這個漸層 `get_selection` 完全沒有序列化出來（`styles` 連 `fills` key 都沒有，不是常見的 `"s1"` 佔位符），是使用者肉眼看穿透截圖才發現，改用 `save_screenshots(SVG)` 讀 `<linearGradient>` defs 才抓到精確色值/方向。CSS 已實作為 `.op-accordion-gradient`（`preview/assets/css/landing.css`），只在 `<1280px`（accordion 收合態）套用，`>=1280px`（桌機三欄展開態）用 `xl:bg-none` 清除（斷點 2026-07-03 從 1024 改 1280，見「篩選面板」段）。
 
-**待確認（尚未查證）**：desktop 版篩選面板外殼（`shirnk-model-1`）在讀取 1 記錄為純色 `#f6fafd`，鑑於這次「更多條件」的教訓（純色記錄可能其實是被靜默省略的漸層），這個記錄**沒有 100%把握**，需要之後回 Figma 用 `save_screenshots(SVG)` 驗證桌機版外殼是否也是漸層。
+~~待確認：desktop 版篩選面板外殼是否也是漸層~~ -> **已補驗（2026-07-03）**：`save_screenshots(PNG)` 25x25 網格取樣，`shirnk-model-1` 背景為均勻純色 `#f6fafd`（`Color/Neutral/75`）無漸層，讀取 1 的記錄正確。
 
 ### 日期狀態 select 選項（來自讀取 11 tooltip 內容，高可信度推測）
 

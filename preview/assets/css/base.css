@@ -237,7 +237,8 @@
 }
 
 body {
-  min-width: 375px;
+  /* 0703: 移除 min-width: 375px（與 start.md RWD 規則矛盾 - 375 僅是
+     Figma mobile 參考稿寬，不可寫死；固定 floor 會讓 360 裝置全站右緣裁切 15px） */
   background: var(--color-surface-default);
   font-size: var(--font-size-base);
 }

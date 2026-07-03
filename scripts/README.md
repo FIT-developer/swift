@@ -12,6 +12,20 @@ Shared dev scripts for this repo.
 ./scripts/lint-fonts.sh --staged  # 只掃已 staged 的檔案（pre-commit 用）
 ```
 
+## `lint-conventions.sh` / `lint-conventions.py`
+
+專案 conventions lint，**只檢查新增/修改的行**（不追溯 legacy 內容）：
+1. ASCII-only：禁裝飾性 Unicode（box drawing/箭頭/em-dash/emoji），CJK 與全形標點允許
+2. min-width mobile-safe：`min-w-[Npx]` 需斷點前綴；CSS `min-width:` 需 @media 或 `/* min-width-ok: 原因 */` 標記
+3. no hardcoded hex：HTML 禁 `[#hex]` arbitrary value；landing.css 禁 hex 色值（註解引用 Figma 色碼除外）
+
+規範來源：`start.md`。pre-commit hook 會與 lint-fonts 一起自動跑。
+
+```bash
+./scripts/lint-conventions.sh            # 檢查 working tree 相對 HEAD 的新增行
+./scripts/lint-conventions.sh --staged   # 檢查 staged 新增行（pre-commit 用）
+```
+
 ## `figma-read.py`
 
 Read-only helper for inspecting large `figma-mcp-go` `get_selection` / `get_screenshot` results（超過 inline token 上限時會存成 `tool-results/*.txt`）。取代逐次寫 `python3` heredoc，讓重複的 `figma-go` 讀取都走同一個固定指令。

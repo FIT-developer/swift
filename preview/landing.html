@@ -3781,6 +3781,7 @@
     ════════════════════════════════════ -->
     <div
       id="modalMemberDataBackdrop"
+      data-no-dismiss
       class="modal-backdrop"
       role="dialog"
       aria-modal="true"
@@ -4050,6 +4051,7 @@
     ════════════════════════════════════ -->
     <div
       id="modalChangeContractCompanyBackdrop"
+      data-no-dismiss
       class="modal-backdrop"
       role="dialog"
       aria-modal="true"
@@ -4095,11 +4097,11 @@
       </div>
     </div>
 
-    <!-- ════════════════════════════════════
-         訂單修改 modal (Figma 2032:81567, 一般會員版) — 觸發：訂單處理頁狀態 pill 下拉選單「修改」。
+    <!-- ====================================
+         訂單修改 modal (Figma 2032:81567, 一般會員版) - 觸發：訂單處理頁狀態 pill 下拉選單「修改」。
          Body = room-booking [A]-[E] 區塊 runtime clone（見 buildOrderEditModalBody），
          規格 components/order-edit-modal.md。合約會員版差異只記錄於 .md，不出 HTML。
-         ════════════════════════════════════ -->
+         ==================================== -->
     <div
       id="modalOrderEditBackdrop"
       class="modal-backdrop"
@@ -4307,7 +4309,7 @@
                 });
               });
             });
-          // 訂單處理：訂單編號 pill → 下拉選單（desktop 定位在 pill 下方 / mobile 底部 offcanvas，
+          // 訂單處理：訂單編號 pill -> 下拉選單（desktop 定位在 pill 下方 / mobile 底部 offcanvas，
           // 同一份 DOM，容器樣式靠 CSS breakpoint 切換，見 .op-row-menu）
           (function () {
             var menu = root.querySelector("[data-op-row-menu]");
@@ -4336,7 +4338,7 @@
             if (closeBtn) {
               closeBtn.addEventListener("click", closeMenu);
             }
-            // 注意：選單內不可 stopPropagation —— 選單項目的 modal 接線靠
+            // 注意：選單內不可 stopPropagation -- 選單項目的 modal 接線靠
             // document 層 delegated handler（[data-op-menu-action] 分支），
             // outside-close 改用 closest 檢查排除選單內點擊
             menu.querySelectorAll("[data-op-menu-action]").forEach(function (item) {
@@ -4370,7 +4372,7 @@
               });
             });
           });
-          // 訂單處理：tooltip 觸發（click 開，click 外部關）— 無 hover 版本
+          // 訂單處理：tooltip 觸發（click 開，click 外部關）- 無 hover 版本
           root.querySelectorAll(".op-tooltip-panel").forEach(function (panel) {
             panel.addEventListener("click", function (e) {
               e.stopPropagation();
@@ -4430,7 +4432,7 @@
                 });
             });
           }
-          // 訂單處理：專案 toggle → 所有專案 / 僅有效專案 標籤文字
+          // 訂單處理：專案 toggle -> 所有專案 / 僅有效專案 標籤文字
           root.querySelectorAll("[data-op-project-toggle]").forEach(function (toggle) {
             var checkbox = toggle.querySelector("input[type=checkbox]");
             var row = toggle.closest(".flex.items-center.gap-3");
@@ -5200,12 +5202,14 @@
               });
             }
           })();
-          // Calendar (room-booking page only)
-          initCalendar();
+          // Calendar (room-booking page only) - root scope：
+          // 訂單處理等無 calendar 頁面直接 skip，不會誤綁 hidden template
+          // 或已建立的訂單修改 modal 副本（重複疊加綁定）
+          initCalendar(root);
         }
 
-        function initCalendar() {
-          if (!document.getElementById("calGrid")) return;
+        function initCalendar(root) {
+          if (!root.querySelector("#calGrid")) return;
 
           dayjs.extend(window.dayjs_plugin_isoWeek);
 
@@ -5217,20 +5221,20 @@
           var extraWeeks = 0;
           var MAX_EXTRA_ROOM = 3;
 
-          var grid = document.getElementById("calGrid");
-          var titleEl = document.getElementById("calTitle");
-          var countEl = document.getElementById("count");
-          var intervalSelect = document.getElementById("intervalSelect");
-          var btnRoom = document.getElementById("btnRoom");
-          var btnInventory = document.getElementById("btnInventory");
-          var tableAllocate = document.getElementById("tableAllocate");
-          var tableInventory = document.getElementById("tableInventory");
-          var inventoryExcel = document.querySelector("[data-inventory-excel]");
-          var invMetricToggle = document.getElementById("invMetricToggle");
-          var rangeRow = document.getElementById("rangeRow");
-          var allocActions = document.getElementById("rbAllocActions");
-          var invCalendarLeft = document.getElementById("invCalendarLeft");
-          var invCalendarBtn = document.getElementById("invCalendarBtn");
+          var grid = root.querySelector("#calGrid");
+          var titleEl = root.querySelector("#calTitle");
+          var countEl = root.querySelector("#count");
+          var intervalSelect = root.querySelector("#intervalSelect");
+          var btnRoom = root.querySelector("#btnRoom");
+          var btnInventory = root.querySelector("#btnInventory");
+          var tableAllocate = root.querySelector("#tableAllocate");
+          var tableInventory = root.querySelector("#tableInventory");
+          var inventoryExcel = root.querySelector("[data-inventory-excel]");
+          var invMetricToggle = root.querySelector("#invMetricToggle");
+          var rangeRow = root.querySelector("#rangeRow");
+          var allocActions = root.querySelector("#rbAllocActions");
+          var invCalendarLeft = root.querySelector("#invCalendarLeft");
+          var invCalendarBtn = root.querySelector("#invCalendarBtn");
 
           // Populate intervalSelect options 1..31 (Figma 0527; before: 1/7/12/14/16/30)
           (function () {
@@ -5499,8 +5503,8 @@
             }
           });
 
-          document
-            .getElementById("todayBtn")
+          root
+            .querySelector("#todayBtn")
             .addEventListener("click", function () {
               currentMonth = dayjs();
               selStart = today();
@@ -5508,14 +5512,14 @@
               buildGrid();
               updateCount();
             });
-          document
-            .getElementById("prevBtn")
+          root
+            .querySelector("#prevBtn")
             .addEventListener("click", function () {
               currentMonth = currentMonth.subtract(1, "month");
               buildGrid();
             });
-          document
-            .getElementById("nextBtn")
+          root
+            .querySelector("#nextBtn")
             .addEventListener("click", function () {
               currentMonth = currentMonth.add(1, "month");
               buildGrid();
@@ -7097,44 +7101,34 @@
             });
           });
 
-        // Backdrop click
-        [
-          "modalLogoutBackdrop",
-          "modalSwitchBackdrop",
-          "modalBulletinBackdrop",
-          "modalAdministerBackdrop",
-          "modalMemberBackdrop",
-          "modalRoomIntroBackdrop",
-          "modalRoomEditBackdrop",
-          "modalPurchaseAddonBackdrop",
-          "modalSmsBackdrop",
-          "modalOrderSummaryBackdrop",
-          "modalArrivalMethodBackdrop",
-        ].forEach(function (id) {
-          var el = document.getElementById(id);
-          el &&
-            el.addEventListener("click", function (e) {
-              if (e.target === el) closeModal(id);
-            });
+        // Backdrop click - delegated: 涵蓋後加 modal 與 orderEdit_ runtime 副本，
+        // 不再維護寫死的 id 清單。data-no-dismiss 標記的 modal 維持不關
+        // （會員資料/合約公司，沿用其原本就不在關閉清單內的既有行為；
+        // orderEdit_ 副本經 cloneNode 繼承此標記，行為一致）
+        document.addEventListener("click", function (e) {
+          var el = e.target;
+          if (!el.classList || !el.classList.contains("modal-backdrop")) return;
+          if (!el.classList.contains("open")) return;
+          if (el.hasAttribute("data-no-dismiss")) return;
+          closeModal(el.id);
         });
 
-        // ESC key
+        // ESC key - delegated: 一次只關最上層（第二層 modal 優先），
+        // 疊層時第一下關子層、第二下關父層
         document.addEventListener("keydown", function (e) {
-          if (e.key === "Escape") {
-            [
-              "modalLogoutBackdrop",
-              "modalSwitchBackdrop",
-              "modalBulletinBackdrop",
-              "modalAdministerBackdrop",
-              "modalMemberBackdrop",
-              "modalRoomIntroBackdrop",
-              "modalRoomEditBackdrop",
-              "modalPurchaseAddonBackdrop",
-              "modalSmsBackdrop",
-              "modalOrderSummaryBackdrop",
-              "modalArrivalMethodBackdrop",
-            ].forEach(closeModal);
-          }
+          if (e.key !== "Escape") return;
+          var open = Array.prototype.filter.call(
+            document.querySelectorAll(".modal-backdrop.open"),
+            function (m) {
+              return !m.hasAttribute("data-no-dismiss");
+            },
+          );
+          if (!open.length) return;
+          var top =
+            open.filter(function (m) {
+              return m.classList.contains("modal-layer-2");
+            })[0] || open[open.length - 1];
+          closeModal(top.id);
         });
 
         // ── Arrival method modal: chip switch + stepper + commit ──
@@ -10885,16 +10879,16 @@
     </div>
     <!-- ── end room-booking template ── -->
 
-    <!-- ── Order-processing page template (hidden, scanned by Tailwind CDN) ── -->
+    <!-- == Order-processing page template (hidden, scanned by Tailwind CDN) == -->
     <div id="tpl-order-processing" style="display: none" aria-hidden="true">
       <div class="flex flex-col gap-4">
         <!-- Filter panel (Figma: shirnk-model-1 / extend-model-1) -->
         <div
           class="op-filter-panel rounded-xl bg-surface-hover border border-border-disabled p-5"
         >
-          <div class="flex flex-col lg:flex-row lg:flex-nowrap gap-8">
+          <div class="flex flex-col xl:flex-row xl:flex-nowrap gap-8">
             <!-- Column 1: date range + quick range + 日期狀態/訂單編號/名稱/行動電話 -->
-            <div class="flex flex-col gap-4 basis-full lg:basis-[340px] lg:shrink-0 lg:grow-0">
+            <div class="flex flex-col gap-4 basis-full xl:basis-[340px] xl:shrink-0 xl:grow-0">
               <div class="flex items-center gap-3">
                 <div class="rb-cal-cell flex-1 min-w-0">
                   <button
@@ -11067,17 +11061,17 @@
 
             <!-- 更多條件：desktop = 欄2+欄3 並排無框；mobile = accordion -->
             <div
-              class="op-more-conditions op-accordion-gradient rb-accordion basis-full lg:basis-0 lg:grow lg:min-w-0 rounded-xl border border-border-disabled p-3 lg:border-0 lg:bg-none lg:p-0"
+              class="op-more-conditions op-accordion-gradient rb-accordion basis-full xl:basis-0 xl:grow xl:min-w-0 rounded-xl border border-border-disabled p-3 xl:border-0 xl:bg-none xl:p-0"
             >
-              <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none lg:hidden">
+              <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none xl:hidden">
                 <span class="text-xl font-semibold text-text-default">更多條件</span>
                 <img src="./assets/icons/up.svg" alt="up" class="rb-accordion-icon w-6 h-6" />
               </div>
               <div
-                class="rb-accordion-content rb-hidden bg-white rounded-xl p-3 mt-4 lg:!flex lg:!mt-0 lg:!p-0 lg:!bg-transparent lg:flex-row lg:flex-nowrap lg:gap-8"
+                class="rb-accordion-content rb-hidden bg-white rounded-xl p-3 mt-4 xl:!flex xl:!mt-0 xl:!p-0 xl:!bg-transparent xl:flex-row xl:flex-nowrap xl:gap-8"
               >
                 <!-- Column 2 -->
-                <div class="flex flex-col gap-4 lg:basis-0 lg:grow lg:min-w-0">
+                <div class="flex flex-col gap-4 xl:basis-0 xl:grow xl:min-w-0">
                   <div class="flex items-center gap-3">
                     <span class="text-base text-text-default w-[100px] shrink-0">訂金</span>
                     <span class="ml-auto member-data-switch">
@@ -11125,7 +11119,7 @@
                 </div>
 
                 <!-- Column 3 -->
-                <div class="flex flex-col gap-4 lg:basis-0 lg:grow lg:min-w-0 mt-4 lg:mt-0">
+                <div class="flex flex-col gap-4 xl:basis-0 xl:grow xl:min-w-0 mt-4 xl:mt-0">
                   <div class="flex items-center gap-3">
                     <span class="text-base text-text-default w-[100px] shrink-0">房型</span>
                     <select class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0">
@@ -11450,7 +11444,7 @@
                   </div>
                 </td>
               </tr>
-              <!-- row 5-1 / 5-2: unpaid (灰)，無來源 badge — 同一訂單的子訂單，訂單編號欄 rowspan 共用。
+              <!-- row 5-1 / 5-2: unpaid (灰)，無來源 badge - 同一訂單的子訂單，訂單編號欄 rowspan 共用。
                    5-1 不畫底線，同一組子訂單之間視覺上不分隔，只有整組結束（5-2）才畫底線 -->
               <tr>
                 <td class="px-3 py-3 text-base text-text-default">5-1</td>
@@ -11556,7 +11550,7 @@
         </div>
       </div>
     </div>
-    <!-- ── end order-processing template (batch 3: + table / 狀態 pill / 下拉選單) ── -->
+    <!-- == end order-processing template (batch 3: + table / 狀態 pill / 下拉選單) == -->
 
     <!-- Offcanvas: 庫存表 月曆 (Figma Offcanvas 1774:50139 type=Default; instance 1776:51484) -->
     <div

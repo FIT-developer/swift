@@ -126,7 +126,8 @@ Header 內容，由左至右：
 - Modal id：`modalOrderEditBackdrop`（外殼靜態 HTML，desktop 1192 寬 / <768 全螢幕，同其他 modal pattern）
 - Body 不是靜態複製：開啟時 runtime clone `tpl-room-booking` 的 [A]-[E] 4 個區塊（`buildOrderEditModalBody()`，只建一次），clone 後跑 `initSubPageBehaviors` 重綁互動
 - Clone 後差異調整：[A] 標題改「庫存」+ init 後程式切到庫存模式（`btnInventory.click()`）、移除 `.customer-toggle`、cart 頂部插入「訂單編號」列、[D] header 清除右邊插入「還原」button（icon `icons/restore.svg`）
-- [A] 的 mode 切換/Excel/棟別 chips 用 CSS 隱藏（`[data-order-edit-body]` scope，見 landing.css），**DOM 保留**：共用 calendar JS 以 `document.getElementById` 解析這些節點，若從 clone 移除會 fallback 到 template 副本、污染日後開啟的房間預定頁
+- [A] 的 mode 切換/Excel/棟別 chips 用 CSS 隱藏（`[data-order-edit-body]` scope，見 landing.css），**DOM 保留**：共用 `initCalendar(root)` 解析這些節點時 null guard 才不會誤判（2026-07-03 code review 後 initCalendar 已改 root-scoped 查找，無 calendar 的頁面直接 skip、各副本各綁各的、hidden template 永不被誤綁）
+- Modal 關閉：backdrop click / Escape 為 delegated 通用機制（自動涵蓋本 modal 與 orderEdit_ 副本）；Escape 一次只關最上層（第二層優先）。`data-no-dismiss` 標記的 modal（會員資料/合約公司）不受 backdrop/Escape 關閉，沿用其既有行為，副本經 cloneNode 繼承標記
 - 觸發鏈：訂單處理頁 pill 下拉選單 -> document 層 delegated handler（`[data-op-menu-action]` 分支）。**選單容器不可 stopPropagation**，否則 delegated handler 收不到
 - 「訂單」開 `modalOrderSummaryBackdrop`（demo 一律 unpaid variant，實際對應留給後端）、「簡訊」開 `modalSmsBackdrop`
 

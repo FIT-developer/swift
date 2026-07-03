@@ -4,6 +4,48 @@
 
 ---
 
+## Session 75 交接 (2026-07-03)
+
+### 任務: 最近兩個 commit code review 後修正 + 規範補強 + commit/push
+
+使用者要求檢查最近兩個 commit 後，將需要寫入規範的內容寫入規範，並交接、commit、push。本輪針對 review finding 做修正與 guardrail 補強。
+
+### 本輪處理
+
+1. `preview/landing.html`:
+   - `initCalendar(root)` 改為 root-scoped 查找，不再用 `document.getElementById` 抓 hidden `tpl-room-booking` 或已建立的 `modalOrderEditBackdrop` clone。
+   - 無 calendar 的 subpage 直接 skip，避免切到「訂單處理」時誤初始化 hidden template。
+   - Backdrop click / Escape 改 delegated 通用機制，自動涵蓋 `modalOrderEditBackdrop` 與 runtime `orderEdit_` 副本。
+   - `modalMemberDataBackdrop` / `modalChangeContractCompanyBackdrop` 加 `data-no-dismiss`，保留原本不吃 backdrop/Escape 關閉的既有行為；cloneNode 產生的 `orderEdit_` 副本也繼承此行為。
+   - 訂單處理篩選面板 3 欄斷點從 `lg` 改 `xl`，避免 1024-1279 + sidebar 時 col3 國籍 radio nowrap 爆版。
+2. `components/order-edit-modal.md`:
+   - 補記 `initCalendar(root)` root-scoped 行為、modal delegated 關閉規則、`data-no-dismiss` 例外。
+3. `specs/pages/order-processing.md`:
+   - 補記篩選面板斷點裁決：`>=1280px` 才進 3 欄，`<1280px` 用單欄 + accordion；下拉選單 dropdown/offcanvas 仍維持 1024。
+   - 補關閉 desktop 篩選面板外殼漸層待確認：PNG 取樣為純色 `#f6fafd`。
+4. `start.md` / scripts:
+   - Lint 自檢規則補 `./scripts/lint-conventions.sh`。
+   - 新增「新規則寫入時的兩個必做動作」：回溯 audit 與機器可判定性評估。
+   - 新增 `scripts/lint-conventions.py` / `.sh`，pre-commit hook 同步跑 conventions lint，攔新增行的 decorative Unicode、mobile-unsafe min-width、HTML arbitrary hex、landing.css hardcoded hex。
+5. ASCII cleanup:
+   - 清掉本輪 touched/new lines 的 decorative arrows / box-drawing / em dash。
+   - `components/order-status-pill.md` 的 badge 順序改用 `->`。
+
+### 驗證
+
+- `git diff --check`
+- `./scripts/lint-fonts.sh`
+- `./scripts/lint-conventions.sh`
+- HTML script parse check
+- 待 commit 前再跑 staged hook 等同檢查
+
+### 下一步
+
+1. Batch 6 仍是下一個產品工作：訂單處理全頁與訂單修改 modal 的多 viewport RWD 系統性收尾。
+2. 視覺類驗收仍需 mobile / tablet / desktop 截圖與狀態變化檢查。
+
+---
+
 ## Session 74 交接 (2026-07-03)
 
 ### 任務: 訂單處理 Batch 5（modal 接線 + 訂單修改 modal）+ icons 補充 + tooltip 修正

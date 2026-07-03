@@ -2023,7 +2023,7 @@ body.mobile-sidebar-open {
   border: 0;
   cursor: pointer;
 }
-/* 「修改」固定淺橘底（元件本體寫死樣式，不是 hover 態）— 見 order-edit-modal.md */
+/* 「修改」固定淺橘底（元件本體寫死樣式，不是 hover 態）- 見 order-edit-modal.md */
 .op-row-menu-item[data-op-menu-action="修改"] {
   background: var(--color-brand-200);
 }
