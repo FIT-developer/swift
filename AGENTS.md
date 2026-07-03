@@ -1,32 +1,15 @@
 # Agent Startup Rules
 
-At the start of a new conversation in this repo, read:
+`start.md` is the single authoritative workflow and rules document for this
+repo. Do not duplicate its rules here or anywhere else.
 
-1. `start.md`
-2. `specs/progress.md`
-3. `specs/assets/tokens.md` usage rules and relevant token sections only as needed
+At the start of a new conversation:
 
-Use `start.md` as the authoritative workflow. Do not duplicate or replace its opening checklist.
+1. Read `start.md` in full (Claude Code loads it automatically via
+   `CLAUDE.md`; other tools must read it explicitly).
+2. Read the latest session entries at the top of `specs/progress.md`.
+3. Briefly summarize the current task from `specs/progress.md` and any
+   workflow constraint that affects the user's current request.
 
-After reading, briefly summarize only:
-
-- the current task from `specs/progress.md`
-- any workflow constraint that affects the user's current request
-
-For token usage:
-
-- Always follow `specs/assets/tokens.md`.
-- Do not fully rescan or sync tokens unless the task touches colors, spacing, radius, typography, effects, or the user says Figma Variables changed.
-- Before adding or changing any HTML/CSS/JS value that maps to a token, inspect the relevant section of `specs/assets/tokens.md`.
-
-When the user says `figma-go`, first use Figma MCP / figma-go to read the currently selected Figma frame, section, or component. Confirm the selected node with the user before writing specs or implementation.
-
-Do not implement Figma-sourced UI from memory or inference. Use the current Figma node as the source of truth, then follow:
-
-tokens -> icons -> components -> sections -> layouts -> preview HTML
-
-## Output formatting
-
-Please avoid using special Unicode characters, emoji, box-drawing characters, or decorative symbols in your responses. Use plain ASCII only.
-
-This applies to chat messages and to text written into .md files. CJK characters (Chinese) are allowed because they are normal content, but decorative symbols such as check marks, warning signs, arrows, bullets, table box-drawing, and emoji must not be used. Use plain words like "OK", "warning", "->", "-" instead.
+All other rules (figma-go flow, token usage, ASCII-only output, lint)
+live in `start.md`.

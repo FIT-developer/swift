@@ -1,5 +1,7 @@
 # 正式單與候補單 — Figma Frame 1437:47168
 
+> 命名注意：本檔內容是**房間預定頁 [E] 正式單與候補單**（檔名易誤導）。訂單處理頁的「訂單狀態」pill 見 order-status-pill.md；首頁 dashboard 訂單 widget 見 order.md。
+
 Accordion section, 425×888, bg `Color/Neutral/75`, radius 12, padding 20, border `Color/Neutral/200`.
 
 Sits as `[E]` next to `[D] 訂房資料`. Wrapped together in a grid:

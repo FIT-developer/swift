@@ -1,5 +1,7 @@
 # Layout Specification: Mobile
 
+> status: frozen-reference（dashboard 時期產物，2026-05-07 後未更新；新頁面規格一律走 specs/pages/ + components/，本檔不可作為新實作依據）
+
 **Figma Frame**: `Landing page (mobile) - 0116`  
 **斷點範圍**: 375px – 768px  
 **示意稿寬度**: 768px（代表 mobile 到 tablet 所有尺寸）  

@@ -1,5 +1,7 @@
 # Layout Specification: Desktop
 
+> status: frozen-reference（dashboard 時期產物，2026-05-07 後未更新；新頁面規格一律走 specs/pages/ + components/，本檔不可作為新實作依據）
+
 **Figma Frame**: `Landing page - 0116`  
 **Figma Node ID**: `270:12234`  
 **斷點範圍**: 769px+  

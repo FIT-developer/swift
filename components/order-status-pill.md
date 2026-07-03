@@ -1,5 +1,7 @@
 # Component Specification: 訂單狀態 Pill + 下拉選單
 
+> 命名注意：本檔是**訂單處理頁表格的狀態 pill + 下拉選單**。房間預定頁 [E] 正式單與候補單 見 order-status.md（檔名易誤導）；首頁 dashboard 訂單 widget 見 order.md。
+
 **使用位置**：`specs/pages/order-processing.md` 表格「訂單編號」欄
 **Figma Node ID（讀取樣本）**：
 - Pill instance（row1）：`2027:64493`

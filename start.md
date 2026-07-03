@@ -21,10 +21,12 @@ Please avoid using special Unicode characters, emoji, box-drawing characters, or
 Figma/
 - start.md: 本文件, 開發規則入口
 - components/: 各獨立元件規格 (e.g., button.md)
-- sections/: 區塊組合規格 (e.g., desktop-statistics.md)
-- layouts/: 頁面佈局規格 (e.g., desktop.md)
+- sections/: 區塊組合規格 - frozen-reference, 新頁面不再使用
+- layouts/: 頁面佈局規格 - frozen-reference, 新頁面不再使用
 - specs/
   - progress.md: 核心, 當前進度、決策、交接紀錄
+  - pages/: 頁面規格 (現行做法, e.g., order-processing.md)
+  - html-conventions.md: HTML/CSS 實作慣例
   - icons.md: 核心, Icon 系統語意對照表
   - assets/
     - tokens.md: 核心, Design Tokens (色彩、間距、圓角)
@@ -72,9 +74,9 @@ Figma/
 - 規格是權威,實作是規格的投影
 - 發現規格不清楚時,先補規格,再實作
 - 不要在實作階段自己腦補規格沒講的東西
-**分層實作順序**:
-tokens -> icons -> components -> sections -> layout -> 實作
-上游沒做完,下游不動。
+**分層實作順序**（2026-05 中之後的現行 3 層做法）:
+tokens -> icons -> components -> specs/pages -> 實作
+上游沒做完,下游不動。（舊 5 層的 sections/layouts 已 frozen，見檔案地圖）
 **Figma 讀取與寫檔 checkpoint**:
 - 使用者說 `figma-go` 時，代表先讀目前 Figma selection / frame / section / component。
 - `figma-go` 預設流程為三階段：
@@ -101,8 +103,8 @@ tokens -> icons -> components -> sections -> layout -> 實作
 - 實作後的驗證必須包含 contract-specific checks；不可只跑 script parse / duplicate id / diff check。
 - 需要寫檔時：
   - component -> `components/{name}.md`
-  - section -> `sections/{name}.md`
-  - layout -> `layouts/{name}.md`
+  - page -> `specs/pages/{name}.md`
+  - （sections/ 與 layouts/ 已 frozen，不再新增）
 
 **Figma MCP「JSON 不等於視覺」限制**（get_node / get_selection / get_design_context 皆適用）:
 - `get_node` / `get_design_context` 只序列化純色 paint
@@ -143,13 +145,15 @@ tokens -> icons -> components -> sections -> layout -> 實作
    - 例如 components/toggle.md, components/input.md
    - 檔名一律 kebab-case
    - 查詢元件規格時先找這個資料夾
-4. **sections/{name}.md** - 區塊組合規格 (每個區塊獨立檔案)
-   - 區塊會引用 components/ 的元件
-   - 區塊層級的排版與互動
-5. **layouts/{name}.md** - 頁面骨架 (每個頁面獨立檔案)
-   - 整頁的主框架、RWD 行為
-   - 引用 sections/ 組成完整頁面
-6. **specs/progress.md** - 當前進度與決策紀錄
+4. **specs/pages/{name}.md** - 頁面規格 (2026-05 中之後的現行做法)
+   - 整頁的佈局、區塊組成、RWD 斷點行為，直接引用 components/
+   - 例如 specs/pages/room-booking.md, specs/pages/order-processing.md
+5. **specs/html-conventions.md** - HTML/CSS 實作慣例 (跨頁通用的元件寫法)
+6. **sections/{name}.md** + **layouts/{name}.md** - status: frozen-reference
+   - dashboard 時期 (2026-05-07 前) 的 5 層分層產物，之後的頁面一律走
+     specs/pages/ + components/ 的 3 層做法
+   - 各檔頭已標 frozen-reference，不可作為新實作依據
+7. **specs/progress.md** - 當前進度與決策紀錄
    - 單一檔案,做到哪、為什麼這樣決定
 **衝突處理**: 如果 Figma 和 md 檔衝突,先停下來問我,不要自己決定。
 **檔案命名規範**:

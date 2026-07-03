@@ -1,5 +1,7 @@
 # Section Specification: Desktop — Revenue trends（營業資訊）
 
+> status: frozen-reference（dashboard 時期產物，2026-05-07 後未更新；新頁面規格一律走 specs/pages/ + components/，本檔不可作為新實作依據）
+
 **Figma Node ID**: `270:11728`（FRAME）  
 **父層**: Landing page - 0116  
 **最後同步**: 2026-04-14

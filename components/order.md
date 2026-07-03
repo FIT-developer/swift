@@ -1,5 +1,7 @@
 # Component Specification: `Order`
 
+> 命名注意：本檔是**首頁 dashboard 的訂單列 widget**，與訂單處理頁完全無關。訂單處理頁的狀態 pill 見 order-status-pill.md；房間預定頁 [E] 正式單與候補單 見 order-status.md。
+
 **Figma Node ID**: `59:866`（Component Set）  
 **Type**: COMPONENT（row item）  
 **最後同步**: 2026-04-13（依 Landing page - 0116）

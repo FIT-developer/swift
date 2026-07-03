@@ -4,6 +4,38 @@
 
 ---
 
+## Session 76 交接 (2026-07-03)
+
+### 任務: repo 結構體檢（Fable agent audit）+ 5 項止血執行
+
+使用者要求用最強模型對檔案結構與工作流做全面體檢（好壞都分析）。audit 完整報告已在對話中呈給使用者；本輪執行了報告中 5 項「極小/小成本」止血項，中型項目待逐項確認。
+
+### Audit 結論摘要（完整版本見對話記錄）
+
+- 做得好（保留）：規則帶 why、lint 落地機制、token strict mirror、Figma MCP 陷阱知識庫、交接格式、components/ 平鋪
+- 兩顆定時炸彈：landing.html 單檔增量（11583 行，91 個 modal id，orderEdit_ clone 那套工程的根因）、自稱權威的過期檔案（design-system/MASTER.md 為最，navy/gold 調色盤與實際品牌橘完全不符）
+- 明確不動：landing.html 存量、start.md 單檔形態、progress.md 格式、components/ 平鋪、tokens typo 鏡像、memory 與 start.md 的雙層重複
+
+### 本輪執行（5 項止血）
+
+1. **刪 `design-system/`**（錯誤調色盤污染源，agent 搜 "color palette" 會撞到且自稱權威）
+2. **刪 12 個未使用 agent-tool 目錄**（.agent/.cursor/.codex/.windsurf 等 + .github/prompts/ui-ux-pro-max，共 400+ 檔 ~7.6MB，skill installer 灑的複本；.claude/ 保留；.gitignore 加防再生清單）
+3. **stale 檔標注**：preview/room-booking.html 標 superseded-by landing.html#tpl-room-booking；sections/ 9 檔 + layouts/ 2 檔標 frozen-reference
+4. **order* 命名陷阱檔頭警告**（order.md = dashboard widget / order-status.md = 房間預定 [E] / order-status-pill.md = 訂單處理 pill，三檔互相指路）
+5. **AGENTS.md 降為純指標**（15 行，重複段移除，規則本體只在 start.md）
+
+配套：start.md 三處同步（專案結構樹標 frozen + 補列 specs/pages 與 html-conventions.md、檔案地圖重排 specs/pages 升第 4 順位、分層順序宣告 5 層改現行 3 層 tokens -> icons -> components -> specs/pages -> 實作）
+
+### 未完成 / 下一步（audit 中型項目，待使用者逐項確認）
+
+1. **B1（最重要）**：立規則「新頁面不再進 landing.html」+ 新頁獨立 html + fetch 共用 partial 方案（要先實測 Tailwind Play CDN 對 runtime 注入內容的 class 掃描）
+2. **B2**：progress.md archive 機制（留最近 10-15 session，其餘搬 specs/progress-archive-*.md）
+3. **B3**：start.md 瘦身（元件 conventions + UI patterns 段搬 specs/html-conventions.md，目標 ~250 行；CLAUDE.md 每 session 自動載入後其長度是固定 context 稅）
+4. **B4**：token mirror drift check script（比對 tokens.md hex 與 base.css 值，掛進 lint-conventions）
+5. 訂單處理頁 Batch 1-6 全部完成，等使用者最終驗收（延續 Session 75）
+
+---
+
 ## Session 75 交接 (2026-07-03)
 
 ### 任務: 最近兩個 commit code review 後修正 + 規範補強 + commit/push

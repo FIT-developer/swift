@@ -15,3 +15,17 @@ specs/assets/figma-variables.json
 # Browser visual QA screenshots — regenerated each round, not source
 specs/qa-screenshots/
 preview/screenshots/
+
+# unused agent-tool skill copies (installer sprays all tools; we only use .claude)
+.agent/
+.codebuddy/
+.codex/
+.continue/
+.cursor/
+.gemini/
+.kiro/
+.opencode/
+.qoder/
+.roo/
+.trae/
+.windsurf/
