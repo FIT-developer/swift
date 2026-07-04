@@ -37,7 +37,9 @@ Figma/
     - images/: 靜態圖檔 (如 QR Code)
     - css/
       - base.css: 全域樣式 (Scrollbar, Tailwind Reset 等)
-      - app.css: 跨頁共用元件與頁面樣式
+      - app.css: 跨頁 CSS 入口, 只負責 import 分域樣式
+      - shell.css / dashboard.css / modals.css / room-booking.css / order-processing.css:
+        分域樣式檔
 
 ---
 

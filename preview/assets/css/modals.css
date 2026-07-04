@@ -1,0 +1,992 @@
+/* Modal styles - shared modal sizing and modal-specific component styles. */
+
+/* Member modal - desktop: 320px centered; mobile: fullscreen */
+#modalMemberBackdrop .modal-box {
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 639px) {
+  #modalMemberBackdrop {
+    align-items: stretch;
+  }
+  #modalMemberBackdrop .modal-box {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+/* Bulletin vendor + Administer modals - desktop: max-width centered; mobile: fullscreen */
+#modalBulletinBackdrop .modal-box {
+  width: 100%;
+  max-width: 681px;
+  display: flex;
+  flex-direction: column;
+}
+#modalAdministerBackdrop .modal-box {
+  width: 100%;
+  max-width: 836px;
+  display: flex;
+  flex-direction: column;
+}
+#modalRoomIntroBackdrop .modal-box {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+}
+#modalRoomEditBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 646px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalPurchaseAddonBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 1194px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalOrderSummaryBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 1019px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalSmsBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 648px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalOrderEditBackdrop .modal-box {
+  /* Figma 2032:81567 一般會員版 1192 寬 */
+  width: min(calc(100vw - 24px), 1192px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* 訂單修改 modal 的 [A] 區塊鎖定「庫存」模式：
+   空房/庫存 mode 切換、Excel 下載、棟別 chips 一律不顯示（DOM 保留給共用 JS
+   解析用，僅視覺隱藏；規格見 components/order-edit-modal.md [A] 差異段） */
+[data-order-edit-body] .mode-toggle,
+[data-order-edit-body] [data-inventory-excel],
+[data-order-edit-body] .rb-filter-tabs {
+  display: none !important;
+}
+#modalMemberDataBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 1180px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Figma Order condition outer fill maps to var --color-neutral-75. */
+  background: var(--color-neutral-75);
+  padding: 20px;
+}
+/* Inner white card wrapper maps to var --color-neutral-0 and radius 12. */
+#modalMemberDataBackdrop .member-data-inner-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-neutral-0);
+  border-radius: 12px;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+#modalChangeContractCompanyBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 320px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* -- iOS-style toggle switch (member data modal: 常用會員 / 訂閱電子報) -- */
+.member-data-switch {
+  position: relative;
+  width: 64px;
+  height: 28px;
+  display: inline-block;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.member-data-switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+  margin: 0;
+}
+.member-data-switch-track {
+  position: absolute;
+  inset: 0;
+  background: var(--color-switch-off-track);
+  border-radius: 100px;
+  transition: background-color 0.2s ease;
+}
+.member-data-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  background: var(--color-neutral-0);
+  border-radius: 100px;
+  transition: transform 0.2s ease;
+  box-shadow: var(--effect-switch-knob-shadow);
+}
+.member-data-switch input:checked ~ .member-data-switch-track {
+  background: var(--color-accent-green);
+}
+.member-data-switch input:checked ~ .member-data-switch-knob {
+  transform: translateX(36px);
+}
+
+/* -- member-data Title chip (calcY pill - used in 訂房記錄 summary chips) -- */
+.member-data-title-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 44px;
+  background: var(--color-neutral-0);
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 16px;
+  color: var(--color-text-800);
+  font-family: inherit;
+  flex-shrink: 0;
+}
+.member-data-title-chip.is-selected {
+  background: var(--color-subitem-selected);
+}
+.member-data-title-chip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--color-menuitem-default);
+  font-size: 16px;
+}
+.member-data-title-chip-price {
+  color: var(--color-text-800);
+  font-size: 16px;
+}
+
+/* -- member-data filter tab (Figma Frame 606: 全部/未取消/正式單/未付款/取消單)
+   Figma: active = bottom-only brand-400 stroke + SemiBold, inactive = no border + Regular.
+   Transparent bottom border on inactive prevents 1px layout shift on toggle. -- */
+.member-data-filter-tab {
+  padding: 4px 8px;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-800);
+  cursor: pointer;
+  border: none;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.member-data-filter-tab.is-active {
+  font-weight: 600;
+  border-bottom-color: var(--color-brand-400);
+}
+
+/* -- member-data accordion title badge (總消費 pill green) -- */
+.member-data-accordion-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--color-accent-light-green);
+  color: var(--color-text-800);
+  font-size: 16px;
+  height: 22px;
+}
+
+/* -- member-data pagination active page bg: neutral-300 -- */
+.member-data-pagination-page--active {
+  background: var(--color-neutral-300);
+}
+
+/* -- 訂單編號 row-chip badges (加/網/企) - used in member-data 訂房記錄 table -- */
+.order-channel-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  border-width: 1px;
+  border-style: solid;
+}
+.order-channel-chip--add {
+  color: var(--color-accent-celebration);
+  border-color: var(--color-accent-celebration);
+}
+.order-channel-chip--web {
+  color: var(--color-menuitem-default);
+  border-color: var(--color-menuitem-default);
+}
+.order-channel-chip--corp {
+  color: var(--color-accent-cart-button-active);
+  border-color: var(--color-accent-cart-button-active);
+}
+.sms-modal-content {
+  border: 1px solid var(--color-neutral-200);
+  padding: 12px;
+}
+.sms-form-row {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.sms-field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px 39px;
+}
+.sms-table {
+  width: 100%;
+  min-width: 584px; /* min-width-ok: sms modal table scrolls inside modal body */
+  border-collapse: collapse;
+  font-size: 16px;
+  color: var(--color-text-800);
+}
+.sms-table th,
+.sms-table td {
+  padding: 7px 12px;
+  font-weight: 400;
+  line-height: 22px;
+  text-align: left;
+  vertical-align: middle;
+}
+.sms-table thead th {
+  background: var(--color-modal-hover);
+}
+.sms-table tbody td {
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.sms-table .sms-table-number {
+  text-align: center;
+  width: 72px;
+}
+.sms-table .sms-table-right {
+  text-align: right;
+}
+.order-summary-shell {
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 8px;
+  background: var(--color-neutral-0);
+  padding: 12px;
+}
+.order-summary-section {
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 8px;
+  background: var(--color-neutral-0);
+  padding: 20px;
+}
+.order-summary-section-title {
+  background: var(--color-surface-default);
+  padding: 8px 12px;
+  font-size: 20px;
+  line-height: 27px;
+  color: var(--color-text-800);
+}
+.order-summary-section-title--underlined {
+  border-bottom: 1px solid var(--color-text-800);
+}
+.order-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px 20px;
+  padding-top: 4px;
+}
+.order-summary-label {
+  padding: 3px 12px;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-text-500);
+}
+.order-summary-value {
+  padding: 3px 12px;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-text-800);
+}
+.order-summary-grid-spacer {
+  min-height: 1px;
+}
+.order-summary-table {
+  width: 100%;
+  min-width: 900px; /* min-width-ok: order summary table scrolls inside modal body */
+  border-collapse: collapse;
+  font-size: 16px;
+  color: var(--color-text-800);
+}
+.order-summary-table th,
+.order-summary-table td {
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+.order-summary-table thead th {
+  border-top: 1px solid var(--color-text-800);
+  border-bottom: 1px solid var(--color-text-800);
+  background: var(--color-modal-hover);
+}
+.order-summary-table--after-title thead th {
+  border-top: 0;
+}
+.order-summary-table tbody td {
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.order-summary-table tfoot td {
+  border-top: 1px solid var(--color-text-800);
+}
+.order-summary-number {
+  text-align: right;
+  white-space: nowrap;
+}
+.order-summary-table .order-summary-number {
+  text-align: right;
+  white-space: nowrap;
+}
+.order-summary-project-subtitle {
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.order-summary-money {
+  display: inline-flex;
+  gap: 4px;
+  white-space: nowrap;
+}
+.order-summary-inline-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.order-summary-addons-section {
+  flex: 1 1 655px;
+  min-width: 0;
+}
+.order-summary-total-section {
+  flex: 0 0 315.67px;
+  min-width: 0;
+  background: var(--color-brand-50);
+}
+.order-summary-total-section .order-summary-section-title {
+  background: var(--color-brand-50);
+  color: var(--color-surface-action-default);
+}
+.order-summary-addons-table {
+  min-width: 615px; /* min-width-ok: addons table scrolls inside modal body */
+}
+.order-summary-total-table {
+  min-width: 275.67px; /* min-width-ok: total table scrolls inside modal body */
+  background: var(--color-brand-50);
+}
+.order-summary-total-table thead th {
+  background: var(--color-brand-50);
+}
+.order-summary-hotel-name {
+  background: var(--color-modal-hover);
+  padding: 4px 12px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-text-800);
+}
+.order-summary-hotel-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  border-bottom: 1px solid var(--color-neutral-200);
+  padding: 4px 0;
+}
+.order-summary-hotel-pair {
+  display: grid;
+  grid-template-columns: minmax(120px, 147px) minmax(0, 1fr);
+  min-width: 0;
+}
+.order-summary-person-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+}
+.order-summary-person-row {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  border-bottom: 1px solid var(--color-neutral-200);
+  padding: 4px 0;
+}
+@media (max-width: 768px) {
+  .order-summary-grid {
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 4px 0;
+  }
+  .order-summary-grid-spacer {
+    display: none;
+  }
+  .order-summary-grid-late-1 { order: 1; }
+  .order-summary-grid-late-2 { order: 2; }
+  .order-summary-grid-late-3 { order: 3; }
+  .order-summary-grid-late-4 { order: 4; }
+  .order-summary-grid-late-5 { order: 5; }
+}
+.purchase-addon-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.purchase-addon-main {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 20px;
+}
+.purchase-addon-menu {
+  flex: 0 0 240px;
+}
+.purchase-addon-frame410 {
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  container-type: inline-size;
+}
+.purchase-addon-result {
+  flex: 0 0 327px;
+}
+.purchase-addon-body {
+  overflow-y: auto;
+}
+@media (min-width: 768px) {
+  .purchase-addon-body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .purchase-addon-layout {
+    align-items: stretch;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .purchase-addon-main {
+    min-height: 0;
+    min-width: 0;
+  }
+  .purchase-addon-menu,
+  .purchase-addon-frame410,
+  .purchase-addon-result {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .purchase-addon-category-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .purchase-addon-products {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .purchase-addon-result > [data-purchase-cart-cards],
+  .purchase-addon-result > div:last-of-type {
+    flex-shrink: 0;
+  }
+  .purchase-addon-result {
+    overflow-y: auto;
+  }
+}
+.purchase-addon-products {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.purchase-addon-product-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 140px) minmax(0, 140px) minmax(0, 155px);
+  gap: 20px;
+}
+.purchase-addon-product-grid .rb-cal-cell {
+  min-width: 0;
+}
+.purchase-addon-date-text {
+  font-size: 14px;
+}
+.purchase-addon-time-toggle[aria-pressed="true"] .toggle-knob {
+  transform: translateX(12px);
+  border-color: var(--color-surface-status-positive);
+}
+.purchase-addon-time-toggle[aria-pressed="false"] .toggle-knob {
+  transform: translateX(2px);
+  border-color: var(--color-text-400);
+}
+.purchase-category-btn[aria-pressed="true"] {
+  background: var(--color-neutral-0);
+}
+.purchase-category-btn[aria-pressed="true"] .purchase-category-count {
+  background: var(--color-bootstrap-focus-background);
+}
+.purchase-addon-category-list.is-collapsed {
+  display: none;
+}
+.purchase-addon-category-toggle[aria-expanded="false"] img {
+  transform: rotate(180deg);
+}
+.purchase-addon-content-toggle[aria-expanded="false"] img {
+  transform: rotate(180deg);
+}
+.purchase-addon-products.is-collapsed {
+  display: none;
+}
+@container (max-width: 500px) {
+  .purchase-addon-product-grid {
+    grid-template-columns: minmax(0, 140px) minmax(0, 140px);
+  }
+}
+@container (max-width: 330px) {
+  .purchase-addon-product-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  .purchase-addon-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  .purchase-addon-main {
+    flex-direction: column;
+  }
+  .purchase-addon-main,
+  .purchase-addon-menu,
+  .purchase-addon-frame410,
+  .purchase-addon-result {
+    width: 100%;
+    flex-basis: auto;
+  }
+}
+.room-edit-price-table tbody td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  vertical-align: middle;
+}
+.room-edit-price-table tbody tr:first-child td {
+  padding-top: 8px;
+}
+.room-edit-price-table tbody tr:last-child td {
+  padding-bottom: 8px;
+}
+.room-edit-price-table tbody tr:only-child td {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+@media (max-width: 639px) {
+  #modalBulletinBackdrop,
+  #modalAdministerBackdrop,
+  #modalRoomIntroBackdrop,
+  #modalRoomEditBackdrop,
+  #modalPurchaseAddonBackdrop,
+  #modalSmsBackdrop,
+  #modalOrderSummaryBackdrop,
+  #modalOrderEditBackdrop {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0;
+  }
+  #modalBulletinBackdrop .modal-box,
+  #modalAdministerBackdrop .modal-box,
+  #modalRoomIntroBackdrop .modal-box,
+  #modalRoomEditBackdrop .modal-box,
+  #modalPurchaseAddonBackdrop .modal-box,
+  #modalSmsBackdrop .modal-box,
+  #modalOrderSummaryBackdrop .modal-box,
+  #modalOrderEditBackdrop .modal-box {
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+  }
+  .order-summary-person-grid {
+    grid-template-columns: 1fr;
+  }
+  .order-summary-hotel-row {
+    grid-template-columns: 1fr;
+  }
+  .order-summary-inline-row {
+    flex-direction: column;
+  }
+  .order-summary-addons-section,
+  .order-summary-total-section {
+    width: 100%;
+    flex-basis: auto;
+  }
+  .order-summary-person-row {
+    grid-template-columns: 104px minmax(0, 1fr);
+  }
+  .sms-form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .sms-field-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+/* -- Arrival method modal --------------------------- */
+/* Spec: components/arrival-method-modal.md
+   - States A/B/C 寬 507；State D（接送）寬 834
+   - Phase A: shell + chip 切換
+   - Phase B: vehicle stepper grid（States B/C） */
+.am-modal-box {
+  width: 507px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+}
+.am-modal-box[data-am-state="transfer"] {
+  width: 834px;
+}
+/* keep header sticky-top, footer sticky-bottom; body scrolls internally
+   so transfer panel never pushes header/footer out of viewport */
+.am-modal-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+/* Vehicle stepper grid (States B/C) */
+.am-vehicle-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 24px; /* row gap 32, col gap 24 (per Figma) */
+  padding: 12px;
+}
+.am-vehicle-item {
+  display: flex;
+  flex-direction: column;
+  width: 96px;
+  gap: 12px;
+}
+.am-vehicle-label {
+  font-size: 16px;
+  color: var(--color-text-800);
+}
+/* Stepper Input - text + up-and-down icon
+   Spec: components/input.md Group B `number`（1057:18817）
+   Distinct from existing .stepper（[-][N][+] 兩側按鈕） */
+.am-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  width: 96px;
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 16px;
+  color: var(--color-text-800);
+  cursor: pointer;
+}
+.am-stepper:hover {
+  background: var(--color-modal-hover);
+}
+.am-stepper-value {
+  flex: 1;
+  text-align: left;
+}
+.am-stepper-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* -- Phase C: 接送 雙 swiper card stack（State D） --------------- */
+/* Spec: components/arrival-method-modal.md L145-244
+   外層 798x810 / 接 + 送 並排 gap 24 / 卡片 393 wide / inner stack bg neutral-75 */
+.am-transfer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 12px;
+}
+.am-transfer-col {
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-text-100);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.am-transfer-date {
+  font-size: 20px;
+  color: var(--color-text-800);
+}
+.am-transfer-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 32px;
+  background: var(--color-brand-100);
+  border-radius: 6px;
+  padding: 4px;
+  font-size: 16px;
+  color: var(--color-text-800);
+  cursor: pointer;
+  border: none;
+}
+.am-transfer-add:hover { opacity: 0.85; }
+.am-transfer-add-icon { width: 24px; height: 24px; }
+.am-transfer-index {
+  font-size: 16px;
+  color: var(--color-text-800);
+  text-align: center;
+}
+.am-swiper {
+  width: 100%;
+  height: 514px; /* 對齊 card 內容 intrinsic 高，避免 delete 下方多留白 */
+  overflow: visible; /* let cards-effect stack peek out */
+}
+/* Card 直接是堆疊容器，無外層 stack；card 本身藍底 (modal-hover)，
+   border 區隔上下層；多餘 padding 移除以爭取內容空間 */
+.am-transfer-card {
+  background: var(--color-modal-hover);
+  border: 1px solid var(--color-text-100);
+  border-radius: 12px;
+  padding: 20px 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  touch-action: pan-y; /* 不被 swiper horizontal drag 吃掉垂直 scroll */
+}
+.am-card-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.am-card-row-pair {
+  flex-direction: row;
+  gap: 24px;
+}
+.am-card-row-pair .am-card-cell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* stepper 在 pair cell 內撐滿（如「客人數」），覆蓋 .am-stepper 96px 固定寬 */
+.am-card-row-pair .am-stepper {
+  width: 100%;
+}
+.am-card-label {
+  font-size: 16px;
+  color: var(--color-text-800);
+}
+.am-card-input {
+  height: 34px;
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 16px;
+  color: var(--color-text-800);
+  width: 100%;
+  box-sizing: border-box;
+}
+.am-card-input:focus { outline: 1px solid var(--color-border-focus); }
+/* 生效日 calendar cell 特規：覆蓋 base.css `.rb-cal-cell { min-width: 160px }`，
+   本 modal cell 寬僅 ~120 容不下 160；對齊「無 icon 特規」由 cell 自由 fit。
+   spec: components/arrival-method-modal.md */
+.am-card-date {
+  min-width: 0;
+  width: 100%;
+}
+/* 生效日 calendar dropdown：穩定 day 圓圈包住文字。
+   原 base.css `.calendar-day.today { border: 1.5px ... }` 在 rounded-full +
+   border-box + sub-pixel rendering 下，藍邊會被弧形邊角 anti-alias 削掉一段，
+   視覺上看起來「藍環跑下方」。改 inset box-shadow 不影響 layout、不被弧形 clip，
+   day 圓圈永遠完整包住文字。 */
+.am-card-date-dropdown .calendar-day {
+  line-height: 1;
+}
+.am-card-date-dropdown .calendar-day.today {
+  border: 0;
+  box-shadow: inset 0 0 0 1.5px var(--color-radio-default);
+}
+.am-card-time-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.am-card-time-row .am-stepper {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+.am-card-time-unit {
+  font-size: 16px;
+  color: var(--color-text-800);
+  flex-shrink: 0;
+}
+.am-card-row-note .am-card-note {
+  height: 70px;
+  resize: vertical;
+  font-family: inherit;
+}
+.am-card-row-delete {
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.am-transfer-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 36px;
+  width: 108px;
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--color-text-800);
+  cursor: pointer;
+  justify-content: space-between;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.am-transfer-delete[disabled] {
+  background: var(--color-text-100);
+  color: var(--color-neutral-400);
+  cursor: not-allowed;
+}
+/* trash-can.svg ships with an active-state red stroke.
+   Disabled state needs neutral-300 - use mask-image so color comes from CSS,
+   driven by currentColor. */
+.am-transfer-delete-icon {
+  width: 24px;
+  height: 24px;
+  background: currentColor;
+  -webkit-mask: url("../icons/trash-can.svg") no-repeat center / contain;
+  mask: url("../icons/trash-can.svg") no-repeat center / contain;
+  color: var(--color-border-plugin-invalid);
+  display: inline-block;
+}
+.am-transfer-delete[disabled] .am-transfer-delete-icon {
+  color: var(--color-text-300);
+}
+.am-transfer-dots-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 36px;
+}
+.am-transfer-arrow {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.am-transfer-arrow img { width: 24px; height: 24px; }
+.am-transfer-arrow:disabled { opacity: 0.4; cursor: default; }
+.am-transfer-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+  /* breathing room so dot count growth never butts against arrows */
+  padding: 0 16px;
+  overflow-x: auto;
+}
+.am-transfer-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-neutral-200);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+.am-transfer-dot.is-active {
+  background: var(--color-bootstrap-components-focus);
+  /* halo: 2px focus-background ring, 全圓 */
+  box-shadow: 0 0 0 2px var(--color-bootstrap-focus-background);
+}
+/* Mobile RWD (Phase D): 接 above 送 vertical stack + 滿版 modal
+   Spec: components/arrival-method-modal.md L70-75 + 使用者 2026-05-08 補充 */
+@media (max-width: 768px) {
+  /* 滿版：不留外層 padding；border-radius 與左右 border 都拿掉 */
+  #modalArrivalMethodBackdrop .am-modal-box,
+  #modalArrivalMethodBackdrop .am-modal-box[data-am-state="transfer"] {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;     /* fallback */
+    height: 100dvh;    /* iOS Safari dynamic chrome */
+    max-height: 100vh;
+    max-height: 100dvh;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom: 0;
+  }
+  .am-transfer-grid {
+    grid-template-columns: 1fr;
+    /* mobile/tablet 滿版：移除外圍 12px padding，讓欄位邊緣與 modal body
+       對齊；卡內 calendar input 文字得以對齊其他 row */
+    padding: 0;
+  }
+}
+
+/* -- bulletin / administer modal tabs -----------------------------
+   touch 裝置點擊後 :hover sticky 殘留，會讓 active tab 從黃底變灰底
+   (inactive 的 `hover:bg-surface-default` 蓋過 active 的 `bg-tab-yellow`)。
+   提高 active tab 在 :hover 下的特異度，鎖死黃底。 */
+.bulletin-tab.bg-tab-yellow:hover,
+.administer-tab.bg-tab-yellow:hover {
+  background-color: var(--color-tab-yellow);
+}

@@ -1,0 +1,209 @@
+/* Shell styles - shared aside, topbar, drawer, page tabs, and utility shells. */
+
+/* Nav sub-item selected state - same bg as hover */
+.sub-item-selected {
+  background: var(--color-modal-hover);
+}
+/* Page tab chip */
+/* Page tab chip - inactive (default) and active states match Figma spec */
+.page-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  font-size: 16px;
+  color: var(--color-text-800);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+}
+.page-tab:hover {
+  background: var(--color-modal-hover);
+}
+.page-tab.active {
+  background: var(--color-modal-hover);
+  border-color: var(--color-chart-blue);
+}
+.page-tab-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+.page-tab-close:hover {
+  opacity: 1;
+}
+/* Mobile horizontal scroll */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.scroll-x::-webkit-scrollbar {
+  height: 4px;
+}
+
+/* POS entrance button hover fill */
+.pos-entrance-frame {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-linear-pos-left),
+    var(--color-accent-linear-pos-right)
+  );
+}
+.pos-entrance-inner {
+  background: var(--color-neutral-0);
+  transition: background 0.2s;
+}
+.pos-entrance-btn:hover .pos-entrance-inner {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-float-circle-filled-1),
+    var(--color-accent-float-circle-filled-2)
+  );
+}
+.icon-mask-pos {
+  -webkit-mask-image: url("../icons/pos.svg");
+  mask-image: url("../icons/pos.svg");
+}
+.icon-mask-attached-link {
+  -webkit-mask-image: url("../icons/attached-link.svg");
+  mask-image: url("../icons/attached-link.svg");
+}
+.icon-mask-lock {
+  -webkit-mask-image: url("../icons/lock.svg");
+  mask-image: url("../icons/lock.svg");
+}
+.icon-mask-unlock {
+  -webkit-mask-image: url("../icons/unlock.svg");
+  mask-image: url("../icons/unlock.svg");
+}
+.float-service-frame {
+  background: linear-gradient(
+    to bottom,
+    var(--color-accent-float-circle-mixed-1),
+    var(--color-accent-float-circle-mixed-2)
+  );
+  filter: var(--effect-float-shadow);
+}
+/* Section card */
+.section-card {
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+/* Sidebar select */
+.sidebar-select {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  padding: 6px 32px 6px 12px;
+  font-size: 16px;
+  color: var(--color-text-800);
+  cursor: pointer;
+  background-color: var(--color-neutral-0);
+  background-image: url("../icons/down.svg");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 16px;
+  font-family: "Noto Sans TC", sans-serif;
+}
+.sidebar-select:focus {
+  outline: none;
+  border-color: var(--color-menuitem-default);
+}
+
+/* Desktop sidebar collapsed state - only hides at md+; mobile uses drawer state */
+@media (min-width: 768px) {
+  #sidebar.md-collapsed {
+    display: none !important;
+  }
+}
+
+/* Accordion icon rotation */
+.accordion-icon {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.accordion-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Mobile sidebar overlay */
+.mobile-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  height: 100vh;  /* fallback */
+  height: 100dvh; /* iOS Safari dynamic chrome */
+  background: var(--effect-mobile-sidebar-backdrop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: var(--z-mobile-sidebar-backdrop);
+}
+.mobile-sidebar-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 767px) {
+  #sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(320px, 80%);
+    max-width: 320px;
+    height: 100vh;  /* fallback */
+    height: 100dvh; /* iOS Safari dynamic chrome */
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: var(--z-mobile-sidebar);
+    overflow-y: auto;
+    will-change: transform;
+    box-shadow: var(--effect-sidebar-shadow);
+  }
+  #sidebar.mobile-open {
+    transform: translateX(0);
+  }
+}
+
+.mobile-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+.mobile-sidebar-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-800);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+body.mobile-sidebar-open {
+  overflow: hidden;
+}

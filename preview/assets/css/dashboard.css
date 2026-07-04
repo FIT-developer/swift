@@ -1,0 +1,32 @@
+/* Dashboard styles - landing dashboard charts and chart legends. */
+
+.chart-canvas-box {
+  position: relative;
+}
+.chart-canvas-box-220 {
+  height: 220px;
+}
+.chart-canvas-box-240 {
+  height: 240px;
+}
+.chart-canvas-box-260 {
+  height: 260px;
+}
+.chart-swatch-negative {
+  background: var(--color-surface-status-negative);
+}
+.chart-swatch-positive {
+  background: var(--color-surface-status-positive);
+}
+.chart-swatch-inventory {
+  background: var(--color-text-400);
+}
+.chart-swatch-ota {
+  background: var(--color-radio-default);
+}
+.chart-swatch-official {
+  background: var(--color-accent-green);
+}
+.chart-swatch-phone {
+  background: var(--color-text-300);
+}

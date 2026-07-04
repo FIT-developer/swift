@@ -38,7 +38,12 @@ preview/
     partials.js             (fetch + 注入 + loaded event)
     tailwind-config.js      (共用 tailwind.config，各頁引用同一份)
     {feature}.js            (共用元件邏輯：calendar/modal/tooltip...)
-  assets/                   (不變：css/ icons/ images/)
+  assets/
+    css/
+      app.css               (CSS entrypoint imports domain files)
+      {domain}.css          (shell / dashboard / modals / room-booking / order-processing)
+    icons/
+    images/
 ```
 
 ## 新頁面骨架（每頁固定開頭）
@@ -108,12 +113,11 @@ preview/
 ## CSS 歸屬
 
 - token：`base.css`（不變）
-- 跨頁共用元件樣式：`app.css`（2026-07-04 自 landing.css 改名，推翻先前
-  「沿用不動」決策 - multi-page 後檔名已誤導影響範圍，使用者裁決改名；
-  檔頭有區段索引）
-- app.css 中期拆分方向（時機未定，使用者裁決後執行）：
-  `shell.css`（aside/topbar）/ `modals.css` / `dashboard.css` /
-  `room-booking.css` / `order-processing.css`
+- 跨頁 CSS 入口：`app.css`。所有 preview page 繼續只 link 這一個入口，避免
+  每頁維護 CSS 載入順序
+- 分域樣式檔（2026-07-04 已拆）：`shell.css`（aside/topbar/page shell）/
+  `dashboard.css` / `modals.css` / `room-booking.css` / `order-processing.css`
+- 新增跨頁樣式時先選對分域檔；只有新增分域或調整 import 順序才改 `app.css`
 - 單頁專用樣式：該頁 `<style>` 內 scoped class（沿用 start.md 既有規則）
 
 ## CDN dependency matrix

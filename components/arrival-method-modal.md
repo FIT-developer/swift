@@ -294,7 +294,7 @@ State A/B/C 寬度固定 `507`；State D 因 並排雙 swiper 擴張到 `834`。
 - ✅ **`components/order-condition.md:183`** 已對齊（2026-05-08）：原「到店方式 = Select」更新為「到店方式 = Button trigger，點擊開到店方式 Modal」。
 - ✅ **共用 modal 結構** 已對齊 `components/modal.md`（2026-05-08）：本檔 Header / Footer / Backdrop / 共用 interaction 移除重複描述、改 reference modal.md。`components/modal.md` Variants 表格也補上 `state=arrival method` 連回本檔。
 - `specs/pages/room-booking.md` 注意事項段已有「到店方式 = Button」記錄；本 modal spec 為其完整 component 規格，page-level 不需重複收錄。
-- **stepper 樣式不同**：本 modal vehicle grid 用 text + `icons/up-and-down`（縱向上下箭頭）；房間預定共用區塊的訂房明細「間數」欄與訂單條件 column 用 `[-] [N] [+]`（兩側 44px 按鈕，定義在 `app.css .stepper`）。屬兩種獨立 stepper 樣式，是否合併或保留差異待確認。
+- **stepper 樣式不同**：本 modal vehicle grid 用 text + `icons/up-and-down`（縱向上下箭頭）；房間預定共用區塊的訂房明細「間數」欄與訂單條件 column 用 `[-] [N] [+]`（兩側 44px 按鈕，定義在 `preview/assets/css/room-booking.css` 的 `.stepper`）。屬兩種獨立 stepper 樣式，是否合併或保留差異待確認。
 
 ## 已釐清項目（使用者 2026-05-08 回覆）
 

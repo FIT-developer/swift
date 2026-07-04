@@ -93,7 +93,7 @@ floatIcons/ai（浮動客服，全站共用）
 
 **Accordion 圖示慣例澄清**：讀取時發現兩個示範 frame 的**標題文字**跟畫面實際的 icon/內容是反的（一個標題寫「not collapsed」但畫面是收起態，另一個標題寫「collapsed」但畫面是展開態） - 這是 Figma frame **命名寫反**，不是既有的「`icons/up`=收起／`icons/down`=展開」慣例錯誤。寫 spec / 實作時一律以「畫面實際 icon + 內容」為準，不採用 frame 標題字面意思。
 
-**外殼漸層背景（2026-07-03 補讀確認）**：「更多條件」accordion 外殼（含 header 跟白色內容卡外面那圈）不是純色，是**對角線漸層**：`Color/Neutral/75`（`#F6FAFD`）到 `Color/Brand/Brand-50`（`#FEF6EE`），方向左下到右上（CSS `linear-gradient(to top right, ...)`）。這個漸層 `get_selection` 完全沒有序列化出來（`styles` 連 `fills` key 都沒有，不是常見的 `"s1"` 佔位符），是使用者肉眼看穿透截圖才發現，改用 `save_screenshots(SVG)` 讀 `<linearGradient>` defs 才抓到精確色值/方向。CSS 已實作為 `.op-accordion-gradient`（`preview/assets/css/app.css`），只在 `<1280px`（accordion 收合態）套用，`>=1280px`（桌機三欄展開態）用 `xl:bg-none` 清除（斷點 2026-07-03 從 1024 改 1280，見「篩選面板」段）。
+**外殼漸層背景（2026-07-03 補讀確認）**：「更多條件」accordion 外殼（含 header 跟白色內容卡外面那圈）不是純色，是**對角線漸層**：`Color/Neutral/75`（`#F6FAFD`）到 `Color/Brand/Brand-50`（`#FEF6EE`），方向左下到右上（CSS `linear-gradient(to top right, ...)`）。這個漸層 `get_selection` 完全沒有序列化出來（`styles` 連 `fills` key 都沒有，不是常見的 `"s1"` 佔位符），是使用者肉眼看穿透截圖才發現，改用 `save_screenshots(SVG)` 讀 `<linearGradient>` defs 才抓到精確色值/方向。CSS 已實作為 `.op-accordion-gradient`（`preview/assets/css/order-processing.css`），只在 `<1280px`（accordion 收合態）套用，`>=1280px`（桌機三欄展開態）用 `xl:bg-none` 清除（斷點 2026-07-03 從 1024 改 1280，見「篩選面板」段）。
 
 ~~待確認：desktop 版篩選面板外殼是否也是漸層~~ -> **已補驗（2026-07-03）**：`save_screenshots(PNG)` 25x25 網格取樣，`shirnk-model-1` 背景為均勻純色 `#f6fafd`（`Color/Neutral/75`）無漸層，讀取 1 的記錄正確。
 

@@ -17,9 +17,9 @@ Shared dev scripts for this repo.
 專案 conventions lint，**只檢查新增/修改的行**（不追溯 legacy 內容）：
 1. ASCII-only：禁裝飾性 Unicode（box drawing/箭頭/em-dash/emoji），CJK 與全形標點允許
 2. min-width mobile-safe：`min-w-[Npx]` 需斷點前綴；CSS `min-width:` 需 @media 或 `/* min-width-ok: 原因 */` 標記
-3. no hardcoded hex：HTML 禁 `[#hex]` arbitrary value；app.css 禁 hex 色值（註解引用 Figma 色碼除外）
+3. no hardcoded hex：HTML 禁 `[#hex]` arbitrary value；preview CSS 禁 hex 色值（註解引用 Figma 色碼除外）
 
-規範來源：`start.md`。pre-commit hook 會與 lint-fonts 一起自動跑。
+規範來源：`start.md`。pre-commit hook 會與 fonts / tokens / partials lint 一起自動跑。
 
 ```bash
 ./scripts/lint-conventions.sh            # 檢查 working tree 相對 HEAD 的新增行
@@ -43,7 +43,7 @@ python3 scripts/figma-read.py pixel <image.png> <x,y> [<x,y> ...]               
 
 ## `git-hooks/pre-commit`
 
-Pre-commit hook：commit 前自動跑 `lint-fonts.sh --staged`。違規會 exit 1 擋 commit。
+Pre-commit hook：commit 前自動跑 fonts / conventions / tokens / partials lint。違規會 exit 1 擋 commit。
 
 **安裝方式（每台新 clone 的機器跑一次）：**
 ```bash

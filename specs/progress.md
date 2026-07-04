@@ -7,6 +7,55 @@
 
 ---
 
+## Session 90 交接 (2026-07-04)
+
+### 任務: app.css 分域拆分與 demo data 決策
+
+使用者裁決：
+- Runtime 功能先觀察下一個需求碰到哪塊，不主動重構。
+- `app.css` 可以直接拆分，降低後續樣式協作衝突。
+- `purchase-addon-modal.js` 暫不再拆；加購商業邏輯將來由後端實作，目前只需維持
+  demo 互動效果。
+- Smoke test 擴成深流程與 demo data 抽離都不急；同樣基於將來後端會接手商業
+  邏輯，現階段不要把 demo 做成假正式架構。
+
+### 本輪改動
+
+1. `preview/assets/css/app.css` 改成 8 行 CSS entrypoint，只保留 import 順序：
+   `shell.css` -> `dashboard.css` -> `modals.css` -> `room-booking.css` ->
+   `order-processing.css`。三個 HTML 仍只 link `app.css`，不分散載入順序。
+2. 新增分域樣式檔：
+   - `shell.css`：aside / topbar / page tabs / mobile drawer / shell utilities
+   - `dashboard.css`：landing dashboard chart wrappers 與 legend swatches
+   - `modals.css`：共用 modal sizing、member-data、order-summary、sms、
+     purchase-addon、arrival-method 等 modal 樣式
+   - `room-booking.css`：room-booking [A]-[E]、inventory、order-data、
+     booking-detail table、calendar
+   - `order-processing.css`：op table、status pill、badges、row menu、
+     accordion gradient
+3. `scripts/lint-conventions.py` / `.sh`：raw hex / rgb 檢查由只看 `app.css`
+   擴成所有 `preview/assets/css/*.css`，避免拆檔後規則退化。
+4. `start.md`、`specs/page-architecture.md`、`scripts/README.md` 與相關
+   component/page spec：更新 CSS 分域來源與協作規則；樣式引用指到實際分域檔。
+
+### 驗證
+
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-tokens.sh` exit 0（token mirror ok）
+- `./scripts/lint-partials.sh` exit 0（3 pages, 3 standalone）
+- `git diff --check` exit 0
+- `node scripts/smoke-test.mjs` exit 0：landing 10 checks、
+  order-processing 8 checks、room-booking 9 checks
+
+### 待你驗收
+
+- 本輪未 commit / 未 push。
+- CSS 拆分是檔案結構調整；沒有改 HTML stylesheet contract、沒有改互動邏輯。
+- Demo data 暫不抽離；除非後續資料重複阻礙維護或需要作為 test fixture，再另議。
+
+---
+
 ## Session 89 交接 (2026-07-04)
 
 ### 任務: Session 87-88 後的規格去舊架構誤導
@@ -167,7 +216,8 @@ source。
      hover:bg-surface-hover（真實連結的 2 個 anchor 保持 pointer + hover）
 5. `specs/page-architecture.md`：新增「Partial dependency manifest」段、
    「CDN dependency matrix」表（Tailwind 全站 / chart.js 只 landing / dayjs+isoWeek
-   op+rb / swiper 只 rb）；CSS 歸屬段改記 app.css 改名決策與中期拆分方向。
+   op+rb / swiper 只 rb）；CSS 歸屬段當時記錄 app.css 改名決策與中期拆分方向
+   （分域拆分已於 Session 90 執行）。
 6. `start.md`：產出驗證新增 lint-partials 與 browser smoke test 兩個 checklist 項。
 7. progress.md 歸檔：Session 63-72 搬到 `specs/progress-archive-s63-s72.md`
    （新檔），本檔剩 Session 73-87。
