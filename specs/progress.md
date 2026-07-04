@@ -7,6 +7,25 @@
 
 ---
 
+## Session 80 交接 (2026-07-04)
+
+### 任務: landing.html 拆頁重構 Stage 0（使用者核准整個分階段計畫）
+
+使用者決定將 landing.html 依 content 拆成獨立 html（房間預定/訂單處理各自一頁，landing 剩 dashboard）。完整計畫與決策記錄在 **specs/page-architecture.md「landing.html 拆頁重構計畫」段**（含 tab chips 降級為導航列的決策、四個 stage、Stage 1 執行要點）。
+
+### 本輪產出（Stage 0）
+
+1. 拆頁計畫寫入 page-architecture.md（每 stage 一個 session、中間態皆可用）
+2. `js/tailwind-config.js`：landing 的 inline tailwind.config（63 行）抽出共用，landing 改外部引用；回歸：config 自訂色正常渲染
+
+### 下一步（下個 session 開場直接做）
+
+**Stage 1：拆訂單處理 -> order-processing.html**，執行要點見 page-architecture.md 該段（先抽 [A]-[E] partial -> 頁骨架 -> 頁內容搬移 -> JS 抽 modules -> aside 連結改真實 href -> 三 lint + 全回歸）。Stage 1 完成後 orderEdit_ clone 機制可整組退役。
+
+其他遺留：使用者操作驗收訂單處理頁（截圖 session-78/）；未 push commits x5（ee06dfb/b9722a8/26fedd1/f6deac1/本輪）。
+
+---
+
 ## Session 79 交接 (2026-07-04)
 
 ### 任務: B3 start.md 瘦身 + 驗收材料 + 三層 modal 疊層修正
