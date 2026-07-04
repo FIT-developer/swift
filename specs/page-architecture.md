@@ -149,9 +149,28 @@ partial、模組化 JS。比 11583 行單檔更接近他們要重寫的形狀。
 | Stage | 內容 | 狀態 |
 |---|---|---|
 | 0 | 決策 + 本計畫 + js/tailwind-config.js 抽出 | 完成（2026-07-04） |
-| 1 | 拆訂單處理（細分 1a-1d，見下方執行要點） | 待做 |
-| 2 | 拆房間預定 -> room-booking.html（改用同一份 [A]-[E] partial） | 待做 |
+| 1 | 拆訂單處理（細分 1a-1d，見下方執行要點） | 完成（2026-07-04，Session 81-84） |
+| 2 | 拆房間預定 -> room-booking.html（改用同一份 [A]-[E] partial） | 完成（2026-07-04，Session 85） |
 | 3 | landing 清理只剩 dashboard；topbar 抽 partial；殘餘共用 JS 模組化 | 待做 |
+
+Stage 2 產出（Session 85）：
+- room-booking.html：頁面內容直接注入 room-booking-sections partial（與
+  訂單修改 modal body 同一來源，目標終態達成）
+- js/arrival-method-modal.js：到店完整互動（13 bindings 全搬）；只在 rb 頁載入
+- js/page-shell.js：aside accordion / 收合全部 / mobile drawer（兩個新頁共用）
+- partials/session-modals.html：登出 / 帳號切換 modal 全站共用
+- 導航裁決：logo = 回 landing.html（原 hash open question 作廢）；
+  aside 房間預定 / 訂單處理 皆真實連結，landing SPA 只剩 placeholder 頁
+
+Stage 1 產出（Session 84 收尾）：
+- partials/room-booking-modals.html：8 共用 modal + 庫存月曆 offcanvas 單一來源
+  （landing sync XHR 注入 / 新頁 data-partial async 注入）
+- js/room-booking-behaviors.js：[A]-[E] 行為 module（landing inline 版保留，
+  過渡性複製，Stage 3 去重）
+- js/order-modals.js：新頁 modal 系統（動態 z-index 疊層取代 orderEdit_ clone）
+- landing 的 orderEdit_ clone 機制整組退役；aside 訂單處理 = 真實連結
+- 到店方式 modal 在新頁為靜態 + 開關（等價舊副本保真）；其互動 JS 與
+  頁面層行為（產生訂單 / customer-toggle 等）屬 Stage 2 範圍
 
 **Stage 1 細分為 4 個可驗收小段（2026-07-04 使用者定案）**：
 

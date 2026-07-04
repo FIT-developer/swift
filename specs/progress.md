@@ -7,6 +7,118 @@
 
 ---
 
+## Session 85 交接 (2026-07-04)
+
+### 任務: Stage 2 - 拆房間預定 -> room-booking.html（同一對話接續 Session 84；使用者驗收 1d 後指示直接開工）
+
+### 本輪改動
+
+1. `preview/room-booking.html`（覆蓋 superseded 舊檔，103 行）：獨立房間預定頁。內容 = `data-partial="room-booking-sections"`（與訂單修改 modal body 同一來源）+ aside/topbar/room-booking-modals/session-modals partials。頁面 module 順序：loadPartials -> initPageShell -> initRoomBookingBehaviors(#rbPageContent) -> initOrderModals()（回傳 modalApi）-> initArrivalMethodModal(modalApi)。head 補 Swiper CDN + CSS（接送卡片依賴）。
+2. `preview/js/arrival-method-modal.js`（新，420 行）：landing arrival IIFE 全量搬出 - 13 個 event bindings 逐一 disposition **全搬無略過**（依 start.md「JS 搬移/略搬 audit」規則）：chip 切換、開啟時 label->chip 同步、確定 commit label + 關閉（closeModal 走 initOrderModals 回傳的 modalApi，單一來源）、車輛 stepper、接送雙 swiper（新增/刪除/箭頭/dots/lazy init）、生效日 simple calendar。order-processing.html **不載入**本 module（使用者同意該頁到店維持靜態 + 開關）。
+3. `preview/js/page-shell.js`（新，69 行）：aside accordion 收合 / 「收合」全部 / mobile drawer 開關，自 landing 對應 IIFE 搬出；room-booking 與 order-processing 兩頁共用。`partials.js` markActivePage 補 accordion icon open 態同步。
+4. `preview/partials/session-modals.html`（新，125 行）：確定登出（A）/ 帳號切換（B）自 landing 抽出 - aside 的 登出/更換帳號 icon 用 data-modal-open 觸發，aside 是全站 partial，這兩個 modal 必須全站存在。landing 以 sessionModalsMount sync 注入；兩個新頁 data-partial async 注入。
+5. `preview/js/order-modals.js`：會員資料 modal 的 nation-group 改為自行綁定（room-booking 頁沒有 initOrderProcessing 可依賴），以 `data-nation-init` guard 防重複；order-processing.js 與 room-booking-behaviors.js 的 nation-group 綁定套同一 guard。initOrderModals() 改回傳 `{ openModal, closeModal }` 供其他 module 使用。
+6. `preview/partials/aside.html`：房間預定 -> `<a href="./room-booking.html">`（同 訂單處理 pattern）；desktop logo 包 `<a href="./landing.html">`（logo = 回今日總覽 全站慣例）。兩個新頁 mobile top bar 的 logo 也包同連結。
+7. `preview/landing.html`（5028 -> 4912 行）：tpl-room-booking（含 roomBookingSectionsMount sync 注入）移除；Modal A/B 改 sessionModalsMount 注入；PAGE_TEMPLATES 清空（雙頁皆真實連結，其餘選單項維持 placeholder SPA 頁）。
+
+### 驗證（self-tested）
+
+- 三 lint pass、`git diff --check` pass、三頁 inline scripts parse OK（5/1/1）、三頁組合 duplicate id 均無
+- room-booking.html（1440）：console 無錯誤；[A] calendar 42 格渲染 + 庫存模式 + 月曆 offcanvas teleport/日期關閉；[B] 加購 12 產品 + stepper 連動頁面 cart（3 行）；[D] 會員資料 modal 國籍外籍連動（新綁定）+ 合約公司疊層 60/65 + customer toggle 連動（合約欄位顯示 + 合約 tab 自動 active）+ lock toggle；[E] 產生訂單 variant 對應（official -> 已付款）
+- 到店方式完整互動：chip 切換 panel、stepper 0->1、接送 swiper 卡片 1->2、確定 commit「包車或專車」寫回 [D] label + 關閉
+- footer/header 按鈕逐顆實測（rb 頁 10 個 modal、28 顆）：全部 closes、無殘留開啟
+- aside（page-shell）：accordion 展開/收合、收合全部、mobile drawer（menu 鈕開 / backdrop 關 / X 關）、登出與帳號切換 modal 確定/取消 closes
+- mobile 390：無水平溢出、drawer 正常、加購 modal 貼齊視窗
+- order-processing 回歸：console 無錯誤、session modals 生效、accordion 生效、房間預定連結、修改 modal body 4 區塊、nation guard 單次綁定且外籍連動正常
+- landing 回歸：console 無錯誤、dashboard 4 charts、compact/aside 登出與帳號切換（經新 partial）、雙頁連結、placeholder SPA 頁開關與返回 dashboard、aside logo 連結、tpl 已除
+- 截圖 specs/qa-screenshots/session-85/（room-booking 1440/390、到店接送 swiper）
+
+### 重要決定
+
+- 返回 landing 的導航裁決：**logo = 回今日總覽（landing.html）**，aside desktop logo 與兩個新頁 mobile logo 都包連結；原 open question 的「landing.html 帶 hash 開子頁」已無必要（兩個子頁皆獨立頁）
+- Modal A/B 抽成 session-modals partial 納入 Stage 2 範圍：aside 是全站 partial，其 登出/更換帳號 觸發的 modal 不能只存在 landing（否則新頁上是死按鈕，與 Session 84 使用者連續抓到的死按鈕同類）
+- op 頁到店方式維持靜態 + 開關（使用者 Session 84 同意），不載 arrival module；rb 頁載入完整互動版
+- nation-group 統一 `data-nation-init` guard 慣例（三個 module 同 guard，先跑者生效）
+
+### 下一步
+
+Stage 3：landing 清理只剩 dashboard（移除 inert 的 initSubPageBehaviors/initCalendar/op-* 綁定、modal 系統與新 module 收斂去重、page-tab chips 機制與 placeholder 頁去留待使用者裁決）、topbar function icons / compact 收折 / role filter 行為模組化、C/D/E modal 是否抽 partial 待定。
+
+### 未解問題
+
+- 新頁 topbar 三顆 function icon（公告/訊息/會員安全管理）與 foldBtn/expandBtn 收折、role filter 仍 present-unbound（target modal C/D/E 只在 landing；Stage 3 範圍）
+- landing 內大量 inert code（initSubPageBehaviors 全部 + modal 系統中 rb 專屬分支）待 Stage 3 清理；目前無害但佔 ~2500 行
+- landing 其餘選單項的 placeholder SPA 頁機制去留，待使用者於 Stage 3 裁決
+
+---
+
+## Session 84 交接 (2026-07-04)
+
+### 任務: Stage 1d - 搬 modal 並退役 orderEdit_ clone（landing 拆頁重構 Stage 1 收尾）
+
+### 本輪改動
+
+1. `preview/partials/room-booking-modals.html`（新，2009 行）：自 landing.html 抽出 8 個共用 modal + 庫存月曆 offcanvas（房型介紹 / 訂房明細編輯 / 加購 / 訂單明細 / 簡訊 / 到店方式 / 會員資料 / 更換合約公司 / invCalendarOffcanvas）。landing 以 sync XHR 注入（`roomBookingModalsMount`，同 aside 模式，位置在原 Modal F 處、主 script 之前）；新頁以 `data-partial` async 注入。
+2. `preview/js/room-booking-behaviors.js`（新，1348 行）：landing 的 `initSubPageBehaviors` + `initCalendar` 原樣搬出（root-scoped），export `initRoomBookingBehaviors`。唯一調整：offcanvas 解析固定用單一 `invCalendarOffcanvas`（新頁獨立 document，無副本分流）。
+3. `preview/js/order-modals.js`（新，1372 行）：modal 開關核心（動態 z-index 60+N*5、疊層感知 scroll lock、delegated close/backdrop/ESC + data-no-dismiss）、op 選單接線（訂單 / 簡訊 / 修改）、`buildOrderEditModalBody` 改為 fetch `partials/room-booking-sections.html` 注入 + 四項差異（[A] 標題「庫存」、移除 customer-toggle、訂單編號列、[D] 還原鈕）+ `initRoomBookingBehaviors(body)` + btnInventory 切庫存模式、加購渲染系統整包（產品資料 + render + cart + 互動）、訂單明細 variant/accordion、訂房明細編輯 lock/clear、會員資料 honorific/身份/chips/tabs、會員資料與合約公司 delegated triggers。
+4. `preview/order-processing.html`（740 -> 812 行）：加 modal partial mount + 訂單修改外殼 markup + `initOrderModals()`。
+5. `preview/landing.html`（7910 -> 5028 行）：移除 `tpl-order-processing`、訂單修改外殼、`ensureOrderEditModalClone` / `buildOrderEditModalBody` / `resolveScopedModalId` / `window.initSubPageBehaviors` export、PAGE_TEMPLATES 的訂單處理項；[E] 送出與會員資料 / 合約公司 trigger 改直開原 instance；initCalendar 的 offcanvas 分流簡化為單一 id。
+6. `preview/partials/aside.html`：訂單處理改 `<a href="./order-processing.html">`（landing SPA click 綁定 selector 只認 div，anchor 自然走原生導航）。`preview/js/partials.js`：markActivePage selector 改 `:is(div, a)`，並展開 active 項所屬分類（新頁無 accordion JS，收合會看不到 active）。
+7. lint 修正：新增行 min-w 全部 md: gate（記錄表 1000px / count pill 38px / 數量 badge 33px / price table 343px，皆在 overflow 容器內或有 padding 撐底，mobile 視覺不受影響）；裝飾性 Unicode 全數 ASCII 化。
+8. 使用者回報修正：到店方式 modal footer「確定」在新頁沒有關閉效果。全面 audit 後確認全 repo 只有這一顆按鈕靠 landing 的 arrival IIFE handler 關閉（`data-am-action="confirm"` -> commit + closeModal），其餘所有 modal 的 確定/取消/確定加購/修改 都是 `.modal-close-btn` + `data-modal`（delegated close 已涵蓋）。order-modals.js 補 delegated handler：confirm -> closeModal（commit 寫回 label 的部分不搬 - 本頁 chips 不可切換，commit 無實質意義且可能覆寫 [D] label）。
+
+9. 使用者回報修正（第二輪）：landing 的 登出（modalLogoutBackdrop）/ 帳號切換（modalSwitchBackdrop）/ 會員安全管理（modalMemberBackdrop）三顆 footer「確定」也沒有關閉效果。git 溯源：三顆自各自誕生的 commit（dec65b4 / 5c6cc93）就沒有 modal-close-btn 也沒有 JS handler，一路到 1d 前的 HEAD 都是死按鈕 - 既存 bug，非 1d 引入。依 landing 凍結例外（bug 修正 + 使用者指名）補上 `modal-close-btn` + `data-modal`。隨後把關閉語意按鈕掃描擴大到全 repo 三個檔案的所有 modal（含 aria-label、送出/儲存/完成 等字樣）：除到店「確定」為 handler-based（兩頁皆已接線）外，其餘全數有關閉機制。瀏覽器實測三顆 確定 + 三顆 取消 全部 closes。
+   - **定性更正（使用者質疑後查證）**：我曾在對話中推測這三顆是「當初被當成後端動作所以前端沒做關閉」- 全 repo 與 git log 查無任何此類指令，使用者從未下過這個命令，該推測撤回。實際上 `components/modal.md` 明文相反：共用 Interaction 的關閉方式含 footer close action、訂單明細規格寫「footer 取消/確定 關閉」、簡訊規格寫「both close modal in preview」，A/B/E variant 段無任何覆寫。正確定性：**實作違反 modal.md 既有慣例的疏漏**，本次修正是讓實作回歸規格。
+
+### 檢討與 binding-level retro audit（使用者指出驗證方法有洞後補做）
+
+失誤根因（記錄供之後 stage 避免重蹈）：
+- 決定略搬 arrival IIFE 時，沒有列出該 IIFE 的全部 event bindings 逐一標 disposition，confirm 的關閉行為被靜默丟掉
+- 回歸測試「到店方式（開關）」是自選 `.modal-close-btn` 一條會過的路徑，不是逐顆按鈕實測
+- 對策已寫入 start.md「JS 搬移/略搬 audit」段；footer/header 按鈕逐顆實測已補做（見上方驗證段）
+
+Arrival IIFE 13 個 bindings 的完整 disposition（retro audit 結果）：
+- confirm 關閉 -> 本輪已補
+- 開啟時 label->chip 同步、確定 commit label -> 不搬：chips 固定 + [D] 預設 label「自行到店」= 預設 chip（general），皆為 no-op
+- chip 切換 -> 使用者同意範圍外（現況即可）
+- stepper / swiper dots / 接送卡片增刪與箭頭 / 生效日 calendar / transfer lazy init -> 全部位於 hidden panels（self-drive/charter/transfer），無 chip 切換即不可達；general panel 經實測 0 個互動元素，無其他死按鈕
+- 其他 landing 全域綁定 vs partial 內容交叉檢查：`.eye-toggle`（partial 無此按鈕）、`.member-tab` / `.administer-tab`（對應 modal 不在新頁）、會員資料生日欄（兩邊都是純 text input）-> 均無落差
+
+同類「markup 在、綁定不在」的既知缺口（1b 起既有，非 1d 引入，Stage 3 範圍）：
+- 新頁 topbar 三顆 function icon（公告/訊息/會員）與 compact 登出/帳號切換 present-unbound，其 target modal（A/B/C/D/E）不在新頁
+- 新頁 mobileMenuBtn drawer、aside accordion 收合、role filter 無 JS
+
+### 驗證（self-tested）
+
+- 三 lint pass（conventions / fonts / tokens）、`git diff --check` pass、6 個 inline script parse OK、兩頁組合 duplicate id 均無
+- 瀏覽器實測（chrome-devtools，截圖 specs/qa-screenshots/session-84/）：
+  - 新頁三條鏈：訂單（variant 未付款 + accordion + 內部簡訊 trigger 疊 z65）、簡訊、修改（body 4 區塊注入 + 四項差異 + 庫存模式 + 月曆 offcanvas teleport/日期關閉）
+  - 三層疊層：修改 60 / 會員資料 65 / 合約公司 70；ESC 只關最上層且 data-no-dismiss 生效；關子層 body scroll 維持鎖定
+  - 巢狀 modal：加購（12 產品渲染、stepper 更新 cart 與 [B] 頁面 cart）、房型介紹、訂房明細編輯（lock 預設鎖定、解鎖可輸入）、到店方式（開關）
+  - mobile 390：無水平溢出、pill 選單 bottom sheet、修改 modal 貼齊視窗、會員資料疊層正常
+  - footer 按鈕逐顆實測（瀏覽器）：到店 取消/確定、訂房明細編輯 確定、加購 取消/確定加購、房型介紹 關閉、會員資料 修改、合約公司 取消/確定、訂單明細 取消/確定、簡訊 取消/確定、修改 modal X/取消/確定 - 全部 closes；會員資料/訂房明細編輯的「清除」與 body 區塊內容自帶的「取消」按鈕在 landing 同樣不關閉，等價
+  - landing 回歸：console 無錯誤、dashboard 正常、房間預定 SPA（加購 / 會員資料->合約公司 / 到店 chip 切換 / [E] 送出 -> 訂單明細 / 庫存月曆 offcanvas）全過、topbar 公告 / 會員 modal 正常、aside 訂單處理連結實際跳頁成功
+
+### 重要決定
+
+- 到店方式 modal 在新頁為「靜態 + 開關」：與 landing 時期 orderEdit_ 副本等價保真（副本本來就不接互動 JS）；chip 切換 / swiper 卡片屬房間預定頁情境，Stage 2 再模組化（新頁未載 Swiper CDN）
+- 加購 modal 是 JS 渲染空殼，靜態 partial 會開出空 modal，故加購系統整包搬入 order-modals.js（保真度高於舊副本，且 Stage 2 房間預定頁可直接複用）
+- 「產生訂單」按鈕位於 sections partial 的 wrapper 之外（頁面層），modal body 只取 wrapper children，故新頁修改 modal 內沒有該鈕 - 與 landing 舊行為等價，非漏搬
+- landing 的 op-* 行為（快篩 / pill 選單 / tooltip 等）留在 initSubPageBehaviors 內成 inert code（tpl 已移除、selector 找不到目標），Stage 3 收斂時再清
+- 過渡性 JS 複製（room-booking-behaviors / order-modals vs landing inline 版）為計畫內重複，Stage 3 去重
+
+### 下一步
+
+1. Stage 2：拆房間預定 -> room-booking.html（直接用 room-booking-sections + room-booking-modals partials；JS 可複用 room-booking-behaviors.js，需補頁面層 產生訂單 / 加購 cart / customer-toggle 等頁面情境行為與到店方式互動 JS 模組化）
+2. Stage 3：landing 清理只剩 dashboard、殘餘共用 JS 模組化、去重
+
+### 未解問題
+
+- 新頁 aside 只有訂單處理是真實連結，其他選單項（含返回 landing 三頁）仍是無行為的 div；返回導航規則（landing.html + hash?）待 Stage 2 定義
+- 新頁 aside 的 accordion 收合 JS 尚未有（partials.js 只展開 active 分類），其他分類點擊無反應 - 1b 起既有狀態，Stage 2/3 一併處理
+
+---
+
 ## Session 83 交接 (2026-07-04)
 
 ### 任務: 1a/1b 瀏覽器驗收補齊 + Stage 1c（訂單處理 JS module）

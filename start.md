@@ -243,11 +243,23 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 - 參考實作：訂單處理頁 `.op-tooltip-trigger` 開啟 handler（preview/landing.html）
 
 ### Modal 開子 modal（巢狀 modal，強制）
-- **權重**：子 modal 必須蓋在父 modal 之上（`--z-modal-layer-2`，介於 `--z-modal` 與 `--z-popover` 之間）；父 modal 維持開啟於下層，關閉子層時 body scroll 維持鎖定（疊層感知，見 `closeModal`）
-- **實例隔離**：子 modal **不得直接調用非屬其父層情境的既有 modal instance**（例如訂單修改 modal 內不可觸發房間預定頁共用的加購/會員資料 modal），共用 instance 會造成跨情境資料混亂與維護災難
-- 做法：為父 modal 建立專屬副本（id 加情境前綴如 `orderEdit_`），觸發屬性於 build 時改寫指向副本；寫死 id 的 delegated handler 用 `closest("#父modal-id")` 分流
-- 副本注意事項：per-ID 的 CSS 要補前綴 selector 對應；`.modal-close-btn` 等關閉機制必須是 delegated（副本才有效）；內容為 JS 動態渲染的 modal 先 reset/render 再 clone
-- 參考實作：`components/order-edit-modal.md` 「巢狀 modal 規則」段
+- **權重**：子 modal 必須蓋在父 modal 之上（動態 z-index 60 + N*5，任意深度成立）；父 modal 維持開啟於下層，關閉子層時 body scroll 維持鎖定（疊層感知，見 `closeModal`）
+- **實例隔離只適用同一 document 多情境共用的舊 SPA 情境**：子 modal 不得直接調用非屬其父層情境的既有 modal instance，需建前綴副本（如 `orderEdit_`）並改寫觸發屬性；寫死 id 的 delegated handler 用 `closest("#父modal-id")` 分流；per-ID CSS 補前綴 selector；關閉機制必須 delegated；JS 動態渲染的 modal 先 reset/render 再 clone
+- **multi-page 架構（現行）不需要副本**：每頁獨立 document，共用 partial 的 modal 只有單一 instance、單一情境，直接 openModal 動態 z-index 疊層即可（Stage 1d 已依此退役 landing 的 orderEdit_ clone 機制，見 specs/page-architecture.md）
+- 參考實作：`components/order-edit-modal.md` 「巢狀 modal 規則」段、`preview/js/order-modals.js`
+
+### JS 搬移/略搬 audit（Stage 1d 教訓，強制）
+- 搬頁面或 modal 時若決定「略過」某段 JS，必須先列出該段內全部 event bindings
+  （grep `addEventListener` / `onclick` / delegated `closest` target），
+  逐一標記 disposition：搬 / 不搬（附理由：不可達或使用者同意範圍外）/ 需補
+- 「關閉」是 modal 的基本行為，永遠不在可略過範圍：原實作會關閉 modal 的任何
+  按鈕（不論走 `.modal-close-btn` 或 JS handler），搬移後行為必須等價
+- 驗證不可抽樣：每個搬過來的 modal，header 與 footer 的每一顆按鈕都要逐顆實測
+  （點了會不會關、該不該關），不能只挑一條會過的關閉路徑就回報通過
+- 機器可判定性：binding 清單可用 grep 產出，但 disposition 判斷需比對行為，
+  無法寫進 lint；此規則靠 checklist + review 執行
+- 歷史教訓：1d 略搬 arrival IIFE 未列 binding 清單，footer「確定」的 closeModal
+  被靜默丟掉，由使用者發現（Session 84）
 
 ### QA 截圖路徑
 - 截圖存到 `specs/qa-screenshots/session-{N}/`，N = 當前 session 編號（讀 `progress.md` 確認）

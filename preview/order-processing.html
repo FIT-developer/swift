@@ -23,7 +23,9 @@
     >
       <!-- Mobile top bar (page shell; desktop top row is partials/topbar.html) -->
       <div class="flex items-center justify-between md:hidden">
-        <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
         <button
           id="mobileMenuBtn"
           class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
@@ -719,13 +721,90 @@
       aria-hidden="true"
     ></div>
 
+    <!-- 共用 modal 群（房型介紹 / 訂房明細編輯 / 加購 / 訂單明細 / 簡訊 /
+         到店方式 / 會員資料 / 更換合約公司 / 庫存月曆 offcanvas），
+         async 注入，行為由 js/order-modals.js 綁定 -->
+    <div data-partial="room-booking-modals"></div>
+    <!-- 確定登出 / 帳號切換（aside 觸發，全站共用；Stage 2 抽出） -->
+    <div data-partial="session-modals"></div>
+
+    <!-- ====================================
+         訂單修改 modal (Figma 2032:81567, 一般會員版) - 觸發：狀態 pill 下拉選單「修改」。
+         Body = partials/room-booking-sections.html [A]-[E]（js/order-modals.js
+         的 buildOrderEditModalBody 於首次開啟時 fetch 注入），
+         規格 components/order-edit-modal.md。合約會員版差異只記錄於 .md，不出 HTML。
+         ==================================== -->
+    <div
+      id="modalOrderEditBackdrop"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalOrderEditTitle"
+    >
+      <div class="modal-box mx-3">
+        <!-- Header：標題 + 還原（整頁還原，行為後端實作）+ close -->
+        <div
+          class="modal-header-shadow flex h-[66px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+        >
+          <span
+            id="modalOrderEditTitle"
+            class="text-xl font-semibold text-text-default"
+            >訂單修改</span
+          >
+          <div class="flex items-center gap-4">
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 rounded-[28px] border border-border-disabled bg-[var(--color-neutral-75)] px-4 py-2.5 text-base text-text-default cursor-pointer"
+              aria-label="還原整頁資料"
+            >
+              <img src="./assets/icons/restore.svg" alt="" class="w-6 h-6" />
+              <span>還原</span>
+            </button>
+            <button
+              type="button"
+              class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+              data-modal="modalOrderEditBackdrop"
+              aria-label="關閉"
+            >
+              <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Body：room-booking [A]-[E] partial 注入點 -->
+        <div class="min-h-0 flex-1 overflow-y-auto bg-white p-3">
+          <div data-order-edit-body class="flex flex-col gap-4"></div>
+        </div>
+
+        <!-- Footer：取消 / 確定（皆 active，可編輯表單） -->
+        <div class="flex-shrink-0 flex justify-end gap-2 px-4 py-3 border-t border-border-focus">
+          <button
+            type="button"
+            class="modal-close-btn inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base cursor-pointer"
+            data-modal="modalOrderEditBackdrop"
+          >取消</button>
+          <button
+            type="button"
+            class="modal-close-btn inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer"
+            data-modal="modalOrderEditBackdrop"
+          >確定</button>
+        </div>
+      </div>
+    </div>
+
     <script type="module">
       import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
       import { initOrderProcessing } from "./js/order-processing.js";
+      import { initOrderModals } from "./js/order-modals.js";
 
       await loadPartials();
+      // page shell（Stage 2）：aside accordion / 收合全部 / mobile drawer
+      initPageShell();
       // 頁面互動（Stage 1c）：partial 就位後綁定，root = document
       initOrderProcessing(document);
+      // modal 接線（Stage 1d）：開關核心 + 訂單/簡訊/修改 + 巢狀疊層
+      initOrderModals();
 
       var pageTabsInline = document.getElementById("pageTabsInline");
       if (pageTabsInline) {

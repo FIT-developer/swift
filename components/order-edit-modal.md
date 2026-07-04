@@ -133,6 +133,14 @@ Header 內容，由左至右：
 
 ### 巢狀 modal 規則（2026-07-03 使用者要求）
 
+> **實作現況更新（2026-07-04 Stage 1d）**：本 modal 已搬到獨立頁
+> `preview/order-processing.html`（JS 在 `preview/js/order-modals.js`）。
+> 獨立 document 內每個共用 modal 只有單一 instance、單一情境，
+> orderEdit_ 副本機制整組退役；巢狀疊層直接由 openModal 動態 z-index
+> （60 + N*5）處理。以下副本段落保留為「同一 document 多情境共用」
+> 情境的歷史規則（landing SPA 時期），不再對應現行實作。
+> body 來源也由 tpl runtime clone 改為 fetch `partials/room-booking-sections.html`。
+
 - **modal 內觸發的次層 modal 一律不共用房間預定頁的 instance**，改用 `orderEdit_` 前綴的專屬副本（`ensureOrderEditModalClone()` runtime 建立，body 內 `data-modal-open` 於 build 時全數改寫；`data-data-exists-trigger` 等寫死 id 的 delegated handler 以 `closest("#modalOrderEditBackdrop")` 分流）
 - 副本層級（2026-07-04 改為動態疊層）：`openModal` 依「當下已開 modal 數 N」給 z = 60 + N*5，任意深度成立（修改 60 -> 會員資料副本 65 -> 合約公司副本 70），`closeModal` 清 inline z。`.modal-layer-2` class 保留但 z 以動態為準
 - scope 判定：副本 append 在 body、不在 `#modalOrderEditBackdrop` 內，故 delegated trigger 的分流檢查是 `closest('#modalOrderEditBackdrop, [id^="orderEdit_"]')` 兩種祖先都認（2026-07-04 修正：原本只認前者，導致會員資料副本內的「更換合約公司」開到原版壓在下層）

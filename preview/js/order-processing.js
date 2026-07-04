@@ -395,8 +395,12 @@ export function initOrderProcessing(root) {
 
   // == nation-group 國籍連動 ==
   // 訂房資料 國籍 radio -> toggle 地址結構 (taiwan vs foreign) + 國家 select
+  // data-nation-init guard：會員資料 modal 的 nation-group 由
+  // order-modals.js 自行綁定（兩邊同 guard，先跑者生效，不重複）
   (function () {
     root.querySelectorAll(".nation-group").forEach(function (group) {
+      if (group.dataset.nationInit) return;
+      group.dataset.nationInit = "1";
       function apply() {
         var checked = group.querySelector(".nation-radio:checked");
         var isForeign = checked && checked.value === "foreign";

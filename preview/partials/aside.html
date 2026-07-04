@@ -100,14 +100,14 @@
             />
           </div>
 
-          <!-- Logo -->
-          <div class="hidden md:block mb-3">
+          <!-- Logo（Stage 2：logo = 回今日總覽 landing.html，全站慣例） -->
+          <a href="./landing.html" class="hidden md:block mb-3" aria-label="回今日總覽">
             <img
               src="./assets/icons/logo.svg"
               alt="logo"
               class="w-full h-auto max-h-[80px] object-contain"
             />
-          </div>
+          </a>
 
           <div class="px-4 pb-6 md:px-0 md:pb-0">
           <!-- Account row -->
@@ -193,11 +193,13 @@
                 <div
                   class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
                 >
-                  <div
-                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  <!-- Stage 2：房間預定為獨立頁，真實連結（同 訂單處理 pattern） -->
+                  <a
+                    href="./room-booking.html"
+                    class="block py-1 px-2 text-base text-text-default no-underline cursor-pointer hover:bg-surface-hover rounded"
                   >
                     房間預定
-                  </div>
+                  </a>
                 </div>
               </div>
 
@@ -221,11 +223,15 @@
                   >
                     自動對帳紀錄查詢
                   </div>
-                  <div
-                    class="py-1 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                  <!-- Stage 1d：訂單處理為獨立頁，真實連結（不走 landing SPA）；
+                       landing 的 SPA click 綁定與 partials.js 的 active 標示
+                       selector 都以 :is(div, a) 區分處理 -->
+                  <a
+                    href="./order-processing.html"
+                    class="block py-1 px-2 text-base text-text-default no-underline cursor-pointer hover:bg-surface-hover rounded"
                   >
                     訂單處理
-                  </div>
+                  </a>
                 </div>
               </div>
 
