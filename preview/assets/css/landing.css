@@ -45,11 +45,12 @@
 .page-tab-close:hover {
   opacity: 1;
 }
-/* Menu category: parent trigger is neutral, children items are blue */
+/* Menu category: parent trigger is neutral, children items are blue.
+   Children include the Stage 1d/2 anchor links: room booking / order processing. */
 .menu-category .accordion-trigger {
   color: var(--color-text-800);
 }
-.menu-category .accordion-trigger + div > div {
+.menu-category .accordion-trigger + div > :is(div, a) {
   color: var(--color-menuitem-default);
 }
 

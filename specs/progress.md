@@ -39,16 +39,22 @@
 - Modal A/B 抽成 session-modals partial 納入 Stage 2 範圍：aside 是全站 partial，其 登出/更換帳號 觸發的 modal 不能只存在 landing（否則新頁上是死按鈕，與 Session 84 使用者連續抓到的死按鈕同類）
 - op 頁到店方式維持靜態 + 開關（使用者 Session 84 同意），不載 arrival module；rb 頁載入完整互動版
 - nation-group 統一 `data-nation-init` guard 慣例（三個 module 同 guard，先跑者生效）
+- 使用者粗測通過後裁決：Stage 3 對 aside 其餘選單項維持現況即可（landing 保留既有 placeholder SPA 頁；兩個新頁不額外新增空白 placeholder 頁），未來有對應頁面再展開。
+
+### 使用者回報修正（commit a2e0614 後）
+
+- aside 選單顏色：使用者指出 房間預定/訂單處理 兩個子項變黑（其餘子項藍）。根因：`landing.css` 的 `.menu-category .accordion-trigger + div > div`（子項藍色規則）不匹配 Stage 1d/2 改成的 `<a>`，兩個連結掉回 markup class 的深色。修正：selector 改 `> :is(div, a)`。瀏覽器驗證三態：父 rgb(69,69,69) 深、全部子項含兩個 anchor rgb(33,120,207) 藍；截圖 aside-menu-colors-fixed-1440.png
+- **分析更正**：我先前判斷「markup class 從第一天就把父/子顏色寫反」時漏看了 landing.css 這層覆蓋 - 實際渲染一直符合 dropdown-aside.md 規格（父 Neutral/800、子 MenuItem/Default）。教訓：查顏色問題必須看 computed style，不能只讀 markup class（cascade 有多層來源）
+- 遺留（Stage 3 順手項）：aside markup 的 Tailwind class 與渲染結果相反（父 text-menu / 子 text-text-default，被 landing.css 蓋掉），易誤導，收斂時應把 markup class 改正並移除覆蓋規則其一
 
 ### 下一步
 
-Stage 3：landing 清理只剩 dashboard（移除 inert 的 initSubPageBehaviors/initCalendar/op-* 綁定、modal 系統與新 module 收斂去重、page-tab chips 機制與 placeholder 頁去留待使用者裁決）、topbar function icons / compact 收折 / role filter 行為模組化、C/D/E modal 是否抽 partial 待定。
+Stage 3：landing 清理只剩 dashboard（移除 inert 的 initSubPageBehaviors/initCalendar/op-* 綁定、modal 系統與新 module 收斂去重、page-tab chips 機制依上方裁決維持現況）、topbar function icons / compact 收折 / role filter 行為模組化、C/D/E modal 是否抽 partial 待定。
 
 ### 未解問題
 
 - 新頁 topbar 三顆 function icon（公告/訊息/會員安全管理）與 foldBtn/expandBtn 收折、role filter 仍 present-unbound（target modal C/D/E 只在 landing；Stage 3 範圍）
 - landing 內大量 inert code（initSubPageBehaviors 全部 + modal 系統中 rb 專屬分支）待 Stage 3 清理；目前無害但佔 ~2500 行
-- landing 其餘選單項的 placeholder SPA 頁機制去留，待使用者於 Stage 3 裁決
 
 ---
 
