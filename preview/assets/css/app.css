@@ -1,5 +1,5 @@
 /* App CSS entrypoint - keep this file linked by every preview page.
-/* Actual styles are split by domain to keep future diffs scoped.
+   Actual styles are split by domain to keep future diffs scoped. */
 
 @import url("./shell.css");
 @import url("./dashboard.css");

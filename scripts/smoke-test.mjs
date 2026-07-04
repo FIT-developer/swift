@@ -231,6 +231,47 @@ const SHELL_CHECKS = [
   { name: "mobile drawer opens and closes", expr: "__smoke.drawerCheck()" },
 ];
 
+// app.css 是 5 個分域檔（shell/dashboard/modals/room-booking/order-processing）
+// 的 @import entrypoint。Session 90 教訓：斷頭註解（兩個 /* 沒有任何 */）會讓
+// 整份檔案含全部 @import 被吞進同一個未閉合註解，document.styleSheets 裡的
+// app.css 會是空的（cssRules.length === 0），但這個失效狀態不會拋 JS 例外、
+// 不會被既有 lint（只 regex 檢查行，不驗證 CSS 語法）攔到，三頁看起來
+// "大致正常"（多數版面由 Tailwind utility class 撐起）。
+// 此檢查直接驗證瀏覽器實際解析出的 CSSOM：app.css 至少要有 1 條規則
+// （@import 本身就是一條 CSSImportRule），且每個 @import 進來的分域檔
+// 自己也要有內容（cssRules.length > 0），兩者缺一都判定失敗。
+const APP_CSS_LOADED_CHECK = {
+  name: "app.css @import chain actually parses (all domain CSS loaded)",
+  expr: `
+    (function () {
+      var sheet = Array.from(document.styleSheets).find(function (s) {
+        return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
+      });
+      if (!sheet) return "app.css not found in document.styleSheets";
+      var rules;
+      try {
+        rules = Array.from(sheet.cssRules);
+      } catch (e) {
+        return "app.css cssRules unreadable: " + e.message;
+      }
+      if (!rules.length) return "app.css has 0 rules (unterminated comment or empty file?)";
+      var imports = rules.filter(function (r) { return r.type === CSSRule.IMPORT_RULE; });
+      if (!imports.length) return "app.css has rules but no @import (expected domain CSS split)";
+      var empty = imports.filter(function (r) {
+        try {
+          return !r.styleSheet || !r.styleSheet.cssRules || r.styleSheet.cssRules.length === 0;
+        } catch (e) {
+          return true;
+        }
+      });
+      if (empty.length) {
+        return "empty imported stylesheet(s): " + empty.map(function (r) { return r.href; }).join(", ");
+      }
+      return true;
+    })()
+  `,
+};
+
 const PAGES = [
   {
     file: "landing.html",
@@ -242,6 +283,7 @@ const PAGES = [
       !!Chart.getChart(document.getElementById("chartBar"))
     `,
     checks: [
+      APP_CSS_LOADED_CHECK,
       {
         name: "4 charts instantiated with data",
         expr: `
@@ -282,6 +324,7 @@ const PAGES = [
       !!document.getElementById("modalOrderSummaryBackdrop")
     `,
     checks: [
+      APP_CSS_LOADED_CHECK,
       {
         name: "order list rendered (op-status-pill rows)",
         expr: `document.querySelectorAll(".op-status-pill").length > 0 || "no .op-status-pill rows"`,
@@ -307,6 +350,7 @@ const PAGES = [
       document.querySelectorAll("#calGrid .day").length >= 42
     `,
     checks: [
+      APP_CSS_LOADED_CHECK,
       {
         name: "[A] calendar renders 42 day cells",
         expr: `document.querySelectorAll("#calGrid .day").length >= 42 || "calendar cells: " + document.querySelectorAll("#calGrid .day").length`,

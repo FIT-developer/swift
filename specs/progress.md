@@ -7,6 +7,80 @@
 
 ---
 
+## Session 91 交接 (2026-07-04)
+
+### 任務: 修復 Session 90 app.css 斷頭註解回歸 + 補 smoke test 防線
+
+使用者要求分析 Session 90 完成度與優缺點；分析過程中發現嚴重 bug（見下），
+使用者確認後修復並補上機器可判定的回歸檢查。
+
+### 發現的問題
+
+`preview/assets/css/app.css`（Session 90 e53d08f 產出的 8 行 entrypoint）
+頭兩行各自開了 `/*` 卻整份檔案沒有任何 `*/`：
+
+```css
+/* App CSS entrypoint - keep this file linked by every preview page.
+/* Actual styles are split by domain to keep future diffs scoped.
+```
+
+CSS 註解不巢狀，第一行沒關閉導致從檔首到檔尾（含全部 5 個 `@import`）都被
+吞進同一個未閉合註解。瀏覽器實測 `document.styleSheets` 顯示 app.css
+`cssRules.length === 0` - `shell.css`/`dashboard.css`/`modals.css`/
+`room-booking.css`/`order-processing.css` 五個分域檔全部沒有載入，三頁皆同。
+
+視覺上 landing dashboard 乍看正常（多數版面是 Tailwind utility class），但
+room-booking 日曆整個沒有格線佈局（純文字堆疊）、modal 沒有置中與 backdrop
+遮罩。截圖：`specs/qa-screenshots/session-90/app-css-broken-*.png`（壞掉）
+與 `app-css-fixed-*.png`（修復後對照）。
+
+**為什麼所有既有驗證都沒攔到**：`lint-conventions.sh` 只 regex 檢查逐行
+pattern，不驗證 CSS 語法／註解是否閉合；`smoke-test.mjs` 只檢查 JS 驅動的
+state（console 錯誤、chart 資料、classList 開關），modal 的
+`classList.add("open")` 不依賴 CSS 有沒有載入，測不出視覺回歸；Session 90
+自己的「文字內容比對」（舊 app.css vs 新 5 檔合併）只證明搬移沒漏內容，
+沒驗證 entrypoint 實際上有沒有成功 import 進去 - 這是這次才補上的驗證缺口。
+
+### 本輪改動
+
+1. `preview/assets/css/app.css`：頭兩行合併成一個正確閉合的多行註解。
+2. `scripts/smoke-test.mjs`：新增 `APP_CSS_LOADED_CHECK`（前置到三頁
+   checks 陣列最前面）。直接讀瀏覽器解析出的 CSSOM：app.css 至少要有
+   1 條規則（`@import` 本身是一條 `CSSImportRule`），且每個 `@import`
+   進來的分域檔案自己的 `cssRules.length > 0`；兩者缺一即 FAIL 並印出
+   哪個 stylesheet 是空的。
+
+### 驗證
+
+- 負向測試：把 app.css 還原成斷頭註解版本重跑 smoke test，三頁皆準確
+  FAIL 在新檢查項（`app.css has 0 rules`），確認新檢查真的抓得到這個
+  bug，不是虛設
+- 修復後：4 個 lint 全 pass、smoke test 三頁 PASS（11/9/10 checks，比
+  Session 90 版多了新的 CSS 檢查項）、`git diff --check` pass
+- 瀏覽器截圖確認 room-booking 日曆格線與 modal 置中/backdrop 皆恢復正常
+
+### 重要決定
+
+- 這個 bug 屬於「site-wide 視覺回歸但所有既有機器化驗證都測不出來」的
+  類型，值得記一筆：純文字/宣告集合比對（source diff）不能替代「實際在
+  瀏覽器解析後 CSSOM 有沒有東西」這一步；往後改動 CSS entrypoint / 拆檔 /
+  改 `@import` 結構時，跑 smoke test 就會連帶測到這層
+- Session 90 的 progress.md 交接寫「本輪未 commit / 未 push」但實際上已
+  commit（`e53d08f`）；這次沒有另外修正該筆歷史記錄（歷史 session 段落
+  維持原文，不回頭改），只在這裡點名這個落差供後續參考
+
+### 下一步
+
+- 使用者驗收本輪修復（截圖已附，日曆與 modal 視覺應與 Session 89 之前
+  等價）
+- 驗收後依指示 commit / push
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 90 交接 (2026-07-04)
 
 ### 任務: app.css 分域拆分與 demo data 決策
