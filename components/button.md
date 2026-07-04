@@ -59,7 +59,8 @@ Texts（base），16px Regular，顏色依狀態
 <button class="rb-pay-chip rb-pay-active">轉帳</button>  <!-- active 黃 -->
 ```
 
-CSS 對照 `preview/landing.html` `.rb-pay-chip` / `.rb-pay-chip.rb-pay-active`。
+CSS 對照 `preview/assets/css/app.css` 的 `.rb-pay-chip` /
+`.rb-pay-chip.rb-pay-active`。
 
 ---
 

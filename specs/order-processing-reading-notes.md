@@ -233,7 +233,7 @@ Section (1440x1542)
 
 | 讀取 1 疑點 # | 結論（截圖 + 局部放大裁切驗證） |
 |---|---|
-| 1（頂部兩個 chip `訂單處理`/`xxoo`） | 是**分頁 tab chip**（可各自關閉 X），目前 active 分頁是「訂單處理」（藍色外框高亮），`xxoo` 是另一個開啟中分頁的佔位標籤（設計稿假資料，非真實頁面名稱）。同排左邊是 logo + 帳號名 `xiaomi999` + 登出 icon + 切換帳號 icon + **側欄收合/展開 toggle icon**（就是它控制讀取1 default ↔ 讀取2 extend 兩態切換）。**已確認（2026-07-03，Spec checkpoint）**：這個分頁 tab 功能**已經實作好了**，不是這次要新做的東西——`preview/landing.html` 既有 `#pageTabsInline` / `.page-tab` / `.page-tab-close` / `.active` 就是這套實作，訂單處理頁沿用既有機制即可，不需要重新設計。`xxoo` 是 Figma 佔位假字（見 memory `feedback_figma_placeholder_text_conventions`），正式環境不會出現這個字串。 |
+| 1（頂部兩個 chip `訂單處理`/`xxoo`） | 是**分頁 tab chip**（Figma 顯示可關閉 X 的多開 tab 語意），目前 active 分頁是「訂單處理」，`xxoo` 是另一個開啟中分頁的佔位標籤（設計稿假資料，非真實頁面名稱）。同排左邊是 logo + 帳號名 `xiaomi999` + 登出 icon + 切換帳號 icon + 側欄收合/展開 toggle icon。**current implementation note（2026-07-04）**：demo 已降級為單頁導航提示，由 `partials/topbar.html` + 頁面 module 渲染目前頁 chip；不沿用舊 SPA 的多開與 close chip 語意。 |
 | 3（兩個一樣的日期 input） | 是**日期區間**（起 - 迄），非重複讀取錯誤。下方另有 4 個快速區間按鈕：`< 今日 >` `< 本週 >` `< 本月 >` `< 今年 >`（每個都有左右箭頭，可上一/下一區間切換） |
 | 4（`訂金` 控制元件） | 是 **toggle switch**（開關），非 select，預設關閉態 |
 | 5（`專案` 區塊 `所有專案` 文字） | `專案` label 右側的灰色小字 `所有專案` 是**目前套用範圍的提示文字**（非 badge 數字），同一行右側是 toggle switch（預設關閉態） |

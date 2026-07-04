@@ -7,6 +7,49 @@
 
 ---
 
+## Session 89 交接 (2026-07-04)
+
+### 任務: Session 87-88 後的規格去舊架構誤導
+
+使用者要求檢查 `start.md` 與相關 `.md` 是否仍寫舊架構，避免下一輪 AI
+agent 誤把已退役的 landing SPA / placeholder / landing.css 規則當 current
+source。
+
+### 本輪改動
+
+1. `start.md`：頁面架構改成 `landing.html = dashboard-only`；房間預定與
+   訂單處理明確為獨立頁；專案結構補 `app.css`；tooltip 參考實作改指
+   `preview/js/order-processing.js`；巢狀 modal 規則標明 `orderEdit_` clone
+   為舊 SPA 歷史做法；HTML 驗證來源改為 `components/` + `specs/pages/`，
+   `sections/` / `layouts/` 只作 frozen-reference。
+2. `specs/page-architecture.md`：導航與遷移策略改為 current；aside 未拆頁項目
+   明確維持 inactive、不開 placeholder、不新增空白頁；Stage 4 產出改標
+   Session 88；Stage 0-4 表格改為 landed/self-tested；Stage 1 細節改標歷史
+   執行要點，不作 current 指令。
+3. `components/modal.md`、`components/order-condition.md`、
+   `components/order-edit-modal.md`、`components/button.md`、
+   `components/title.md`、`components/arrival-method-modal.md`、
+   `specs/pages/order-processing.md`、`specs/html-conventions.md`、
+   `specs/order-processing-reading-notes.md`：把仍指向 `preview/landing.html`
+   或舊 SPA tab 的現在式文案改成 current partial / ES module / app.css 來源；
+   移除容易和 inline style 禁令混淆的「inline 價」說法。
+
+### 驗證
+
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-tokens.sh` exit 0（token mirror ok）
+- `./scripts/lint-partials.sh` exit 0（3 pages, 3 standalone）
+- `git diff --check` exit 0
+
+### 待你驗收
+
+- 本輪只改文件與規格，不改 preview runtime。
+- 2026-05 的歷史 audit 檔仍保留原文；它們不是 current source。
+- 本輪未 commit / 未 push。
+
+---
+
 ## Session 88 交接 (2026-07-04)
 
 ### 任務: order-modals.js 拆小（Stage 4，Session 87 排定的第 6 項）

@@ -183,7 +183,8 @@ Modal (320×277px)
 
 **Figma Node ID**：`1272:27245`
 **尺寸**：560×390px
-**使用位置**：`preview/landing.html` 的 room-booking template，訂房明細表「房型」欄位旁的 `icons/info`。
+**使用位置**：`preview/partials/room-booking-modals.html`；由 `room-booking.html`
+的訂房明細表「房型」欄位，以及訂單修改 modal 注入的共用 [A]-[E] body 觸發。
 
 ```
 Modal (560×390px)
@@ -243,7 +244,8 @@ Modal (560×390px)
 
 ## state=room booking edit（訂房明細編輯）
 
-**使用位置**：`preview/landing.html` 的 room-booking template，訂房明細表「操作」欄位的 `icons/edit`。
+**使用位置**：`preview/partials/room-booking-modals.html`；由 `room-booking.html`
+與訂單修改 modal 內共用的訂房明細表「操作」欄位 `icons/edit` 觸發。
 **觸發**：點擊 `edit.svg` icon 開啟。
 **Figma 讀取日期**：2026-05-05。
 
@@ -280,7 +282,7 @@ Modal (0527 reference: 646×724 desktop, 1774:66050)
     └── 確定
 ```
 
-> **0527 重大變更**：原本中段「Controller - date」（入住日 calendar + 退房日 calendar + 訂房間數 stepper + 已達最低/上限間數 hint）整段**永久移除**。modal 從 metadata chips 直接接 Price table，省去日期挑選與數量調整。 Figma 標的高度從 1004 縮為 724（差 280，正好是被移除段落的視覺高度）。preview/landing.html `modalRoomEdit` 內 `Date controller` (`px-3 py-4`) 與 `訂房間數 stepper` 兩 block 須一併拿掉；對應 JS（`data-room-edit-step`, `data-room-edit-quantity`, `data-room-edit-quantity-hint`, calendar 初始化）也跟著清。
+> **0527 重大變更**：原本中段「Controller - date」（入住日 calendar + 退房日 calendar + 訂房間數 stepper + 已達最低/上限間數 hint）整段**永久移除**。modal 從 metadata chips 直接接 Price table，省去日期挑選與數量調整。 Figma 標的高度從 1004 縮為 724（差 280，正好是被移除段落的視覺高度）。現行 `preview/partials/room-booking-modals.html` 的 `modalRoomEdit` 不得再放回 `Date controller` (`px-3 py-4`) 與 `訂房間數 stepper` 兩 block；對應 JS（`data-room-edit-step`, `data-room-edit-quantity`, `data-room-edit-quantity-hint`, calendar 初始化）也不應恢復。
 
 ### 固定文字內容
 
@@ -344,7 +346,9 @@ Modal (0527 reference: 646×724 desktop, 1774:66050)
 
 ## state=purchase add-on（加購項目）
 
-**使用位置**：`preview/landing.html` 的 room-booking template，訂房明細表「加購」欄位的 `icons/purchase-item`。
+**使用位置**：`preview/partials/room-booking-modals.html`；由 `room-booking.html`
+與訂單修改 modal 內共用的訂房明細表「加購」欄位 `icons/purchase-item` 觸發，
+行為在 `preview/js/purchase-addon-modal.js`。
 **觸發**：點擊 `purchase-item.svg` icon 開啟。
 **Figma 讀取日期**：2026-05-06。
 
@@ -491,7 +495,8 @@ Modal
 
 ## state=order summary（訂單內容 / 訂單明細）
 
-**使用位置**：`preview/landing.html` 的 room-booking template，點擊 `產生訂單` 按鈕開啟。
+**使用位置**：`preview/partials/room-booking-modals.html`；由 `room-booking.html`
+的 `產生訂單` 按鈕與 `order-processing.html` 狀態 pill 選單的「訂單」動作開啟。
 **Figma 讀取日期**：2026-05-25（current source `1722:40127`，覆蓋早期 2026-05-06 contract）。
 **目前 implementation 範圍**：3 個 variant (unpaid / paid / waitlist) 共用同一個 modal layout，pill + 基本資訊狀態文字由 `setOrderSummaryVariant` 切換；layout 來源為 `1722:40127`。
 
@@ -502,7 +507,7 @@ Modal
 | 移除 sections | `付款與帳戶` / `轉正式單` / `飯店資料` / `訂房須知` | 全數移除；付款金額類欄位併入 `基本資訊` |
 | 訂房與入住人資訊 | 含 Email | 移除 Email，欄位順序：姓名 / ID / 電話 / 生日 / 性別 / 地址 / 手機 |
 | 加購明細 + 訂單總額 | 既有 inline-row 並排（保留） | 同舊規 |
-| Transfer (`轉正式單`) JS | `setOrderSummaryTransferPay` + chip 切換 fields | 已從 `preview/landing.html` 移除 |
+| Transfer (`轉正式單`) JS | `setOrderSummaryTransferPay` + chip 切換 fields | 已從現行實作移除 |
 | 列印日期 | hardcode `2026-04-26 14：49` | 沿用（將來由後端填入） |
 
 ### Figma 狀態來源
@@ -610,7 +615,8 @@ Modal (1019px wide reference)
 
 ## state=sms / order summary（簡訊）
 
-**使用位置**：`preview/landing.html` 的 order summary modal header action `簡訊`。
+**使用位置**：`preview/partials/room-booking-modals.html`；由訂單明細 modal header
+action `簡訊` 與 `order-processing.html` 狀態 pill 選單的「簡訊」動作開啟。
 **Figma 讀取日期**：2026-05-07。
 **Figma source**：selected node `1436:43555`，648×1161px，main component `73:626 / state=has content`。
 

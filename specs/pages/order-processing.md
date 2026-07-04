@@ -53,7 +53,7 @@ floatIcons/ai（浮動客服，全站共用）
 
 | 元素 | 規則 |
 |---|---|
-| 分頁 tab chip（`訂單處理` / 可另開多個） | **已有既有實作**，不是新功能 - `preview/landing.html` 既有 `#pageTabsInline` / `.page-tab` / `.page-tab-close` / `.active`，訂單處理頁沿用既有機制即可 |
+| 分頁 tab chip（`訂單處理`） | 現行 demo 降級為單頁導航提示：`partials/topbar.html` 提供 `#pageTabsInline` 容器，`preview/js/order-processing.js` 渲染目前頁 chip；不重現舊 SPA 的多開與 close chip 語意 |
 | function icons（bulletin/message/person/system，4 個 + badge） | 沿用全站頂部功能列既有元件，需 cross-check `components/function-icons.md` 是否完全一致（未定義，待驗證） |
 | 側欄收合 icon | 控制 aside menu 展開/收合兩態；icon 正式命名需對照 `specs/icons.md`（未定義） |
 | Mobile/tablet | 只顯示 logo + 側欄收合 icon。**已確認（2026-07-03）**：分頁 chip 與 function icons 在此斷點**本來就不屬於這個斷點的設計**，不是「隱藏」也不是「移除」- 進入 mobile ~ tablet 斷點時這兩組元素本來就不會出現，不需要用 CSS 做顯示/隱藏切換，直接在該斷點的 markup/breakpoint 樣式裡不渲染即可 |

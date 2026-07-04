@@ -94,7 +94,7 @@ Figma source：同一 `COMPONENT_SET Title` (`43:328`)，2026-05-27 重讀後 va
 | 2 | `type=button-original` | `1646:91813` | 152 x 51 | `#ffffff` | `#d1d1d1` | idle pill button（icon 黑、字 `#454545`）|
 | 3 | `type=button-has-value` | `1645:91032` | 152 x 51 | `Color/Accent/cart-button-active` (`#00c8b3`) 綠 | - | 綠 pill + 橙 badge「16」+ 上方浮動 Tooltip `$ ...` |
 | 4 | `type=button-has-value-none-selected` | `1648:100878` | 152 x 51 | `#ffffff` | `#d1d1d1` | 白 pill + 橙 badge + Tooltip（同 #3 但白底）|
-| 5 | `type=button-has-value-none-selected-calcY` | `1682:34755` | 268 x 51 | `#ffffff` | `#d1d1d1` | 白 pill + **藍** badge + **inline 價** `$ 199,299,399`（替代 Tooltip）|
+| 5 | `type=button-has-value-none-selected-calcY` | `1682:34755` | 268 x 51 | `#ffffff` | `#d1d1d1` | 白 pill + **藍** badge + **直接顯示價格** `$ 199,299,399`（替代 Tooltip）|
 | 6 | `type=button-has-value-none-selected-calcY-thumb` | `1786:54818` | 288 x 51 | `#ffffff` | `#d1d1d1` | 同 #5 + badge 內加 `icons/pin` |
 | 7 | `type=button-has-value-selected-calcY-thumb` | `1786:54867` | 288 x 51 | `#f7d275` 黃 | `#d1d1d1` | 同 #6，pill bg 換成黃（selected 態）|
 | 8 | `type=button-has-value-selected-calcY` | `1682:41209` | 268 x 51 | `#f7d275` 黃 | `#d1d1d1` | 同 #5，pill bg 換成黃（selected 態）|
@@ -135,7 +135,7 @@ Figma source：同一 `COMPONENT_SET Title` (`43:328`)，2026-05-27 重讀後 va
 | 文字 | Texts base 16px `#ffffff`，範例 `$ 100,999,555` |
 | 尾巴 | Polygon 1 `#4f4f4f`，位於 tooltip 底部偏右（x:68.53 y:30.25，9.53x8.25）|
 
-> **calcY 系列（#5-8）改用 inline 價**：tooltip 從上方收回，pill 右側直接顯示 Texts base `$ 199,299,399`（`#454545`），同高度水平排列。
+> **calcY 系列（#5-8）改用直接顯示價格**：tooltip 從上方收回，pill 右側直接顯示 Texts base `$ 199,299,399`（`#454545`），同高度水平排列。
 
 ### Variant 軸總結
 
@@ -145,15 +145,15 @@ type=button-{active|original}                   （pill，無 value）
 type=button-has-value[-none-selected][-calcY][-thumb]
 - has-value = 有 badge
 - none-selected = 白底（#4-8）
-- calcY = 用 inline 價代替 Tooltip
+- calcY = 用直接顯示價格代替 Tooltip
 - thumb = badge 內加 icons/pin（地理位置標記？）
 - 無 none-selected = 綠底（#3）
 - selected = 黃底 `#f7d275`（#7, #8）
 ```
 
-### 0527 使用情境（待對位 preview/landing.html）
+### 0527 使用情境（current implementation mapping）
 
-- 「加購明細」trigger（preview 既有 cart pill button）-> 對應 variant `button-original`（idle）/ `button-has-value-none-selected-calcY` 或 `-thumb`（有商品 + 顯示總額）/ `button-has-value-selected-calcY*`（user 點開後 selected 態）
+- 「加購明細」trigger（room-booking / order-edit shared cart pill button）-> 對應 variant `button-original`（idle）/ `button-has-value-none-selected-calcY` 或 `-thumb`（有商品 + 顯示總額）/ `button-has-value-selected-calcY*`（user 點開後 selected 態）
 - 「系統操作」trigger（pending；preview 未實裝）-> 對應 variant 1-4
 - icon 永遠是 `icons/cart`，文字隨 trigger 用途 swap
 

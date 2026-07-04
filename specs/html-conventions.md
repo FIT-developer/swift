@@ -224,6 +224,6 @@
 ### Modal-scoped IIFE delegation pattern
 - Modal markup 放 `<body>` level（不在 `#tpl-room-booking` 內），listener 在 script load 時 `document.getElementById(modalId)` 找到後直接掛
 - 若 trigger button 在 template 內（會被 cloned）：用 `document.addEventListener("click", e => { var btn = e.target.closest("[data-...]"); ... })` event delegation，**不要** `querySelectorAll().forEach()` 預掛
-- 來源：`landing.html:6520` Data exists button + member-data modal handler
+- 來源：`preview/js/member-data-modal.js` 的 Data exists button / member-data modal handler
 
 > 以上「元件 conventions」「可復用 UI patterns」兩段 2026-07-04 自 start.md 移入（B3 瘦身）；新增 pattern 一律登記於本檔。

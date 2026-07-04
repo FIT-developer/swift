@@ -2,7 +2,7 @@
 
 > 元件定義 841:18596（COMPONENT_SET）。  
 > ⚠️ 頁面上 Section [C] 是此元件的展開版實例（3 欄、1076px），此 spec 描述元件本體的緊湊單欄版本。  
-> **展開版（用於 landing.html [C] 區）的完整規格在本檔最下方「Section [C] 展開版」**。
+> **展開版（用於房間預定共用 [C] 區）的完整規格在本檔最下方「Section [C] 展開版」**。
 
 ---
 
@@ -144,7 +144,7 @@ Row 格式：label（Texts 100×22，left）+ 數值（Texts right-aligned，@ x
 
 ---
 
-## Section [C] 展開版（landing.html 實際使用） — `1449:25447`
+## Section [C] 展開版（room-booking / order-edit shared section） - `1449:25447`
 
 > 來源：Figma `Order condition` 單一元件 instance，房間預定 sub-page [C] 區。  
 > 與緊湊版差異：3 欄佈局、欄位更多（人數 / 到店方式 / 發票 / 統編 / 抬頭 / 繳款期限 / 折扣 / 總房價 / 加購併單 / 預付百分比 / 預付 / 訂單備註 / 需求備註）。

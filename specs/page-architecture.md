@@ -2,7 +2,7 @@
 
 > 制定日：2026-07-03（Session 76 結構體檢 B1 項）
 > 背景：公司要求原生技術（無框架），但「原生」不等於「單檔」。
-> landing.html 已達 11583 行（91 個 modal id、~3800 行 JS），單檔全域 id
+> landing.html 曾達 11583 行（91 個 modal id、~3800 行 JS），單檔全域 id
 > 命名空間是巢狀 modal orderEdit_ clone 那整套工程債的根因。
 > 本規範凍結單檔增量，新頁面改走 multi-page 架構。
 
@@ -128,28 +128,26 @@ preview/
 | dayjs@1 + isoWeek plugin | - | v | v | [A] 庫存/訂房 calendar 與 simple-calendar 日期運算（`js/room-booking-behaviors.js`，op 頁由訂單修改 modal body 使用） |
 | swiper@12（JS + CSS） | - | - | v | 到店方式接送卡片 swiper（`js/arrival-method-modal.js`，只在 rb 頁載入） |
 
-## 導航（open question，見下）
+## 導航（current）
 
-- landing.html 內部三頁（dashboard/房間預定/訂單處理）維持既有 SPA tab 機制
-- aside 選單指向新頁面的項目用一般 `<a href="{page}.html">`
-- 新頁面 aside 指回舊三頁：連結 `landing.html`（可帶 hash 指定開哪頁，
-  待實作時定義）
+- `landing.html` 只代表今日總覽 dashboard；logo 一律連回 `landing.html`
+- aside 已有真實頁面的項目用一般 `<a href="{page}.html">`：
+  `房間預定` -> `room-booking.html`，`訂單處理` -> `order-processing.html`
+- aside 其餘尚未拆頁項目維持 inactive markup，不開 placeholder，不新增空白頁；
+  未來有真實頁面時再改成真實連結
+- topbar page chip 在 demo 中降級為目前頁面的導航提示；不重現舊 SPA 的多開
+  tab / close chip 語意
 
-## 遷移策略
+## 遷移策略（current）
 
-- **存量不遷移**：landing.html 的三頁不搬出來（全頁 regression 成本 >
-  收益，audit D1 結論）
-- ~~open question：aside 雙份 vs 單份~~ -> **已裁決（2026-07-03，使用者
-  選單一事實來源）並完成實作**：
-  - `partials/aside.html`：全站唯一的 aside（668 行，自 landing.html 抽出），
-    純 markup 不含 script，選單變動只改這一份
-  - **所有頁面用 `js/partials.js` 的 async `loadPartials()`**：掃描
-    `[data-partial]` 注入，完成後標 aside active 態（依
-    `body[data-page]`）並 dispatch `partials:loaded`
-  - 回歸驗證（2026-07-03）：選單導航、accordion 收合、收合全部、
-    mobile drawer 開關、backdrop 關閉，全數通過
-- `js/tailwind-config.js` 於下一個新頁面實作時建立（目前只有 landing
-  一頁，無共用需求）
+- landing 已拆成 dashboard-only；房間預定與訂單處理為獨立頁
+- `partials/aside.html` 是全站唯一 aside，純 markup 不含 script；選單變動只改
+  這一份，active 狀態由 `partials.js` 依 `body[data-page]` 標示
+- `partials/topbar.html`、`partials/session-modals.html` 與
+  `partials/room-booking-modals.html` 是目前共用 partial；partial 內不放
+  script，行為由頁面 module 初始化
+- `js/tailwind-config.js`、`js/page-shell.js`、`js/partials.js` 為跨頁基礎
+  module；新增頁面必須同步登記 `scripts/lint-partials.py` 的 MANIFEST
 
 ## 對後端的意義
 
@@ -158,7 +156,7 @@ partial、模組化 JS。比 11583 行單檔更接近他們要重寫的形狀。
 
 ---
 
-## landing.html 拆頁重構計畫（2026-07-04 使用者核准，依序執行）
+## landing.html 拆頁重構紀錄（2026-07-04 使用者核准，Stage 0-4 landed/self-tested）
 
 背景：audit 時「存量不動」的前提已變 - partials 基礎設施已存在、repo 確定持續增長、
 拆頁後 orderEdit_ runtime clone 那整套防碰撞機制可整組退役（每頁獨立 document）。
@@ -174,17 +172,17 @@ partial、模組化 JS。比 11583 行單檔更接近他們要重寫的形狀。
   （房間預定當頁面內容、訂單修改 modal 當 body，兩處共用）
 - 共用 modal 各自成 partial；共用 JS 收進 js/ ES modules
 
-**分階段（每 stage 交接進 progress.md；commit/push 一律等使用者明確指示，不自動執行）**：
+**分階段紀錄（commit/push 一律等使用者明確指示，不自動執行）**：
 
 | Stage | 內容 | 狀態 |
 |---|---|---|
-| 0 | 決策 + 本計畫 + js/tailwind-config.js 抽出 | 完成（2026-07-04） |
-| 1 | 拆訂單處理（細分 1a-1d，見下方執行要點） | 完成（2026-07-04，Session 81-84） |
-| 2 | 拆房間預定 -> room-booking.html（改用同一份 [A]-[E] partial） | 完成（2026-07-04，Session 85） |
-| 3 | landing 清理只剩 dashboard；topbar/aside 行為模組化；殘餘共用 JS 去重 | 完成（2026-07-04，Session 86） |
-| 4 | order-modals.js 拆小（非計畫原始項，Session 87 使用者追加的基建改善） | self-tested（2026-07-04） |
+| 0 | 決策 + 本計畫 + js/tailwind-config.js 抽出 | landed（2026-07-04） |
+| 1 | 拆訂單處理（細分 1a-1d，見下方歷史執行要點） | landed（2026-07-04，Session 81-84） |
+| 2 | 拆房間預定 -> room-booking.html（改用同一份 [A]-[E] partial） | landed（2026-07-04，Session 85） |
+| 3 | landing 清理只剩 dashboard；topbar/aside 行為模組化；殘餘共用 JS 去重 | landed（2026-07-04，Session 86） |
+| 4 | order-modals.js 拆小（非計畫原始項，Session 87 使用者追加的基建改善） | self-tested（2026-07-04，Session 88） |
 
-Stage 4 產出（Session 87）：order-modals.js（1314 行）拆成 4 個職責 module +
+Stage 4 產出（Session 88；Session 87 排定）：order-modals.js（1314 行）拆成 4 個職責 module +
 orchestrator：
 - js/order-edit-modal.js：訂單修改 body 注入（fetch partial + 4 項差異 +
   initRoomBookingBehaviors）
@@ -216,7 +214,10 @@ Stage 1 產出（Session 84 收尾）：
 - 到店方式 modal 在新頁為靜態 + 開關（等價舊副本保真）；其互動 JS 與
   頁面層行為（產生訂單 / customer-toggle 等）屬 Stage 2 範圍
 
-**Stage 1 細分為 4 個可驗收小段（2026-07-04 使用者定案）**：
+**Stage 1 歷史執行要點（2026-07-04 使用者定案）**：
+
+以下保留為拆頁過程記錄，不是現行架構指令；現行狀態以上方 current 段落與
+Stage 1-4 產出為準。
 
 **1a - 抽共用內容，先不拆訂單頁（historical stage note）**
 - 建 partials/room-booking-sections.html：自 tpl-room-booking 的 wrapper 抽 [A]-[E] 4 區塊
@@ -224,16 +225,16 @@ Stage 1 產出（Session 84 收尾）：
   innerHTML clone 與訂單修改 modal 的 build 照舊運作，**對外行為零變化**
 - 目的：最大重複源先變單一來源
 
-**1b - 建 order-processing.html 靜態頁**
+**1b - 建 order-processing.html 靜態頁（historical stage note）**
 - 頁內容自 tpl-order-processing 搬出；用 partials/aside.html + js/tailwind-config.js
 - **topbar 同步抽成 partials/topbar.html**（避免先複製後搬移）：partial 只含容器
   markup（含 #pageTabsInline 容器），chips 內容由各頁 JS 自行渲染 -
   landing 照舊動態 render、新頁 render 靜態導航 chip，單一 partial、行為分頁
 - 驗收標準：頁面獨立載入、顯示、RWD 不爆版（先不含互動）
-- **過渡期規則**：新頁是訂單處理的 source of truth，landing 內的 tpl-order-processing
-  凍結待刪（1d 清），不可兩邊都改
-- aside 的「訂單處理」連結**先不改** href（改了會斷 landing 的 SPA 入口），
-  1b/1c 期間新頁以網址直接訪問，1d 才切換
+- **當時過渡期規則**：新頁是訂單處理的 source of truth，landing 內的
+  tpl-order-processing 凍結待刪；1d/Stage 3 已移除
+- 當時 aside 的「訂單處理」連結先不改 href，1d 才切真實連結；現行已是
+  `order-processing.html`
 
 **1c - 抽訂單處理 JS module（historical stage note）**
 - 建 js/order-processing.js（頁面 module）：op-* 行為（pill menu、filter tabs、
@@ -243,7 +244,7 @@ Stage 1 產出（Session 84 收尾）：
   過渡性重複，Stage 3 已收斂（此重複為計畫內，不是 drift）
 - 不引用 landing 的整包 script
 
-**1d - 搬 modal 並退役 clone 機制**
+**1d - 搬 modal 並退役 clone 機制（historical stage note）**
 - 訂單修改 modal 外殼 + 該頁所需 modal（訂單明細/簡訊/加購/會員資料/合約公司/
   房型/到店/月曆 offcanvas）搬到新頁或 partial
 - 訂單修改 body 直接用 partials/room-booking-sections.html

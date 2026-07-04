@@ -37,6 +37,7 @@ Figma/
     - images/: 靜態圖檔 (如 QR Code)
     - css/
       - base.css: 全域樣式 (Scrollbar, Tailwind Reset 等)
+      - app.css: 跨頁共用元件與頁面樣式
 
 ---
 
@@ -121,8 +122,9 @@ tokens -> icons -> components -> specs/pages -> 實作
 - 一次實作不超過一個 section
 
 **頁面架構（2026-07-03 起強制，詳見 specs/page-architecture.md）**:
-- **landing.html 凍結**：不再新增頁面 template、modal、大段 JS；既有三頁
-  （dashboard/房間預定/訂單處理）只接受 bug 修正與使用者指名的調整
+- **landing.html = dashboard-only**：只承載今日總覽；不再新增頁面 template、
+  modal、大段 JS。房間預定與訂單處理已拆成獨立頁，後續頁面也一律獨立
+  html
 - 新頁面一律獨立 html 檔 + `partials/` 共用區塊 + `js/` 原生 ES modules
   （公司要求「原生」；原生不等於單檔，ES modules 與 fetch partial 都是
   瀏覽器原生能力，已實測與 Tailwind Play CDN 相容）
@@ -181,7 +183,9 @@ tokens -> icons -> components -> specs/pages -> 實作
 - 避免圖片內嵌文字,文字應該是真實的 DOM 節點
 
 ## 產出驗證 (每個 HTML 產出後必做)
-產出 HTML 後,AI agent / Codex 必須對照對應的規格檔 (components/sections/layouts 下的 .md) 執行自我檢查
+產出 HTML 後,AI agent / Codex 必須對照對應的現行規格檔
+(`components/` 與 `specs/pages/` 下的 .md；`sections/` 與 `layouts/` 只作
+frozen-reference) 執行自我檢查
 並在對話中用 checklist 形式報告結果:
 - [ ] **Token 檢查**: 所有顏色/間距/圓角都引用 tokens.md 的 token 名稱,沒有寫死 hex 或任意數值
 - [ ] **Icon 檢查**: 所有 icon 都從 `preview/assets/icons/` 引用,沒有自己畫 SVG 或用其他 icon library
@@ -241,11 +245,11 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 - tooltip / popover 內容**必須完整顯示在螢幕內，不可超出任何一邊的螢幕邊緣**（手機版尤其必現：trigger 靠右 + 固定寬 panel）
 - 固定錨點（如 `absolute left-0`）+ 固定寬度的 panel 一律在**開啟時量測夾取**：超出視窗就平移回可視範圍（左右各留 12px 邊距），每次開啟重算
 - 夾取基準用 `document.documentElement.clientWidth`，**不可用 `window.innerWidth`**：emulated/真機 mobile 下 innerWidth 會跟著 content overflow 浮動，不可靠
-- 參考實作：訂單處理頁 `.op-tooltip-trigger` 開啟 handler（preview/landing.html）
+- 參考實作：訂單處理頁 `.op-tooltip-trigger` 開啟 handler（`preview/js/order-processing.js`）
 
 ### Modal 開子 modal（巢狀 modal，強制）
 - **權重**：子 modal 必須蓋在父 modal 之上（動態 z-index 60 + N*5，任意深度成立）；父 modal 維持開啟於下層，關閉子層時 body scroll 維持鎖定（疊層感知，見 `closeModal`）
-- **實例隔離只適用同一 document 多情境共用的舊 SPA 情境**：子 modal 不得直接調用非屬其父層情境的既有 modal instance，需建前綴副本（如 `orderEdit_`）並改寫觸發屬性；寫死 id 的 delegated handler 用 `closest("#父modal-id")` 分流；per-ID CSS 補前綴 selector；關閉機制必須 delegated；JS 動態渲染的 modal 先 reset/render 再 clone
+- **舊 SPA 歷史規則，不作為新實作依據**：若同一 document 曾同時存在多個情境共用同一批 modal，才需要前綴副本（如 `orderEdit_`）與 per-ID 分流；這套做法已隨拆頁退役
 - **multi-page 架構（現行）不需要副本**：每頁獨立 document，共用 partial 的 modal 只有單一 instance、單一情境，直接 openModal 動態 z-index 疊層即可（Stage 1d 已依此退役 landing 的 orderEdit_ clone 機制，見 specs/page-architecture.md）
 - 參考實作：`components/order-edit-modal.md` 「巢狀 modal 規則」段、`preview/js/order-modals.js`
 
