@@ -1,0 +1,85 @@
+<!-- Desktop top row (hidden on mobile): sidebarCompact | chips | function icons -->
+<div id="desktopTopRow" class="hidden md:flex items-center gap-5">
+  <!-- Compact sidebar: visible only when aside is collapsed -->
+  <div id="sidebarCompact" class="hidden items-center gap-3">
+    <img
+      src="./assets/icons/logo.svg"
+      alt="logo"
+      class="h-8 w-auto object-contain shrink-0"
+    />
+    <span class="text-xs text-text-default shrink-0">elaon999</span>
+    <img
+      id="compactLogoutBtn"
+      src="./assets/icons/logout.svg"
+      class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100 shrink-0"
+      alt="登出"
+    />
+    <img
+      id="compactSwitchBtn"
+      src="./assets/icons/switch.svg"
+      class="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100 shrink-0"
+      alt="更換帳號"
+    />
+    <img
+      id="expandBtn"
+      src="./assets/icons/folder.svg"
+      alt="folder"
+      class="w-5 h-5 cursor-pointer opacity-60 hover:opacity-100 shrink-0"
+      title="展開選單"
+    />
+  </div>
+  <!-- Page tab chips -->
+  <div
+    id="pageTabsInline"
+    class="flex-1 flex items-center gap-3 overflow-x-auto px-4"
+  ></div>
+  <!-- Function icons -->
+  <div id="topWrap" class="flex items-center gap-11">
+    <button
+      id="desktopBulletinBtn"
+      type="button"
+      class="relative cursor-pointer border-0 bg-transparent p-0"
+      aria-label="開啟公告"
+    >
+      <img
+        src="./assets/icons/bulletin.svg"
+        alt=""
+        class="w-6 h-6"
+      />
+      <span
+        class="absolute -top-1.5 -right-2 bg-brand-500 text-white text-xs rounded-full px-1 py-0.5 leading-none"
+        >99</span
+      >
+    </button>
+    <button
+      id="desktopMessageBtn"
+      type="button"
+      class="relative cursor-pointer border-0 bg-transparent p-0"
+      aria-label="開啟訊息"
+    >
+      <img
+        src="./assets/icons/message.svg"
+        alt=""
+        class="w-6 h-6"
+      />
+      <span
+        class="absolute -top-1.5 -right-1 bg-border-disabled text-text-default text-xs rounded-full px-1 py-0.5 leading-none"
+        >0</span
+      >
+    </button>
+    <button
+      id="desktopMemberBtn"
+      type="button"
+      class="cursor-pointer border-0 bg-transparent p-0 opacity-70 hover:opacity-100"
+      aria-label="開啟會員安全管理"
+    >
+      <img src="./assets/icons/person-md.svg" alt="" class="w-6 h-6" />
+    </button>
+    <img
+      src="./assets/icons/system.svg"
+      alt="system"
+      class="w-6 h-6"
+    />
+  </div>
+</div>
+<!-- /#desktopTopRow -->

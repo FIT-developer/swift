@@ -7,6 +7,112 @@
 
 ---
 
+## Session 83 交接 (2026-07-04)
+
+### 任務: 1a/1b 瀏覽器驗收補齊 + Stage 1c（訂單處理 JS module）
+
+1. **1a/1b 瀏覽器驗證補齊**（Session 81/82 的環境起不了 server，只做了 lint/結構檢查）：
+   - landing 回歸全過：aside/topbar 注入、房間預定（[A]-[E] partial 4 區塊）、訂單處理 SPA、訂單修改 modal build（標題「庫存」）
+   - order-processing.html 獨立載入全過：aside async + active 標示、topbar + 導航 chip（真實 link）、內容完整、1440/390 無溢出；截圖 specs/qa-screenshots/session-83/
+2. **Stage 1c 完成**：`preview/js/order-processing.js`（新，~425 行）：
+   - 自 landing 的 initSubPageBehaviors 逐塊搬出（原樣 root-scoped）：accordion、op 快篩、op pill 選單（開/關/定位）、op tabs、op tooltip（含視窗夾取）、op 專案 toggle、simple calendar（rb-cal-cell）、nation-group
+   - 頁面 module `initOrderProcessing(document)` 於 loadPartials 後呼叫
+   - 頁面補 dayjs CDN（simple calendar 依賴；漏載會讓 init 中途 throw、後續塊全不綁 - 已踩過並修正）
+   - 快速區間鍵（今日/本週等）實測無 JS handler（靜態 markup，後端行為），無需搬移
+   - 選單項目點擊僅收合（modal 接線 = Stage 1d）
+3. 互動回歸全過：快篩單選/取消、tabs、pill 選單開關、tooltip 開/夾取/外部關、專案 toggle 文案、calendar popup（.calendar-dropdown 33 日期鈕）、國籍連動、mobile accordion/bottom sheet/無溢出；console 無錯誤
+
+### 下一步
+
+**Stage 1d**（給下個 session）：搬 modal（訂單明細/簡訊/修改外殼 + 巢狀組）至新頁或 partial、修改 body 改用 room-booking-sections partial、orderEdit_ clone 退役、aside 連結切 href、landing SPA 入口移除、三條鏈回歸。要點見 page-architecture.md。
+
+未 push commits：5 個（至 c6aa3f2）+ 本輪未 commit 改動。
+
+---
+
+## Session 82 交接 (2026-07-04)
+
+### 任務: landing.html 拆頁重構 Stage 1b（order-processing.html 靜態頁 + topbar partial）
+
+延續 Session 81；本輪仍不讀 Figma，照既有 spec/html 拆頁。Stage 1b 只要求新頁獨立載入、顯示、RWD 不爆版，先不接互動。
+
+### 本輪改動
+
+1. `preview/partials/topbar.html`（新）：自 `landing.html` 抽出 desktop top row（`desktopTopRow` / `sidebarCompact` / `pageTabsInline` / function icons）。Mobile logo/menu bar 保留在 page shell，因為它在 `bodyArea` 外層；若和 desktop row 放同一 partial 會改變 landing 或新頁的 DOM hierarchy。
+2. `preview/landing.html`：desktop top row 改同步 XHR 注入 `./partials/topbar.html`，讓既有 load-time handlers 仍可在主 script 執行前找到 `desktopBulletinBtn` / `desktopMessageBtn` / `desktopMemberBtn` / `expandBtn` / `pageTabsInline`。
+3. `preview/order-processing.html`（新）：建立訂單處理靜態頁骨架，使用 `data-partial="aside"` 與 `data-partial="topbar"` async 載入共用 partials；頁面內容自 `tpl-order-processing` 搬出。`body[data-page="訂單處理"]` 供 `partials.js` 標示 aside active。
+4. 新頁 module：`await loadPartials()` 後在 `pageTabsInline` render 一顆 active `訂單處理` navigation chip（真實 link，無 close button，符合 tab chips 降級為導航列的決策）。
+5. `preview/assets/css/landing.css`：`.page-tab` 補 `text-decoration: none;`，讓新頁 anchor chip 不出現瀏覽器預設底線；landing 既有 div chip 視覺不變。
+6. 新頁 static display 補值：`data-op-date-from` / `data-op-date-to` 先填 `2026-07-01` / `2026-07-02`，避免 Stage 1c 前沒有 calendar JS 時日期欄空白。
+
+### 驗證
+
+- `./scripts/lint-conventions.sh` pass
+- `./scripts/lint-fonts.sh` pass
+- `./scripts/lint-tokens.sh` pass（86 raw hex tokens 一致）
+- `git diff --check` pass
+- 結構檢查 pass：
+  - `order-processing.html` 含 `data-partial="aside"` / `data-partial="topbar"`
+  - `order-processing.html` 含 `op-filter-panel` / `op-row-menu`
+  - 新頁日期靜態值存在
+  - 新頁 module 會 render `page-tab active` 的 `訂單處理`
+  - `topbar.html` 含 `pageTabsInline` 與三個 desktop function icon trigger
+  - `landing.html` 含 `topbarMount` 與 `./partials/topbar.html` 同步注入
+- HTTP server 檢查：另開 8010 server 後，外部 `curl` 仍回 `connection refused`（同 Session 81 的 8000/8002 問題）。已關閉本輪啟動的 8010 session；本輪以 lint + 本地結構檢查作為 Stage 1b 驗證。
+
+### 下一步
+
+1. Stage 1c：建立 `preview/js/order-processing.js`，搬入 op-* 行為（pill menu、filter tabs、quick filter、tooltip clamp、project toggle）。
+2. 視需要建立共用 module 給新頁使用：`rb-accordion` / `nation-group` / `rb-cal-cell` 等；landing inline 版暫留，Stage 3 再收斂去重。
+3. Stage 1c 後再做新頁互動回歸；Stage 1d 才搬 modal 與退役 `orderEdit_` clone。
+
+### 重要決定
+
+- 1b 期間 aside 的「訂單處理」href 仍不切；新頁先用直接網址驗收，避免 landing SPA 入口在 1c/1d 前中斷。
+- `landing.html` 內的 `tpl-order-processing` 凍結待刪；後續訂單處理頁視覺調整應改 `preview/order-processing.html`。
+
+### 未解問題
+
+- 本機 HTTP server 在目前執行環境下仍不可靠，後續若要瀏覽器截圖驗證，需先排除 port/listener 問題或改用可穩定控制的 browser tooling。
+
+## Session 81 交接 (2026-07-04)
+
+### 任務: landing.html 拆頁重構 Stage 1a（room-booking sections partial）
+
+使用者已將 Stage 1 細分 1a-1d 寫入 `specs/page-architecture.md`，並明確指示本輪不用 Figma，照既有 spec/html 開工。Figma MCP checklist 視為不適用；未同步 tokens（沒有新 Figma Variables 或新設計值）。
+
+### 本輪改動
+
+1. `preview/partials/room-booking-sections.html`（新）：自 `preview/landing.html` 的 `tpl-room-booking` 抽出 [A]-[E] wrapper 內容，作為房間預定頁與訂單修改 modal 後續共用來源。
+2. `preview/landing.html`：`tpl-room-booking` 內改成同步 XHR 注入 `./partials/room-booking-sections.html`，模式同現有 aside 同步注入；目標是讓 `openPage()` 的 `tpl.innerHTML` clone 與 `buildOrderEditModalBody()` 的 `tpl.firstElementChild.children` 行為維持不變。
+3. 新 partial 變成新增檔後，清理新增行 lint 會擋的歷史內容：註解中的裝飾性 Unicode 改 ASCII、stepper minus glyph 改 `&minus;` 保持畫面、兩個 mobile-unsafe `min-w` 改為 `md:min-w-[580px]` / `w-[54px]`。
+
+### 驗證
+
+- `./scripts/lint-conventions.sh` pass
+- `./scripts/lint-fonts.sh` pass
+- `./scripts/lint-tokens.sh` pass（86 raw hex tokens 一致）
+- `git diff --check` pass
+- Inline script parse check pass（3 個 inline scripts）
+- 本地結構檢查 pass：模擬同步注入後 `tpl-room-booking` 第一個元素仍為 `<div class="flex flex-col gap-4">`，且包含 `data-order-summary-submit` / `id="btnInventory"` / `data-data-exists-trigger`
+- 訂單修改 modal 依賴 selector 檢查 pass：`invCalendarLeft` / `tableInventory` / `data-inventory-date-modal` / `customer-toggle` / `orderDataClear` / 加購與到店 modal trigger 皆仍在 partial
+- HTTP 檢查：`landing.html` 曾回 200；partial curl 驗證受本機 server/port listener 狀態干擾（8000/8002 皆出現 first request 後連線不穩，8000 上 lsof 看到多個 Python listener），本輪改以本地結構檢查替代，未做瀏覽器截圖。
+
+### 下一步
+
+1. Stage 1b：建立 `preview/order-processing.html` 靜態頁，頁內容自 `tpl-order-processing` 搬出。
+2. 同步抽 `preview/partials/topbar.html`（partial 只含容器 markup，landing 與新頁各自 render chips）。
+3. 1b 期間 aside 的「訂單處理」href 先不切，避免 landing SPA 入口斷掉；新頁先用直接網址驗收。
+
+### 重要決定
+
+- 本輪只做 Stage 1a，不退役 `orderEdit_` clone；clone 機制留到 Stage 1d 搬 modal 時處理。
+- `preview/room-booking.html` 仍是 superseded 舊檔，不作為拆分來源。
+
+### 未解問題
+
+- 需要後續用穩定 server 或 browser tooling 做 Stage 1b/1c/1d 的視覺回歸截圖；本輪沒有新增視覺設計，只做 template partial 抽離。
+
 ## Session 80 交接 (2026-07-04)
 
 ### 任務: landing.html 拆頁重構 Stage 0（使用者核准整個分階段計畫）
@@ -873,4 +979,3 @@ aside 注入（26 選單項目）、選單導航（開訂單處理）、accordio
 4. calendar dropdown DOM leak（見下一輪 backlog 第 8 項）
 
 ---
-

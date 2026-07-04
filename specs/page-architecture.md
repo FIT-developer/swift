@@ -144,23 +144,51 @@ partial、模組化 JS。比 11583 行單檔更接近他們要重寫的形狀。
   （房間預定當頁面內容、訂單修改 modal 當 body，兩處共用）
 - 共用 modal 各自成 partial；共用 JS 收進 js/ ES modules
 
-**分階段（每 stage 一個 session、各自交接 commit、中間態皆可用）**：
+**分階段（每 stage 交接進 progress.md；commit/push 一律等使用者明確指示，不自動執行）**：
 
 | Stage | 內容 | 狀態 |
 |---|---|---|
 | 0 | 決策 + 本計畫 + js/tailwind-config.js 抽出 | 完成（2026-07-04） |
-| 1 | 拆訂單處理 -> order-processing.html：頁內容搬出、[A]-[E] 抽 partial、訂單修改 modal 改用 partial（clone 機制退役）、所需 modal（訂單明細/簡訊/加購/會員資料/合約公司/房型/到店/月曆 offcanvas）成 partial 或隨頁搬移、相關 JS 抽 js/ modules | 待做 |
+| 1 | 拆訂單處理（細分 1a-1d，見下方執行要點） | 待做 |
 | 2 | 拆房間預定 -> room-booking.html（改用同一份 [A]-[E] partial） | 待做 |
 | 3 | landing 清理只剩 dashboard；topbar 抽 partial；殘餘共用 JS 模組化 | 待做 |
 
-**Stage 1 執行要點（給下個 session）**：
-1. 先抽 partials/room-booking-sections.html（自 tpl-room-booking 的 wrapper 4 子區塊），
-   landing 的 tpl 暫以同步注入引用它（不破壞現況），訂單修改 modal build 改 fetch 同一份
-2. order-processing.html 骨架照本檔「新頁面骨架」；頁內容自 tpl-order-processing 搬出
-3. 頁面 JS：initSubPageBehaviors 中 op-* 相關段 + 該頁用到的共用行為，抽成 js/ modules；
-   搬不動的共用大塊（calendar 等）Stage 1 允許暫時同步注入 landing 的 script？不允許 -
-   以「該頁實際用到」為界逐塊搬，寧可 Stage 1 範圍小
-4. aside 選單「訂單處理」項目改 <a href="order-processing.html">；landing 的 SPA openPage
-   對訂單處理的入口移除；aside 是共用 partial 改一份即可
-5. 每步跑三 lint + 全頁回歸（頁面本體 + 三條 modal 鏈 + 手機版）
+**Stage 1 細分為 4 個可驗收小段（2026-07-04 使用者定案）**：
+
+**1a - 抽共用內容，先不拆訂單頁**
+- 建 partials/room-booking-sections.html：自 tpl-room-booking 的 wrapper 抽 [A]-[E] 4 區塊
+- landing 的 tpl 以同步注入把 partial 塞回原位（同 aside 模式）：openPage 的
+  innerHTML clone 與訂單修改 modal 的 build 照舊運作，**對外行為零變化**
+- 目的：最大重複源先變單一來源
+
+**1b - 建 order-processing.html 靜態頁**
+- 頁內容自 tpl-order-processing 搬出；用 partials/aside.html + js/tailwind-config.js
+- **topbar 同步抽成 partials/topbar.html**（避免先複製後搬移）：partial 只含容器
+  markup（含 #pageTabsInline 容器），chips 內容由各頁 JS 自行渲染 -
+  landing 照舊動態 render、新頁 render 靜態導航 chip，單一 partial、行為分頁
+- 驗收標準：頁面獨立載入、顯示、RWD 不爆版（先不含互動）
+- **過渡期規則**：新頁是訂單處理的 source of truth，landing 內的 tpl-order-processing
+  凍結待刪（1d 清），不可兩邊都改
+- aside 的「訂單處理」連結**先不改** href（改了會斷 landing 的 SPA 入口），
+  1b/1c 期間新頁以網址直接訪問，1d 才切換
+
+**1c - 抽訂單處理 JS module**
+- 建 js/order-processing.js（頁面 module）：op-* 行為（pill menu、filter tabs、
+  quick filter、tooltip clamp、project toggle）分批搬入
+- 該頁依賴的共用行為（rb-cal-cell 日曆、nation-group、rb-accordion 等）：
+  **允許複製成 js/ module 給新頁用，landing 保留 inline 版** - 過渡性重複，
+  Stage 3 收斂去重（此重複為計畫內，不是 drift）
+- 不引用 landing 的整包 script
+
+**1d - 搬 modal 並退役 clone 機制**
+- 訂單修改 modal 外殼 + 該頁所需 modal（訂單明細/簡訊/加購/會員資料/合約公司/
+  房型/到店/月曆 offcanvas）搬到新頁或 partial
+- 訂單修改 body 直接用 partials/room-booking-sections.html
+- 新頁獨立 document，orderEdit_ clone 防撞機制整組退役
+- 工程量註記：現行 clone 出的巢狀 modal 本來就是不接互動 JS 的視覺副本，
+  新頁做靜態 partial + 開關綁定 = 與今日等價保真，非降級
+- aside「訂單處理」改 <a href="order-processing.html">，landing SPA 入口移除
+- 回歸三條鏈：訂單明細、簡訊、修改 modal 內再開會員資料/合約公司（三層疊層）
+
+每小段完成：三 lint + 該段驗收標準 + progress.md 交接。
 

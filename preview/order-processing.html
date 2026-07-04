@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 訂單處理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <!-- simple calendar（rb-cal-cell 日期格）依賴 dayjs，與 landing 同版本 -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/isoWeek.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/landing.css" rel="stylesheet" />
+  </head>
+  <body data-page="訂單處理">
+    <div
+      id="rootWrap"
+      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto p-3"
+    >
+      <!-- Mobile top bar (page shell; desktop top row is partials/topbar.html) -->
+      <div class="flex items-center justify-between md:hidden">
+        <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        <button
+          id="mobileMenuBtn"
+          class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="w-6 h-5" alt="選單" />
+        </button>
+      </div>
+
+      <div id="bodyArea" class="flex flex-col md:flex-row gap-3 flex-1 min-w-0">
+        <div data-partial="aside"></div>
+
+        <div id="mainColumn" class="flex-1 flex flex-col min-w-0 gap-3">
+          <div data-partial="topbar"></div>
+
+          <main class="flex-1 flex flex-col min-w-0 w-full">
+            <div class="flex flex-col gap-4">
+              <!-- Filter panel (Figma: shirnk-model-1 / extend-model-1) -->
+              <div
+                class="op-filter-panel rounded-xl bg-surface-hover border border-border-disabled p-5"
+              >
+                <div class="flex flex-col xl:flex-row xl:flex-nowrap gap-8">
+                  <!-- Column 1: date range + quick range + 日期狀態/訂單編號/名稱/行動電話 -->
+                  <div class="flex flex-col gap-4 basis-full xl:basis-[340px] xl:shrink-0 xl:grow-0">
+                    <div class="flex items-center gap-3">
+                      <div class="rb-cal-cell flex-1 min-w-0">
+                        <button
+                          type="button"
+                          class="op-date-btn rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                        >
+                          <span class="rb-cal-date flex-1 text-left text-base whitespace-nowrap" data-op-date-from>2026-07-01</span>
+                          <img src="./assets/icons/calendar.svg" alt="calendar" class="w-6 h-6" />
+                        </button>
+                      </div>
+                      <div class="rb-cal-cell flex-1 min-w-0">
+                        <button
+                          type="button"
+                          class="op-date-btn rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                        >
+                          <span class="rb-cal-date flex-1 text-left text-base whitespace-nowrap" data-op-date-to>2026-07-02</span>
+                          <img src="./assets/icons/calendar.svg" alt="calendar" class="w-6 h-6" />
+                        </button>
+                      </div>
+                    </div>
+                    <!-- 4 個快速區間鍵 (2x2 grid): 今日/本週/本月/今年，each with prev/next -->
+                    <div class="grid grid-cols-2 gap-3">
+                      <div
+                        class="op-range-btn flex items-center justify-between bg-white border border-border-disabled rounded-[6px] px-2 py-1.5"
+                        data-op-range="today"
+                      >
+                        <button type="button" class="op-range-nav" data-op-range-nav="prev" aria-label="上一個">
+                          <img src="./assets/icons/arrow-left.svg" alt="" class="w-5 h-5" />
+                        </button>
+                        <span class="text-base text-text-default">今日</span>
+                        <button type="button" class="op-range-nav" data-op-range-nav="next" aria-label="下一個">
+                          <img src="./assets/icons/arrow-right.svg" alt="" class="w-5 h-5" />
+                        </button>
+                      </div>
+                      <div
+                        class="op-range-btn flex items-center justify-between bg-white border border-border-disabled rounded-[6px] px-2 py-1.5"
+                        data-op-range="week"
+                      >
+                        <button type="button" class="op-range-nav" data-op-range-nav="prev" aria-label="上一個">
+                          <img src="./assets/icons/arrow-left.svg" alt="" class="w-5 h-5" />
+                        </button>
+                        <span class="text-base text-text-default">本週</span>
+                        <button type="button" class="op-range-nav" data-op-range-nav="next" aria-label="下一個">
+                          <img src="./assets/icons/arrow-right.svg" alt="" class="w-5 h-5" />
+                        </button>
+                      </div>
+                      <div
+                        class="op-range-btn flex items-center justify-between bg-white border border-border-disabled rounded-[6px] px-2 py-1.5"
+                        data-op-range="month"
+                      >
+                        <button type="button" class="op-range-nav" data-op-range-nav="prev" aria-label="上一個">
+                          <img src="./assets/icons/arrow-left.svg" alt="" class="w-5 h-5" />
+                        </button>
+                        <span class="text-base text-text-default">本月</span>
+                        <button type="button" class="op-range-nav" data-op-range-nav="next" aria-label="下一個">
+                          <img src="./assets/icons/arrow-right.svg" alt="" class="w-5 h-5" />
+                        </button>
+                      </div>
+                      <div
+                        class="op-range-btn flex items-center justify-between bg-white border border-border-disabled rounded-[6px] px-2 py-1.5"
+                        data-op-range="year"
+                      >
+                        <button type="button" class="op-range-nav" data-op-range-nav="prev" aria-label="上一個">
+                          <img src="./assets/icons/arrow-left.svg" alt="" class="w-5 h-5" />
+                        </button>
+                        <span class="text-base text-text-default">今年</span>
+                        <button type="button" class="op-range-nav" data-op-range-nav="next" aria-label="下一個">
+                          <img src="./assets/icons/arrow-right.svg" alt="" class="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                    <!-- 日期狀態 + tooltip -->
+                    <div class="flex items-center gap-3">
+                      <span class="text-base text-text-default w-[100px] shrink-0">日期狀態</span>
+                      <select
+                        class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0"
+                      >
+                        <option>訂單日</option>
+                        <option>入住日</option>
+                        <option>入住日（全）</option>
+                        <option>到達日</option>
+                        <option>退房日</option>
+                        <option>取消日</option>
+                        <option>付款日</option>
+                        <option>到期日</option>
+                        <option>最後修改日</option>
+                      </select>
+                      <div class="relative shrink-0">
+                        <button
+                          type="button"
+                          class="op-tooltip-trigger w-6 h-6 flex items-center justify-center"
+                          data-op-tooltip="date-status"
+                          aria-label="日期狀態說明"
+                          aria-expanded="false"
+                        >
+                          <img src="./assets/icons/info.svg" alt="" class="w-6 h-6" />
+                        </button>
+                        <div
+                          class="op-tooltip-panel hidden absolute z-20 top-full left-0 mt-2 w-[320px] max-w-[80vw] rounded-xl bg-[var(--color-neutral-700)] p-4 shadow-lg"
+                          data-op-tooltip-panel="date-status"
+                          role="tooltip"
+                        >
+                          <p class="text-[var(--color-subitem-selected)] text-lg font-semibold mb-3">日期狀態說明</p>
+                          <ul class="flex flex-col gap-2">
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">訂單日</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">入住日</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">入住日（全）</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">到達日</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">退房日</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">取消日</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">付款日</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">到期日</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                              <span class="shrink-0 rounded border border-white/30 px-2 py-0.5 text-sm text-white whitespace-nowrap">最後修改日</span>
+                              <span class="text-sm text-white/70">說明文字待補</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="text-base text-text-default w-[100px] shrink-0">訂單編號</span>
+                      <input
+                        type="text"
+                        placeholder="placeholder"
+                        class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-base flex-1 min-w-0"
+                      />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="text-base text-text-default w-[100px] shrink-0">名稱</span>
+                      <input
+                        type="text"
+                        placeholder="placeholder"
+                        class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-base flex-1 min-w-0"
+                      />
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="text-base text-text-default w-[100px] shrink-0">行動電話</span>
+                      <input
+                        type="text"
+                        placeholder="0988777111"
+                        class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-base flex-1 min-w-0"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- 更多條件：desktop = 欄2+欄3 並排無框；mobile = accordion -->
+                  <div
+                    class="op-more-conditions op-accordion-gradient rb-accordion basis-full xl:basis-0 xl:grow xl:min-w-0 rounded-xl border border-border-disabled p-3 xl:border-0 xl:bg-none xl:p-0"
+                  >
+                    <div class="rb-accordion-header flex items-center justify-between cursor-pointer select-none xl:hidden">
+                      <span class="text-xl font-semibold text-text-default">更多條件</span>
+                      <img src="./assets/icons/up.svg" alt="up" class="rb-accordion-icon w-6 h-6" />
+                    </div>
+                    <div
+                      class="rb-accordion-content rb-hidden bg-white rounded-xl p-3 mt-4 xl:!flex xl:!mt-0 xl:!p-0 xl:!bg-transparent xl:flex-row xl:flex-nowrap xl:gap-8"
+                    >
+                      <!-- Column 2 -->
+                      <div class="flex flex-col gap-4 xl:basis-0 xl:grow xl:min-w-0">
+                        <div class="flex items-center gap-3">
+                          <span class="text-base text-text-default w-[100px] shrink-0">訂金</span>
+                          <span class="ml-auto member-data-switch">
+                            <input type="checkbox" aria-label="訂金" />
+                            <span class="member-data-switch-track"></span>
+                            <span class="member-data-switch-knob"></span>
+                          </span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="text-base text-text-default w-[100px] shrink-0">處理狀態</span>
+                          <select class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0">
+                            <option>全部</option>
+                          </select>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="text-base text-text-default w-[100px] shrink-0">預付方式</span>
+                          <select class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0">
+                            <option>全部</option>
+                          </select>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="text-base text-text-default w-[100px] shrink-0">客戶類別</span>
+                          <select class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0">
+                            <option>全部</option>
+                          </select>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="text-base text-text-default w-[100px] shrink-0">團散類別</span>
+                          <select class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0">
+                            <option>全部</option>
+                          </select>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="text-base text-text-default w-[100px] shrink-0">訂單來源</span>
+                          <select class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0">
+                            <option>全部</option>
+                          </select>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="text-base text-text-default w-[100px] shrink-0">使用人</span>
+                          <select class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0">
+                            <option>訂房人</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Column 3 -->
+                      <div class="flex flex-col gap-4 xl:basis-0 xl:grow xl:min-w-0 mt-4 xl:mt-0">
+                        <div class="flex items-center gap-3">
+                          <span class="text-base text-text-default w-[100px] shrink-0">房型</span>
+                          <select class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0">
+                            <option>全部</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col gap-3 nation-group" data-nation-group="op">
+                          <div class="flex items-center gap-3">
+                            <span class="text-base text-text-default w-[100px] shrink-0">國籍</span>
+                            <label class="flex items-center gap-2 cursor-pointer shrink-0">
+                              <input type="radio" name="op-nation" value="tw" checked class="nation-radio w-5 h-5 rounded-full" />
+                              <span class="text-base text-text-default whitespace-nowrap">臺灣</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer ml-4 shrink-0">
+                              <input type="radio" name="op-nation" value="foreign" class="nation-radio w-5 h-5 rounded-full" />
+                              <span class="text-base text-text-default whitespace-nowrap">外籍</span>
+                            </label>
+                          </div>
+                          <!-- 外籍 only: 國家 select -->
+                          <div class="flex items-center gap-3 nation-foreign-only hidden">
+                            <span class="text-base text-text-default w-[100px] shrink-0">國家</span>
+                            <select class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base">
+                              <option>英國</option><option>美國</option><option>日本</option><option>韓國</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                          <div class="flex items-center gap-3">
+                            <span class="text-base text-text-default w-[100px] shrink-0">專案</span>
+                            <span class="op-project-state text-sm text-text-supporting" data-op-project-state>所有專案</span>
+                            <span class="ml-auto member-data-switch" data-op-project-toggle>
+                              <input type="checkbox" aria-label="專案" />
+                              <span class="member-data-switch-track"></span>
+                              <span class="member-data-switch-knob"></span>
+                            </span>
+                          </div>
+                          <div class="input-group flex w-full">
+                            <input type="text" placeholder="placeholder" class="flex-1 min-w-0 px-3 py-1.5 text-base text-text-default" />
+                            <select class="flex-1 min-w-0 px-3 py-1.5 text-base text-text-default bg-white">
+                              <option>專案</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                          <span class="text-base text-text-default">條件查詢</span>
+                          <div class="input-group flex w-full">
+                            <input type="text" placeholder="placeholder" class="flex-1 min-w-0 px-3 py-1.5 text-base text-text-default" />
+                            <select class="flex-1 min-w-0 px-3 py-1.5 text-base text-text-default bg-white">
+                              <option>其他需求</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 清除 / 查詢 -->
+                <div class="flex justify-end gap-2 mt-5">
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base cursor-pointer"
+                  >
+                    清除
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer"
+                  >
+                    查詢
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tabs + 快篩 button 列（緊接在 tabs 右邊，不推到容器兩端） -->
+              <div class="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-6">
+                <div
+                  class="op-filter-tabs flex flex-nowrap items-center gap-4 overflow-x-auto min-w-0 shrink-0"
+                  data-op-filter-group
+                >
+                  <button type="button" class="member-data-filter-tab is-active" data-op-tab="全部">全部</button>
+                  <button type="button" class="member-data-filter-tab" data-op-tab="正式單">正式單</button>
+                  <button type="button" class="member-data-filter-tab" data-op-tab="未付款">未付款</button>
+                  <button type="button" class="member-data-filter-tab" data-op-tab="已過期">已過期</button>
+                  <button type="button" class="member-data-filter-tab" data-op-tab="取消單">取消單</button>
+                  <button type="button" class="member-data-filter-tab" data-op-tab="未取消">未取消</button>
+                  <button type="button" class="member-data-filter-tab" data-op-tab="候補單">候補單</button>
+                </div>
+                <div
+                  class="op-quick-filters flex flex-nowrap items-center gap-4 overflow-x-auto min-w-0"
+                  data-op-quick-filter-group
+                >
+                  <button type="button" class="rb-filter-tab" data-op-quick-filter="今日付款">今日付款</button>
+                  <button type="button" class="rb-filter-tab" data-op-quick-filter="今日催款">今日催款</button>
+                  <button type="button" class="rb-filter-tab" data-op-quick-filter="今日過期">今日過期</button>
+                  <button type="button" class="rb-filter-tab" data-op-quick-filter="今日取消">今日取消</button>
+                  <button type="button" class="rb-filter-tab" data-op-quick-filter="今日住房">今日住房</button>
+                </div>
+              </div>
+
+              <!-- 表格：9 欄，全部內容垂直+水平置中（.op-table），訂單編號欄 = 狀態 pill + 下拉選單，
+                   見 components/order-status-pill.md -->
+              <div class="rounded-xl bg-white border border-border-disabled p-3 lg:p-4 overflow-x-auto">
+                <table class="op-table md:min-w-[1080px] w-full border-collapse">
+                  <thead>
+                    <tr class="border-b border-border-disabled">
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">編號</th>
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">
+                        <span class="inline-flex items-center gap-1.5 relative">
+                          訂單編號
+                          <button
+                            type="button"
+                            class="op-tooltip-trigger inline-flex items-center justify-center w-5 h-5"
+                            data-op-tooltip="order-status"
+                            aria-label="訂單狀態圖例"
+                            aria-expanded="false"
+                          >
+                            <img src="./assets/icons/info.svg" alt="" class="w-5 h-5" />
+                          </button>
+                          <div
+                            class="op-tooltip-panel hidden absolute z-20 top-full left-0 mt-2 w-[220px] rounded-xl bg-[var(--color-neutral-700)] p-4 shadow-lg text-left"
+                            data-op-tooltip-panel="order-status"
+                            role="tooltip"
+                          >
+                            <p class="text-[var(--color-subitem-selected)] text-lg font-semibold mb-3">訂單狀態</p>
+                            <ul class="flex flex-col gap-2.5">
+                              <li class="flex items-center gap-2">
+                                <span class="op-status-dot" style="background: var(--color-dots-validated)"></span>
+                                <span class="text-base text-white font-normal">正式單</span>
+                              </li>
+                              <li class="flex items-center gap-2">
+                                <span class="op-status-dot" style="background: var(--color-dots-overdues)"></span>
+                                <span class="text-base text-white font-normal">逾期單</span>
+                              </li>
+                              <li class="flex items-center gap-2">
+                                <span class="op-status-dot" style="background: var(--color-dots-alternative)"></span>
+                                <span class="text-base text-white font-normal">替代單</span>
+                              </li>
+                              <li class="flex items-center gap-2">
+                                <span class="op-status-dot" style="background: var(--color-dots-unpaid)"></span>
+                                <span class="text-base text-white font-normal">未付單</span>
+                              </li>
+                              <li class="flex items-center gap-2">
+                                <span class="op-status-dot" style="background: var(--color-dots-cancel)"></span>
+                                <span class="text-base text-white font-normal">取消單</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </span>
+                      </th>
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">訂購日</th>
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">訂購人</th>
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">天數</th>
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">入住 / 退房日</th>
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">間數</th>
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">訂單內容</th>
+                      <th class="px-3 py-2 text-sm text-text-supporting font-normal whitespace-nowrap">入住人</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- row 1: overdues (黃) -->
+                    <tr class="border-b border-border-disabled">
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3">
+                        <div class="flex flex-col items-center gap-1.5">
+                          <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="133449">
+                            <span class="op-status-dot" style="background: var(--color-dots-overdues)"></span>
+                            <span class="op-status-pill-text">133449</span>
+                            <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
+                          </button>
+                          <span class="op-badge-source">Booking</span>
+                          <div class="flex flex-wrap justify-center gap-1.5">
+                            <span class="op-badge">加購</span>
+                            <span class="op-badge">對帳</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>15：33：41</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <a href="#" class="text-[var(--color-surface-action-default)] underline">基努李維</a>
+                          <span>*391</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>2026-07-02</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default">ABC 123 暑假專案</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <span>基努李維</span>
+                          <span>*391</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- row 2: alternative (藍) -->
+                    <tr class="border-b border-border-disabled">
+                      <td class="px-3 py-3 text-base text-text-default">2</td>
+                      <td class="px-3 py-3">
+                        <div class="flex flex-col items-center gap-1.5">
+                          <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="133391">
+                            <span class="op-status-dot" style="background: var(--color-dots-alternative)"></span>
+                            <span class="op-status-pill-text">133391</span>
+                            <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
+                          </button>
+                          <span class="op-badge-source">Agoda</span>
+                          <div class="flex flex-wrap justify-center gap-1.5">
+                            <span class="op-badge">網路訂房</span>
+                            <span class="op-badge">開發票</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>15：33：41</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <a href="#" class="text-[var(--color-surface-action-default)] underline">基努李維</a>
+                          <span>*391</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>2026-07-02</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default">ABC 123 暑假專案</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <span>基努李維</span>
+                          <span>*391</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- row 3: cancel (紅) -->
+                    <tr class="border-b border-border-disabled">
+                      <td class="px-3 py-3 text-base text-text-default">3</td>
+                      <td class="px-3 py-3">
+                        <div class="flex flex-col items-center gap-1.5">
+                          <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="443212">
+                            <span class="op-status-dot" style="background: var(--color-dots-cancel)"></span>
+                            <span class="op-status-pill-text">443212</span>
+                            <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
+                          </button>
+                          <span class="op-badge-source">Agoda</span>
+                          <div class="flex flex-wrap justify-center gap-1.5">
+                            <span class="op-badge">註</span>
+                            <span class="op-badge">修改</span>
+                            <span class="op-badge">團體</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>15：33：41</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <a href="#" class="text-[var(--color-surface-action-default)] underline">基努李維</a>
+                          <span>*391</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>2026-07-02</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default">ABC 123 暑假專案</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <span>基努李維</span>
+                          <span>*391</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- row 4: validated (綠)，無來源 badge -->
+                    <tr class="border-b border-border-disabled">
+                      <td class="px-3 py-3 text-base text-text-default">4</td>
+                      <td class="px-3 py-3">
+                        <div class="flex flex-col items-center gap-1.5">
+                          <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="933921">
+                            <span class="op-status-dot" style="background: var(--color-dots-validated)"></span>
+                            <span class="op-status-pill-text">933921</span>
+                            <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
+                          </button>
+                          <div class="flex flex-wrap justify-center gap-1.5">
+                            <span class="op-badge">企業</span>
+                            <span class="op-badge">國旅</span>
+                            <span class="op-badge">促銷</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>15：33：41</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <a href="#" class="text-[var(--color-surface-action-default)] underline">基努李維</a>
+                          <span>0911222333</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>2026-07-02</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default">ABC 123 暑假專案</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <span>基努李維</span>
+                          <span>0911222333</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- row 5-1 / 5-2: unpaid (灰)，無來源 badge - 同一訂單的子訂單，訂單編號欄 rowspan 共用。
+                         5-1 不畫底線，同一組子訂單之間視覺上不分隔，只有整組結束（5-2）才畫底線 -->
+                    <tr>
+                      <td class="px-3 py-3 text-base text-text-default">5-1</td>
+                      <td class="px-3 py-3" rowspan="2">
+                        <div class="flex flex-col items-center gap-1.5">
+                          <button type="button" class="op-status-pill" data-op-pill-trigger data-op-order-id="488212">
+                            <span class="op-status-dot" style="background: var(--color-dots-unpaid)"></span>
+                            <span class="op-status-pill-text">488212</span>
+                            <img src="./assets/icons/triangle.svg" alt="" class="op-status-pill-triangle" />
+                          </button>
+                          <div class="flex flex-wrap justify-center gap-1.5">
+                            <span class="op-badge">企業</span>
+                            <span class="op-badge">加購</span>
+                            <span class="op-badge">網路訂房</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>15：33：41</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <a href="#" class="text-[var(--color-surface-action-default)] underline">基努李維</a>
+                          <span>0911222333</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>2026-07-02</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default">ABC 123 暑假專案</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <span>基努李維</span>
+                          <span>0911222333</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="border-b border-border-disabled">
+                      <td class="px-3 py-3 text-base text-text-default">5-2</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>15：33：41</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <a href="#" class="text-[var(--color-surface-action-default)] underline">基努李維</a>
+                          <span>0911222333</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1"><span>2026-07-01</span><span>2026-07-02</span></div>
+                      </td>
+                      <td class="px-3 py-3 text-base text-text-default">1</td>
+                      <td class="px-3 py-3 text-base text-text-default">ABC 123 暑假專案</td>
+                      <td class="px-3 py-3 text-base text-text-default whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1">
+                          <span>香港</span>
+                          <span>基努李維</span>
+                          <span>0911222333</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Footer 統計列（Figma Frame 672 實際渲染）：統計 + 間/夜 chips + 金額三組，
+                     組間留大間距（Figma 內另有一個「timestamp」隱藏圖層，get_node 會照樣序列化
+                     但實際不顯示，不要實作；詳見 specs/pages/order-processing.md footer 段） -->
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 lg:gap-x-24 pt-3">
+                  <span class="text-base text-text-default">統計</span>
+                  <span class="inline-flex items-center gap-3">
+                    <span class="inline-flex items-center rounded-[40px] bg-[var(--color-brand-100)] px-2 py-1 text-xs text-text-emphasis whitespace-nowrap">2 間</span>
+                    <span class="inline-flex items-center rounded-[40px] bg-[var(--color-neutral-100)] px-2 py-1 text-xs text-text-emphasis whitespace-nowrap">3 夜</span>
+                  </span>
+                  <span class="inline-flex items-center gap-4">
+                    <span class="text-base text-text-default whitespace-nowrap">加購 $ 33,999</span>
+                    <span class="text-base text-text-default whitespace-nowrap">房價 $ 33,999</span>
+                    <span class="whitespace-nowrap"><span class="text-base text-surface-brand">總計</span><span class="text-base text-text-default"> $ 33,999</span></span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- 訂單編號 pill 下拉選單（單一共用元件，desktop=inline dropdown / mobile=底部 offcanvas，
+                   同一份 DOM 靠 CSS breakpoint 切換樣式，見 preview/assets/css/landing.css .op-row-menu） -->
+              <div class="op-row-menu hidden" data-op-row-menu role="dialog" aria-modal="true" aria-labelledby="opRowMenuTitle">
+                <div class="op-row-menu-header">
+                  <span id="opRowMenuTitle" class="text-lg font-semibold text-text-default">選單</span>
+                  <button type="button" class="op-row-menu-close" data-op-row-menu-close aria-label="關閉">
+                    <img src="./assets/icons/close.svg" alt="" class="w-6 h-6" />
+                  </button>
+                </div>
+                <button type="button" class="op-row-menu-item" data-op-menu-action="訂單">訂單</button>
+                <button type="button" class="op-row-menu-item" data-op-menu-action="修改">修改</button>
+                <button type="button" class="op-row-menu-item" data-op-menu-action="連結">連結</button>
+                <button type="button" class="op-row-menu-item" data-op-menu-action="簡訊">簡訊</button>
+                <button type="button" class="op-row-menu-item" data-op-menu-action="複製">複製</button>
+                <button type="button" class="op-row-menu-item" data-op-menu-action="取消">取消</button>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="mobileSidebarBackdrop"
+      class="mobile-sidebar-backdrop md:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initOrderProcessing } from "./js/order-processing.js";
+
+      await loadPartials();
+      // 頁面互動（Stage 1c）：partial 就位後綁定，root = document
+      initOrderProcessing(document);
+
+      var pageTabsInline = document.getElementById("pageTabsInline");
+      if (pageTabsInline) {
+        var tab = document.createElement("a");
+        tab.href = "./order-processing.html";
+        tab.className = "page-tab active";
+        tab.textContent = "訂單處理";
+        pageTabsInline.appendChild(tab);
+      }
+    </script>
+  </body>
+</html>

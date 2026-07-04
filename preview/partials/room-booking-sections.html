@@ -1,0 +1,2917 @@
+<div class="flex flex-col gap-4">
+  <!-- [A] 空房與庫存查詢 accordion -->
+  <div
+    class="rb-accordion rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
+  >
+    <div
+      class="rb-accordion-header flex items-center justify-between cursor-pointer select-none"
+    >
+      <span class="text-xl font-semibold text-text-default"
+        >空房與庫存查詢</span
+      >
+      <img
+        src="./assets/icons/down.svg"
+        alt="down"
+        class="rb-accordion-icon w-6 h-6"
+      />
+    </div>
+    <div class="rb-accordion-content bg-white rounded-xl p-3 mt-4">
+      <div class="flex gap-4 items-start flex-wrap max-[899px]:flex-col">
+        <!-- LEFT: calendar (351px fixed) - 庫存表 mode 整塊隱藏 -->
+        <div class="rb-cal-wrap max-[899px]:mx-auto" id="invCalendarLeft">
+          <!-- Row 1: 已選N天 + 今日 + interval select -->
+          <div class="rb-cal-row1">
+            <span class="rb-selected-count" id="count">已選 0 天</span>
+            <div class="rb-cal-right-controls">
+              <button class="rb-today-btn" id="todayBtn">今日</button>
+              <select
+                class="rb-interval-select"
+                id="intervalSelect"
+              ></select>
+            </div>
+          </div>
+          <!-- Row 2: <- 2026年01月 -> -->
+          <div class="rb-cal-row2">
+            <button class="rb-nav-btn" id="prevBtn">
+              <img
+                src="./assets/icons/arrow-left.svg"
+                alt="arrow-left"
+                class="w-6 h-6"
+              />
+            </button>
+            <span class="rb-cal-title" id="calTitle"></span>
+            <button class="rb-nav-btn" id="nextBtn">
+              <img
+                src="./assets/icons/arrow-right.svg"
+                alt="arrow-right"
+                class="w-6 h-6"
+              />
+            </button>
+          </div>
+          <!-- Weekday header -->
+          <!-- Date grid -->
+          <div id="calGrid"></div>
+        </div>
+
+        <!-- RIGHT: mode toggle + filter tabs + table + range + actions -->
+        <div
+          class="flex flex-col gap-3 flex-1 min-w-0 max-[899px]:w-full"
+        >
+          <!-- Mode toggle + 月曆 (庫存表 only) + Excel download - Figma 0527 a1/a2 -->
+          <div class="inventory-toolbar">
+            <div class="mode-toggle">
+              <button class="mode-btn active" id="btnRoom">空房查詢</button>
+              <button class="mode-btn" id="btnInventory">庫存表</button>
+            </div>
+            <button
+              type="button"
+              class="inv-calendar-btn hidden"
+              id="invCalendarBtn"
+              aria-label="開啟月曆"
+            >
+              <img
+                src="./assets/icons/calendar.svg"
+                alt=""
+                class="h-6 w-6"
+              />
+              <span>月曆</span>
+            </button>
+            <button
+              type="button"
+              class="inventory-excel-btn hidden"
+              data-inventory-excel
+            >
+              <span>Excel</span>
+              <img
+                src="./assets/icons/download.svg"
+                alt=""
+                class="h-6 w-6"
+              />
+            </button>
+          </div>
+          <!-- 棟別 chips（橫向 scroll，no wrap） -->
+          <div class="rb-filter-tabs flex gap-4 flex-nowrap overflow-x-auto min-w-0">
+            <button class="rb-filter-tab rb-active">全部</button>
+            <button class="rb-filter-tab">A 棟</button>
+            <button class="rb-filter-tab">B 棟</button>
+            <button class="rb-filter-tab">C 棟</button>
+          </div>
+          <!-- 訂餘保 toggle（獨立一列，僅庫存表模式顯示） -->
+          <div
+            id="invMetricToggle"
+            class="hidden flex gap-[20px]"
+          >
+            <button
+              data-metric="ord"
+              class="inv-metric-btn rb-active"
+              style="--c: var(--color-surface-status-positive)"
+            >
+              訂
+            </button>
+            <button
+              data-metric="rem"
+              class="inv-metric-btn rb-active"
+              style="--c: var(--color-chart-blue)"
+            >
+              餘
+            </button>
+            <button
+              data-metric="rsv"
+              class="inv-metric-btn rb-active"
+              style="--c: var(--color-brand-400)"
+            >
+              保
+            </button>
+          </div>
+          <!-- Allocate table（空房查詢模式） -->
+          <div
+            id="tableAllocate"
+            class="border border-border-disabled rounded-xl p-3 overflow-x-auto"
+          >
+            <div class="text-base font-semibold text-text-default mb-2">
+              2026 / 02 / 15&ensp;四
+            </div>
+            <table class="w-full text-sm text-text-default md:min-w-[580px]">
+              <thead>
+                <tr class="border-t border-b border-text-default">
+                  <th class="w-[46px] py-2"></th>
+                  <th class="w-[151px] py-2 text-left px-2">房型</th>
+                  <th class="w-[62px] py-2 text-center">代號</th>
+                  <th class="w-[88px] py-2 text-center">庫存總數</th>
+                  <th class="w-[104px] py-2 text-center">可用庫存數</th>
+                  <th class="w-[88px] py-2 text-center">保留房數</th>
+                  <th class="w-[72px] py-2 text-center">分配數</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="rb-alloc-row border-b border-border-disabled">
+                  <td class="py-2 text-center">
+                    <input
+                      type="checkbox"
+                      class="rb-alloc-cb w-3.5 h-3.5 align-middle"
+                      checked
+                    />
+                  </td>
+                  <td class="py-2 px-2">義大利麵房</td>
+                  <td class="py-2 text-center">XYZ</td>
+                  <td class="py-2 text-center" data-alloc-col="cap">
+                    99
+                  </td>
+                  <td
+                    class="py-2 text-center rb-alloc-stock"
+                    data-alloc-col="stock"
+                  >
+                    88
+                  </td>
+                  <td class="py-2 text-center" data-alloc-col="rsv">
+                    11
+                  </td>
+                  <td class="py-2">
+                    <input
+                      type="text"
+                      class="rb-alloc-input w-full border border-border-disabled rounded-[6px] px-2 py-1 text-center bg-white"
+                    />
+                  </td>
+                </tr>
+                <tr class="rb-alloc-row border-b border-text-default">
+                  <td class="py-2 text-center">
+                    <input
+                      type="checkbox"
+                      class="rb-alloc-cb w-3.5 h-3.5 align-middle"
+                    />
+                  </td>
+                  <td class="py-2 px-2">香蕉船房</td>
+                  <td class="py-2 text-center">XYZ</td>
+                  <td class="py-2 text-center" data-alloc-col="cap">
+                    99
+                  </td>
+                  <td
+                    class="py-2 text-center rb-alloc-stock"
+                    data-alloc-col="stock"
+                  >
+                    88
+                  </td>
+                  <td class="py-2 text-center" data-alloc-col="rsv">
+                    11
+                  </td>
+                  <td class="py-2">
+                    <input
+                      type="text"
+                      class="rb-alloc-input w-full border border-border-disabled rounded-[6px] px-2 py-1 text-center bg-border-default"
+                      disabled
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-2"></td>
+                  <td class="py-2 px-2 font-semibold">總計</td>
+                  <td></td>
+                  <td
+                    class="py-2 text-center"
+                    data-alloc-total="cap"
+                  ></td>
+                  <td
+                    class="py-2 text-center font-semibold text-brand-active"
+                    data-alloc-total="stock"
+                  ></td>
+                  <td
+                    class="py-2 text-center"
+                    data-alloc-total="rsv"
+                  ></td>
+                  <td class="py-2 text-center" data-alloc-total="alloc">
+                    0
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Inventory table（庫存表模式） - Figma "type=table 2" (557:8398) -->
+          <div
+            id="tableInventory"
+            class="hidden border border-border-disabled rounded-xl p-3 overflow-x-auto"
+          >
+            <div class="text-xl font-semibold text-text-default mb-2">
+              2026 / 02
+            </div>
+            <table
+              class="w-max max-w-none border-collapse text-base text-text-default"
+            >
+              <thead>
+                <!-- Row 1: 日期 label + 01-16 date numbers -->
+                <tr class="border-b border-text-default">
+                  <th colspan="2" class="py-2 px-3 text-center font-normal">
+                    日期
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-01"
+                    >
+                      01
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-02"
+                    >
+                      02
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-03"
+                    >
+                      03
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-04"
+                    >
+                      04
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-05"
+                    >
+                      05
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center bg-accent-pink">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-06"
+                    >
+                      06
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center bg-accent-pink">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-07"
+                    >
+                      07
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-08"
+                    >
+                      08
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-09"
+                    >
+                      09
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-10"
+                    >
+                      10
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-11"
+                    >
+                      11
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-12"
+                    >
+                      12
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center bg-accent-pink">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-13"
+                    >
+                      13
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center bg-accent-pink">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-14"
+                    >
+                      14
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-15"
+                    >
+                      15
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-16"
+                    >
+                      16
+                    </button>
+                  </th>
+                </tr>
+                <!-- Row 2: 星期 label + weekday letters -->
+                <tr class="border-b border-text-default">
+                  <th colspan="2" class="py-2 px-3 text-center font-normal">
+                    星期
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-01"
+                    >
+                      一
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-02"
+                    >
+                      二
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-03"
+                    >
+                      三
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-04"
+                    >
+                      四
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-05"
+                    >
+                      五
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary bg-accent-pink">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-06"
+                    >
+                      六
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary bg-accent-pink">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-07"
+                    >
+                      日
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-08"
+                    >
+                      一
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-09"
+                    >
+                      二
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-10"
+                    >
+                      三
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-11"
+                    >
+                      四
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-12"
+                    >
+                      五
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary bg-accent-pink">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-13"
+                    >
+                      六
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary bg-accent-pink">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-14"
+                    >
+                      日
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-15"
+                    >
+                      一
+                    </button>
+                  </th>
+                  <th class="px-3 py-2 text-center text-text-secondary">
+                    <button
+                      type="button"
+                      class="inv-date-trigger"
+                      data-inv-date-trigger
+                      data-inv-date="2026-02-16"
+                    >
+                      二
+                    </button>
+                  </th>
+                </tr>
+                <!-- Row 3: 代號/房型 + 可用 col header + blank align row in date cols -->
+                <tr class="border-b border-text-default">
+                  <th class="w-[137px] py-2 px-3 text-center font-normal">
+                    代號 / 房型
+                  </th>
+                  <th class="w-[56px] py-2 px-3 text-center font-normal">
+                    可用
+                  </th>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                  <td class="px-3 py-2"></td>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Row 4: 義大利麵房 chips (sm 12px, dark text) -->
+                <tr>
+                  <td class="py-2 px-3">XYZ-義大利麵房</td>
+                  <td class="py-2 px-3 text-center" data-inv-cap>99</td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                </tr>
+                <!-- Row 5: 香蕉船房 chips (sm 12px, dark text) -->
+                <tr>
+                  <td class="py-1.5 px-3">abY-香蕉船房</td>
+                  <td class="py-1.5 px-3 text-center" data-inv-cap>99</td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-0.5">
+                      <span class="border border-status-positive rounded px-1 text-xs" data-metric="ord">0</span>
+                      <span class="border border-chart-blue rounded px-1 text-xs" data-metric="rem">12</span>
+                      <span class="border border-brand-400 rounded px-1 text-xs" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                </tr>
+                <!-- Row 6: 總計 (base 16px, chip-color text, no border) - day 02 rem=999 widens col -->
+                <tr class="border-t border-text-default">
+                  <td class="py-2 px-3 font-semibold">總計</td>
+                  <td class="py-2 px-3 text-center text-brand-active font-semibold" data-inv-cap-total>200</td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">999</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                  <td class="px-1 py-1.5 text-center">
+                    <span class="inline-flex gap-1">
+                      <span class="text-base text-status-positive" data-metric="ord">0</span>
+                      <span class="text-base text-chart-blue" data-metric="rem">12</span>
+                      <span class="text-base text-brand-400" data-metric="rsv">12</span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            class="inventory-date-modal hidden"
+            data-inventory-date-modal
+            role="dialog"
+            aria-modal="false"
+            aria-labelledby="inventoryDateModalTitle"
+          >
+            <div class="inventory-date-modal-header">
+              <h3
+                id="inventoryDateModalTitle"
+                class="text-xl font-semibold text-text-default"
+                data-inventory-date-modal-title
+              >
+                2026-02-11
+              </h3>
+              <button
+                type="button"
+                class="inventory-date-modal-close"
+                data-inventory-date-modal-close
+                aria-label="關閉"
+              >
+                <img
+                  src="./assets/icons/close.svg"
+                  alt=""
+                  class="h-6 w-6"
+                />
+              </button>
+            </div>
+            <div class="inventory-date-modal-body">
+              <table class="inventory-date-detail-table">
+                <thead>
+                  <tr>
+                    <th>房型</th>
+                    <th>正式</th>
+                    <th>未付款</th>
+                    <th>已過期</th>
+                    <th>候補</th>
+                  </tr>
+                </thead>
+                <tbody data-inventory-date-modal-body>
+                  <tr>
+                    <td>義大利麵房</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>香蕉船房</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Range: 數量分配（僅空房查詢模式；<=1080 viewport 時 wrap，slider 獨佔一行） -->
+          <div
+            id="rangeRow"
+            class="rb-range-row border border-border-disabled rounded-xl px-4 py-3 flex items-center gap-3 bg-white max-[1080px]:flex-wrap"
+          >
+            <input
+              type="range"
+              min="0"
+              max="10"
+              value="3"
+              class="rb-range flex-1 max-[1080px]:basis-full"
+              style="accent-color: var(--color-menuitem-default)"
+            />
+            <div
+              class="rb-range-val border border-border-default rounded-xl px-3 py-1 text-sm text-text-default shrink-0 w-[54px] text-center max-[1080px]:ml-auto"
+            >
+              3
+            </div>
+            <button
+              class="rb-alloc-btn flex items-center gap-2 border border-border-disabled rounded-xl px-4 py-2 bg-white shrink-0"
+            >
+              <span class="text-base text-text-default">數量分配</span>
+              <img
+                src="./assets/icons/submit.svg"
+                alt="submit"
+                class="w-4 h-4"
+              />
+            </button>
+          </div>
+          <!-- Action buttons：對齊 Figma Button Y/N component（h 34、radius 6、padding 6/12、font 16）
+               僅空房查詢模式顯示；庫存表模式整列隱藏 -->
+          <div id="rbAllocActions" class="flex justify-end gap-2">
+            <button
+              id="rbAllocClear"
+              type="button"
+              class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base cursor-pointer"
+            >
+              清除
+            </button>
+            <button
+              class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer"
+            >
+              加入訂單
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- [B] 訂房明細 - 客戶類型 toggle + 合約資訊列 + 訂房明細表 (Figma Frame 230) -->
+  <div class="rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5">
+    <!-- 客戶類型 toggle (Frame 97：176x42，pill r:28) -->
+    <div class="customer-toggle mb-4">
+      <button class="customer-btn active" data-customer="general">
+        一般客戶
+      </button>
+      <button class="customer-btn" data-customer="contract">
+        合約客戶
+      </button>
+    </div>
+
+    <!-- Frame 367 中間列：合約專屬群組（merged input group）+ 團體名稱 + 業務 + checkboxes -->
+    <div class="flex flex-wrap items-center gap-4 mb-4">
+      <!-- 合約專屬群組（僅合約客戶顯示）：統編 input + 合約公司 select + 新的訂房人 input，共邊框 -->
+      <div id="contractFields" class="input-group hidden">
+        <input
+          type="text"
+          value="22224332"
+          placeholder="統編"
+          style="width: 140px"
+        />
+        <select>
+          <option>合約公司</option>
+        </select>
+        <select style="width: 160px">
+          <option>新的訂房人</option>
+        </select>
+      </div>
+      <!-- 團體名稱 checkbox + input -->
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input
+          type="checkbox"
+          checked
+          class="w-3.5 h-3.5 accent-menu"
+        />
+        <span class="text-base text-text-default whitespace-nowrap"
+          >團體名稱</span
+        >
+        <input
+          type="text"
+          placeholder="placeholder"
+          class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base w-full max-w-[200px]"
+        />
+      </label>
+      <!-- 業務 select -->
+      <select
+        class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+      >
+        <option>業務</option>
+      </select>
+      <!-- 右側 checkboxes -->
+      <div class="flex items-center gap-4 ml-auto">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" class="w-3.5 h-3.5" />
+          <span class="text-base text-text-default">使用保留房</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" class="w-3.5 h-3.5" />
+          <span class="text-base text-text-default">自加庫存</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Frame 222 訂房明細表 (9 cols；header 38、data row 52、total row 32；每 td 都有 px-3 py-2) -->
+    <div class="bg-white rounded-xl p-3 overflow-x-auto">
+      <table
+        class="w-full text-xs text-text-default bg-white"
+        style="min-width: 1100px"
+      >
+        <thead>
+          <tr class="border-b border-text-default" style="height: 38px">
+            <th
+              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
+              style="width: 198px"
+            >
+              入住日
+            </th>
+            <th
+              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
+              style="width: 240px"
+            >
+              退房日
+            </th>
+            <th
+              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
+              style="width: 198px"
+            >
+              房型
+            </th>
+            <th
+              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
+              style="width: 198px"
+            >
+              專案
+            </th>
+            <!-- 間數 header：左 label + 右副標「團體：8」(sm 12px) -->
+            <th
+              class="text-base font-normal px-3 py-2"
+              style="width: 169px"
+            >
+              <div class="flex items-baseline justify-between">
+                <span>間數</span>
+                <span class="text-xs text-text-default whitespace-nowrap"
+                  >團體：8</span
+                >
+              </div>
+            </th>
+            <th
+              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
+              style="min-width: 123px"
+            >
+              單價
+            </th>
+            <th
+              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
+              style="min-width: 165px"
+            >
+              <div class="flex items-center gap-2">
+                <span>小計</span>
+                <select
+                  class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-base text-text-default font-normal"
+                >
+                  <option>無折扣</option>
+                  <option>9 折</option>
+                  <option>8 折</option>
+                  <option>7 折</option>
+                </select>
+              </div>
+            </th>
+            <th
+              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
+              style="width: 144px"
+            >
+              操作
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 1 -->
+          <tr class="border-b border-border-disabled" style="height: 52px">
+            <!-- 入住日: Calendar simple input -->
+            <td class="px-3 py-2 align-middle">
+              <div class="rb-cal-cell">
+                <button
+                  type="button"
+                  class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                >
+                  <span
+                    class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
+                  ></span>
+                  <img
+                    src="./assets/icons/calendar.svg"
+                    alt="calendar"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+            </td>
+            <!-- 退房日: Calendar simple input + 5夜 紅字（按鈕內右側） -->
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <div class="rb-cal-cell">
+                  <button
+                    type="button"
+                    class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                  >
+                    <span
+                      class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
+                    ></span>
+                    <img
+                      src="./assets/icons/calendar.svg"
+                      alt="calendar"
+                      class="w-6 h-6"
+                    />
+                  </button>
+                </div>
+                <span
+                  class="text-xs text-brand-active shrink-0 whitespace-nowrap"
+                  >5 夜</span
+                >
+              </div>
+            </td>
+            <!-- 房型: select + info icon -->
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <select
+                  class="flex-1 min-w-0 border border-border-disabled rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-text-default"
+                >
+                  <option>香蕉船不是船</option>
+                </select>
+                <button
+                  type="button"
+                  class="inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center"
+                  data-modal-open="modalRoomIntroBackdrop"
+                  aria-label="房型介紹"
+                >
+                  <img
+                    src="./assets/icons/info.svg"
+                    alt=""
+                    class="h-6 w-6"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </td>
+            <!-- 專案: select -->
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <select
+                  class="flex-1 min-w-0 border border-border-disabled rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-text-default"
+                >
+                  <option>巴黎世家大套房</option>
+                </select>
+              </div>
+            </td>
+            <!-- 間數: stepper only (header 已說明) -->
+            <td class="px-3 py-2 align-middle">
+              <div class="stepper">
+                <button type="button" class="stepper-btn rb-step-minus">
+                  &minus;
+                </button>
+                <input type="text" value="5" class="rb-step-val" />
+                <button type="button" class="stepper-btn rb-step-plus">
+                  +
+                </button>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <input
+                type="text"
+                value="19999"
+                class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+              />
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="w-full text-center text-xs text-text-default">199999</div>
+            </td>
+            <!-- 操作: edit / duplicate / trash-can -->
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center justify-start gap-4">
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                  data-modal-open="modalRoomEditBackdrop"
+                  aria-label="編輯訂房明細"
+                >
+                  <img
+                    src="./assets/icons/edit.svg"
+                    alt=""
+                    class="w-6 h-6"
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                >
+                  <img
+                    src="./assets/icons/duplicate.svg"
+                    alt="duplicate"
+                    class="w-6 h-6"
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                >
+                  <img
+                    src="./assets/icons/trash-can.svg"
+                    alt="trash-can"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+            </td>
+          </tr>
+          <!-- Row 2 -->
+          <tr class="border-b border-border-disabled" style="height: 52px">
+            <td class="px-3 py-2 align-middle">
+              <div class="rb-cal-cell">
+                <button
+                  type="button"
+                  class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                >
+                  <span
+                    class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
+                  ></span>
+                  <img
+                    src="./assets/icons/calendar.svg"
+                    alt="calendar"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <div class="rb-cal-cell">
+                  <button
+                    type="button"
+                    class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                  >
+                    <span
+                      class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
+                    ></span>
+                    <img
+                      src="./assets/icons/calendar.svg"
+                      alt="calendar"
+                      class="w-6 h-6"
+                    />
+                  </button>
+                </div>
+                <span
+                  class="text-xs text-brand-active shrink-0 whitespace-nowrap"
+                  >5 夜</span
+                >
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <select
+                  class="flex-1 min-w-0 border border-border-disabled rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-text-default"
+                >
+                  <option>香蕉船不是船</option>
+                </select>
+                <button
+                  type="button"
+                  class="inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center"
+                  data-modal-open="modalRoomIntroBackdrop"
+                  aria-label="房型介紹"
+                >
+                  <img
+                    src="./assets/icons/info.svg"
+                    alt=""
+                    class="h-6 w-6"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <select
+                  class="flex-1 min-w-0 border border-border-disabled rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-text-default"
+                >
+                  <option>巴黎世家大套房</option>
+                </select>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="stepper">
+                <button type="button" class="stepper-btn rb-step-minus">
+                  &minus;
+                </button>
+                <input type="text" value="5" class="rb-step-val" />
+                <button type="button" class="stepper-btn rb-step-plus">
+                  +
+                </button>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <input
+                type="text"
+                value="19999"
+                class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+              />
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="w-full text-center text-xs text-text-default">199999</div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center justify-start gap-4">
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                  data-modal-open="modalRoomEditBackdrop"
+                  aria-label="編輯訂房明細"
+                >
+                  <img
+                    src="./assets/icons/edit.svg"
+                    alt=""
+                    class="w-6 h-6"
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                >
+                  <img
+                    src="./assets/icons/duplicate.svg"
+                    alt="duplicate"
+                    class="w-6 h-6"
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                >
+                  <img
+                    src="./assets/icons/trash-can.svg"
+                    alt="trash-can"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+            </td>
+          </tr>
+          <!-- Row 3 -->
+          <tr class="border-b border-text-default" style="height: 52px">
+            <td class="px-3 py-2 align-middle">
+              <div class="rb-cal-cell">
+                <button
+                  type="button"
+                  class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                >
+                  <span
+                    class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
+                  ></span>
+                  <img
+                    src="./assets/icons/calendar.svg"
+                    alt="calendar"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <div class="rb-cal-cell">
+                  <button
+                    type="button"
+                    class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                  >
+                    <span
+                      class="rb-cal-date flex-1 text-left text-base whitespace-nowrap"
+                    ></span>
+                    <img
+                      src="./assets/icons/calendar.svg"
+                      alt="calendar"
+                      class="w-6 h-6"
+                    />
+                  </button>
+                </div>
+                <span
+                  class="text-xs text-brand-active shrink-0 whitespace-nowrap"
+                  >5 夜</span
+                >
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <select
+                  class="flex-1 min-w-0 border border-border-disabled rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-text-default"
+                >
+                  <option>香蕉船不是船</option>
+                </select>
+                <button
+                  type="button"
+                  class="inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center"
+                  data-modal-open="modalRoomIntroBackdrop"
+                  aria-label="房型介紹"
+                >
+                  <img
+                    src="./assets/icons/info.svg"
+                    alt=""
+                    class="h-6 w-6"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center gap-2">
+                <select
+                  class="flex-1 min-w-0 border border-border-disabled rounded-[6px] pl-3 pr-8 py-1.5 bg-white text-xs text-text-default"
+                >
+                  <option>巴黎世家大套房</option>
+                </select>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="stepper">
+                <button type="button" class="stepper-btn rb-step-minus">
+                  &minus;
+                </button>
+                <input type="text" value="5" class="rb-step-val" />
+                <button type="button" class="stepper-btn rb-step-plus">
+                  +
+                </button>
+              </div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <input
+                type="text"
+                value="19999"
+                class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+              />
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="w-full text-center text-xs text-text-default">199999</div>
+            </td>
+            <td class="px-3 py-2 align-middle">
+              <div class="flex items-center justify-start gap-4">
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                  data-modal-open="modalRoomEditBackdrop"
+                  aria-label="編輯訂房明細"
+                >
+                  <img
+                    src="./assets/icons/edit.svg"
+                    alt=""
+                    class="w-6 h-6"
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                >
+                  <img
+                    src="./assets/icons/duplicate.svg"
+                    alt="duplicate"
+                    class="w-6 h-6"
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-6 h-6 cursor-pointer"
+                >
+                  <img
+                    src="./assets/icons/trash-can.svg"
+                    alt="trash-can"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+            </td>
+          </tr>
+          <!-- 總計列 (32 高) -->
+          <tr style="height: 32px">
+            <td class="px-3 py-2"></td>
+            <td class="px-3 py-2"></td>
+            <td class="px-3 py-2 text-left font-medium whitespace-nowrap">
+              總計
+            </td>
+            <td class="px-3 py-2"></td>
+            <td class="px-3 py-2 text-center whitespace-nowrap">15</td>
+            <td class="px-3 py-2"></td>
+            <td class="px-3 py-2 align-top">
+              <div class="flex flex-col gap-1">
+                <div class="flex items-baseline gap-1 whitespace-nowrap">
+                  <span class="text-base text-text-default">原價</span>
+                  <span class="text-base text-text-muted line-through">8888</span>
+                </div>
+                <input
+                  type="text"
+                  value="19999"
+                  class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-xs text-text-default"
+                />
+              </div>
+            </td>
+            <td class="px-3 py-2"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 加購 button + 購物車總金額 + items 清單（cart 有值時整個 cart 容器才顯示） -->
+    <div class="mt-5">
+      <div class="flex items-center gap-4">
+        <button
+          type="button"
+          class="inline-flex h-[51px] items-center gap-2 rounded-[44px] border border-border-disabled bg-white px-5 py-3 text-base text-text-default hover:bg-surface-hover"
+          data-modal-open="modalPurchaseAddonBackdrop"
+          aria-label="開啟加購項目"
+        >
+          <img
+            src="./assets/icons/purchase-item.svg"
+            alt=""
+            class="h-6 w-6"
+            aria-hidden="true"
+          />
+          <span>加購</span>
+        </button>
+        <span
+          class="text-base text-text-default whitespace-nowrap"
+          data-purchase-page-total
+          hidden
+        ></span>
+      </div>
+      <div
+        class="mt-4 rounded-lg border border-border-disabled bg-white px-6 py-5"
+        data-purchase-page-cart-wrap
+        hidden
+      >
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-2.5 gap-y-5 max-h-[322px] overflow-y-auto md:max-h-none md:overflow-visible"
+          data-purchase-page-cart
+        ></div>
+      </div>
+      <!-- Figma Frame 584：預付/百分比 + 預付訂金 + 總售價 footer row -->
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
+        <div class="flex items-center gap-3">
+          <span class="w-[100px] shrink-0 text-base text-text-default">預付 / 百分比</span>
+          <div class="flex flex-1 min-w-0">
+            <input
+              type="text"
+              value="1444"
+              class="flex-1 min-w-0 h-9 rounded-l-[6px] rounded-r-none border border-r-0 border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none"
+              aria-label="預付百分比金額"
+            />
+            <select
+              class="w-[90px] h-9 rounded-l-none rounded-r-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none"
+              aria-label="預付百分比"
+            >
+              <option value="100" selected>100%</option>
+              <option value="75">75%</option>
+              <option value="50">50%</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="w-[100px] shrink-0 text-base text-text-default">預付訂金</span>
+          <input
+            type="text"
+            value="1444"
+            class="flex-1 min-w-0 h-9 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none"
+            aria-label="預付訂金"
+          />
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="w-[100px] shrink-0 flex flex-col">
+            <span class="text-base text-text-default">總售價</span>
+            <span class="text-xs text-text-default">99999</span>
+          </span>
+          <input
+            type="text"
+            value="1444"
+            class="flex-1 min-w-0 h-9 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none"
+            aria-label="總售價"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- [C]+[E] side-by-side at xl+ (2/3 + 1/3); stacked below xl -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+    <!-- [C] 訂單條件 accordion (expanded by default) -->
+    <div
+      class="rb-accordion xl:col-span-2 rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
+    >
+    <div
+      class="rb-accordion-header flex items-center justify-between cursor-pointer select-none"
+    >
+      <span class="text-xl font-semibold text-text-default">訂單條件</span>
+      <img
+        src="./assets/icons/down.svg"
+        alt="down"
+        class="rb-accordion-icon w-6 h-6"
+      />
+    </div>
+    <div class="rb-accordion-content bg-white rounded-xl p-3 mt-4">
+      <div class="flex gap-8 flex-wrap">
+        <!-- Column 1 -->
+        <div class="flex flex-col gap-5 basis-full md:basis-[280px] grow">
+          <!-- 人數：label + wrapper(滿版)[select 大 + select 小] -
+               wrapper 包 2 個 select + 大/小 unit，照 Figma 原意自適應 -->
+          <div class="flex items-center gap-3">
+            <span class="text-base text-text-default w-[100px] shrink-0"
+              >人數</span
+            >
+            <div class="flex flex-1 min-w-0 items-center gap-3">
+              <select
+                class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 md:flex-none md:w-[82.67px]"
+              >
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+              </select>
+              <span class="text-xs text-text-default">大</span>
+              <select
+                class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 md:flex-none md:w-[82.67px]"
+              >
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
+              <span class="text-xs text-text-default">小</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-base text-text-default w-[100px] shrink-0"
+              >到店方式</span
+            >
+            <button
+              id="arrivalMethodTrigger"
+              type="button"
+              class="flex items-center justify-between flex-1 min-w-0 w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 text-text-default text-base"
+              data-modal-open="modalArrivalMethodBackdrop"
+              aria-haspopup="dialog"
+            >
+              <span id="arrivalMethodTriggerLabel">自行到店</span>
+              <img
+                id="arrivalMethodTriggerIcon"
+                src="./assets/icons/road.svg"
+                alt=""
+                class="w-6 h-6"
+              />
+            </button>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-base text-text-default w-[100px] shrink-0"
+              >發票</span
+            >
+            <select
+              id="invoiceSelect"
+              class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full"
+            >
+              <option value="none">不開發票</option>
+              <option value="issue">開發票</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-base text-text-default w-[100px] shrink-0"
+              >統編</span
+            >
+            <input
+              id="invoiceTaxId"
+              type="text"
+              placeholder="placeholder"
+              disabled
+              class="rb-invoice-input border border-border-disabled rounded-[6px] px-3 py-1.5 bg-border-default text-base flex-1 min-w-0 w-full"
+            />
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-base text-text-default w-[100px] shrink-0"
+              >抬頭</span
+            >
+            <input
+              id="invoiceTitle"
+              type="text"
+              placeholder="placeholder"
+              disabled
+              class="rb-invoice-input border border-border-disabled rounded-[6px] px-3 py-1.5 bg-border-default text-base flex-1 min-w-0 w-full"
+            />
+          </div>
+          <!-- 繳款期限：label 直排（label 16px + 3 天 sm 12px） + Calendar input -->
+          <div class="flex items-start gap-3">
+            <div class="w-[100px] shrink-0 flex flex-col">
+              <span class="text-base text-text-default">繳款期限</span>
+              <span class="text-xs text-text-default mt-1">3 天</span>
+            </div>
+            <div class="rb-cal-cell flex-1">
+              <button
+                type="button"
+                class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+              >
+                <span
+                  class="rb-cal-date flex-1 text-left text-base text-text-default"
+                ></span>
+                <img
+                  src="./assets/icons/calendar.svg"
+                  alt="calendar"
+                  class="w-6 h-6"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Column 2 (was Column 3 pre-0525; old col 2 fields moved to [B]) -->
+        <div class="flex flex-col gap-5 basis-full md:basis-[280px] grow">
+          <div class="flex items-start gap-3">
+            <span class="text-base text-text-default w-[100px] shrink-0 pt-1"
+              >訂單備註</span
+            >
+            <textarea
+              rows="4"
+              class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full resize-none"
+            ></textarea>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-base text-text-default w-[100px] shrink-0 pt-1"
+              >需求備註</span
+            >
+            <textarea
+              rows="4"
+              class="border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base flex-1 min-w-0 w-full resize-none"
+            >
+需要瓦斯爐</textarea
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- [E] 正式單與候補單 - Figma Frame 1437:47168
+         outer flex-col + content flex-1 -> 白底吃滿剩餘高度與 [C] 對齊 -->
+    <div
+      class="rb-accordion xl:col-span-1 rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5 flex flex-col"
+    >
+      <div
+        class="rb-accordion-header flex items-center justify-between cursor-pointer select-none"
+      >
+        <span class="text-xl font-semibold text-text-default"
+          >正式單與候補單</span
+        >
+        <img
+          src="./assets/icons/down.svg"
+          alt="down"
+          class="rb-accordion-icon w-6 h-6"
+        />
+      </div>
+      <div
+        class="rb-accordion-content bg-white rounded-xl p-3 md:p-5 mt-4 flex-1"
+      >
+        <!-- 訂單類型 radio group -->
+        <div class="flex items-center gap-3 flex-wrap mb-5">
+          <span class="text-base text-text-default w-[76px] shrink-0"
+            >訂單類型</span
+          >
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="rb-order-type"
+              value="none"
+              checked
+              class="w-5 h-5 rounded-full accent-menu"
+              data-order-type="none"
+            />
+            <span class="text-base text-text-default">無設定</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="rb-order-type"
+              value="official"
+              class="w-5 h-5 rounded-full accent-menu"
+              data-order-type="official"
+            />
+            <span class="text-base text-text-default">正式單</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="rb-order-type"
+              value="substitute"
+              class="w-5 h-5 rounded-full accent-menu"
+              data-order-type="substitute"
+            />
+            <span class="text-base text-text-default">候補單</span>
+          </label>
+        </div>
+        <!-- 對應內容區（依訂單類型顯示） -->
+        <div id="orderTypeContent">
+          <!-- 無設定 -> 置中「未設定」 -->
+          <div
+            data-order-type-panel="none"
+            class="min-h-[200px] flex items-center justify-center text-xl text-text-default"
+          >
+            未設定
+          </div>
+
+          <!-- 正式單 -> 8 顆付款 chip + 動態欄位 -->
+          <div data-order-type-panel="official" class="hidden">
+            <!-- payment chips -->
+            <div id="paymentChips" class="flex flex-nowrap overflow-x-auto gap-2 mb-5 min-w-0">
+              <button
+                type="button"
+                class="rb-pay-chip rb-pay-active"
+                data-pay="transfer"
+              >
+                轉帳
+              </button>
+              <button type="button" class="rb-pay-chip" data-pay="fax">
+                傳真刷卡
+              </button>
+              <button type="button" class="rb-pay-chip" data-pay="ticket">
+                票券
+              </button>
+              <button
+                type="button"
+                class="rb-pay-chip"
+                data-pay="frontdesk"
+              >
+                前台自付
+              </button>
+              <button type="button" class="rb-pay-chip" data-pay="credit">
+                信用交易
+              </button>
+              <button type="button" class="rb-pay-chip" data-pay="check">
+                支票
+              </button>
+              <button
+                type="button"
+                class="rb-pay-chip"
+                data-pay="deposit"
+              >
+                訂金
+              </button>
+              <button type="button" class="rb-pay-chip" data-pay="bonus">
+                紅利
+              </button>
+            </div>
+            <!-- payment-specific field sets -->
+            <div id="paymentFields">
+              <!-- 轉帳 -->
+              <div data-pay-fields="transfer" class="flex flex-col gap-3">
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >支付金額</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >收款帳號</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >客支付帳號</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+              </div>
+              <!-- 傳真刷卡 - 支付金額 / 卡號 / 授權碼 -->
+              <div
+                data-pay-fields="fax"
+                class="hidden flex flex-col gap-3"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >支付金額</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >卡號</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >授權碼</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+              </div>
+              <!-- 票券 - 支付金額 / 票券號碼 / 備註 + 取消 / 檢查 (no 授權碼) -->
+              <div
+                data-pay-fields="ticket"
+                class="hidden flex flex-col gap-3"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >支付金額</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >票券號碼</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-start gap-3">
+                  <span
+                    class="text-base text-text-default w-[88px] shrink-0 pt-1.5"
+                    >備註</span
+                  ><textarea
+                    rows="3"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize-none"
+                  ></textarea>
+                </div>
+                <div class="flex justify-end gap-2 mt-1">
+                  <button
+                    type="button"
+                    class="h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base"
+                  >
+                    取消
+                  </button>
+                  <button
+                    type="button"
+                    class="h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base"
+                  >
+                    檢查
+                  </button>
+                </div>
+              </div>
+              <!-- 前台自付 -->
+              <div
+                data-pay-fields="frontdesk"
+                class="hidden flex flex-col gap-3"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >支付金額</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >內容</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-start gap-3">
+                  <span
+                    class="text-base text-text-default w-[88px] shrink-0 pt-1.5"
+                    >備註</span
+                  ><textarea
+                    rows="3"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize-none"
+                  ></textarea>
+                </div>
+              </div>
+              <!-- 信用交易 - 支付金額 / 內容 / 備註 -->
+              <div
+                data-pay-fields="credit"
+                class="hidden flex flex-col gap-3"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >支付金額</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >內容</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-start gap-3">
+                  <span
+                    class="text-base text-text-default w-[88px] shrink-0 pt-1.5"
+                    >備註</span
+                  ><textarea
+                    rows="3"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize-none"
+                  ></textarea>
+                </div>
+              </div>
+              <!-- 支票 -->
+              <div
+                data-pay-fields="check"
+                class="hidden flex flex-col gap-3"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >支付金額</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >內容</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+                <div class="flex items-start gap-3">
+                  <span
+                    class="text-base text-text-default w-[88px] shrink-0 pt-1.5"
+                    >備註</span
+                  ><textarea
+                    rows="3"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize-none"
+                  ></textarea>
+                </div>
+              </div>
+              <!-- 訂金 - 訂金餘額（顯示） + 支付金額 (no 內容/備註) -->
+              <div
+                data-pay-fields="deposit"
+                class="hidden flex flex-col gap-3"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >訂金餘額</span
+                  ><span class="flex-1 text-base text-text-default"
+                    >可用：11,044</span
+                  >
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >支付金額</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+              </div>
+              <!-- 紅利 - 紅利餘額（顯示） + 支付金額 (no 內容/備註) -->
+              <div
+                data-pay-fields="bonus"
+                class="hidden flex flex-col gap-3"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >紅利餘額</span
+                  ><span class="flex-1 text-base text-text-default"
+                    >可用：11,044</span
+                  >
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-base text-text-default w-[88px] shrink-0"
+                    >支付金額</span
+                  ><input
+                    type="text"
+                    placeholder="placeholder"
+                    class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 候補單 -> 設為候補單 -->
+          <div
+            data-order-type-panel="substitute"
+            class="hidden min-h-[200px] flex items-center justify-center text-xl text-text-default"
+          >
+            設為候補單
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- [D] 訂房資料 - Figma Frame 453 (1751:43181) full-width row -->
+  <div
+    class="rounded-xl bg-surface-hover border border-border-disabled p-3 md:p-5"
+  >
+      <!-- Top header row：title + lock + 清除 + 2 checkboxes -->
+      <div class="flex items-center flex-wrap gap-x-6 gap-y-2 mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl font-semibold text-text-default"
+            >訂房資料</span
+          >
+          <button
+            type="button"
+            id="orderDataLock"
+            class="order-lock w-6 h-6 cursor-pointer"
+            data-locked="true"
+            aria-label="鎖定 / 解鎖 輸入欄位"
+            aria-pressed="true"
+          >
+            <img
+              src="./assets/icons/lock.svg"
+              alt="lock"
+              class="order-lock-icon w-6 h-6"
+            />
+          </button>
+        </div>
+        <button
+          id="orderDataClear"
+          type="button"
+          class="flex items-center gap-2 cursor-pointer text-base text-text-default"
+        >
+          <img
+            src="./assets/icons/eraser.svg"
+            alt="eraser"
+            class="w-4 h-4"
+          />
+          <span>清除</span>
+        </button>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            id="orderSameAsBooker"
+            class="w-3.5 h-3.5 align-middle bg-text-placeholder"
+          />
+          <span class="text-base text-text-default">入住人同訂房人</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            class="w-3.5 h-3.5 align-middle bg-text-placeholder"
+          />
+          <span class="text-base text-text-default">寄送訂房資訊</span>
+        </label>
+      </div>
+      <!-- Tabs (Frame 356)：訂房 active / 入住 / 合約 (合約 tab 僅當客戶為合約客戶時顯示) -->
+      <div
+        id="orderDataTabs"
+        class="flex gap-3 md:gap-7 px-2 md:px-3 mb-0 flex-wrap"
+      >
+        <button
+          type="button"
+          class="order-tab order-tab-active"
+          data-tab="booking"
+        >
+          訂房
+        </button>
+        <button type="button" class="order-tab" data-tab="checkin">
+          入住
+        </button>
+        <button
+          type="button"
+          class="order-tab hidden"
+          data-tab="contract"
+        >
+          合約
+        </button>
+      </div>
+      <!-- White content card (Frame 277) -->
+      <div class="bg-white rounded-xl border border-border-default p-3 md:p-5">
+        <!-- Tab panel: 訂房 -->
+        <div
+          data-panel="booking"
+          class="order-panel grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5"
+        >
+          <!-- TL: 名稱/證號/行動電話/生日/性別 (3 橘字 label = required + search-priority) -->
+          <div class="flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <span class="text-base text-brand-500 w-[76px] shrink-0"
+                >名稱</span
+              >
+              <div class="flex flex-1 items-center gap-3 min-w-0">
+                <input
+                  type="text"
+                  value="王大頭"
+                  class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                />
+                <span
+                  class="text-base text-text-default shrink-0 whitespace-nowrap"
+                  data-honorific-panel="booking"
+                  >先生</span
+                >
+                <!-- Data exists button (Figma 1790:68604) - 0528 preview: 永遠顯示 default 態，
+                     等後端接通 dropdown 比對後改條件渲染。詳見 components/order-data.md 0528 段 -->
+                <button
+                  type="button"
+                  class="shrink-0 flex items-center justify-center w-11 h-11 border border-border-disabled rounded-[6px] bg-white hover:bg-[var(--color-neutral-500)] group cursor-pointer"
+                  aria-label="客戶資料"
+                  data-data-exists-trigger
+                >
+                  <img
+                    src="./assets/icons/attached-link.svg"
+                    alt=""
+                    class="w-6 h-6 group-hover:[filter:brightness(0)_invert(1)]"
+                  />
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-brand-500 w-[76px] shrink-0"
+                >證號</span
+              >
+              <input
+                type="text"
+                value="X111333555"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-brand-500 w-[76px] shrink-0"
+                >行動電話</span
+              >
+              <input
+                type="text"
+                value="0988777111"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >生日</span
+              >
+              <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
+                <button
+                  type="button"
+                  class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                >
+                  <span
+                    class="rb-cal-date flex-1 text-left text-base text-text-default whitespace-nowrap"
+                  ></span>
+                  <img
+                    src="./assets/icons/calendar.svg"
+                    alt="calendar"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >性別</span
+              >
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="rb-gender"
+                  value="male"
+                  checked
+                  class="w-5 h-5 rounded-full accent-menu"
+                  data-gender-panel="booking"
+                />
+                <span class="text-base text-text-default">男</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="rb-gender"
+                  value="female"
+                  class="w-5 h-5 rounded-full accent-menu"
+                  data-gender-panel="booking"
+                />
+                <span class="text-base text-text-default">女</span>
+              </label>
+            </div>
+          </div>
+          <!-- TR: 國籍 + 地址 (隨 nation radio 切換 taiwan/foreign 變體) -->
+          <div
+            class="flex flex-col gap-5 nation-group"
+            data-nation-group="rb"
+          >
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >國籍</span
+              >
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="rb-nation"
+                  value="tw"
+                  checked
+                  class="nation-radio w-5 h-5 rounded-full"
+                />
+                <span class="text-base text-text-default">臺灣</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="rb-nation"
+                  value="foreign"
+                  class="nation-radio w-5 h-5 rounded-full"
+                />
+                <span class="text-base text-text-default">外籍</span>
+              </label>
+            </div>
+            <!-- 外籍 only：國家 select -->
+            <div
+              class="flex items-center gap-3 nation-foreign-only hidden"
+            >
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >國家</span
+              >
+              <select
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              >
+                <option>英國</option>
+                <option>美國</option>
+                <option>日本</option>
+                <option>韓國</option>
+              </select>
+            </div>
+            <!-- 臺灣 地址：縣/市 + 行政區 + 街道 -->
+            <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
+              <span
+                class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
+                >地址</span
+              >
+              <div class="flex flex-col gap-3 flex-1">
+                <div class="flex flex-col gap-1 min-w-0">
+                  <span class="text-base text-text-default">縣/市</span>
+                  <select
+                    class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  >
+                    <option>台中</option>
+                  </select>
+                </div>
+                <div class="flex flex-col gap-1 min-w-0">
+                  <div class="flex justify-between">
+                    <span class="text-base text-text-default">行政區</span>
+                    <span class="text-base text-text-default">406</span>
+                  </div>
+                  <select
+                    class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  >
+                    <option>北屯區</option>
+                  </select>
+                </div>
+                <div class="flex flex-col gap-1 min-w-0">
+                  <span class="text-base text-text-default">街道</span>
+                  <input
+                    type="text"
+                    placeholder="placeholder"
+                    class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- 外籍 地址：單一「住所」input -->
+            <div
+              class="flex gap-3 addr-foreign hidden"
+              data-addr-mode="foreign"
+            >
+              <span
+                class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
+                >地址</span
+              >
+              <input
+                type="text"
+                placeholder="住所"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+          </div>
+          <!-- BL: Email / 傳真 / 會員備註 (label 在 textarea 之上) -->
+          <div class="flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >Email</span
+              >
+              <input
+                type="text"
+                value="xyz@hotmail.com.tw"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >傳真</span
+              >
+              <input
+                type="text"
+                value="02-33331111"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-base text-text-default">會員備註</span>
+              <textarea
+                rows="4"
+                placeholder="placeholder"
+                class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
+              ></textarea>
+            </div>
+          </div>
+          <!-- BR: 訂房次數 / 累積消費 -->
+          <div class="flex flex-col gap-3">
+            <div
+              class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
+            >
+              <span class="text-base text-text-muted">訂房次數</span>
+              <span class="text-base text-text-default">XYZ</span>
+            </div>
+            <div
+              class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
+            >
+              <span class="text-base text-text-muted">累積消費</span>
+              <span class="text-base text-text-default">XYZ</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tab panel: 入住 - 入住人資料；結構同 訂房 (因「入住人同訂房人」可一鍵 copy) -->
+        <div
+          data-panel="checkin"
+          class="order-panel hidden grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5"
+        >
+          <!-- TL: 名稱/證號/行動電話/生日/性別 (3 橘字 label = required + search-priority) -->
+          <div class="flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <span class="text-base text-brand-500 w-[76px] shrink-0"
+                >名稱</span
+              >
+              <div class="flex flex-1 items-center gap-3 min-w-0">
+                <input
+                  type="text"
+                  placeholder="placeholder"
+                  class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                />
+                <span
+                  class="text-base text-text-default shrink-0 whitespace-nowrap"
+                  data-honorific-panel="checkin"
+                  >先生</span
+                >
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-brand-500 w-[76px] shrink-0"
+                >證號</span
+              >
+              <input
+                type="text"
+                placeholder="placeholder"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-brand-500 w-[76px] shrink-0"
+                >行動電話</span
+              >
+              <input
+                type="text"
+                placeholder="placeholder"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >生日</span
+              >
+              <div class="rb-cal-cell flex-1" data-cal-variant="birthday">
+                <button
+                  type="button"
+                  class="rb-cal-btn flex items-center w-full bg-white border border-border-disabled rounded-[6px] px-3 py-1.5 gap-1.5 cursor-pointer"
+                >
+                  <span
+                    class="rb-cal-date flex-1 text-left text-base text-text-default whitespace-nowrap"
+                  ></span>
+                  <img
+                    src="./assets/icons/calendar.svg"
+                    alt="calendar"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >性別</span
+              >
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="ci-gender"
+                  value="male"
+                  checked
+                  class="w-5 h-5 rounded-full accent-menu"
+                  data-gender-panel="checkin"
+                />
+                <span class="text-base text-text-default">男</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="ci-gender"
+                  value="female"
+                  class="w-5 h-5 rounded-full accent-menu"
+                  data-gender-panel="checkin"
+                />
+                <span class="text-base text-text-default">女</span>
+              </label>
+            </div>
+          </div>
+          <!-- TR: 國籍 + 地址 (隨 nation radio 切換 taiwan/foreign 變體) -->
+          <div
+            class="flex flex-col gap-5 nation-group"
+            data-nation-group="ci"
+          >
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >國籍</span
+              >
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="ci-nation"
+                  value="tw"
+                  checked
+                  class="nation-radio w-5 h-5 rounded-full"
+                />
+                <span class="text-base text-text-default">臺灣</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="ci-nation"
+                  value="foreign"
+                  class="nation-radio w-5 h-5 rounded-full"
+                />
+                <span class="text-base text-text-default">外籍</span>
+              </label>
+            </div>
+            <div
+              class="flex items-center gap-3 nation-foreign-only hidden"
+            >
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >國家</span
+              >
+              <select
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              >
+                <option>英國</option>
+                <option>美國</option>
+                <option>日本</option>
+                <option>韓國</option>
+              </select>
+            </div>
+            <div class="flex gap-3 addr-taiwan" data-addr-mode="taiwan">
+              <span
+                class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
+                >地址</span
+              >
+              <div class="flex flex-col gap-3 flex-1">
+                <div class="flex flex-col gap-1 min-w-0">
+                  <span class="text-base text-text-default">縣/市</span>
+                  <select
+                    class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  >
+                    <option>台中</option>
+                  </select>
+                </div>
+                <div class="flex flex-col gap-1 min-w-0">
+                  <div class="flex justify-between">
+                    <span class="text-base text-text-default">行政區</span>
+                    <span class="text-base text-text-default">406</span>
+                  </div>
+                  <select
+                    class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  >
+                    <option>北屯區</option>
+                  </select>
+                </div>
+                <div class="flex flex-col gap-1 min-w-0">
+                  <span class="text-base text-text-default">街道</span>
+                  <input
+                    type="text"
+                    placeholder="placeholder"
+                    class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex gap-3 addr-foreign hidden"
+              data-addr-mode="foreign"
+            >
+              <span
+                class="text-base text-text-default w-[76px] shrink-0 pt-1.5"
+                >地址</span
+              >
+              <input
+                type="text"
+                placeholder="住所"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+          </div>
+          <!-- BL: Email / 傳真 / 會員備註 (label 在 textarea 之上) -->
+          <div class="flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >Email</span
+              >
+              <input
+                type="text"
+                placeholder="placeholder"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >傳真</span
+              >
+              <input
+                type="text"
+                placeholder="placeholder"
+                class="flex-1 min-w-0 w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base"
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-base text-text-default">會員備註</span>
+              <textarea
+                rows="4"
+                placeholder="placeholder"
+                class="w-full min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base resize"
+              ></textarea>
+            </div>
+          </div>
+          <!-- BR: 訂房次數 / 累積消費 -->
+          <div class="flex flex-col gap-3">
+            <div
+              class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
+            >
+              <span class="text-base text-text-muted">訂房次數</span>
+              <span class="text-base text-text-default">XYZ</span>
+            </div>
+            <div
+              class="flex items-center justify-between border-b border-border-default py-1.5 px-3"
+            >
+              <span class="text-base text-text-muted">累積消費</span>
+              <span class="text-base text-text-default">XYZ</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tab panel: 合約 - Figma "Ordering data" (1404:47296)；3 列；皆為 read-only 顯示 -->
+        <div
+          data-panel="contract"
+          class="order-panel hidden grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-5 gap-y-5"
+        >
+          <!-- 列 1 (Frame 374)：公司資料 - Figma 0527 (1774:64590) -->
+          <div class="flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >公司名稱</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >統編</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >代號</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >品保</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >公司別</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >地址</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+          </div>
+          <!-- 列 2 (Frame 375)：聯絡資料 - Figma 0527 (1774:64606) -->
+          <div class="flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >交觀甲</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >聯絡電話一</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >聯絡電話二</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >業務聯絡人</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >財務聯絡人</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+          </div>
+          <!-- 列 3 (Frame 376)：傳真 + 備註 -->
+          <div class="flex flex-col gap-5">
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >傳真一</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >傳真二</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-base text-text-default w-[76px] shrink-0"
+                >備註</span
+              >
+              <span class="contract-display flex-1">王大頭</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<!-- ===== 產生訂單 submit button (full width on mobile/tablet, 137px right-aligned on desktop) ===== -->
+<div class="flex justify-end mt-5">
+  <button
+    type="button"
+    data-order-summary-submit
+    class="w-full lg:w-[137px] h-[39px] bg-text-default text-text-inverse rounded text-base cursor-pointer hover:bg-text-emphasis"
+  >
+    產生訂單
+  </button>
+</div>
