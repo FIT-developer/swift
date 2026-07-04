@@ -442,7 +442,7 @@
                     <p class="text-center text-xs text-text-default mb-2">
                       2026-01-31 今日可住房況
                     </p>
-                    <div style="height: 220px; position: relative">
+                    <div class="chart-canvas-box chart-canvas-box-220">
                       <canvas id="chartBar"></canvas>
                     </div>
                   </div>
@@ -453,7 +453,7 @@
                     <p class="text-center text-xs text-text-default mb-2">
                       一週訂單統計
                     </p>
-                    <div style="height: 220px; position: relative">
+                    <div class="chart-canvas-box chart-canvas-box-220">
                       <canvas id="chartLine"></canvas>
                     </div>
                   </div>
@@ -464,31 +464,28 @@
                     <p class="text-center text-xs text-text-default mb-2">
                       2026-01-31 今日超賣管理
                     </p>
-                    <div style="height: 240px; position: relative">
+                    <div class="chart-canvas-box chart-canvas-box-240">
                       <canvas id="chartDiverging"></canvas>
                     </div>
-                    <p class="text-center text-xs mt-1" style="color: var(--color-text-400)">
+                    <p class="text-center text-xs mt-1 text-text-secondary">
                       房間數量
                     </p>
                     <div class="flex justify-center gap-5 mt-2">
                       <div class="flex items-center gap-1">
                         <span
-                          class="inline-block w-7 h-3 rounded"
-                          style="background: var(--color-surface-status-negative)"
+                          class="inline-block w-7 h-3 rounded chart-swatch-negative"
                         ></span
                         ><span class="text-xs text-text-secondary">已超賣</span>
                       </div>
                       <div class="flex items-center gap-1">
                         <span
-                          class="inline-block w-7 h-3 rounded"
-                          style="background: var(--color-surface-status-positive)"
+                          class="inline-block w-7 h-3 rounded chart-swatch-positive"
                         ></span
                         ><span class="text-xs text-text-secondary">已賣出</span>
                       </div>
                       <div class="flex items-center gap-1">
                         <span
-                          class="inline-block w-7 h-3 rounded"
-                          style="background: var(--color-text-400)"
+                          class="inline-block w-7 h-3 rounded chart-swatch-inventory"
                         ></span
                         ><span class="text-xs text-text-secondary">當日庫存</span>
                       </div>
@@ -506,8 +503,7 @@
                         class="flex items-center gap-1.5 text-xs text-text-secondary"
                       >
                         <span
-                          class="inline-block w-7 h-3.5 rounded"
-                          style="background: var(--color-radio-default)"
+                          class="inline-block w-7 h-3.5 rounded chart-swatch-ota"
                         ></span
                         >OTA
                       </div>
@@ -515,8 +511,7 @@
                         class="flex items-center gap-1.5 text-xs text-text-secondary"
                       >
                         <span
-                          class="inline-block w-7 h-3.5 rounded"
-                          style="background: var(--color-accent-green)"
+                          class="inline-block w-7 h-3.5 rounded chart-swatch-official"
                         ></span
                         >官網
                       </div>
@@ -524,13 +519,12 @@
                         class="flex items-center gap-1.5 text-xs text-text-secondary"
                       >
                         <span
-                          class="inline-block w-7 h-3.5 rounded"
-                          style="background: var(--color-text-300)"
+                          class="inline-block w-7 h-3.5 rounded chart-swatch-phone"
                         ></span
                         >電話/現場
                       </div>
                     </div>
-                    <div style="height: 260px; position: relative">
+                    <div class="chart-canvas-box chart-canvas-box-260">
                       <canvas id="chartDoughnut"></canvas>
                     </div>
                   </div>

@@ -5,28 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Toggle Switch</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./js/tailwind-config.js"></script>
   <link rel="stylesheet" href="./assets/css/base.css">
+  <style>
+    .toggle-btn {
+      background-color: var(--color-switch-off-track);
+    }
+    .toggle-btn[aria-checked="true"] {
+      background-color: var(--color-accent-green);
+    }
+    .toggle-knob {
+      transform: translateX(0);
+    }
+    .toggle-btn[aria-checked="true"] .toggle-knob {
+      transform: translateX(21px);
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-10 px-4">
+<body class="min-h-screen bg-surface-default flex flex-col items-center justify-center gap-10 px-4">
 
-  <h1 class="text-xl font-semibold text-gray-700 tracking-tight">Toggle Switch</h1>
+  <h1 class="text-xl font-semibold text-text-default tracking-tight">Toggle Switch</h1>
 
   <div class="flex flex-col sm:flex-row items-center gap-8">
 
     <!-- Off state -->
     <label class="inline-flex items-center gap-3 cursor-pointer select-none">
-      <span class="text-sm text-gray-500 w-8 text-right">Off</span>
+      <span class="text-sm text-text-secondary w-8 text-right">Off</span>
       <button
         role="switch"
         aria-checked="false"
         data-toggle
-        class="relative inline-flex shrink-0 w-16 h-7 p-0.5 rounded-full transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-        style="background-color: rgba(60,60,67,0.30);"
+        class="toggle-btn relative inline-flex shrink-0 w-16 h-7 p-0.5 rounded-full transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-radio-default)]"
       >
         <span
           data-knob
-          class="inline-block w-[39px] h-6 rounded-full bg-white shadow-md pointer-events-none transition-transform duration-200 ease-in-out"
-          style="transform: translateX(0px);"
+          class="toggle-knob inline-block w-[39px] h-6 rounded-full bg-white shadow-md pointer-events-none transition-transform duration-200 ease-in-out"
         ></span>
         <span class="sr-only">Toggle off</span>
       </button>
@@ -34,18 +47,16 @@
 
     <!-- On state -->
     <label class="inline-flex items-center gap-3 cursor-pointer select-none">
-      <span class="text-sm text-gray-500 w-8 text-right">On</span>
+      <span class="text-sm text-text-secondary w-8 text-right">On</span>
       <button
         role="switch"
         aria-checked="true"
         data-toggle
-        class="relative inline-flex shrink-0 w-16 h-7 p-0.5 rounded-full transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-        style="background-color: var(--color-accent-green);"
+        class="toggle-btn relative inline-flex shrink-0 w-16 h-7 p-0.5 rounded-full transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-radio-default)]"
       >
         <span
           data-knob
-          class="inline-block w-[39px] h-6 rounded-full bg-white shadow-md pointer-events-none transition-transform duration-200 ease-in-out"
-          style="transform: translateX(21px);"
+          class="toggle-knob inline-block w-[39px] h-6 rounded-full bg-white shadow-md pointer-events-none transition-transform duration-200 ease-in-out"
         ></span>
         <span class="sr-only">Toggle on</span>
       </button>
@@ -54,28 +65,13 @@
   </div>
 
   <!-- State display -->
-  <div id="status" class="text-sm text-gray-400">點擊任一 Toggle 切換狀態</div>
+  <div id="status" class="text-sm text-text-secondary">點擊任一 Toggle 切換狀態</div>
 
   <script>
-    // OFF_BG is iOS reference grey (no Figma token); kept local on purpose so base.css stays Figma-mirrored.
-    const OFF_BG = 'rgba(60,60,67,0.30)';
-    const ON_BG  = getComputedStyle(document.documentElement).getPropertyValue('--color-accent-green').trim();
-    const TRAVEL = 21; // 64 - 39 - 2*2 = 21px
-
     document.querySelectorAll('[data-toggle]').forEach(btn => {
       btn.addEventListener('click', () => {
         const isOn = btn.getAttribute('aria-checked') === 'true';
-        const knob = btn.querySelector('[data-knob]');
-
-        if (isOn) {
-          btn.setAttribute('aria-checked', 'false');
-          btn.style.backgroundColor = OFF_BG;
-          knob.style.transform = 'translateX(0px)';
-        } else {
-          btn.setAttribute('aria-checked', 'true');
-          btn.style.backgroundColor = ON_BG;
-          knob.style.transform = `translateX(${TRAVEL}px)`;
-        }
+        btn.setAttribute('aria-checked', isOn ? 'false' : 'true');
 
         // Update status text
         const states = [...document.querySelectorAll('[data-toggle]')]

@@ -85,11 +85,8 @@ export function initOrderModals() {
       toggle.classList.toggle("text-status-positive", !locked);
     }
     if (icon) {
-      var iconPath = locked
-        ? "./assets/icons/lock.svg"
-        : "./assets/icons/unlock.svg";
-      icon.style.webkitMaskImage = "url('" + iconPath + "')";
-      icon.style.maskImage = "url('" + iconPath + "')";
+      icon.classList.toggle("icon-mask-lock", locked);
+      icon.classList.toggle("icon-mask-unlock", !locked);
     }
     modal.querySelectorAll(".room-edit-price-input").forEach(function (input) {
       input.disabled = locked;

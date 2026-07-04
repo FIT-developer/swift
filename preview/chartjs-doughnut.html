@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>今日訂單來源分佈</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./js/tailwind-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/base.css">
@@ -22,6 +23,11 @@
     .legend { display: flex; align-items: center; gap: 16px; justify-content: center; }
     .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-400); }
     .legend-swatch { width: 28px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+    .chart-title { color: var(--color-text-800); }
+    .chart-wrapper { position: relative; width: 343px; height: 343px; margin: 0 auto; }
+    .legend-swatch-ota { background: var(--color-radio-default); }
+    .legend-swatch-official { background: var(--color-chart-green); }
+    .legend-swatch-phone { background: var(--color-text-300); }
 
     /* Tooltip */
     .chart-tooltip {
@@ -62,9 +68,9 @@
     .tab.active { background: var(--color-text-800); color: var(--color-neutral-0); border-color: var(--color-text-800); }
   </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-10">
+<body class="bg-surface-default min-h-screen flex flex-col items-center justify-center p-10">
 
-  <h1 class="text-lg font-semibold text-gray-700 mb-5">chartjs – doughnut</h1>
+  <h1 class="text-lg font-semibold text-text-default mb-5">chartjs - doughnut</h1>
 
   <div class="tabs" id="tabs">
     <button class="tab active" data-state="default">Default</button>
@@ -73,23 +79,23 @@
 
   <div class="card" id="card">
     <!-- Title -->
-    <p class="text-center text-xs mb-2" style="color: var(--color-text-800);">今日訂單來源分佈</p>
+    <p class="chart-title text-center text-xs mb-2">今日訂單來源分佈</p>
 
     <!-- Legend -->
     <div class="legend mb-3">
       <div class="legend-item">
-        <span class="legend-swatch" style="background: var(--color-radio-default);"></span>OTA
+        <span class="legend-swatch legend-swatch-ota"></span>OTA
       </div>
       <div class="legend-item">
-        <span class="legend-swatch" style="background: var(--color-chart-green);"></span>官網
+        <span class="legend-swatch legend-swatch-official"></span>官網
       </div>
       <div class="legend-item">
-        <span class="legend-swatch" style="background: var(--color-text-300);"></span>電話/現場
+        <span class="legend-swatch legend-swatch-phone"></span>電話/現場
       </div>
     </div>
 
     <!-- Chart wrapper -->
-    <div style="position:relative; width:343px; height:343px; margin:0 auto;">
+    <div class="chart-wrapper">
       <canvas id="chart" width="343" height="343"></canvas>
       <!-- Custom tooltip -->
       <div class="chart-tooltip" id="tooltip">
@@ -110,8 +116,11 @@
     cs.getPropertyValue('--color-chart-green').trim(),
     cs.getPropertyValue('--color-text-300').trim(),
   ];
-  // Hover variants are visual derivations (no Figma source); kept local on purpose so base.css stays Figma-mirrored.
-  const HOVER_COLORS = ['#0052b3', '#28b34e', '#969696'];
+  const HOVER_COLORS = [
+    cs.getPropertyValue('--color-radio-hover').trim(),
+    cs.getPropertyValue('--color-surface-status-positive').trim(),
+    cs.getPropertyValue('--color-text-400').trim(),
+  ];
 
   // ── Chart ─────────────────────────────────────────────────────────────────────
   let chart = null;

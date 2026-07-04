@@ -121,35 +121,23 @@ Header 內容，由左至右：
 
 ---
 
-## 實作備註（2026-07-03，preview/landing.html）
+## 實作備註（current: preview/order-processing.html）
 
 - Modal id：`modalOrderEditBackdrop`（外殼靜態 HTML，desktop 1192 寬 / <768 全螢幕，同其他 modal pattern）
-- Body 不是靜態複製：開啟時 runtime clone `tpl-room-booking` 的 [A]-[E] 4 個區塊（`buildOrderEditModalBody()`，只建一次），clone 後跑 `initSubPageBehaviors` 重綁互動
-- Clone 後差異調整：[A] 標題改「庫存」+ init 後程式切到庫存模式（`btnInventory.click()`）、移除 `.customer-toggle`、cart 頂部插入「訂單編號」列、[D] header 清除右邊插入「還原」button（icon `icons/restore.svg`）
-- [A] 的 mode 切換/Excel/棟別 chips 用 CSS 隱藏（`[data-order-edit-body]` scope，見 landing.css），**DOM 保留**：共用 `initCalendar(root)` 解析這些節點時 null guard 才不會誤判（2026-07-03 code review 後 initCalendar 已改 root-scoped 查找，無 calendar 的頁面直接 skip、各副本各綁各的、hidden template 永不被誤綁）
-- Modal 關閉：backdrop click / Escape 為 delegated 通用機制（自動涵蓋本 modal 與 orderEdit_ 副本）；Escape 一次只關最上層（第二層優先）。`data-no-dismiss` 標記的 modal（會員資料/合約公司）不受 backdrop/Escape 關閉，沿用其既有行為，副本經 cloneNode 繼承標記
+- Body 不是靜態複製：首次開啟時由 `preview/js/order-modals.js` fetch `partials/room-booking-sections.html` 的 [A]-[E] 4 個區塊，只建一次，再跑 `initRoomBookingBehaviors(body)` 重綁互動
+- 注入後差異調整：[A] 標題改「庫存」+ init 後程式切到庫存模式（`btnInventory.click()`）、移除 `.customer-toggle`、cart 頂部插入「訂單編號」列、[D] header 清除右邊插入「還原」button（icon `icons/restore.svg`）
+- [A] 的 mode 切換/Excel/棟別 chips 用 CSS 隱藏（`[data-order-edit-body]` scope，見 landing.css），**DOM 保留**：共用 `initCalendar(root)` 解析這些節點時 null guard 才不會誤判
+- Modal 關閉：backdrop click / Escape 為 delegated 通用機制；Escape 一次只關最上層。`data-no-dismiss` 標記的 modal（會員資料/合約公司）不受 backdrop/Escape 關閉，沿用其既有行為
 - 觸發鏈：訂單處理頁 pill 下拉選單 -> document 層 delegated handler（`[data-op-menu-action]` 分支）。**選單容器不可 stopPropagation**，否則 delegated handler 收不到
 - 「訂單」開 `modalOrderSummaryBackdrop`（demo 一律 unpaid variant，實際對應留給後端）、「簡訊」開 `modalSmsBackdrop`
 
 ### 巢狀 modal 規則（2026-07-03 使用者要求）
 
-> **實作現況更新（2026-07-04 Stage 1d）**：本 modal 已搬到獨立頁
-> `preview/order-processing.html`（JS 在 `preview/js/order-modals.js`）。
-> 獨立 document 內每個共用 modal 只有單一 instance、單一情境，
-> orderEdit_ 副本機制整組退役；巢狀疊層直接由 openModal 動態 z-index
-> （60 + N*5）處理。以下副本段落保留為「同一 document 多情境共用」
-> 情境的歷史規則（landing SPA 時期），不再對應現行實作。
-> body 來源也由 tpl runtime clone 改為 fetch `partials/room-booking-sections.html`。
-
-- **modal 內觸發的次層 modal 一律不共用房間預定頁的 instance**，改用 `orderEdit_` 前綴的專屬副本（`ensureOrderEditModalClone()` runtime 建立，body 內 `data-modal-open` 於 build 時全數改寫；`data-data-exists-trigger` 等寫死 id 的 delegated handler 以 `closest("#modalOrderEditBackdrop")` 分流）
-- 副本層級（2026-07-04 改為動態疊層）：`openModal` 依「當下已開 modal 數 N」給 z = 60 + N*5，任意深度成立（修改 60 -> 會員資料副本 65 -> 合約公司副本 70），`closeModal` 清 inline z。`.modal-layer-2` class 保留但 z 以動態為準
-- scope 判定：副本 append 在 body、不在 `#modalOrderEditBackdrop` 內，故 delegated trigger 的分流檢查是 `closest('#modalOrderEditBackdrop, [id^="orderEdit_"]')` 兩種祖先都認（2026-07-04 修正：原本只認前者，導致會員資料副本內的「更換合約公司」開到原版壓在下層）
-- Escape 只關「最上層」（依 computed z-index 判定）；最上層若標 `data-no-dismiss`（會員資料/合約公司系）則整個不動作，不可穿透關下層
-- 庫存月曆 offcanvas 同樣有專屬副本 `orderEditInvCalendarOffcanvas`（calendar JS 依 grid 所在 scope 自動解析）；offcanvas z 1000 本來就在 modal 之上
-- 內容為 JS 動態渲染的 modal（加購/房型編輯）clone 前先跑 reset/render 填滿內容再拷貝
-- per-ID 的 modal-box CSS 已補 `#orderEdit_` 對應 selector（landing.css）；`.modal-close-btn` 關閉改為 document 層 delegated（副本的關閉鈕才有效）
-- `closeModal`/offcanvas close 為疊層感知：關第二層時若下層還有開著的 modal，body scroll 維持鎖定
-- 副本為視覺示意：原生表單可操作、開/關可用，但**不接原 id-based 互動 JS**（副本內部 id 已全數移除避免重複），正式版由後端重寫
+- 現行 multi-page 架構中，訂單修改 modal 位於 `order-processing.html` 的獨立 document。共用 modal（訂單明細、簡訊、加購、會員資料、合約公司、房型、到店方式、庫存月曆 offcanvas）每頁只有單一 instance，不再建立 `orderEdit_` 副本。
+- 次層 modal 直接開共用 partial 的單一 instance；`openModal` 依「當下已開 modal 數 N」給 z = 60 + N*5，任意深度成立（修改 60 -> 會員資料 65 -> 合約公司 70），`closeModal` 清 inline z。
+- Escape 只關「最上層」（依 computed z-index 判定）；最上層若標 `data-no-dismiss`（會員資料/合約公司系）則整個不動作，不可穿透關下層。
+- `closeModal` 為疊層感知：關第二層時若下層還有開著的 modal，body scroll 維持鎖定。
+- 舊 landing SPA 時期的 `orderEdit_` clone 規則已退役，不再作為現行實作依據。
 
 ---
 

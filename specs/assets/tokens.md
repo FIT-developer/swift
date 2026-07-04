@@ -328,6 +328,9 @@
 | Mobile sidebar backdrop | `--effect-mobile-sidebar-backdrop` | 固定 mobile overlay 特規 |
 | Box shadow / drop-shadow | `--effect-*` CSS variables | 不轉成 color token；不得在 component CSS 中散落 raw `rgba(...)` |
 | Chart translucent fill | `--effect-chart-purple-red-soft` | 由 chart color + opacity 形成，Chart.js 以 CSS variable 讀取 |
+| Switch knob shadow | `--effect-switch-knob-shadow` | iOS switch knob elevation |
+| Bottom sheet shadow | `--effect-bottom-sheet-shadow` | mobile offcanvas / bottom sheet elevation |
+| Dropdown shadow | `--effect-dropdown-shadow` | desktop dropdown elevation |
 | Scrollbar thumb | `--color-border-disabled` | 使用既有 neutral token alias，不新增 scrollbar color token |
 
 ---

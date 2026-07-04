@@ -103,22 +103,19 @@
           >
             <button
               data-metric="ord"
-              class="inv-metric-btn rb-active"
-              style="--c: var(--color-surface-status-positive)"
+              class="inv-metric-btn inv-metric-ord rb-active"
             >
               訂
             </button>
             <button
               data-metric="rem"
-              class="inv-metric-btn rb-active"
-              style="--c: var(--color-chart-blue)"
+              class="inv-metric-btn inv-metric-rem rb-active"
             >
               餘
             </button>
             <button
               data-metric="rsv"
-              class="inv-metric-btn rb-active"
-              style="--c: var(--color-brand-400)"
+              class="inv-metric-btn inv-metric-rsv rb-active"
             >
               保
             </button>
@@ -1020,7 +1017,6 @@
               max="10"
               value="3"
               class="rb-range flex-1 max-[1080px]:basis-full"
-              style="accent-color: var(--color-menuitem-default)"
             />
             <div
               class="rb-range-val border border-border-default rounded-xl px-3 py-1 text-sm text-text-default shrink-0 w-[54px] text-center max-[1080px]:ml-auto"
@@ -1079,12 +1075,12 @@
           type="text"
           value="22224332"
           placeholder="統編"
-          style="width: 140px"
+          class="contract-tax-id-input"
         />
         <select>
           <option>合約公司</option>
         </select>
-        <select style="width: 160px">
+        <select class="contract-booker-select">
           <option>新的訂房人</option>
         </select>
       </div>
@@ -1126,39 +1122,33 @@
     <!-- Frame 222 訂房明細表 (9 cols；header 38、data row 52、total row 32；每 td 都有 px-3 py-2) -->
     <div class="bg-white rounded-xl p-3 overflow-x-auto">
       <table
-        class="w-full text-xs text-text-default bg-white"
-        style="min-width: 1100px"
+        class="booking-detail-table w-full text-xs text-text-default bg-white"
       >
         <thead>
-          <tr class="border-b border-text-default" style="height: 38px">
+          <tr class="booking-detail-head-row border-b border-text-default">
             <th
-              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-              style="width: 198px"
+              class="booking-detail-col-date text-left text-base font-normal px-3 py-2 whitespace-nowrap"
             >
               入住日
             </th>
             <th
-              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-              style="width: 240px"
+              class="booking-detail-col-checkout text-left text-base font-normal px-3 py-2 whitespace-nowrap"
             >
               退房日
             </th>
             <th
-              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-              style="width: 198px"
+              class="booking-detail-col-room text-left text-base font-normal px-3 py-2 whitespace-nowrap"
             >
               房型
             </th>
             <th
-              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-              style="width: 198px"
+              class="booking-detail-col-project text-left text-base font-normal px-3 py-2 whitespace-nowrap"
             >
               專案
             </th>
             <!-- 間數 header：左 label + 右副標「團體：8」(sm 12px) -->
             <th
-              class="text-base font-normal px-3 py-2"
-              style="width: 169px"
+              class="booking-detail-col-count text-base font-normal px-3 py-2"
             >
               <div class="flex items-baseline justify-between">
                 <span>間數</span>
@@ -1168,14 +1158,12 @@
               </div>
             </th>
             <th
-              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-              style="min-width: 123px"
+              class="booking-detail-col-price text-left text-base font-normal px-3 py-2 whitespace-nowrap"
             >
               單價
             </th>
             <th
-              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-              style="min-width: 165px"
+              class="booking-detail-col-subtotal text-left text-base font-normal px-3 py-2 whitespace-nowrap"
             >
               <div class="flex items-center gap-2">
                 <span>小計</span>
@@ -1190,8 +1178,7 @@
               </div>
             </th>
             <th
-              class="text-left text-base font-normal px-3 py-2 whitespace-nowrap"
-              style="width: 144px"
+              class="booking-detail-col-action text-left text-base font-normal px-3 py-2 whitespace-nowrap"
             >
               操作
             </th>
@@ -1199,7 +1186,7 @@
         </thead>
         <tbody>
           <!-- Row 1 -->
-          <tr class="border-b border-border-disabled" style="height: 52px">
+          <tr class="booking-detail-data-row border-b border-border-disabled">
             <!-- 入住日: Calendar simple input -->
             <td class="px-3 py-2 align-middle">
               <div class="rb-cal-cell">
@@ -1337,7 +1324,7 @@
             </td>
           </tr>
           <!-- Row 2 -->
-          <tr class="border-b border-border-disabled" style="height: 52px">
+          <tr class="booking-detail-data-row border-b border-border-disabled">
             <td class="px-3 py-2 align-middle">
               <div class="rb-cal-cell">
                 <button
@@ -1469,7 +1456,7 @@
             </td>
           </tr>
           <!-- Row 3 -->
-          <tr class="border-b border-text-default" style="height: 52px">
+          <tr class="booking-detail-data-row border-b border-text-default">
             <td class="px-3 py-2 align-middle">
               <div class="rb-cal-cell">
                 <button
@@ -1601,7 +1588,7 @@
             </td>
           </tr>
           <!-- 總計列 (32 高) -->
-          <tr style="height: 32px">
+          <tr class="booking-detail-total-row">
             <td class="px-3 py-2"></td>
             <td class="px-3 py-2"></td>
             <td class="px-3 py-2 text-left font-medium whitespace-nowrap">

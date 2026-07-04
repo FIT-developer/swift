@@ -47,13 +47,19 @@
 - **分析更正**：我先前判斷「markup class 從第一天就把父/子顏色寫反」時漏看了 landing.css 這層覆蓋 - 實際渲染一直符合 dropdown-aside.md 規格（父 Neutral/800、子 MenuItem/Default）。教訓：查顏色問題必須看 computed style，不能只讀 markup class（cascade 有多層來源）
 - 遺留（Stage 3 順手項）：aside markup 的 Tailwind class 與渲染結果相反（父 text-menu / 子 text-text-default，被 landing.css 蓋掉），易誤導，收斂時應把 markup class 改正並移除覆蓋規則其一
 
+### Review 修正（Session 79-85 對照後）
+
+- `page-shell.js` 補新頁 desktop aside 收折/展開、role filter（飯店/總部）與 compact 登出/更換帳號入口；新頁沒有公告/訊息/會員安全管理 modal，因此對應 function icons 於新頁隱藏，避免 visible dead controls。
+- 清理已退役的 `orderEdit_` runtime CSS：移除 `#orderEdit_*` modal selector、`.modal-layer-2` 與 `--z-modal-layer-2`。現行 multi-page 疊層由 `order-modals.js` 動態 z-index（60 + N*5）處理。
+- `components/order-edit-modal.md` 改成 current implementation notes：body 來源為 `partials/room-booking-sections.html`，巢狀 modal 不再使用 `orderEdit_` clone；`specs/page-architecture.md` Stage 3 描述改為 topbar/aside 行為模組化與 JS 去重。
+- Inline style / color token 回歸：使用者指出 start.md 早已禁止任意 inline style 與 hard-coded color。追溯確認兩個近期來源：POS 入口 inline style 來自 `b9722a8c`（Session 77 抽 aside），訂單處理 status dots inline style 來自 `5cf5af7d`（Session 81-83 commit）。另有更早 landing chart、toggle、room-booking partial inline style 因 lint 只檢查新增行而未被攔。修正：`preview/`（排除 SVG asset/temp）所有 HTML `style=` 清零；顏色/effect 改 class + CSS variable；新增 `--effect-switch-knob-shadow` / `--effect-bottom-sheet-shadow` / `--effect-dropdown-shadow`；`scripts/lint-conventions.py` 補新增行禁止 `style=` 與 landing.css raw rgb/rgba。
+
 ### 下一步
 
-Stage 3：landing 清理只剩 dashboard（移除 inert 的 initSubPageBehaviors/initCalendar/op-* 綁定、modal 系統與新 module 收斂去重、page-tab chips 機制依上方裁決維持現況）、topbar function icons / compact 收折 / role filter 行為模組化、C/D/E modal 是否抽 partial 待定。
+Stage 3：landing 清理只剩 dashboard（移除 inert 的 initSubPageBehaviors/initCalendar/op-* 綁定、modal 系統與新 module 收斂去重、page-tab chips 機制依上方裁決維持現況）、topbar/aside 行為與 partial 邊界收斂、C/D/E modal 是否抽 partial 待定。
 
 ### 未解問題
 
-- 新頁 topbar 三顆 function icon（公告/訊息/會員安全管理）與 foldBtn/expandBtn 收折、role filter 仍 present-unbound（target modal C/D/E 只在 landing；Stage 3 範圍）
 - landing 內大量 inert code（initSubPageBehaviors 全部 + modal 系統中 rb 專屬分支）待 Stage 3 清理；目前無害但佔 ~2500 行
 
 ---

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>今日超賣管理</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./js/tailwind-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
@@ -12,6 +13,17 @@
   <style>
     /* Card variants */
     .card { background: var(--color-neutral-0); border: 1px solid var(--color-border-default); border-radius: 12px; overflow: hidden; }
+    .chart-card-shell { width: 525px; padding: 20px 20px 16px 20px; }
+    .chart-flex-zero { gap: 0; }
+    .chart-y-labels { width: 80px; padding-right: 8px; }
+    .chart-area { position: relative; flex: 1; }
+    .chart-title { color: var(--color-text-800); }
+    .chart-subtitle { color: var(--color-text-400); }
+    .chart-text { color: var(--color-text-800); }
+    .chart-x-ticks { padding: 4px 0 0 0; }
+    .chart-swatch-negative { background: var(--color-surface-status-negative); }
+    .chart-swatch-positive { background: var(--color-surface-status-positive); }
+    .chart-swatch-inventory { background: var(--color-text-400); }
 
     /* Legend swatch */
     .swatch { display: inline-block; width: 32px; height: 14px; border-radius: 2px; }
@@ -22,11 +34,10 @@
            cursor: pointer; font-size: 13px; color: var(--color-text-800); background: var(--color-neutral-0); }
     .tab.active { background: var(--color-text-800); color: var(--color-neutral-0); border-color: var(--color-text-800); }
 
-    /* Tooltip custom style — bg/border-color use a chart-local rgba (no Figma token); see base.css note. */
     .chart-tooltip {
       position: absolute;
       pointer-events: none;
-      background: rgba(50,50,50,0.92);
+      background: var(--color-text-800);
       color: var(--color-neutral-0);
       border-radius: 8px;
       padding: 8px 12px;
@@ -44,14 +55,14 @@
       transform: translateY(-50%);
       border-width: 6px 0 6px 6px;
       border-style: solid;
-      border-color: transparent transparent transparent rgba(50,50,50,0.92);
+      border-color: transparent transparent transparent var(--color-text-800);
     }
     .chart-tooltip.hidden { opacity: 0; }
   </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-10 flex flex-col items-center">
+<body class="bg-surface-default min-h-screen p-10 flex flex-col items-center">
 
-  <h1 class="text-xl font-semibold text-gray-700 mb-6">chartjs – diverging</h1>
+  <h1 class="text-xl font-semibold text-text-default mb-6">chartjs - diverging</h1>
 
   <!-- State tabs -->
   <div class="tab-bar" id="tabs">
@@ -64,52 +75,52 @@
 
   <!-- Chart card -->
   <div id="card-wrapper">
-    <div class="card" id="chart-card" style="width:525px; padding: 20px 20px 16px 20px;">
+    <div class="card chart-card-shell" id="chart-card">
       <!-- Title -->
-      <p id="chart-title" class="text-center text-xs mb-3" style="color: var(--color-text-800);">
+      <p id="chart-title" class="chart-title text-center text-xs mb-3">
         2026-01-31 今日超賣管理
       </p>
 
       <!-- Y-labels + Chart area side by side -->
-      <div class="flex" style="gap:0;">
+      <div class="chart-flex-zero flex">
         <!-- Y labels column -->
-        <div id="y-labels" class="flex flex-col justify-around" style="width:80px; padding-right:8px;">
+        <div id="y-labels" class="chart-y-labels flex flex-col justify-around">
           <!-- rendered by JS -->
         </div>
 
         <!-- Chart + x-axis -->
         <div class="flex-1 flex flex-col">
-          <div style="position:relative; flex:1;">
+          <div class="chart-area">
             <canvas id="chart"></canvas>
             <!-- Custom tooltip -->
             <div class="chart-tooltip hidden" id="tooltip">
-              <div id="tt-title" style="font-weight:500;"></div>
+              <div id="tt-title" class="font-medium"></div>
               <div id="tt-body"></div>
             </div>
           </div>
           <!-- X-axis ticks -->
-          <div id="x-ticks" class="flex justify-between" style="padding: 4px 0 0 0;">
+          <div id="x-ticks" class="chart-x-ticks flex justify-between">
             <!-- rendered by JS -->
           </div>
         </div>
       </div>
 
       <!-- X-axis unit label -->
-      <p class="text-center text-xs mt-2" style="color: var(--color-text-400);">房間數量</p>
+      <p class="chart-subtitle text-center text-xs mt-2">房間數量</p>
 
       <!-- Legend -->
       <div class="flex justify-center gap-6 mt-3" id="legend">
         <div class="flex items-center gap-2">
-          <span class="swatch" style="background: var(--color-surface-status-negative);"></span>
-          <span class="text-xs" style="color: var(--color-text-800);">已超賣</span>
+          <span class="swatch chart-swatch-negative"></span>
+          <span class="chart-text text-xs">已超賣</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="swatch" style="background: var(--color-surface-status-positive);"></span>
-          <span class="text-xs" style="color: var(--color-text-800);">已賣出</span>
+          <span class="swatch chart-swatch-positive"></span>
+          <span class="chart-text text-xs">已賣出</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="swatch" style="background: var(--color-text-400);"></span>
-          <span class="text-xs" style="color: var(--color-text-800);">當日庫存</span>
+          <span class="swatch chart-swatch-inventory"></span>
+          <span class="chart-text text-xs">當日庫存</span>
         </div>
       </div>
     </div>

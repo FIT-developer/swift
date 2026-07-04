@@ -151,7 +151,7 @@ partial、模組化 JS。比 11583 行單檔更接近他們要重寫的形狀。
 | 0 | 決策 + 本計畫 + js/tailwind-config.js 抽出 | 完成（2026-07-04） |
 | 1 | 拆訂單處理（細分 1a-1d，見下方執行要點） | 完成（2026-07-04，Session 81-84） |
 | 2 | 拆房間預定 -> room-booking.html（改用同一份 [A]-[E] partial） | 完成（2026-07-04，Session 85） |
-| 3 | landing 清理只剩 dashboard；topbar 抽 partial；殘餘共用 JS 模組化 | 待做 |
+| 3 | landing 清理只剩 dashboard；topbar/aside 行為模組化；殘餘共用 JS 去重 | 待做 |
 
 Stage 2 產出（Session 85）：
 - room-booking.html：頁面內容直接注入 room-booking-sections partial（與
@@ -210,4 +210,3 @@ Stage 1 產出（Session 84 收尾）：
 - 回歸三條鏈：訂單明細、簡訊、修改 modal 內再開會員資料/合約公司（三層疊層）
 
 每小段完成：三 lint + 該段驗收標準 + progress.md 交接。
-

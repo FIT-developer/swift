@@ -197,9 +197,6 @@
   --z-mobile-sidebar-backdrop: 40;
   --z-mobile-sidebar: 50;
   --z-modal: 60;
-  /* 第二層 modal（modal 內開 modal：訂單修改 內的 加購/會員資料/房型 副本）
-     介於一般 modal 與 popover 之間 */
-  --z-modal-layer-2: 65;
   /* popover (calendar dropdown 等) 必須高於 modal，
      因為 dropdown 會 portal 到 body 跨 modal 顯示 */
   --z-popover: 70;
@@ -212,6 +209,9 @@
   --effect-modal-header-shadow-soft: 0 1px 0 rgba(0, 0, 0, 0.08);
   --effect-float-shadow: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
   --effect-chart-purple-red-soft: rgba(255, 11, 214, 0.08);
+  --effect-switch-knob-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  --effect-bottom-sheet-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+  --effect-dropdown-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 /* Browser / document baseline */

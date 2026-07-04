@@ -80,11 +80,15 @@ for raw in sys.stdin:
 
     # 3. hardcoded hex
     if cur_file and cur_file.endswith('.html'):
+        if re.search(r'\sstyle\s*=', code):
+            violations.append((loc, '禁止 inline style（改用 scoped class / CSS variable）', line.strip()[:70]))
         if re.search(r'\[#[0-9a-fA-F]{3,8}\]', code):
             violations.append((loc, 'Tailwind arbitrary hex（改用 var(--color-*) token）', line.strip()[:70]))
     if cur_file == 'preview/assets/css/landing.css':
         if re.search(r':\s*[^;{]*#[0-9a-fA-F]{3,8}', code) and '--color-' not in code:
             violations.append((loc, 'landing.css hardcoded hex（顏色走 base.css token）', line.strip()[:70]))
+        if re.search(r':\s*[^;{]*rgba?\(', code):
+            violations.append((loc, 'landing.css raw rgb/rgba（改用 base.css --effect-* 或 --color-*）', line.strip()[:70]))
 
 if violations:
     print('Conventions lint failed - %d violation(s)（只檢查新增行）' % len(violations))

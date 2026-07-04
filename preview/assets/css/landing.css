@@ -45,6 +45,36 @@
 .page-tab-close:hover {
   opacity: 1;
 }
+.chart-canvas-box {
+  position: relative;
+}
+.chart-canvas-box-220 {
+  height: 220px;
+}
+.chart-canvas-box-240 {
+  height: 240px;
+}
+.chart-canvas-box-260 {
+  height: 260px;
+}
+.chart-swatch-negative {
+  background: var(--color-surface-status-negative);
+}
+.chart-swatch-positive {
+  background: var(--color-surface-status-positive);
+}
+.chart-swatch-inventory {
+  background: var(--color-text-400);
+}
+.chart-swatch-ota {
+  background: var(--color-radio-default);
+}
+.chart-swatch-official {
+  background: var(--color-accent-green);
+}
+.chart-swatch-phone {
+  background: var(--color-text-300);
+}
 /* Menu category: parent trigger is neutral, children items are blue.
    Children include the Stage 1d/2 anchor links: room booking / order processing. */
 .menu-category .accordion-trigger {
@@ -64,6 +94,13 @@
 }
 
 /* POS entrance button hover fill */
+.pos-entrance-frame {
+  background: linear-gradient(
+    to right,
+    var(--color-accent-linear-pos-left),
+    var(--color-accent-linear-pos-right)
+  );
+}
 .pos-entrance-inner {
   background: var(--color-neutral-0);
   transition: background 0.2s;
@@ -74,6 +111,30 @@
     var(--color-accent-float-circle-filled-1),
     var(--color-accent-float-circle-filled-2)
   );
+}
+.icon-mask-pos {
+  -webkit-mask-image: url("../icons/pos.svg");
+  mask-image: url("../icons/pos.svg");
+}
+.icon-mask-attached-link {
+  -webkit-mask-image: url("../icons/attached-link.svg");
+  mask-image: url("../icons/attached-link.svg");
+}
+.icon-mask-lock {
+  -webkit-mask-image: url("../icons/lock.svg");
+  mask-image: url("../icons/lock.svg");
+}
+.icon-mask-unlock {
+  -webkit-mask-image: url("../icons/unlock.svg");
+  mask-image: url("../icons/unlock.svg");
+}
+.float-service-frame {
+  background: linear-gradient(
+    to bottom,
+    var(--color-accent-float-circle-mixed-1),
+    var(--color-accent-float-circle-mixed-2)
+  );
+  filter: var(--effect-float-shadow);
 }
 /* Section card */
 .section-card {
@@ -217,15 +278,13 @@ body.mobile-sidebar-open {
   display: flex;
   flex-direction: column;
 }
-#modalRoomIntroBackdrop .modal-box,
-#orderEdit_modalRoomIntroBackdrop .modal-box {
+#modalRoomIntroBackdrop .modal-box {
   width: 100%;
   max-width: 560px;
   display: flex;
   flex-direction: column;
 }
-#modalRoomEditBackdrop .modal-box,
-#orderEdit_modalRoomEditBackdrop .modal-box {
+#modalRoomEditBackdrop .modal-box {
   width: min(calc(100vw - 24px), 646px);
   max-height: calc(100vh - 24px);  /* fallback */
   max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
@@ -233,8 +292,7 @@ body.mobile-sidebar-open {
   flex-direction: column;
   overflow: hidden;
 }
-#modalPurchaseAddonBackdrop .modal-box,
-#orderEdit_modalPurchaseAddonBackdrop .modal-box {
+#modalPurchaseAddonBackdrop .modal-box {
   width: min(calc(100vw - 24px), 1194px);
   max-height: calc(100vh - 24px);  /* fallback */
   max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
@@ -267,11 +325,6 @@ body.mobile-sidebar-open {
   flex-direction: column;
   overflow: hidden;
 }
-/* 第二層 modal：訂單修改 modal 內觸發的巢狀 modal 副本（orderEdit_ 前綴 id），
-   必須蓋在第一層 modal 之上 */
-.modal-backdrop.modal-layer-2 {
-  z-index: var(--z-modal-layer-2);
-}
 /* 訂單修改 modal 的 [A] 區塊鎖定「庫存」模式：
    空房/庫存 mode 切換、Excel 下載、棟別 chips 一律不顯示（DOM 保留給共用 JS
    解析用，僅視覺隱藏；規格見 components/order-edit-modal.md [A] 差異段） */
@@ -280,21 +333,19 @@ body.mobile-sidebar-open {
 [data-order-edit-body] .rb-filter-tabs {
   display: none !important;
 }
-#modalMemberDataBackdrop .modal-box,
-#orderEdit_modalMemberDataBackdrop .modal-box {
+#modalMemberDataBackdrop .modal-box {
   width: min(calc(100vw - 24px), 1180px);
   max-height: calc(100vh - 24px);  /* fallback */
   max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  /* Figma Order condition 外框 fill = #f6fafd (var --color-neutral-75) */
+  /* Figma Order condition outer fill maps to var --color-neutral-75. */
   background: var(--color-neutral-75);
   padding: 20px;
 }
-/* Inner white card wrapper (Figma container 1100x1740 fill #ffffff r:12) */
-#modalMemberDataBackdrop .member-data-inner-card,
-#orderEdit_modalMemberDataBackdrop .member-data-inner-card {
+/* Inner white card wrapper maps to var --color-neutral-0 and radius 12. */
+#modalMemberDataBackdrop .member-data-inner-card {
   display: flex;
   flex-direction: column;
   background: var(--color-neutral-0);
@@ -303,8 +354,7 @@ body.mobile-sidebar-open {
   flex: 1;
   min-height: 0;
 }
-#modalChangeContractCompanyBackdrop .modal-box,
-#orderEdit_modalChangeContractCompanyBackdrop .modal-box {
+#modalChangeContractCompanyBackdrop .modal-box {
   width: min(calc(100vw - 24px), 320px);
   display: flex;
   flex-direction: column;
@@ -343,10 +393,10 @@ body.mobile-sidebar-open {
   left: 2px;
   width: 24px;
   height: 24px;
-  background: #ffffff;
+  background: var(--color-neutral-0);
   border-radius: 100px;
   transition: transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--effect-switch-knob-shadow);
 }
 .member-data-switch input:checked ~ .member-data-switch-track {
   background: var(--color-accent-green);
@@ -390,7 +440,7 @@ body.mobile-sidebar-open {
 }
 
 /* -- member-data filter tab (Figma Frame 606: 全部/未取消/正式單/未付款/取消單)
-   Figma: active = bottom-only stroke #f28b45 (brand-400) + SemiBold, inactive = no border + Regular.
+   Figma: active = bottom-only brand-400 stroke + SemiBold, inactive = no border + Regular.
    Transparent bottom border on inactive prevents 1px layout shift on toggle. -- */
 .member-data-filter-tab {
   padding: 4px 8px;
@@ -421,7 +471,7 @@ body.mobile-sidebar-open {
   height: 22px;
 }
 
-/* -- member-data pagination active page bg (Figma #b0b0b0 = neutral-300) -- */
+/* -- member-data pagination active page bg: neutral-300 -- */
 .member-data-pagination-page--active {
   background: var(--color-neutral-300);
 }
@@ -810,9 +860,6 @@ body.mobile-sidebar-open {
   #modalRoomIntroBackdrop,
   #modalRoomEditBackdrop,
   #modalPurchaseAddonBackdrop,
-  #orderEdit_modalRoomIntroBackdrop,
-  #orderEdit_modalRoomEditBackdrop,
-  #orderEdit_modalPurchaseAddonBackdrop,
   #modalSmsBackdrop,
   #modalOrderSummaryBackdrop,
   #modalOrderEditBackdrop {
@@ -825,9 +872,6 @@ body.mobile-sidebar-open {
   #modalRoomIntroBackdrop .modal-box,
   #modalRoomEditBackdrop .modal-box,
   #modalPurchaseAddonBackdrop .modal-box,
-  #orderEdit_modalRoomIntroBackdrop .modal-box,
-  #orderEdit_modalRoomEditBackdrop .modal-box,
-  #orderEdit_modalPurchaseAddonBackdrop .modal-box,
   #modalSmsBackdrop .modal-box,
   #modalOrderSummaryBackdrop .modal-box,
   #modalOrderEditBackdrop .modal-box {
@@ -969,7 +1013,7 @@ body.mobile-sidebar-open {
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   padding: 12px 12px 20px;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--effect-bottom-sheet-shadow);
   transform: translateY(0);
   transition: transform 250ms ease-in-out;
 }
@@ -1366,6 +1410,56 @@ body.mobile-sidebar-open {
 .inv-metric-btn.rb-active {
   background: var(--c);
 }
+.inv-metric-ord {
+  --c: var(--color-surface-status-positive);
+}
+.inv-metric-rem {
+  --c: var(--color-chart-blue);
+}
+.inv-metric-rsv {
+  --c: var(--color-brand-400);
+}
+.rb-range {
+  accent-color: var(--color-menuitem-default);
+}
+.contract-tax-id-input {
+  width: 140px;
+}
+.contract-booker-select {
+  width: 160px;
+}
+.booking-detail-table {
+  min-width: 1100px; /* min-width-ok: booking detail table is inside overflow-x-auto */
+}
+.booking-detail-head-row {
+  height: 38px;
+}
+.booking-detail-data-row {
+  height: 52px;
+}
+.booking-detail-total-row {
+  height: 32px;
+}
+.booking-detail-col-date,
+.booking-detail-col-room,
+.booking-detail-col-project {
+  width: 198px;
+}
+.booking-detail-col-checkout {
+  width: 240px;
+}
+.booking-detail-col-count {
+  width: 169px;
+}
+.booking-detail-col-price {
+  min-width: 123px; /* min-width-ok: booking detail table is inside overflow-x-auto */
+}
+.booking-detail-col-subtotal {
+  min-width: 165px; /* min-width-ok: booking detail table is inside overflow-x-auto */
+}
+.booking-detail-col-action {
+  width: 144px;
+}
 
 /* -- Room-booking: accordion ------------------------- */
 .rb-accordion-content.rb-hidden {
@@ -1633,7 +1727,7 @@ body.mobile-sidebar-open {
 
 /* -- Phase C: 接送 雙 swiper card stack（State D） --------------- */
 /* Spec: components/arrival-method-modal.md L145-244
-   外層 798x810 / 接 + 送 並排 gap 24 / 卡片 393 wide / inner stack bg #f6fafd */
+   外層 798x810 / 接 + 送 並排 gap 24 / 卡片 393 wide / inner stack bg neutral-75 */
 .am-transfer-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1795,8 +1889,8 @@ body.mobile-sidebar-open {
   color: var(--color-neutral-400);
   cursor: not-allowed;
 }
-/* trash-can.svg ships with stroke #D90000 (red, active state).
-   Disabled state needs #B0B0B0 - use mask-image so color comes from CSS,
+/* trash-can.svg ships with an active-state red stroke.
+   Disabled state needs neutral-300 - use mask-image so color comes from CSS,
    driven by currentColor. */
 .am-transfer-delete-icon {
   width: 24px;
@@ -1804,11 +1898,11 @@ body.mobile-sidebar-open {
   background: currentColor;
   -webkit-mask: url("../icons/trash-can.svg") no-repeat center / contain;
   mask: url("../icons/trash-can.svg") no-repeat center / contain;
-  color: var(--color-border-plugin-invalid); /* #d90000 active */
+  color: var(--color-border-plugin-invalid);
   display: inline-block;
 }
 .am-transfer-delete[disabled] .am-transfer-delete-icon {
-  color: var(--color-text-300); /* #b0b0b0 disabled */
+  color: var(--color-text-300);
 }
 .am-transfer-dots-row {
   display: flex;
@@ -1859,9 +1953,7 @@ body.mobile-sidebar-open {
 @media (max-width: 768px) {
   /* 滿版：不留外層 padding；border-radius 與左右 border 都拿掉 */
   #modalArrivalMethodBackdrop .am-modal-box,
-  #modalArrivalMethodBackdrop .am-modal-box[data-am-state="transfer"],
-  #orderEdit_modalArrivalMethodBackdrop .am-modal-box,
-  #orderEdit_modalArrivalMethodBackdrop .am-modal-box[data-am-state="transfer"] {
+  #modalArrivalMethodBackdrop .am-modal-box[data-am-state="transfer"] {
     width: 100vw;
     max-width: 100vw;
     height: 100vh;     /* fallback */
@@ -1900,7 +1992,7 @@ body.mobile-sidebar-open {
 
 /* -- 訂單處理: 表格「訂單編號」狀態 pill -------------------------
    Figma Status buttons instance (2027:64493, 2026-07-03 get_node 覆核)：
-   cornerRadius 44、padding 4/10/10/4、stroke Color/Neutral/50 (#f6f6f6)。
+   cornerRadius 44、padding 4/10/10/4、stroke Color/Neutral/50。
    深色底 Color/Neutral/700（不隨狀態變色，只有左側 dot 變色）、
    文字 Color/Text/50、triangle 白色。dot 顏色一律走 Color/Dots/* token。 */
 .op-status-pill {
@@ -1919,6 +2011,21 @@ body.mobile-sidebar-open {
   border-radius: 50%;
   flex-shrink: 0;
 }
+.op-status-dot-validated {
+  background: var(--color-dots-validated);
+}
+.op-status-dot-overdues {
+  background: var(--color-dots-overdues);
+}
+.op-status-dot-alternative {
+  background: var(--color-dots-alternative);
+}
+.op-status-dot-unpaid {
+  background: var(--color-dots-unpaid);
+}
+.op-status-dot-cancel {
+  background: var(--color-dots-cancel);
+}
 .op-status-pill-text {
   color: var(--color-text-50);
   font-size: 14px;
@@ -1934,7 +2041,7 @@ body.mobile-sidebar-open {
 /* -- 訂單處理: 次要 badge（來源/分類標籤，2026-07-03 get_node 覆核，
    Figma 對這兩種 badge 有明確不同的樣式定義，不是同一套樣式改顏色） ------ */
 /* 分類 badge（加購/對帳/網路訂房/開發票...；Status buttons 2004:63505 等）：
-   cornerRadius 2、padding 2/6/6/2、stroke+文字都是 Color/Neutral/500 (#6d6d6d)、
+   cornerRadius 2、padding 2/6/6/2、stroke+文字都是 Color/Neutral/500、
    字級 16px（base，不是 12px！這點跟來源 badge 不同） */
 .op-badge {
   display: inline-flex;
@@ -1949,8 +2056,8 @@ body.mobile-sidebar-open {
 }
 /* 來源 badge（Booking/Agoda；Status buttons 2026:68595）：
    cornerRadius 6（不是全圓角 pill）、padding 4/12/12/4、
-   文字 Color/Neutral/800 (#454545)、字級 12px（sm）。
-   get_selection 回報 strokes:["#f28b45"] 且無 fills key，SVG export 覆核
+   文字 Color/Neutral/800、字級 12px（sm）。
+   get_selection 回報 strokes 為 brand-400 且無 fills key，SVG export 覆核
    （2026-07-03）發現兩者都不是表面值：
    - 邊框只有「左邊」一條 2px（上/下/右在 SVG 是零面積退化路徑）
    - 整體有 linear 漸層 fill：白 -> Brand-200，左下往右上對角線 */
@@ -1978,7 +2085,7 @@ body.mobile-sidebar-open {
   z-index: 1000;
   background: var(--color-neutral-0);
   border-radius: 12px;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--effect-bottom-sheet-shadow);
   padding: 12px;
   left: 0;
   right: 0;
@@ -2039,7 +2146,7 @@ body.mobile-sidebar-open {
     bottom: auto;
     width: 136px;
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--effect-dropdown-shadow);
     padding: 4px;
     transform: none;
     transition: none;

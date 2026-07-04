@@ -306,9 +306,8 @@
                           aria-pressed="true"
                         >
                           <span
-                            class="icon-mask h-6 w-6"
+                            class="icon-mask icon-mask-lock h-6 w-6"
                             data-room-edit-lock-icon
-                            style="-webkit-mask-image: url('./assets/icons/lock.svg'); mask-image: url('./assets/icons/lock.svg')"
                           ></span>
                         </button>
                       </span>
@@ -1219,13 +1218,7 @@
     <div class="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-1.5">
       <span class="text-base text-text-default whitespace-nowrap">客服</span>
       <!-- 漸層外框：外層 gradient wrapper p-[3px]，內層白底圓形 -->
-      <div
-        class="rounded-full p-[3px]"
-        style="
-          background: linear-gradient(to bottom, var(--color-accent-float-circle-mixed-1), var(--color-accent-float-circle-mixed-2));
-          filter: var(--effect-float-shadow);
-        "
-      >
+      <div class="float-service-frame rounded-full p-[3px]">
         <button
           class="w-[42px] h-[42px] rounded-full bg-surface-hover flex items-center justify-center"
         >
@@ -1671,7 +1664,7 @@
       aria-labelledby="modalMemberDataTitle"
     >
       <div class="modal-box">
-       <!-- Inner white card wrapper (Figma container 1100x1740, fill #ffffff, r:12) -->
+       <!-- Inner white card wrapper maps to neutral-0 fill and radius 12. -->
        <div class="member-data-inner-card">
         <!-- Header -->
         <div class="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-border-focus">
