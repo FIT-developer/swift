@@ -7,6 +7,80 @@
 
 ---
 
+## Session 93 交接 (2026-07-04)
+
+### 任務: 收斂 Session 92 分析出的三個 smoke test 缺口
+
+使用者要求驗證 Session 92 完成度並分析潛在未完善之處。分析過程中另外用
+負向測試找出 `APP_CSS_LOADED_CHECK`（Session 92 收緊版）沒測到的三個
+缺口，使用者確認後合併成一次改動修復。
+
+### 發現的缺口（Session 92 沒測到）
+
+Session 92 把檢查從「至少 import 且非空」收緊為「missing/unexpected 雙向
+集合比對」，但集合比對本身有盲區，實測證實：
+1. 反轉全部 5 個 `@import` 順序 -> smoke test 依然全過（集合比對不管順序）
+2. 重複 `@import url("./shell.css")` -> 依然全過（集合比對不管出現次數）
+3. `expected` 陣列旁沒有維護提示，未來加第 6 個 domain 檔的人不知道要
+   同步改這裡
+
+第 1 點目前無實際視覺風險（另外驗證過 5 個 domain 檔之間 selector 零重疊，
+順序打亂不影響 cascade 結果），但屬於「安全是巧合、不是機制保證」。
+
+### 本輪改動
+
+`scripts/smoke-test.mjs`：`APP_CSS_LOADED_CHECK` 的 missing/unexpected
+雙向集合比對，改成單一的**有序陣列相等比對**
+（`importedNames.join(",") !== expected.join(",")`）。CSSImportRule 在
+`cssRules` 裡本來就照 document 順序排列，這一個比對就同時涵蓋順序錯、
+重複 import、missing、unexpected 四種錯法，程式碼比雙向集合比對更短。
+`expected` 陣列正上方補使用者提供的維護註解（英文，緊貼陣列本體）：
+`Keep this list in the same order as preview/assets/css/app.css. / When
+adding, removing, renaming, or reordering domain CSS files, update both.`
+（外層原有的中文說明段落維持不動，兩者不重複，只是一近一遠兩層提示）。
+
+`start.md`：「commit & push flow」段新增一條規則，見下方「重要決定」。
+
+### 驗證
+
+- 4 個負向測試逐一實測，確認新邏輯抓得到全部四種錯法（此輪新增的第
+  1/2 項是 Session 92 測不到的，第 3/4 項沿用 Session 91/92 就有的
+  missing/unexpected 覆蓋範圍，改寫後沒有退化）：
+  - 反轉全部 import 順序 -> 三頁 FAIL，訊息印出 expected 與 actual 的完整
+    順序供比對
+  - 重複 import `shell.css` -> 三頁 FAIL
+  - 拿掉 `modals.css` -> 三頁 FAIL
+  - 加一個不在清單內的 `nonexistent-extra.css` -> 三頁 FAIL
+- 每次負向測試後還原 app.css，確認正向案例（未改動的當前檔案）依然
+  三頁全 PASS（11/9/10 checks），沒有引入新的誤判
+- 4 個 lint 全 pass、`git diff --check` pass
+
+### 重要決定
+
+- 順序驗證訂為嚴格規則（陣列必須完全相等，不只是集合相等）：這不是
+  新加的限制，`page-architecture.md` 已經明文記錄 domain CSS 的 cascade
+  順序（shell -> dashboard -> modals -> room-booking -> order-processing）
+  是既定決策，這次只是把既有決策變成機器可判定
+- 沒有另外處理「順序打亂目前無害（zero selector 重疊）」這件事本身要
+  不要留檔；判斷是機制上鎖死順序比另外去維護一份 selector 重疊白名單
+  更簡單，不需要額外機制
+- **使用者明確裁決**：Session 92 只修 Session 91 的 stale「下一步」、沒有
+  回頭改 Session 89 同樣的舊句型，這個做法是對的，不要做全面回溯改寫。
+  歷史 session 是凍結記錄，全面洗會降低時間線可信度。此原則已寫入
+  `start.md` 的「commit & push flow」段（新增一條：發現舊 session 有同類
+  stale 寫法時只修最新一筆，不回溯改寫），後續以 start.md 為準，不引用
+  repo 外、不可驗證的 memory 系統當交接證據。
+
+### 下一步
+
+- 本輪進入 commit/push flow；實際 SHA 與遠端狀態以 git history 為準
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 92 交接 (2026-07-04)
 
 ### 任務: 收緊 Session 91 後續防線與 commit/push 交接規則

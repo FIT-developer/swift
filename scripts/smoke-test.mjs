@@ -238,13 +238,20 @@ const SHELL_CHECKS = [
 // app.css 會是空的（cssRules.length === 0），但這個失效狀態不會拋 JS 例外、
 // 不會被既有 lint（只 regex 檢查行，不驗證 CSS 語法）攔到，三頁看起來
 // "大致正常"（多數版面由 Tailwind utility class 撐起）。
-// 此檢查直接驗證瀏覽器實際解析出的 CSSOM：app.css 必須 import 固定 5 個
-// domain CSS 檔，且每個 domain 檔自己的 cssRules.length > 0。少 import、
-// 多 import、或 imported stylesheet 空白都判定失敗。
+// 此檢查直接驗證瀏覽器實際解析出的 CSSOM：app.css 必須依序 import 固定
+// 5 個 domain CSS 檔（順序即 page-architecture.md 記錄的 cascade 順序，
+// shell -> dashboard -> modals -> room-booking -> order-processing），且
+// 每個 domain 檔自己的 cssRules.length > 0。少 import、多 import、順序錯、
+// 重複 import 都判定失敗（陣列不完全相等即 fail，一次覆蓋四種錯法）。
+//
+// 新增/刪除/改名 domain CSS 檔時，記得同步改下面的 expected 陣列，否則
+// 這裡會 FAIL（這是預期行為，不是 bug - 代表 app.css 跟這份清單不同步了）。
 const APP_CSS_LOADED_CHECK = {
-  name: "app.css @import chain matches expected domain CSS and parses",
+  name: "app.css @import chain matches expected domain CSS order and parses",
   expr: `
     (function () {
+      // Keep this list in the same order as preview/assets/css/app.css.
+      // When adding, removing, renaming, or reordering domain CSS files, update both.
       var expected = [
         "shell.css",
         "dashboard.css",
@@ -268,15 +275,9 @@ const APP_CSS_LOADED_CHECK = {
       var importedNames = imports.map(function (r) {
         return String(r.href || "").split("/").pop();
       });
-      var missing = expected.filter(function (name) {
-        return importedNames.indexOf(name) === -1;
-      });
-      var unexpected = importedNames.filter(function (name) {
-        return expected.indexOf(name) === -1;
-      });
-      if (missing.length || unexpected.length) {
-        return "app.css imports mismatch; missing=" + missing.join(",") +
-          " unexpected=" + unexpected.join(",");
+      if (importedNames.join(",") !== expected.join(",")) {
+        return "app.css imports mismatch; expected=" + expected.join(",") +
+          " actual=" + importedNames.join(",");
       }
       var empty = imports.filter(function (r) {
         try {

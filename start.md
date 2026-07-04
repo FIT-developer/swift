@@ -353,6 +353,7 @@ checkbox 三色、toggle switch、filter tab、modal delegation pattern 等
 只打「commit」不打「push」、或只說「push」不說「commit」時，沿用其字面意思，不擴張為完整 flow。
 若 session 中已經事先寫過 progress.md 該段，不需重寫，直接 staging 既有變更 commit。
 - 若交接是在 commit/push 前先寫，progress.md 不要留下會在同一個 flow 內立刻失效的句子（例如「本輪未 commit / 未 push」「驗收後再 commit / push」）。改寫成「本輪進入 commit/push flow，實際 SHA 與遠端狀態以 git history 為準」，或直接省略 git 狀態；push 後 final 再回報 SHA。
+- 發現舊 session 交接裡有同類 stale 寫法（例如更早的 session 也寫了「本輪未 commit / 未 push」這種句子）時，**不要做全面回溯改寫**：只修正最新/當前這筆交接，並確保規則本身（本節）已更新，讓之後的 session 自然照新規則寫，不再重演。舊 session 段落是當時撰寫當下的凍結記錄，逐筆回頭洗會讓時間線可信度下降（讀者無法再假設某個舊 session 的內容反映當時實際狀態）。
 
 > **Why 強制這順序**: 之前曾連續多個 commit 漏寫 progress.md，其他 AI agent 接手時無法從 progress.md 得知上下文，必須翻 git log 推測，浪費 context 與容易再次腦補。Progress.md 必須與 git history 同步。
 
