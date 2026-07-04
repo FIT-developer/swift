@@ -195,7 +195,7 @@ frozen-reference) 執行自我檢查
 - [ ] **Font-size 檢查**: 沒有 < 12px 字體（`text-[10/11px]`、`font-size: <12px`）；用 `text-xs/sm/base/lg/xl` 或 `var(--font-size-*)`
 - [ ] **min-width mobile-safe 檢查**: 所有 fixed `min-w-[Npx]` 都有 `md:` 前綴或包 `@media (min-width: 768px)`；不得讓 mobile 強制大於 viewport
 - [ ] **Lint 自檢**: 跑 `./scripts/lint-fonts.sh`、`./scripts/lint-conventions.sh` 和 `./scripts/lint-partials.sh`（commit 前 hook 會自動跑，另含 lint-tokens），exit 0 才算通過。conventions lint 只檢查新增行：ASCII-only / min-w 斷點前綴 / CSS min-width gate（合法例外加 `/* min-width-ok: 原因 */` 標記）/ hardcoded hex。partials lint 檢查每頁 partial/module manifest 與組合後 duplicate id / modal target（新頁面必須登記進 `scripts/lint-partials.py` 的 MANIFEST）
-- [ ] **Browser smoke test**: 改動頁面 / partial / js module 後跑 `node scripts/smoke-test.mjs`（三頁載入 console 無錯、chart 非空、aside drawer/accordion、session 與 topbar modal 開關），exit 0 才算通過；不進 pre-commit hook（需 Chrome、秒數級），屬手動 QA 步驟
+- [ ] **Browser smoke test**: 改動頁面 / partial / js module / CSS entrypoint 或 domain CSS import 結構後跑 `node scripts/smoke-test.mjs`（三頁載入 console 無錯、app.css domain import 實際載入、chart 非空、aside drawer/accordion、session 與 topbar modal 開關），exit 0 才算通過；不進 pre-commit hook（需 Chrome、秒數級），屬手動 QA 步驟
 - [ ] **狀態完整性**: Spec 裡定義的所有狀態 (hover/active/disabled/error 等) 都有實作,沒有漏掉
 - [ ] **文字內容**: 繁體中文內容跟 Figma 一致,沒有自動翻譯或改寫
 **任何一項不通過,必須修正後重新報告,直到全部通過**。
@@ -352,6 +352,7 @@ checkbox 三色、toggle switch、filter tab、modal delegation pattern 等
 
 只打「commit」不打「push」、或只說「push」不說「commit」時，沿用其字面意思，不擴張為完整 flow。
 若 session 中已經事先寫過 progress.md 該段，不需重寫，直接 staging 既有變更 commit。
+- 若交接是在 commit/push 前先寫，progress.md 不要留下會在同一個 flow 內立刻失效的句子（例如「本輪未 commit / 未 push」「驗收後再 commit / push」）。改寫成「本輪進入 commit/push flow，實際 SHA 與遠端狀態以 git history 為準」，或直接省略 git 狀態；push 後 final 再回報 SHA。
 
 > **Why 強制這順序**: 之前曾連續多個 commit 漏寫 progress.md，其他 AI agent 接手時無法從 progress.md 得知上下文，必須翻 git log 推測，浪費 context 與容易再次腦補。Progress.md 必須與 git history 同步。
 

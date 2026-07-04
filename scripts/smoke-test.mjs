@@ -9,6 +9,7 @@
 //   - landing 3 個 topbar modal（公告/管理訊息/會員安全管理）開關
 //   - order-processing: partial 組裝 + op 列表 + modal 系統初始化
 //   - room-booking: partial 組裝 + [A] calendar 42 格渲染
+//   - app.css entrypoint: expected domain CSS imports are present and non-empty
 //
 // 零依賴設計: Node >= 22（原生 WebSocket）+ 系統 Chrome headless CDP +
 // python3 http.server。不引入 npm 套件，符合專案無 build step 約束。
@@ -237,13 +238,20 @@ const SHELL_CHECKS = [
 // app.css 會是空的（cssRules.length === 0），但這個失效狀態不會拋 JS 例外、
 // 不會被既有 lint（只 regex 檢查行，不驗證 CSS 語法）攔到，三頁看起來
 // "大致正常"（多數版面由 Tailwind utility class 撐起）。
-// 此檢查直接驗證瀏覽器實際解析出的 CSSOM：app.css 至少要有 1 條規則
-// （@import 本身就是一條 CSSImportRule），且每個 @import 進來的分域檔
-// 自己也要有內容（cssRules.length > 0），兩者缺一都判定失敗。
+// 此檢查直接驗證瀏覽器實際解析出的 CSSOM：app.css 必須 import 固定 5 個
+// domain CSS 檔，且每個 domain 檔自己的 cssRules.length > 0。少 import、
+// 多 import、或 imported stylesheet 空白都判定失敗。
 const APP_CSS_LOADED_CHECK = {
-  name: "app.css @import chain actually parses (all domain CSS loaded)",
+  name: "app.css @import chain matches expected domain CSS and parses",
   expr: `
     (function () {
+      var expected = [
+        "shell.css",
+        "dashboard.css",
+        "modals.css",
+        "room-booking.css",
+        "order-processing.css"
+      ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
       });
@@ -257,6 +265,19 @@ const APP_CSS_LOADED_CHECK = {
       if (!rules.length) return "app.css has 0 rules (unterminated comment or empty file?)";
       var imports = rules.filter(function (r) { return r.type === CSSRule.IMPORT_RULE; });
       if (!imports.length) return "app.css has rules but no @import (expected domain CSS split)";
+      var importedNames = imports.map(function (r) {
+        return String(r.href || "").split("/").pop();
+      });
+      var missing = expected.filter(function (name) {
+        return importedNames.indexOf(name) === -1;
+      });
+      var unexpected = importedNames.filter(function (name) {
+        return expected.indexOf(name) === -1;
+      });
+      if (missing.length || unexpected.length) {
+        return "app.css imports mismatch; missing=" + missing.join(",") +
+          " unexpected=" + unexpected.join(",");
+      }
       var empty = imports.filter(function (r) {
         try {
           return !r.styleSheet || !r.styleSheet.cssRules || r.styleSheet.cssRules.length === 0;

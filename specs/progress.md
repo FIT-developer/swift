@@ -7,6 +7,45 @@
 
 ---
 
+## Session 92 交接 (2026-07-04)
+
+### 任務: 收緊 Session 91 後續防線與 commit/push 交接規則
+
+使用者指出多 agent 協作時，先在 progress 寫「未 commit / 未 push」或
+「驗收後 commit / push」，但同一輪後續又真的 commit/push，會讓下一輪
+讀 progress 時多一個判讀誤會點。使用者裁決：修 review 提到的 1/2/3。
+
+### 本輪改動
+
+1. `scripts/smoke-test.mjs`：`APP_CSS_LOADED_CHECK` 由「至少有 import 且
+   imported stylesheet 非空」收緊為 exact expected imports。`app.css` 必須
+   import 且只 import `shell.css`、`dashboard.css`、`modals.css`、
+   `room-booking.css`、`order-processing.css`，並且每個 domain CSS 的
+   `cssRules.length > 0`。
+2. `start.md`：Browser smoke test 規則補上 CSS entrypoint / domain CSS import
+   結構變更；commit & push flow 補規則：不要在 progress.md 留下同一個
+   commit/push flow 內會立刻失效的 git 狀態句，例如「本輪未 commit / 未 push」
+   或「驗收後再 commit / push」。
+3. `specs/progress.md`：修正 Session 91 的 stale 下一步，改記 `a9c64dc` 已
+   commit/push；避免最新交接讓下一輪誤以為還有待推送工作。
+
+### 驗證
+
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-tokens.sh` exit 0（token mirror ok）
+- `./scripts/lint-partials.sh` exit 0（3 pages, 3 standalone）
+- `git diff --check` exit 0
+- `node scripts/smoke-test.mjs` exit 0：landing 11 checks、
+  order-processing 9 checks、room-booking 10 checks
+
+### 待你驗收
+
+- 本輪變更待使用者驗收；若後續進入 commit/push flow，實際 SHA 與遠端狀態以
+  git history 為準。
+
+---
+
 ## Session 91 交接 (2026-07-04)
 
 ### 任務: 修復 Session 90 app.css 斷頭註解回歸 + 補 smoke test 防線
@@ -71,9 +110,8 @@ state（console 錯誤、chart 資料、classList 開關），modal 的
 
 ### 下一步
 
-- 使用者驗收本輪修復（截圖已附，日曆與 modal 視覺應與 Session 89 之前
-  等價）
-- 驗收後依指示 commit / push
+- 本輪已 commit/push：`a9c64dc`。待使用者驗收修復結果；日曆與 modal 視覺
+  應與 Session 89 之前等價。
 
 ### 未解問題
 
