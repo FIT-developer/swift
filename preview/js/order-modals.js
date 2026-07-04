@@ -3,76 +3,11 @@
 // 訂單明細 / 簡訊 / 訂單修改接線、加購渲染系統、會員資料 / 合約公司 / 訂房明細編輯。
 // 到店方式 modal 維持靜態 + 開關（與 landing 時期 orderEdit_ 副本等價保真；
 // chip 切換 / swiper 行為屬房間預定頁情境，Stage 2 再模組化）。
-// landing 保留 inline 版 - 過渡性複製（計畫內），Stage 3 收斂去重。
+// modal 開關核心共用 js/modal-controller.js，避免頁面各自複製。
+import { createModalController } from "./modal-controller.js";
 import { initRoomBookingBehaviors } from "./room-booking-behaviors.js";
 
 export function initOrderModals() {
-  var modalReturnFocusTargets = {};
-  function rememberModalReturnFocus(id, target) {
-    var fallback = document.activeElement;
-    var focusTarget =
-      target && typeof target.focus === "function" ? target : fallback;
-    if (
-      focusTarget &&
-      focusTarget !== document.body &&
-      typeof focusTarget.focus === "function"
-    ) {
-      modalReturnFocusTargets[id] = focusTarget;
-    }
-  }
-  function restoreModalReturnFocus(id) {
-    var focusTarget = modalReturnFocusTargets[id];
-    delete modalReturnFocusTargets[id];
-    if (!focusTarget || !focusTarget.isConnected) return;
-    if (focusTarget.disabled) return;
-    try {
-      focusTarget.focus({ preventScroll: true });
-    } catch (err) {
-      focusTarget.focus();
-    }
-  }
-  function openModal(id, returnFocusTarget) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    rememberModalReturnFocus(id, returnFocusTarget);
-    // 動態疊層：已有 N 個 modal 開著時，本層 z = 60 + N*5，
-    // 任意深度（修改 -> 會員資料 -> 合約公司 = 60/65/70）都正確蓋疊
-    var openBackdrops = document.querySelectorAll(
-      ".modal-backdrop.open",
-    ).length;
-    el.style.zIndex = openBackdrops
-      ? String(60 + openBackdrops * 5)
-      : "";
-    if (id === "modalRoomEditBackdrop") resetRoomEditModal();
-    if (id === "modalPurchaseAddonBackdrop") resetPurchaseAddonModal();
-    if (id === "modalOrderSummaryBackdrop") resetOrderSummaryModal();
-    resetModalScroll(el);
-    el.classList.add("open");
-    document.body.style.overflow = "hidden";
-  }
-  function closeModal(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    var wasOpen = el.classList.contains("open");
-    el.classList.remove("open");
-    el.style.zIndex = "";
-    // 疊層感知：關第二層 modal 時，若下層還有開著的 modal，
-    // body scroll 必須維持鎖定
-    document.body.style.overflow = document.querySelector(
-      ".modal-backdrop.open",
-    )
-      ? "hidden"
-      : "";
-    if (wasOpen) restoreModalReturnFocus(id);
-  }
-  function resetModalScroll(modal) {
-    modal.scrollTop = 0;
-    var box = modal.querySelector(".modal-box");
-    if (box) box.scrollTop = 0;
-    modal.querySelectorAll(".overflow-y-auto").forEach(function (scroller) {
-      scroller.scrollTop = 0;
-    });
-  }
   function setRoomEditLocked(locked) {
     var modal = document.getElementById("modalRoomEditBackdrop");
     if (!modal) return;
@@ -192,6 +127,16 @@ export function initOrderModals() {
     if (checked.value === "substitute") return "waitlist";
     return "";
   }
+
+  var modalApi = createModalController({
+    beforeOpen: function (id) {
+      if (id === "modalRoomEditBackdrop") resetRoomEditModal();
+      if (id === "modalPurchaseAddonBackdrop") resetPurchaseAddonModal();
+      if (id === "modalOrderSummaryBackdrop") resetOrderSummaryModal();
+    },
+  });
+  var openModal = modalApi.openModal;
+  var closeModal = modalApi.closeModal;
 
   var purchaseAddonProducts = [
     {
@@ -1040,7 +985,7 @@ export function initOrderModals() {
       return;
     }
     // 訂單處理頁：狀態 pill 下拉選單動作 -> modal 接線
-    // （選單自身的收合由 initSubPageBehaviors 的 item listener 處理）
+      // 選單自身的收合由 order-processing.js 的 item listener 處理。
     var opMenuItem = e.target.closest("[data-op-menu-action]");
     if (opMenuItem) {
       var opAction = opMenuItem.dataset.opMenuAction;
@@ -1059,10 +1004,6 @@ export function initOrderModals() {
       // 連結 / 複製 / 取消：後端功能，前端僅收合選單
       return;
     }
-    var btn = e.target.closest("[data-modal-open]");
-    if (!btn) return;
-    e.preventDefault();
-    openModal(btn.dataset.modalOpen, btn);
   });
 
   // event-delegated triggers for member-data / contract-company modals
@@ -1208,15 +1149,6 @@ export function initOrderModals() {
     })();
   })();
 
-  // Close buttons (class modal-close-btn, data-modal="id")
-  // delegated：涵蓋 runtime 注入的訂單修改 body 與 partial modal
-  document.addEventListener("click", function (e) {
-    var btn = e.target.closest(".modal-close-btn");
-    if (!btn) return;
-    var id = btn.dataset.modal;
-    if (id) closeModal(id);
-  });
-
   document
     .querySelectorAll("[data-order-summary-accordion-toggle]")
     .forEach(function (toggle) {
@@ -1227,34 +1159,6 @@ export function initOrderModals() {
         );
       });
     });
-
-  // Backdrop click - delegated，不維護寫死的 id 清單。
-  // data-no-dismiss 標記的 modal 維持不關（會員資料/合約公司）
-  document.addEventListener("click", function (e) {
-    var el = e.target;
-    if (!el.classList || !el.classList.contains("modal-backdrop")) return;
-    if (!el.classList.contains("open")) return;
-    if (el.hasAttribute("data-no-dismiss")) return;
-    closeModal(el.id);
-  });
-
-  // ESC key - delegated: 一次只關「最上層」（依 computed z-index 判定，
-  // 動態疊層下任意深度成立）。最上層若標 data-no-dismiss 則整個不動作
-  // -- 不可穿透去關下層，否則會出現上層開著、底層先消失
-  document.addEventListener("keydown", function (e) {
-    if (e.key !== "Escape") return;
-    var open = Array.prototype.slice.call(
-      document.querySelectorAll(".modal-backdrop.open"),
-    );
-    if (!open.length) return;
-    var top = open.reduce(function (a, b) {
-      var za = parseInt(getComputedStyle(a).zIndex, 10) || 0;
-      var zb = parseInt(getComputedStyle(b).zIndex, 10) || 0;
-      return zb >= za ? b : a;
-    });
-    if (top.hasAttribute("data-no-dismiss")) return;
-    closeModal(top.id);
-  });
 
   // 到店方式 modal footer「確定」：landing 版由 arrival IIFE 的 confirm
   // handler 負責 commit（寫回 trigger label）+ 關閉；該 IIFE（chip 切換 /

@@ -5,7 +5,7 @@
 // （新增/刪除/箭頭/dots）、生效日 simple calendar。
 // 依賴：Swiper CDN（swiper-bundle）+ dayjs；modalApi 由 initOrderModals() 回傳
 // （closeModal 的單一來源，避免重複實作關閉邏輯）。
-// landing 保留 inline 版 - 過渡性複製（計畫內），Stage 3 收斂去重。
+// landing 已於 Stage 3 清為 dashboard；此 module 僅由 room-booking.html 載入。
 // 注意：order-processing.html 不載入本 module（使用者同意該頁到店 modal
 // 維持靜態 + 開關；其確定關閉由 order-modals.js delegated handler 提供）。
 // -- Arrival method modal: chip switch + stepper + commit --

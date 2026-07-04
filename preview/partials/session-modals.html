@@ -2,8 +2,8 @@
      內容自 landing.html 抽出：確定登出（Modal A）/ 帳號切換（Modal B）。
      aside 的 登出 / 更換帳號 icon 以 data-modal-open 觸發，aside 為全站共用
      partial，故這兩個 modal 也必須全站存在。
-     - landing.html 以同步 XHR 注入（sessionModalsMount）
-     - room-booking.html / order-processing.html 以 js/partials.js async 注入
+     - landing.html / room-booking.html / order-processing.html 皆以
+       js/partials.js async 注入
      - partial 內不放 script；開關由各頁 modal 系統的 delegated handler 處理 -->
     <!-- ====================================
          Modal A - 確定登出？

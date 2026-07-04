@@ -1,7 +1,6 @@
 // 訂單處理頁 page module（Stage 1c，specs/page-architecture.md）
 // 內容自 landing.html initSubPageBehaviors 逐塊搬出，root-scoped 原樣保留。
-// 共用行為（accordion/simple calendar/nation-group）為計畫內的過渡性複製，
-// landing 保留 inline 版，Stage 3 收斂去重。
+// 訂單處理頁行為 module；landing 已於 Stage 3 清為 dashboard。
 // modal 開啟接線（訂單/修改/簡訊）屬 Stage 1d，本檔的選單項目點擊僅收合選單。
 export function initOrderProcessing(root) {
   // == Accordion toggles（更多條件收合） ==

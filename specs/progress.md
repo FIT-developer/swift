@@ -7,6 +7,48 @@
 
 ---
 
+## Session 86 交接 (2026-07-04)
+
+### 任務: 交接 commit 後執行 Stage 3 - landing dashboard-only + JS 去重
+
+### 前置交接 commit
+
+- 先依使用者指示提交 Session 85 review 修正與 inline style / color token 回歸：
+  `c48a3c7 Fix preview shell regressions and token styles`
+
+### 本輪改動
+
+1. `preview/landing.html`：清成 dashboard-only（4906 -> 1204 行）。移除 `subPageContent`、PAGE_TEMPLATES placeholder SPA、`initSubPageBehaviors` / `initCalendar` / op-* / room-booking / arrival / purchase-addon / order-summary 殘留 JS；移除 dayjs / Swiper CDN；landing 不再同步 XHR 注入 aside/topbar/session modal，改走 `data-partial` + `loadPartials()`。
+2. `preview/js/modal-controller.js`（新）：抽出共用 modal open / close / backdrop / ESC / focus return / dynamic z-index，供 landing 與 order/room 兩頁共用。
+3. `preview/js/landing-modals.js`（新）：只保留 landing dashboard 需要的三個 topbar modal（管理訊息 / 旅宿e管家公告 / 會員安全管理）、session modal trigger、member tab、eye toggle、bulletin/administer tabs、bulletin row toggle。
+4. `preview/js/landing-charts.js`（新）：四張 dashboard Chart.js 圖表自 inline script 搬成 module。
+5. `preview/js/order-modals.js`：改用 `modal-controller.js`，移除重複的 generic modal open / close / backdrop / ESC listener；保留 order/room 專屬 modal reset 與資料行為。
+6. `preview/js/page-shell.js` / `partials.js` / `room-booking-behaviors.js` / `order-processing.js` / `arrival-method-modal.js` / `partials/session-modals.html`：更新 Stage 3 後的註解，移除 landing inline / sync XHR 過渡描述。
+7. `specs/page-architecture.md`：更新 current architecture：landing = dashboard only；所有頁面都使用 `js/partials.js` async partial；Stage 3 標為 self-tested。
+
+### 驗證（self-tested）
+
+- `./scripts/lint-conventions.sh` pass
+- `./scripts/lint-fonts.sh` pass
+- `./scripts/lint-tokens.sh` pass（86 raw hex tokens 一致）
+- `git diff --check` pass
+- `preview/`（排除 SVG asset/temp）`style=` 搜尋無結果
+- landing 殘留搜尋無結果：`dayjs` / `Swiper` / `subPageContent` / `PAGE_TEMPLATES` / `initSubPageBehaviors` / `XMLHttpRequest` / `onclick=` / room/order/arrival/purchase modal selectors
+- JS syntax pass：`partials.js`、`page-shell.js`、`modal-controller.js`、`landing-modals.js`、`landing-charts.js`、`order-modals.js`、`order-processing.js`、`room-booking-behaviors.js`、`arrival-method-modal.js`
+- partial 組合檢查：landing / order-processing / room-booking duplicate id = 0；modal-open target missing = 0
+- HTTP HEAD：`landing.html` / `order-processing.html` / `room-booking.html` 皆 200
+
+### 重要決定
+
+- aside 其餘未拆頁選單項在 landing 也不再開 placeholder SPA；和兩個新頁一致，未來有真實頁面再接真實連結。未新增空白 placeholder html。
+- landing 專屬 modal 暫留在 `landing.html`，未再拆 partial；目前只有該頁使用，先避免為單頁專屬內容增加額外 partial。
+
+### 下一步
+
+- 使用者驗收 Stage 3；若通過，再依指示 commit / push。
+
+---
+
 ## Session 85 交接 (2026-07-04)
 
 ### 任務: Stage 2 - 拆房間預定 -> room-booking.html（同一對話接續 Session 84；使用者驗收 1d 後指示直接開工）

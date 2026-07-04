@@ -1,7 +1,7 @@
 // 房間預定 [A]-[E] 區塊行為 module（Stage 1d，specs/page-architecture.md）
 // 內容自 landing.html 的 initSubPageBehaviors / initCalendar 原樣搬出（root-scoped），
 // 給 order-processing.html 訂單修改 modal body 使用。
-// landing 保留 inline 版 - 過渡性複製（計畫內），Stage 3 收斂去重。
+// landing 已於 Stage 3 清為 dashboard；此 module 是 [A]-[E] 行為單一來源。
 // 依賴：dayjs + isoWeek plugin（頁面 CDN 載入）。
 export function initRoomBookingBehaviors(root) {
   initSubPageBehaviors(root);

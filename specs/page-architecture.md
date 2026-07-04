@@ -19,9 +19,8 @@
 
 ## 硬性規則
 
-1. **landing.html 凍結**：不再新增頁面 template、不再新增 modal、不再新增
-   大段 JS。既有內容（dashboard/房間預定/訂單處理）維持原樣，只接受
-   bug 修正與使用者指名的調整
+1. **landing.html dashboard-only**：不再新增頁面 template、不再新增 modal、
+   不再新增大段 JS。今日總覽只接受 bug 修正與使用者指名的調整
 2. **新頁面 = 獨立 html 檔**（`preview/{page-name}.html`，kebab-case）
 3. 新頁面的共用區塊走 partials、共用邏輯走 ES modules，不複製貼上
 
@@ -29,7 +28,7 @@
 
 ```
 preview/
-  landing.html              (凍結：dashboard + 房間預定 + 訂單處理)
+  landing.html              (dashboard only)
   {new-page}.html           (之後每頁獨立)
   partials/
     aside.html              (共用側欄選單)
@@ -109,11 +108,7 @@ preview/
   選單一事實來源）並完成實作**：
   - `partials/aside.html`：全站唯一的 aside（668 行，自 landing.html 抽出），
     純 markup 不含 script，選單變動只改這一份
-  - **landing.html 用同步注入**（`asideMount` + sync XHR + outerHTML
-    replace）：因其 sidebar 綁定散佈於 load-time 多個 IIFE，async 注入
-    會讓全部綁定落空。sync XHR 的 console deprecation warning（1 筆）
-    為已知且接受的 demo 取捨
-  - **新頁面用 `js/partials.js` 的 async `loadPartials()`**：掃描
+  - **所有頁面用 `js/partials.js` 的 async `loadPartials()`**：掃描
     `[data-partial]` 注入，完成後標 aside active 態（依
     `body[data-page]`）並 dispatch `partials:loaded`
   - 回歸驗證（2026-07-03）：選單導航、accordion 收合、收合全部、
@@ -151,7 +146,7 @@ partial、模組化 JS。比 11583 行單檔更接近他們要重寫的形狀。
 | 0 | 決策 + 本計畫 + js/tailwind-config.js 抽出 | 完成（2026-07-04） |
 | 1 | 拆訂單處理（細分 1a-1d，見下方執行要點） | 完成（2026-07-04，Session 81-84） |
 | 2 | 拆房間預定 -> room-booking.html（改用同一份 [A]-[E] partial） | 完成（2026-07-04，Session 85） |
-| 3 | landing 清理只剩 dashboard；topbar/aside 行為模組化；殘餘共用 JS 去重 | 待做 |
+| 3 | landing 清理只剩 dashboard；topbar/aside 行為模組化；殘餘共用 JS 去重 | self-tested（2026-07-04） |
 
 Stage 2 產出（Session 85）：
 - room-booking.html：頁面內容直接注入 room-booking-sections partial（與
@@ -160,13 +155,13 @@ Stage 2 產出（Session 85）：
 - js/page-shell.js：aside accordion / 收合全部 / mobile drawer（兩個新頁共用）
 - partials/session-modals.html：登出 / 帳號切換 modal 全站共用
 - 導航裁決：logo = 回 landing.html（原 hash open question 作廢）；
-  aside 房間預定 / 訂單處理 皆真實連結，landing SPA 只剩 placeholder 頁
+  aside 房間預定 / 訂單處理 皆真實連結；landing 不再保留 SPA placeholder
 
 Stage 1 產出（Session 84 收尾）：
 - partials/room-booking-modals.html：8 共用 modal + 庫存月曆 offcanvas 單一來源
-  （landing sync XHR 注入 / 新頁 data-partial async 注入）
-- js/room-booking-behaviors.js：[A]-[E] 行為 module（landing inline 版保留，
-  過渡性複製，Stage 3 去重）
+  （所有頁面皆 data-partial async 注入）
+- js/room-booking-behaviors.js：[A]-[E] 行為 module（Stage 3 後只由
+  room-booking.html 與 order-modals.js 注入的訂單修改 body 使用）
 - js/order-modals.js：新頁 modal 系統（動態 z-index 疊層取代 orderEdit_ clone）
 - landing 的 orderEdit_ clone 機制整組退役；aside 訂單處理 = 真實連結
 - 到店方式 modal 在新頁為靜態 + 開關（等價舊副本保真）；其互動 JS 與
@@ -174,9 +169,9 @@ Stage 1 產出（Session 84 收尾）：
 
 **Stage 1 細分為 4 個可驗收小段（2026-07-04 使用者定案）**：
 
-**1a - 抽共用內容，先不拆訂單頁**
+**1a - 抽共用內容，先不拆訂單頁（historical stage note）**
 - 建 partials/room-booking-sections.html：自 tpl-room-booking 的 wrapper 抽 [A]-[E] 4 區塊
-- landing 的 tpl 以同步注入把 partial 塞回原位（同 aside 模式）：openPage 的
+- 當時 landing 的 tpl 以同步注入把 partial 塞回原位（同 aside 模式）：openPage 的
   innerHTML clone 與訂單修改 modal 的 build 照舊運作，**對外行為零變化**
 - 目的：最大重複源先變單一來源
 
@@ -191,12 +186,12 @@ Stage 1 產出（Session 84 收尾）：
 - aside 的「訂單處理」連結**先不改** href（改了會斷 landing 的 SPA 入口），
   1b/1c 期間新頁以網址直接訪問，1d 才切換
 
-**1c - 抽訂單處理 JS module**
+**1c - 抽訂單處理 JS module（historical stage note）**
 - 建 js/order-processing.js（頁面 module）：op-* 行為（pill menu、filter tabs、
   quick filter、tooltip clamp、project toggle）分批搬入
 - 該頁依賴的共用行為（rb-cal-cell 日曆、nation-group、rb-accordion 等）：
-  **允許複製成 js/ module 給新頁用，landing 保留 inline 版** - 過渡性重複，
-  Stage 3 收斂去重（此重複為計畫內，不是 drift）
+  **當時允許複製成 js/ module 給新頁用，landing 保留 inline 版** -
+  過渡性重複，Stage 3 已收斂（此重複為計畫內，不是 drift）
 - 不引用 landing 的整包 script
 
 **1d - 搬 modal 並退役 clone 機制**

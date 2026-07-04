@@ -2,7 +2,7 @@
 // 內容自 landing.html 對應 IIFE 搬出：aside accordion 收合、
 // 「收合」全部選單、desktop 收折/展開、mobile drawer 開關
 // （menu button / backdrop / close / Esc）。
-// landing 保留 inline 版 - 過渡性複製（計畫內），Stage 3 收斂去重。
+// landing 與新頁共用同一份 shell 行為。
 // 新頁沒有公告/訊息/會員安全管理 modal；對應 function icons 會隱藏，
 // 避免留下可見但無反應的控制。
 export function initPageShell() {
