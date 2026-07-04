@@ -188,7 +188,8 @@ tokens -> icons -> components -> specs/pages -> 實作
 - [ ] **RWD 檢查**: 採流動寬度與 responsive constraints；375px 僅作為 Figma mobile 參考稿寬度，不得固定寫死，且元件在任務指定 viewport 的行為有實際測試過 (不只是 CSS 寫了就算)
 - [ ] **Font-size 檢查**: 沒有 < 12px 字體（`text-[10/11px]`、`font-size: <12px`）；用 `text-xs/sm/base/lg/xl` 或 `var(--font-size-*)`
 - [ ] **min-width mobile-safe 檢查**: 所有 fixed `min-w-[Npx]` 都有 `md:` 前綴或包 `@media (min-width: 768px)`；不得讓 mobile 強制大於 viewport
-- [ ] **Lint 自檢**: 跑 `./scripts/lint-fonts.sh` 和 `./scripts/lint-conventions.sh`（commit 前 hook 會自動跑兩者），exit 0 才算通過。conventions lint 只檢查新增行：ASCII-only / min-w 斷點前綴 / CSS min-width gate（合法例外加 `/* min-width-ok: 原因 */` 標記）/ hardcoded hex
+- [ ] **Lint 自檢**: 跑 `./scripts/lint-fonts.sh`、`./scripts/lint-conventions.sh` 和 `./scripts/lint-partials.sh`（commit 前 hook 會自動跑，另含 lint-tokens），exit 0 才算通過。conventions lint 只檢查新增行：ASCII-only / min-w 斷點前綴 / CSS min-width gate（合法例外加 `/* min-width-ok: 原因 */` 標記）/ hardcoded hex。partials lint 檢查每頁 partial/module manifest 與組合後 duplicate id / modal target（新頁面必須登記進 `scripts/lint-partials.py` 的 MANIFEST）
+- [ ] **Browser smoke test**: 改動頁面 / partial / js module 後跑 `node scripts/smoke-test.mjs`（三頁載入 console 無錯、chart 非空、aside drawer/accordion、session 與 topbar modal 開關），exit 0 才算通過；不進 pre-commit hook（需 Chrome、秒數級），屬手動 QA 步驟
 - [ ] **狀態完整性**: Spec 裡定義的所有狀態 (hover/active/disabled/error 等) 都有實作,沒有漏掉
 - [ ] **文字內容**: 繁體中文內容跟 Figma 一致,沒有自動翻譯或改寫
 **任何一項不通過,必須修正後重新報告,直到全部通過**。

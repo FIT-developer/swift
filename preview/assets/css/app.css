@@ -1,4 +1,28 @@
-/* Page-specific styles for preview/landing.html. */
+/* App-wide component styles - 三頁共用（landing / order-processing / room-booking）
+ *
+ * 2026-07-04 改名自 landing.css：multi-page 拆分後本檔早已非 landing 專屬，
+ * 檔名改為 app.css 以免誤判影響範圍（決策見 specs/progress.md Session 87）。
+ *
+ * 區段索引（依出現順序；中期拆分計畫見 specs/page-architecture.md CSS 歸屬段）：
+ *   1. Shell 與 aside/topbar     - nav sub-item / page-tab chip / menu category
+ *                                  / POS entrance / sidebar select / collapsed
+ *                                  sidebar / accordion icon / mobile drawer
+ *   2. Landing topbar modals     - member / bulletin / administer（desktop 置中
+ *                                  + mobile 滿版）
+ *   3. Order-edit + member-data  - [A] 庫存鎖定 / iOS toggle switch / Title chip
+ *      modal 元件                  / filter tab / badge / pagination / row-chip
+ *   4. Order-processing（op-*）  - 訂單列表 table / status pill / badge / row menu
+ *                                  / accordion gradient
+ *   5. Room-booking（rb / [A]-[E]）- mode toggle / inventory toolbar / offcanvas
+ *                                  / payment chip / nation radio / lock toggle
+ *                                  / order tabs / customer toggle / merged input
+ *                                  / stepper / filter tabs / metric toggle
+ *                                  / calendar（.rb-cal-wrap day cells）
+ *   6. Arrival method modal（am-*）- spec components/arrival-method-modal.md
+ *
+ * 規則：顏色/效果一律 var(--color-*, --effect-*)（lint-conventions 攔新增行
+ * 的 raw hex 與 rgb/rgba）；單頁專屬且未共用的樣式優先放該頁 <style> scoped class。
+ */
 
 /* Nav sub-item selected state - same bg as hover */
 .sub-item-selected {
@@ -75,15 +99,6 @@
 .chart-swatch-phone {
   background: var(--color-text-300);
 }
-/* Menu category: parent trigger is neutral, children items are blue.
-   Children include the Stage 1d/2 anchor links: room booking / order processing. */
-.menu-category .accordion-trigger {
-  color: var(--color-text-800);
-}
-.menu-category .accordion-trigger + div > :is(div, a) {
-  color: var(--color-menuitem-default);
-}
-
 /* Mobile horizontal scroll */
 .scroll-x {
   overflow-x: auto;

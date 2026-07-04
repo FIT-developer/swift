@@ -17,7 +17,7 @@ Shared dev scripts for this repo.
 專案 conventions lint，**只檢查新增/修改的行**（不追溯 legacy 內容）：
 1. ASCII-only：禁裝飾性 Unicode（box drawing/箭頭/em-dash/emoji），CJK 與全形標點允許
 2. min-width mobile-safe：`min-w-[Npx]` 需斷點前綴；CSS `min-width:` 需 @media 或 `/* min-width-ok: 原因 */` 標記
-3. no hardcoded hex：HTML 禁 `[#hex]` arbitrary value；landing.css 禁 hex 色值（註解引用 Figma 色碼除外）
+3. no hardcoded hex：HTML 禁 `[#hex]` arbitrary value；app.css 禁 hex 色值（註解引用 Figma 色碼除外）
 
 規範來源：`start.md`。pre-commit hook 會與 lint-fonts 一起自動跑。
 

@@ -8,10 +8,10 @@
 #      （sm:/md:/lg:/xl:）；CSS `min-width:` 新增行必須帶 @media 或
 #      `/* min-width-ok: <原因> */` 標記（如 overflow-x scroll 容器內的表格）
 #   3. no hardcoded hex：HTML 的 Tailwind arbitrary value 禁用 `[#hex]`；
-#      landing.css 新增行禁止 hex 色值（註解內引用 Figma 色碼除外；
+#      app.css 新增行禁止 hex 色值（註解內引用 Figma 色碼除外；
 #      token 定義檔 base.css 不在此限）
 #   4. no inline style：HTML 新增行禁止 `style=`；用 scoped class /
-#      CSS variable。landing.css 新增行禁止 raw rgb/rgba，effect 需放 base.css。
+#      CSS variable。app.css 新增行禁止 raw rgb/rgba，effect 需放 base.css。
 #
 # 用法：
 #   ./scripts/lint-conventions.sh            # 檢查 working tree 相對 HEAD 的新增行

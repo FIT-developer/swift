@@ -3,6 +3,10 @@
 # 規範來源：
 #   lint-fonts.sh       - specs/assets/tokens.md 字體 / Font-size 規範
 #   lint-conventions.sh - start.md ASCII-only / min-width mobile-safe / no hardcoded hex
+#   lint-tokens.sh      - tokens.md 與 base.css 的 color mirror drift
+#   lint-partials.sh    - 每頁 partial/module manifest + 組合後 id 與 modal target
+# （browser smoke test scripts/smoke-test.mjs 不進 hook：需 Chrome、秒數級，
+#   屬 QA 步驟，改動頁面/partial/module 時手動跑）
 # 重新安裝：cp scripts/git-hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 
 set -e
@@ -10,3 +14,4 @@ root="$(git rev-parse --show-toplevel)"
 "$root/scripts/lint-fonts.sh" --staged
 "$root/scripts/lint-conventions.sh" --staged
 "$root/scripts/lint-tokens.sh"
+"$root/scripts/lint-partials.sh"

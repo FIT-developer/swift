@@ -53,7 +53,7 @@ preview/
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="./js/tailwind-config.js"></script>
     <link rel="stylesheet" href="./assets/css/base.css" />
-    <link rel="stylesheet" href="./assets/css/landing.css" />
+    <link rel="stylesheet" href="./assets/css/app.css" />
   </head>
   <body>
     <div data-partial="aside"></div>
@@ -80,6 +80,24 @@ preview/
 - aside 的 active 狀態：partial 注入後由 `partials.js` 依
   `document.body.dataset.page` 標示當前頁
 
+## Partial dependency manifest
+
+- 每頁必載的 partials 與 JS module import 順序，權威登記在
+  `scripts/lint-partials.py` 的 `MANIFEST`（機器檢查，pre-commit hook 執行）
+- 新增頁面時必須同步登記；未登記的 preview/*.html 會被 lint 擋下
+- lint 同時檢查組合後（頁面 + partials）duplicate id、`data-modal-open` 與
+  `.modal-close-btn` 的 `data-modal` 目標存在性 - 「漏載 partial 造成死按鈕」
+  這類錯（Session 84/85 教訓）由此攔截
+- module import 順序有相依，不可重排：
+  `partials.js`（loadPartials）-> `page-shell.js`（aside/topbar shell）->
+  頁面 behaviors -> modal 系統（`landing-modals.js` 或 `order-modals.js` ->
+  `arrival-method-modal.js`）
+- 舊單元件 preview（chartjs-*.html、toggle.html）登記在 `STANDALONE` 豁免；
+  一旦開始使用 data-partial 就必須搬進 MANIFEST
+- runtime 驗證由 `scripts/smoke-test.mjs` 覆蓋（真實 Chrome 載入三頁：
+  console 無錯、chart 非空、drawer/accordion、session 與 topbar modal 開關），
+  改動頁面 / partial / module 後手動跑
+
 ## id 命名空間
 
 - 跨頁面不存在 id 碰撞（每頁是獨立 document）- 這是本架構的核心收益，
@@ -90,8 +108,25 @@ preview/
 ## CSS 歸屬
 
 - token：`base.css`（不變）
-- 跨頁共用元件樣式：`landing.css`（沿用；改名遷移成本大於收益，不動）
+- 跨頁共用元件樣式：`app.css`（2026-07-04 自 landing.css 改名，推翻先前
+  「沿用不動」決策 - multi-page 後檔名已誤導影響範圍，使用者裁決改名；
+  檔頭有區段索引）
+- app.css 中期拆分方向（時機未定，使用者裁決後執行）：
+  `shell.css`（aside/topbar）/ `modals.css` / `dashboard.css` /
+  `room-booking.css` / `order-processing.css`
 - 單頁專用樣式：該頁 `<style>` 內 scoped class（沿用 start.md 既有規則）
+
+## CDN dependency matrix
+
+每頁 head 只載自己需要的外部資源；新增/移除 CDN 時同步更新本表。
+（未來切 local Tailwind 時本表是遷移 checklist 的輸入）
+
+| 資源 | landing | order-processing | room-booking | 用途 |
+|---|---|---|---|---|
+| Tailwind Play CDN + `js/tailwind-config.js` | v | v | v | 全站 utility class；config 共用一份 |
+| chart.js@4 | v | - | - | dashboard 統計圖表 4 張（`js/landing-charts.js`） |
+| dayjs@1 + isoWeek plugin | - | v | v | [A] 庫存/訂房 calendar 與 simple-calendar 日期運算（`js/room-booking-behaviors.js`，op 頁由訂單修改 modal body 使用） |
+| swiper@12（JS + CSS） | - | - | v | 到店方式接送卡片 swiper（`js/arrival-method-modal.js`，只在 rb 頁載入） |
 
 ## 導航（open question，見下）
 
