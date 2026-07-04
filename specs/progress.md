@@ -7,6 +7,87 @@
 
 ---
 
+## Session 88 交接 (2026-07-04)
+
+### 任務: order-modals.js 拆小（Stage 4，Session 87 排定的第 6 項）
+
+同一對話接續 Session 87：使用者驗收 5 項改善後指示先交接 commit
+（9e51417），再進行 order-modals.js 拆分。走 start.md「JS 搬移/略搬 audit」
+規則：先列全部 bindings 與 disposition，再搬，再逐顆按鈕實測。
+
+### 本輪改動
+
+1. `preview/js/order-edit-modal.js`（新，68 行）：`initOrderEditModal()` ->
+   `{ build }`。訂單修改 body fetch `partials/room-booking-sections.html` +
+   四項差異（[A] 標題「庫存」、移除 customer-toggle、訂單編號列、[D] 還原鈕）
+   + `initRoomBookingBehaviors(body)` + 切庫存模式。原樣搬移，無邏輯變更。
+2. `preview/js/purchase-addon-modal.js`（新，893 行）：`initPurchaseAddonModal()`
+   -> `{ reset }`。12 產品資料 + 分類 label + editor/cart state + 渲染
+   （products/cart/page-cart）+ simple calendar（portal to body）+ 全部
+   modal-scope 與 page-scope event binding。`window.renderPurchaseAddonCart`
+   對外介面保留（order-edit-modal.js 注入後 rehydrate 用）。
+3. `preview/js/member-data-modal.js`（新，142 行）：`initMemberDataModal(modalApi)`。
+   委派 trigger（`data-data-exists-trigger` / `data-change-contract-company-trigger`）
+   + nation-group / honorific / 會員身份 radio / Title chip / filter tab，
+   全部 IIFE 原樣搬入。
+4. `preview/js/order-summary-modal.js`（新，123 行）：`initOrderSummaryModal(modalApi)`
+   -> `{ reset, setVariant }`。variant（未付款/已付款/候補單）+ accordion +
+   `[data-order-summary-submit]` 委派開啟（原與 op-menu 合併在同一
+   document listener，拆開後兩者 closest 目標互斥，行為不變）。
+5. `preview/js/order-modals.js`（1314 -> 124 行，orchestrator）：保留
+   `setRoomEditLocked/resetRoomEditModal`、modalApi 組裝（`beforeOpen` 依 id
+   分派到子 module 的 `reset()`）、op 選單接線（訂單/簡訊/修改）、到店
+   「確定」關閉、訂房明細編輯 lock/clear IIFE。對頁面介面不變：
+   `initOrderModals()` 仍回傳 `{ openModal, closeModal }`（rb 頁餵給
+   `initArrivalMethodModal`）。四個新 module 皆 import 進 orchestrator 並在
+   `initOrderModals()` 內呼叫初始化；HTML 的 `<script type="module">` import
+   與 MANIFEST 不變（頁面只 import `order-modals.js`，未新增/減少 import）。
+6. `components/order-edit-modal.md`：實作備註更新，body build 邏輯來源改標
+   `order-edit-modal.js`（觸發鏈仍在 orchestrator）。
+7. `specs/page-architecture.md`：新增 Stage 4（非原始計畫項，本次追加），
+   記錄 4 module + orchestrator 的職責切分。
+
+### 驗證（self-tested）
+
+- 5 個 module 全數 `node --check` 語法通過
+- 靜態 scope 檢查：purchase-addon-modal.js 不引用 openModal/closeModal/其他
+  子 module 內部函式；orchestrator 不殘留任何子 module 的內部函式定義
+- 四 lint 全 pass（conventions/fonts/tokens/partials）；smoke test 三頁 PASS
+- **自寫 CDP 逐按鈕 audit**（scratchpad，未入 repo）：38 項 check 全 PASS，涵蓋
+  房型介紹/訂房明細編輯（lock/clear/reset)/加購（12 產品/stepper/cart/
+  page-cart/分類/收合/simple-calendar/reopen-reset）/訂單明細（variant/
+  accordion）/到店方式（確定關閉）/會員資料（nation/honorific/身份/chips/
+  filter-tab）/合約公司（三層巢狀 z-index + 疊層 scroll-lock），每個 modal
+  的每顆 close-btn 逐一開關測試，op 頁另測 `[data-op-menu-action]` 三分支
+  + 三層巢狀（修改 -> 會員資料 -> 合約公司，z-index 遞增驗證）+ [E] 送出
+  巢狀開啟 + 收尾無殘留開啟 modal / body scroll 正確解鎖
+- **回歸比對**：同一份 audit script 對 commit 9e51417（拆分前）跑一次作
+  baseline，同樣 38/38 PASS，證明拆分前後行為等價，不是「audit 本身寫鬆」
+- 過程中抓到並修正 audit script 自身的兩個誤判（非產品 bug）：
+  `closeButtons` helper 早期版本回傳 button 數量導致誤判「數量不符」，改回傳
+  true/string；reopen 用 async IIFE + microtask tick 前同步檢查誤判「未重開」
+
+### 重要決定
+
+- orchestrator 保持是頁面 import 的唯一入口，不讓四個新 module 各自被
+  HTML `<script type="module">` import - 避免 MANIFEST 與 bootstrap 順序
+  跟著變動、風險外溢到 partial dependency 這層
+- `beforeOpen` 對子 module reset 用 late-bind 變數（`purchaseAddon`/
+  `orderSummary` 先宣告後賦值）：`createModalController` 建立時 reset 尚未
+  存在，但只在使用者實際觸發 open 時才呼叫，順序安全
+
+### 下一步
+
+- 使用者驗收 Stage 4（純內部重構，頁面行為應與 Session 87 commit 前完全
+  一致；無新視覺差異，不需新截圖）
+- 驗收後依指示 commit / push
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 87 交接 (2026-07-04)
 
 ### 任務: Stage 3 驗收後的基建改善批次（使用者核准的合併優先序 1-5）

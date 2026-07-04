@@ -124,7 +124,7 @@ Header 內容，由左至右：
 ## 實作備註（current: preview/order-processing.html）
 
 - Modal id：`modalOrderEditBackdrop`（外殼靜態 HTML，desktop 1192 寬 / <768 全螢幕，同其他 modal pattern）
-- Body 不是靜態複製：首次開啟時由 `preview/js/order-modals.js` fetch `partials/room-booking-sections.html` 的 [A]-[E] 4 個區塊，只建一次，再跑 `initRoomBookingBehaviors(body)` 重綁互動
+- Body 不是靜態複製：首次開啟時由 `preview/js/order-edit-modal.js` fetch `partials/room-booking-sections.html` 的 [A]-[E] 4 個區塊，只建一次，再跑 `initRoomBookingBehaviors(body)` 重綁互動（觸發鏈仍在 `order-modals.js` orchestrator 的 op-menu 接線，Session 87 拆分後 build 邏輯獨立成 module）
 - 注入後差異調整：[A] 標題改「庫存」+ init 後程式切到庫存模式（`btnInventory.click()`）、移除 `.customer-toggle`、cart 頂部插入「訂單編號」列、[D] header 清除右邊插入「還原」button（icon `icons/restore.svg`）
 - [A] 的 mode 切換/Excel/棟別 chips 用 CSS 隱藏（`[data-order-edit-body]` scope，見 app.css），**DOM 保留**：共用 `initCalendar(root)` 解析這些節點時 null guard 才不會誤判
 - Modal 關閉：backdrop click / Escape 為 delegated 通用機制；Escape 一次只關最上層。`data-no-dismiss` 標記的 modal（會員資料/合約公司）不受 backdrop/Escape 關閉，沿用其既有行為

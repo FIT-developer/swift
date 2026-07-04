@@ -181,7 +181,21 @@ partial、模組化 JS。比 11583 行單檔更接近他們要重寫的形狀。
 | 0 | 決策 + 本計畫 + js/tailwind-config.js 抽出 | 完成（2026-07-04） |
 | 1 | 拆訂單處理（細分 1a-1d，見下方執行要點） | 完成（2026-07-04，Session 81-84） |
 | 2 | 拆房間預定 -> room-booking.html（改用同一份 [A]-[E] partial） | 完成（2026-07-04，Session 85） |
-| 3 | landing 清理只剩 dashboard；topbar/aside 行為模組化；殘餘共用 JS 去重 | self-tested（2026-07-04） |
+| 3 | landing 清理只剩 dashboard；topbar/aside 行為模組化；殘餘共用 JS 去重 | 完成（2026-07-04，Session 86） |
+| 4 | order-modals.js 拆小（非計畫原始項，Session 87 使用者追加的基建改善） | self-tested（2026-07-04） |
+
+Stage 4 產出（Session 87）：order-modals.js（1314 行）拆成 4 個職責 module +
+orchestrator：
+- js/order-edit-modal.js：訂單修改 body 注入（fetch partial + 4 項差異 +
+  initRoomBookingBehaviors）
+- js/purchase-addon-modal.js：加購產品資料 + 分類 + editor/cart state + 渲染
+  + simple calendar + 頁面層 cart（`window.renderPurchaseAddonCart` 對外介面不變）
+- js/member-data-modal.js：會員資料 + 合約公司（nation-group / honorific /
+  身份 radio / chips / filter tabs）
+- js/order-summary-modal.js：variant + accordion + [E] 送出開啟
+- js/order-modals.js（orchestrator，124 行）：modalApi 組裝、op 選單接線
+  （訂單/簡訊/修改）、到店確定關閉、訂房明細編輯 lock/clear；對頁面介面不變
+  （`initOrderModals()` 仍回傳 `{ openModal, closeModal }`），MANIFEST 不需更新
 
 Stage 2 產出（Session 85）：
 - room-booking.html：頁面內容直接注入 room-booking-sections partial（與
