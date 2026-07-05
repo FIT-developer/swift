@@ -7,6 +7,62 @@
 
 ---
 
+## Session 95 交接 (2026-07-05)
+
+### 任務: 新增 `figma-read` skill
+
+使用者確認要做第二個 skill（同一對話延續 run-swift）。設計決定：**不搬
+start.md 內容**，figma-go 三階段流程 / JSON 不等於視覺限制 / 選 selection
+防漏三動作等硬規則維持只存在於 start.md（透過 CLAUDE.md 的 `@start.md`
+每次對話強制載入），因為 skill 的自動觸發不保證每次都命中，把安全性規則
+搬進去風險比留在 start.md 高。skill 只做 start.md 目前沒有的部分：
+`scripts/figma-read.py` 的操作文件，內容用指回 start.md 對應章節、不重複
+貼規則。
+
+### 本輪改動
+
+`.claude/skills/figma-read/SKILL.md`（新）：開頭先講清楚這份 skill 不取代
+start.md；列出六個 `figma-read.py` 子指令（`tree`/`texts`/`node`/
+`screenshot`/`crop`/`pixel`）的用法，每個都在本輪實測過；Gotchas 段記錄
+實測抓到的行為。沒有新的 driver 程式碼，`scripts/figma-read.py` 本身不動。
+
+### 驗證（self-tested，過程中修正一個猜測錯的 gotcha）
+
+- 沒有真實 Figma session 或既有 tool-result 檔可測，建構合成測試資料
+  （模擬 `get_selection` 陣列格式與 `get_screenshot` 的
+  `{"exports":[{"base64":...}]}` 格式）
+- 6 個子指令全部對合成資料實測過一輪，含兩條錯誤路徑：`node` 給不存在
+  的 id -> `node id 99:99 not found` + exit 1；`screenshot --index`
+  超出範圍 -> 印出實際 export 數 + exit 1
+- `crop`/`pixel` 對真實 PNG（`specs/qa-screenshots/session-90/` 裡既有的
+  截圖）實測，肉眼確認裁切圖正確
+- **草稿階段猜錯一個 gotcha**：一開始寫「餵它裸物件而非陣列會靜默找不到
+  或對 list 丟例外」，實際測了才發現真正的錯誤是
+  `for root in roots` 會疊代 dict 的 key（字串），`print_tree` 對字串呼叫
+  `.get()` 直接 crash 成 `AttributeError: 'str' object has no attribute
+  'get'`，不是我猜的那種。已改成寫實測到的真實錯誤訊息，不是憑讀 code
+  推測的行為
+- 照 SKILL.md 逐行重跑一次 fresh pass，6 個子指令全部再過一次
+- 4 個既有 lint 全 pass；temp 測試檔清乾淨
+
+### 重要決定
+
+- `scripts/figma-read.py` 本身沒有改動（沒發現需要修的 bug，只有文件補
+  齊），跟 run-swift 那輪「順手修 driver 兩個 bug」不同
+- Figma 讀取的硬規則單一來源仍是 `start.md`；此 skill 只是操作文件補完，
+  不是規則的第二份拷貝
+
+### 下一步
+
+- 使用者驗收本輪 skill
+- 若確認留用，下次 commit/push 一併帶上（本輪未進入 commit/push flow）
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 94 交接 (2026-07-05)
 
 ### 任務: 用 `/run-skill-generator` 產出 `run-swift` skill
