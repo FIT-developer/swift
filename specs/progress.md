@@ -7,6 +7,70 @@
 
 ---
 
+## Session 94 交接 (2026-07-05)
+
+### 任務: 用 `/run-skill-generator` 產出 `run-swift` skill
+
+使用者打 `/run-skill-generator`。這個 repo 是單一專案（git remote
+`3qberlin/swift.git`，即專案名 `swift`），沒有既有的 run skill 或 legacy
+`.claude/run.md`，從頭做。
+
+### 本輪改動
+
+1. `.claude/skills/run-swift/driver.mjs`（新）：CLI driver，把這整個對話裡
+   反覆手刻的 scratchpad CDP script（css-bug-shot.mjs、aside-verify.mjs、
+   variant-shots.mjs、modal-audit.mjs 等）收斂成一支可重用工具。4 個子指令：
+   - `shot <page> [--out] [--viewport] [--wait] [--click]` - 截圖，可選等待
+     JS 條件、點擊後再截
+   - `eval <page> "<js>" [--wait]` - 在頁面內跑任意 JS 印出結果
+   - `serve [port]` - 前景跑 `python3 -m http.server --directory preview`
+     供人工瀏覽
+   - `smoke` - 直接呼叫既有 `scripts/smoke-test.mjs`
+   零依賴（Node >=22 原生 WebSocket + 系統 Chrome headless CDP），`CHROME_BIN`
+   可覆蓋路徑。
+2. `.claude/skills/run-swift/SKILL.md`（新）：agent-facing 操作說明，含
+   verified 過的指令、Gotchas、Troubleshooting。
+
+### 驗證（self-tested，過程中抓到兩個真實 bug 並修正）
+
+- `shot landing.html`：第一次截圖圖表區塊是空的（沒等 Chart.js 畫完）；補
+  `--wait 'window.Chart && Chart.getChart(...)'` 後截圖正確 - 這個坑寫進
+  SKILL.md Gotchas
+- `eval room-booking.html 'document.querySelectorAll("#calGrid .day").length'`：
+  沒帶 `--wait` 時回傳 0（driver 只等 partial 掛載，沒等頁面自己的 JS 初始化
+  跑完）；補 `--wait` 後回傳 42。發現 `eval` 子指令原本沒有 `--wait` 選項，
+  順手補上
+  - `--click` 選項第一次跑就炸：`SyntaxError: missing ) after argument list`。
+    根因是 selector 字串（含雙引號，如 `[data-modal-open="..."]`）被原樣塞進
+    錯誤訊息的字串字面值，提早把字串結束掉。修正：改用同一個
+    `JSON.stringify` 過的字串在兩處重複使用
+- 4 個子指令全部實測過：`shot`（含 `--wait`+`--click` 開 modal 截圖，肉眼
+  確認置中/backdrop/樣式正確）、`eval`（回傳值正確）、`serve`（curl 驗證
+  200）、`smoke`（delegate 到既有 smoke-test.mjs，三頁 11/9/10 checks 全過）
+- 全部驗證後跑 fresh pass：照 SKILL.md 逐行重跑一次不做任何即興調整，全部
+  通過；順便驗證 Troubleshooting 表格的 `pgrep -fl "Google Chrome.*headless"`
+  真的能抓到 stray process、跑完後也真的清空
+- 4 個既有 lint 全 pass；temp 截圖與程序都清乾淨，`pgrep` 確認無殘留
+
+### 重要決定
+
+- 環境誠實標記為 macOS（Darwin），不照搬 skill generator 範本預設的
+  headless Linux 假設；SKILL.md 明講「只驗證過 macOS，Linux 未測」，不假裝
+  驗證過沒驗證的東西
+- driver 不改 `scripts/smoke-test.mjs`（`smoke` 子指令直接呼叫既有檔案），
+  避免為了共用 CDP 樣板去動已經穩定、經過多輪驗證的既有腳本
+
+### 下一步
+
+- 使用者驗收本輪 skill
+- 若確認要留用，下次 commit/push 一併帶上（本輪未進入 commit/push flow）
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 93 交接 (2026-07-04)
 
 ### 任務: 收斂 Session 92 分析出的三個 smoke test 缺口
