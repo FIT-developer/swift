@@ -18,13 +18,7 @@
   }
 }
 
-/* Bulletin vendor + Administer modals - desktop: max-width centered; mobile: fullscreen */
-#modalBulletinBackdrop .modal-box {
-  width: 100%;
-  max-width: 681px;
-  display: flex;
-  flex-direction: column;
-}
+/* Administer modal - desktop: max-width centered; mobile: fullscreen */
 #modalAdministerBackdrop .modal-box {
   width: 100%;
   max-width: 836px;
@@ -608,7 +602,6 @@
   padding-bottom: 8px;
 }
 @media (max-width: 639px) {
-  #modalBulletinBackdrop,
   #modalAdministerBackdrop,
   #modalRoomIntroBackdrop,
   #modalRoomEditBackdrop,
@@ -620,7 +613,6 @@
     justify-content: stretch;
     padding: 0;
   }
-  #modalBulletinBackdrop .modal-box,
   #modalAdministerBackdrop .modal-box,
   #modalRoomIntroBackdrop .modal-box,
   #modalRoomEditBackdrop .modal-box,
@@ -982,11 +974,10 @@
   }
 }
 
-/* -- bulletin / administer modal tabs -----------------------------
+/* -- administer modal tabs ----------------------------------------
    touch 裝置點擊後 :hover sticky 殘留，會讓 active tab 從黃底變灰底
    (inactive 的 `hover:bg-surface-default` 蓋過 active 的 `bg-tab-yellow`)。
    提高 active tab 在 :hover 下的特異度，鎖死黃底。 */
-.bulletin-tab.bg-tab-yellow:hover,
 .administer-tab.bg-tab-yellow:hover {
   background-color: var(--color-tab-yellow);
 }

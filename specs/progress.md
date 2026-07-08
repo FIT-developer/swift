@@ -7,6 +7,139 @@
 
 ---
 
+## Session 103 交接 (2026-07-08)
+
+### 任務: 獨立驗證 Session 99-102 的產出，準備 commit & push
+
+Session 99-102 這段期間（`scripts/agent-council.mjs` 實作、`ai-chat`
+觸發詞補強、`aside-system-icon-overlap` 與 `bulletin-icon-removal` 兩個
+council topic 完整跑完並落地實作）發生在這個對話串看不到的地方
+（Codex CLI / 腳本自動執行）。使用者要求「交接 commit & push」，本輪的
+工作是**獨立驗證**這些已宣稱 self-tested 的產出，不直接照單全收。
+
+### 驗證（本輪自己重跑，不是引用 Session 102 的宣稱）
+
+- `desktopBulletinBtn` / `mobileBulletinBtn` / `modalBulletinBackdrop` /
+  `.bulletin-tab` / `data-bulletin-row-toggle` / `bindBulletinRows` /
+  `bulletin.svg`：對 `preview/`、`components/`、`specs/pages/` 做 grep
+  復查，只剩 `components/function-icons.md` 與 `specs/pages/room-booking.md`
+  裡的決策記錄文字（正確 - Decision Convergence 要求的收斂記錄），
+  沒有殘留任何實作引用
+- 4 個既有 lint 全部重新獨立跑過：`lint-conventions.sh` /
+  `lint-fonts.sh` / `lint-tokens.sh`（86 raw hex tokens 一致）/
+  `lint-partials.sh`（3 pages, 3 standalone）全 pass
+- `node --check scripts/smoke-test.mjs` pass；`node scripts/smoke-test.mjs`
+  重新獨立執行，三頁 10/9/9/10 checks 全 PASS（landing 從 11 降到 10，
+  對應拿掉的 bulletin modal 檢查項，跟 Session 102 的敘述一致）
+- 用 `run-swift` driver 對 landing.html / order-processing.html 各截一張
+  topbar 桌機圖，肉眼確認只剩 2 個 function icon（訊息/會員安全管理），
+  無殘留 bulletin icon、無版面塌陷或異常間距
+- 額外用 `eval` 實測 order-processing.html 的 `desktopMessageBtn` 開關
+  `modalAdministerBackdrop` 仍正常（backdrop 開/關皆正常），確認移除
+  bulletin 沒有連帶弄壞同群組另一顆還在用的 icon
+- `git diff --check` pass
+
+### 重要決定
+
+- 沒有回頭改寫 Session 99-102 的既有交接內容（沿用本專案「只修最新一筆，
+  不回溯改寫歷史記錄」原則，見 Session 93）；本輪只新增一筆獨立驗證記錄
+- 兩個 council topic（`aside-system-icon-overlap` 的 system icon 移除、
+  `bulletin-icon-removal` 的 bulletin icon 移除）皆確認 user-decision.md
+  存在且明確記錄拍板內容與 Decision Convergence 收斂範圍，符合
+  `specs/agent-council.md` 的治理要求
+
+### 下一步
+
+- 依使用者指示進入 commit & push
+
+### 未解問題
+
+- 無
+
+---
+
+## Session 102 交接 (2026-07-08)
+
+### 任務: ai-chat 第二次流程驗證 - bulletin icon removal council
+
+使用者在 Claude CLI 以 `ai-chat` 發起 `bulletin-icon-removal` topic。Claude
+建立 `specs/agent-council/bulletin-icon-removal/brief.md`，但單純寫入檔案不會
+喚醒目前 Codex 對話；Codex 這邊接手執行
+`node scripts/agent-council.mjs run specs/agent-council/bulletin-icon-removal/brief.md`。
+
+### 本輪改動
+
+1. `specs/agent-council/bulletin-icon-removal/`（新 topic）：
+   - `brief.md`
+   - `round-1-codex.md`
+   - `round-1-claude.md`
+   - `round-2-codex-review.md`
+   - `round-2-claude-review.md`
+   - `consensus.md`
+   - `user-decision.md`
+2. council consensus 收斂到同一建議：
+   - 方案 A：整個拔除公告 function icon 與 `modalBulletinBackdrop`。
+   - 不建議只隱藏，除非使用者明確要保留 dormant feature。
+3. 使用者拍板：
+   - 選擇方案 A：拔除。
+   - 本輪主要目的為驗證 Codex / Claude CLI 可透過 repo 檔案與
+     `scripts/agent-council.mjs` 溝通。
+   - 使用者補充：拍板後可以直接修改產品實作，不需要延遲。
+4. 依方案 A 進入 scoped implementation：
+   - `preview/partials/topbar.html`：移除 desktop `desktopBulletinBtn`，
+     `topWrap` 改為 `message` / `person-md` 兩顆。
+   - `preview/partials/aside.html`：移除 mobile `mobileBulletinBtn`，
+     mobile function row 改為 `message` / `person-md` 兩顆。
+   - `preview/partials/topbar-modals.html`：移除 `modalBulletinBackdrop` 整段，
+     保留 `modalAdministerBackdrop` 系統商公告與 `modalMemberBackdrop`。
+   - `preview/js/topbar-modals.js`：移除 `.bulletin-tab` 綁定與
+     `bindBulletinRows()`。
+   - `preview/assets/css/modals.css`：移除 `modalBulletinBackdrop` 與
+     `.bulletin-tab` 專用樣式。
+   - `components/function-icons.md`、`components/menu.md`、
+     `specs/pages/order-processing.md`、`specs/pages/room-booking.md`、
+     `specs/pages/room-booking-collapsed.md`：function icons 規格收斂為
+     `message` / `person-md` 兩顆。
+   - `scripts/smoke-test.mjs`：移除已不存在的 bulletin modal smoke check。
+
+### 驗證（self-tested）
+
+- `node scripts/agent-council.mjs run specs/agent-council/bulletin-icon-removal/brief.md` pass
+- 產出完整 round-1 / round-2 / consensus 檔案
+- `rg` implementation audit：`desktopBulletinBtn` / `mobileBulletinBtn` /
+  `modalBulletinBackdrop` / `.bulletin-tab` / `data-bulletin-row-toggle` /
+  `bindBulletinRows()` / `bulletin.svg` 在 `preview/`、`components/`、
+  `specs/pages/`、`scripts/` 只剩「已移除」決策註記，無產品實作引用
+- `node --check scripts/smoke-test.mjs` pass
+- `git diff --check` pass
+- `./scripts/lint-conventions.sh` pass
+- `./scripts/lint-fonts.sh` pass
+- `./scripts/lint-partials.sh` pass（3 pages, 3 standalone）
+- `./scripts/lint-tokens.sh` pass（86 raw hex tokens 一致）
+- `node scripts/smoke-test.mjs` pass：landing 10 checks、order-processing 9
+  checks、room-booking 10 checks
+
+### 重要決定
+
+- Claude CLI 寫入 `brief.md` 不會自動喚醒 Codex 對話；目前沒有 file watcher
+  或背景 daemon。要啟動討論，仍需由任一 CLI 主動執行
+  `scripts/agent-council.mjs run <brief.md>`。
+- 此次流程驗證結果：腳本可成功呼叫 Codex 與 Claude CLI，並完成 cross-review
+  與 draft consensus。
+- 使用者已拍板 bulletin 採方案 A：整個拔除；本輪已依新指示直接落實 repo
+  implementation。
+
+### 下一步
+
+- 使用者確認後再依指示 commit / push。
+
+### 未解問題
+
+- Figma `Function icons` 是否同步改為 2 icons 屬外部設計檔操作，repo 本輪
+  不處理。
+
+---
+
 ## Session 101 交接 (2026-07-08)
 
 ### 任務: 補強 ai-chat 一句話觸發規則

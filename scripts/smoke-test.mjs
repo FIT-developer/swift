@@ -6,7 +6,7 @@
 //   - landing: 4 張 Chart.js chart 已實例化且 dataset 非空
 //   - aside: accordion 展開/收合、收合全部、mobile drawer 開關
 //   - session modals（登出/帳號切換）: 開啟、backdrop 關、close-btn 關、ESC 關
-//   - landing 3 個 topbar modal（公告/管理訊息/會員安全管理）開關
+//   - landing 2 個 topbar modal（公告/會員安全管理）開關
 //   - order-processing: partial 組裝 + op 列表 + modal 系統初始化
 //   - room-booking: partial 組裝 + [A] calendar 42 格渲染
 //   - app.css entrypoint: expected domain CSS imports are present and non-empty
@@ -323,10 +323,6 @@ const PAGES = [
       },
       ...SHELL_CHECKS,
       ...SESSION_MODAL_CHECKS,
-      {
-        name: "topbar bulletin modal open/close",
-        expr: `__smoke.modalCheck("#desktopBulletinBtn", "modalBulletinBackdrop")`,
-      },
       {
         name: "topbar administer-message modal open/close",
         expr: `__smoke.modalCheck("#desktopMessageBtn", "modalAdministerBackdrop")`,

@@ -69,7 +69,7 @@
 └── (closure only) [INSTANCE] Account  — 移至 Ul 外部
 ```
 
-> **mobile 特例**：`Ul` 頂部新增 `icons/close`（24×24）與 `Function icons` 橫列（含 bulletin / message / person2 / system，各帶 badge 數字）。
+> **mobile 特例**：`Ul` 頂部新增 `icons/close`（24x24）與 `Function icons` 橫列（含 message / person-md；message 帶 badge）。
 
 ---
 
@@ -137,13 +137,11 @@ CSS（加入 `<style>` 區塊）：
 - Folder: ✗（不存在）
 - Logo: ✗（不存在）
 - **新增 icons/close** (24 × 24) 在 Ul 頂部
-- **新增 Function icons** (216 × 48) 橫列：
+- **新增 Function icons** (68 x 24) 橫列：
   | Icon | Badge |
   |------|-------|
-  | icons/bulletin | 99 |
   | icons/message | 0 |
-  | icons/person2 | 99+ |
-  | icons/system | 99+ |
+  | icons/person-md | 無 |
 - Account 移至 Frame 45 底部（全寬 216px）
 - Customers service: **expanded** (395px)
 - File download: **expanded** (170px)
@@ -170,7 +168,7 @@ CSS（加入 `<style>` 區塊）：
 | `Pos entance icon` | 216×39 | POS - pattern only |
 | `Title` | 216×27 | 各 section header |
 | `Texts` | varies | 文字容器，含 sm/base/md 三種 size |
-| `Function icons` | 216×48 | mobile only |
+| `Function icons` | 68x24 | mobile only |
 | `Folder` | 24×20 | 非 mobile variants |
 
 ---
@@ -189,9 +187,8 @@ CSS（加入 `<style>` 區塊）：
 | `icons/email` | 24×24 | 客服 email 列 |
 | `icons/point` | 24×24 | 子項目 active 指示 |
 | `icons/close` | 24×24 | Mobile 關閉側欄 |
-| `icons/bulletin` | 24×24 | Mobile function bar |
-| `icons/message` | 24×24 | Mobile function bar |
-| `icons/person2` | 24×24 | Mobile function bar |
+| `icons/message` | 24x24 | Mobile function bar |
+| `icons/person-md` | 24x24 | Mobile function bar |
 | `icons/pos` | 24×24 | POS entrance |
 | `icons/attached-link` | 24×24 | POS 外連結 |
 

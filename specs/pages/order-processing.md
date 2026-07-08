@@ -16,7 +16,7 @@
 aside menu (240px, 可收合成 240x48 頂部窄條)
 main content
   [top toolbar] 36px
-    logo/帳號/登出/切換帳號/側欄收合 icon | 分頁 tab chip x N | function icons x3
+    logo/帳號/登出/切換帳號/側欄收合 icon | 分頁 tab chip x N | function icons x2
   [filter panel] shrink/extend-model-1
     3 欄並排：日期區間+快速區間鍵+日期狀態/訂單編號/名稱/行動電話 | 訂金+處理狀態+預付方式+客戶類別+團散類別+訂單來源+使用人 | 房型+國籍+專案+條件查詢
     底部：清除 / 查詢 button
@@ -54,7 +54,7 @@ floatIcons/ai（浮動客服，全站共用）
 | 元素 | 規則 |
 |---|---|
 | 分頁 tab chip（`訂單處理`） | 現行 demo 降級為單頁導航提示：`partials/topbar.html` 提供 `#pageTabsInline` 容器，`preview/js/order-processing.js` 渲染目前頁 chip；不重現舊 SPA 的多開與 close chip 語意 |
-| function icons（bulletin/message/person，3 個；bulletin/message 有 badge） | 沿用全站頂部功能列既有元件；`system` icon 已由 2026-07-08 使用者拍板移除，設定入口收斂到 aside「系統設定」 |
+| function icons（message/person，2 個；message 有 badge） | 沿用全站頂部功能列既有元件；`system` icon 已由 2026-07-08 使用者拍板移除，設定入口收斂到 aside「系統設定」；`bulletin` 管理訊息 icon 與 modal 已由 2026-07-08 使用者拍板整個拔除 |
 | 側欄收合 icon | 控制 aside menu 展開/收合兩態；icon 正式命名需對照 `specs/icons.md`（未定義） |
 | Mobile/tablet | 只顯示 logo + 側欄收合 icon。**已確認（2026-07-03）**：分頁 chip 與 function icons 在此斷點**本來就不屬於這個斷點的設計**，不是「隱藏」也不是「移除」- 進入 mobile ~ tablet 斷點時這兩組元素本來就不會出現，不需要用 CSS 做顯示/隱藏切換，直接在該斷點的 markup/breakpoint 樣式裡不渲染即可 |
 

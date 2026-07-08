@@ -8,15 +8,15 @@
 
 ## 概述
 
-`Function icons` 是頂部工具列的功能圖示群組，由 **3 個 icon** 橫向排列組成。
+`Function icons` 是頂部工具列的功能圖示群組，由 **2 個 icon** 橫向排列組成。
 僅有 **1 個 variant**（`state=Default`）。  
-目前只有公告類 icon 顯示計數 badge：
-- `bulletin`：公告數量，計數 > 0 時顯示品牌橙色 badge。
-- `message`：公告數量，計數 = 0 時顯示 empty badge。
+目前只有公告 icon 顯示計數 badge：
+- `message`：系統商公告數量，計數 = 0 時顯示 empty badge。
 - `person-md`：開啟「會員安全管理」modal，不顯示數字 badge。
 
 > 2026-05-04 決策：Figma 舊規格中 `person-md` / `system` 顯示 `99+` badge 不符合目前產品行為；以使用者決策為準。
-> 2026-07-08 決策：`system` function icon 與 aside「系統設定」語意重疊，且目前沒有對應內容；使用者拍板移除 topbar / mobile drawer 的 `system` icon，Figma 也會同步為 3 個 function icons。
+> 2026-07-08 決策：`system` function icon 與 aside「系統設定」語意重疊，且目前沒有對應內容；使用者拍板移除 topbar / mobile drawer 的 `system` icon，當時 Figma 同步為 3 個 function icons。
+> 2026-07-08 決策：本次交付不提供 `bulletin` 管理訊息功能；使用者拍板整個拔除 topbar / mobile drawer 的 `bulletin` icon 與 `modalBulletinBackdrop`，function icons 收斂為 `message` / `person-md` 兩顆。
 
 ---
 
@@ -24,20 +24,19 @@
 
 | Variant 名稱 | Node ID | 尺寸 |
 |---|---|---|
-| `state=Default` | `187:8209` | 112x24px |
+| `state=Default` | `187:8209` | 68x24px |
 
 ---
 
 ## 結構
 
 ```
-[COMPONENT] Function icons - state=Default (112x24px)
-- function icons (24x24, x:0) <- icons/bulletin + badge "99"
-- function icons (24x24, x:44) <- icons/message + badge "0"
-- function icons (24x24, x:88) <- icons/person-md（無 badge）
+[COMPONENT] Function icons - state=Default (68x24px)
+- function icons (24x24, x:0) <- icons/message + badge "0"
+- function icons (24x24, x:44) <- icons/person-md（無 badge）
 ```
 
-> 每個 unit 間距：44px（icon 24px + gap 20px）
+> 相鄰 unit 的 x offset 為 44px（icon 24px + gap 20px）。
 
 ---
 
@@ -69,13 +68,12 @@ function icons (24×24px)
 
 ---
 
-## 3 個 Icon 詳細
+## 2 個 Icon 詳細
 
 | 位置 | Icon | 示例計數 | 功能說明 |
 |---|---|---|---|
-| x:0 | `icons/bulletin` | `99` | 公告通知 |
-| x:44 | `icons/message` | `0` | 訊息（空狀態，灰色 badge） |
-| x:88 | `icons/person-md` | 無 | 會員安全管理 |
+| x:0 | `icons/message` | `0` | 系統商公告（空狀態，灰色 badge） |
+| x:44 | `icons/person-md` | 無 | 會員安全管理 |
 
 > `99+` 表示計數超過 99 時顯示上限值。
 
@@ -95,16 +93,11 @@ function icons (24×24px)
 ## 實作注意事項
 
 1. **Badge 外溢**：badge `position: absolute; top: -7px; right: -7px`（相對於 icon 容器）
-2. **計數邏輯**：公告類 icon 才顯示 badge；0 → gray badge；1–99 → 數字 + orange；99+ → "99+" + orange
+2. **計數邏輯**：公告 icon 才顯示 badge；0 -> gray badge；1-99 -> 數字 + orange；99+ -> "99+" + orange
 3. **Icon 容器**：`position: relative`，讓 badge 可以外溢定位
 
 ```html
 <div class="flex gap-5">
-  <!-- bulletin icon -->
-  <div class="relative w-6 h-6">
-    <img src="../assets/icons/bulletin.svg" class="w-6 h-6">
-    <span class="absolute -top-1.5 -right-1.5 text-xs font-normal px-1 py-0.5 rounded-full bg-brand-500 text-surface-default leading-none">99</span>
-  </div>
   <!-- message icon (empty) -->
   <div class="relative w-6 h-6">
     <img src="../assets/icons/message.svg" class="w-6 h-6">

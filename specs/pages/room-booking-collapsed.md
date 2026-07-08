@@ -64,7 +64,7 @@
 | 元素 | 尺寸 | x 位置 | 說明 |
 |---|---|---|---|
 | Input × 2（Frame 220） | 235 × 36 | x:0 | 同展開版 |
-| Function icons | 156 × 24 | x:992 | 同展開版 |
+| Function icons | 68 x 24 | x:1072 | 同展開版，message / person-md 兩顆 |
 
 ---
 
