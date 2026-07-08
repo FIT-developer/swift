@@ -167,6 +167,11 @@ tokens -> icons -> components -> specs/pages -> 實作
 7. **specs/progress.md** - 當前進度與決策紀錄
    - 只保留最近約 15 個 session；更早的在 specs/progress-archive-*.md
    - archive 內的決策可能已被推翻，一律以 progress.md 最新 session 為準
+
+**重大分歧決策**：需要 Codex 與 Claude 交叉 review 才能拍板的架構/技術選型
+問題，可使用 `specs/agent-council.md` 流程；細節與門檻判準見該檔，拍板結果
+一律收斂回上述對應的權威檔案，不停留在 council 產出的 draft 裡。
+
 **衝突處理**: 如果 Figma 和 md 檔衝突,先停下來問我,不要自己決定。
 **檔案命名規範**:
 - 一律 kebab-case (例如 bulletin-administer.md, sidebar-default.md)

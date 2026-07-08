@@ -7,6 +7,75 @@
 
 ---
 
+## Session 98 交接 (2026-07-08)
+
+### 任務: 建立 agent council 流程規格（Codex/Claude 雙 agent 決策協作）
+
+使用者提出「不要讓 Codex 和 Claude 直接在 chat UI 互聊，改用 repo 檔案當
+第三方協調器」的構想，經過三輪來回定案：synthesizer（非 moderator）+
+consensus.md 強制 draft 標記 + 拍板後必須收斂回既有權威檔案（Decision
+Convergence）。本輪只做規格與文件，不做腳本（使用者已決定 CLI smoke
+test 要先於 orchestration 腳本）。
+
+### 本輪改動
+
+1. `specs/agent-council.md`（新）：完整流程規格，含：
+   - 跑 council 的門檻（有真實 trade-off 才跑，單一 spec 核對/小修正不跑）
+   - 檔案結構：`specs/agent-council/{topic}/` 底下 brief.md +
+     round-1-codex.md + round-1-claude.md + round-2-codex-review.md +
+     round-2-claude-review.md + consensus.md
+   - 角色流程：兩方各自獨立 round-1 -> 交叉 review round-2 -> 其中一方當
+     **synthesizer** 整理（不裁決，只整理共識/分歧/風險/建議方案/待裁決
+     問題）
+   - `consensus.md` 固定格式，強制標記 draft / pending user decision
+   - 觸發關鍵字定為 `ai-chat`；沒有既有 brief 時先建立 brief 草稿給
+     使用者確認，有既有 brief 時可直接指定路徑
+   - **Decision Convergence** 段（使用者原文照錄）：拍板後必須依決策性質
+     寫回 `progress.md`（一般決策）/ `start.md`（跨任務規則）/
+     `components/{name}.md`（元件規格）/ `specs/pages/{name}.md`（頁面
+     規格）/ `specs/html-conventions.md`（實作慣例）；council 目錄本身
+     只是歷史記錄，沒收斂進權威檔案前不可被當成 current source
+   - 失敗處理：中途失敗不可刪除/回滾已產出檔案；執行工具需支援 resume
+   - 明確記錄 `scripts/agent-council.mjs` 尚未實作，先決條件是對
+     `claude -p` 與 `codex exec` 做 CLI smoke test（stdin/stdout 格式、
+     cwd 繼承、permission mode、timeout、失敗 exit code、JSON 穩定性）
+2. `specs/agent-council/_template.md`（新）：brief 模板（背景/問題/候選
+   方案/禁止事項/需要裁決的問題）
+3. `start.md`：檔案地圖段落補一行索引「重大分歧決策可用
+   `specs/agent-council.md` 流程」，不搬入規則細節本身，避免變成第二份
+   workflow 憲法（跟 html-conventions.md 當初搬遷用的是同一個「單一入口
+   不稀釋」原則）
+
+### 驗證
+
+- 4 個既有 lint 全 pass（`lint-conventions.sh` 檢查新增行 ASCII-only 等）
+- `git diff --check` pass
+- 本輪未動 preview/ 底下任何檔案，純文件工作，不需要跑 smoke-test.mjs
+
+### 重要決定
+
+- synthesizer 不是 moderator：只整理雙方意見成 draft，不裁決對錯，避免
+  誰當 synthesizer 誰就有最後話語權的偏頗風險
+- consensus.md 永遠是 draft；沒有被使用者拍板並寫回對應權威檔案之前，
+  任何後續工作都不可以把它當成 current source 引用 - 這是為了避免它變成
+  跟這次 aside icon 回歸同一類的「規格污染」（舊決策被誤當規格延續）
+- 腳本化順序刻意延後：先 spec、再 template、最後才是
+  `scripts/agent-council.mjs`，且腳本本身要先做 CLI smoke test 才寫
+  orchestration 邏輯，避免卡在 CLI 行為細節（stdin/stdout/cwd/exit
+  code/JSON 穩定性這些沒人事先驗證過）
+
+### 下一步
+
+- 使用者驗收本輪規格文件
+- 驗收後由 agent 對 `claude -p` / `codex exec` 做 CLI smoke test
+- smoke test 通過後才進入 `scripts/agent-council.mjs` 實作
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 97 交接 (2026-07-08)
 
 ### 任務: 修正 function icons（公告/訊息/會員安全管理）在新頁被隱藏的回歸
