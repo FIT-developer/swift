@@ -8,15 +8,15 @@
 
 ## 概述
 
-`Function icons` 是頂部工具列的功能圖示群組，由 **4 個 icon** 橫向排列組成。
+`Function icons` 是頂部工具列的功能圖示群組，由 **3 個 icon** 橫向排列組成。
 僅有 **1 個 variant**（`state=Default`）。  
 目前只有公告類 icon 顯示計數 badge：
 - `bulletin`：公告數量，計數 > 0 時顯示品牌橙色 badge。
 - `message`：公告數量，計數 = 0 時顯示 empty badge。
 - `person-md`：開啟「會員安全管理」modal，不顯示數字 badge。
-- `system`：後續功能，尚未有對應內容，不顯示數字 badge。
 
 > 2026-05-04 決策：Figma 舊規格中 `person-md` / `system` 顯示 `99+` badge 不符合目前產品行為；以使用者決策為準。
+> 2026-07-08 決策：`system` function icon 與 aside「系統設定」語意重疊，且目前沒有對應內容；使用者拍板移除 topbar / mobile drawer 的 `system` icon，Figma 也會同步為 3 個 function icons。
 
 ---
 
@@ -24,18 +24,17 @@
 
 | Variant 名稱 | Node ID | 尺寸 |
 |---|---|---|
-| `state=Default` | `187:8209` | 156×24px |
+| `state=Default` | `187:8209` | 112x24px |
 
 ---
 
 ## 結構
 
 ```
-[COMPONENT] Function icons — state=Default (156×24px)
-├── function icons (24×24, x:0)    ← icons/bulletin  + badge "99"
-├── function icons (24×24, x:44)   ← icons/message   + badge "0"
-├── function icons (24×24, x:88)   ← icons/person-md（無 badge）
-└── function icons (24×24, x:132)  ← icons/system（無 badge）
+[COMPONENT] Function icons - state=Default (112x24px)
+- function icons (24x24, x:0) <- icons/bulletin + badge "99"
+- function icons (24x24, x:44) <- icons/message + badge "0"
+- function icons (24x24, x:88) <- icons/person-md（無 badge）
 ```
 
 > 每個 unit 間距：44px（icon 24px + gap 20px）
@@ -70,14 +69,13 @@ function icons (24×24px)
 
 ---
 
-## 4 個 Icon 詳細
+## 3 個 Icon 詳細
 
 | 位置 | Icon | 示例計數 | 功能說明 |
 |---|---|---|---|
 | x:0 | `icons/bulletin` | `99` | 公告通知 |
 | x:44 | `icons/message` | `0` | 訊息（空狀態，灰色 badge） |
 | x:88 | `icons/person-md` | 無 | 會員安全管理 |
-| x:132 | `icons/system` | 無 | 後續功能，內容尚未實作 |
 
 > `99+` 表示計數超過 99 時顯示上限值。
 
@@ -115,10 +113,6 @@ function icons (24×24px)
   <!-- person-md icon -->
   <div class="relative w-6 h-6">
     <img src="../assets/icons/person-md.svg" class="w-6 h-6">
-  </div>
-  <!-- system icon -->
-  <div class="relative w-6 h-6">
-    <img src="../assets/icons/system.svg" class="w-6 h-6">
   </div>
 </div>
 ```

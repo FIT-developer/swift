@@ -70,6 +70,27 @@ specs/agent-council/{topic}/
 
 brief 格式見 `specs/agent-council/_template.md`。
 
+## 作者標記
+
+除 `brief.md` 外，每一份 round / review / consensus 檔案開頭都必須寫作者
+header，讓使用者能追溯是哪個 CLI / agent 產出的內容。
+
+範例：
+
+```markdown
+---
+author: Codex CLI
+role: round-1 independent analysis
+model_family: GPT
+source_files:
+  - specs/agent-council/{topic}/brief.md
+---
+```
+
+Claude 產出的檔案使用 `author: Claude CLI`。如果之後由腳本執行，腳本必須
+自動寫入這個 header；如果手動執行，執行者必須在貼入內容前保留或補上
+header。
+
 ## 角色與流程
 
 1. 使用者只寫一次 `brief.md`：背景、限制、候選方案、禁止事項、需要裁決的
@@ -92,10 +113,23 @@ brief 格式見 `specs/agent-council/_template.md`。
 `consensus.md` 一律標記為 draft / pending user decision。固定格式：
 
 ```markdown
+---
+author: Codex CLI
+role: synthesizer draft
+model_family: GPT
+source_files:
+  - specs/agent-council/{topic}/round-1-codex.md
+  - specs/agent-council/{topic}/round-1-claude.md
+  - specs/agent-council/{topic}/round-2-codex-review.md
+  - specs/agent-council/{topic}/round-2-claude-review.md
+---
+
 # Consensus (DRAFT - pending user decision)
 
 ## Decision Candidates
-列出可行方案（可能不只一個）。
+列出可行方案（可能不只一個）。每個方案都要標明來源：
+`source: Codex` / `source: Claude` / `source: Both` /
+`source: Synthesizer synthesis`。
 
 ## Why
 每個方案的主要理由。
@@ -119,6 +153,16 @@ brief 格式見 `specs/agent-council/_template.md`。
 ## Decision Convergence
 
 `consensus.md` is a draft decision aid, not an authority source.
+
+使用者拍板時應留下明確 comment，至少包含：
+
+1. 拍板：選擇哪個候選版本（例如 `候選 1a`）。
+2. 補充說明：使用者對 Figma、產品意圖、執行時機或例外條件的補充。
+
+若使用者的拍板 comment 影響後續執行，agent 應先把 comment 記錄到該
+council topic 的 `user-decision.md`，再依 Decision Convergence 收斂到
+對應權威檔案。`user-decision.md` 和 `consensus.md` 一樣是歷史記錄，不是
+後續實作的 current source。
 
 After the user makes a decision, the accepted decision must converge into the
 existing authority file that owns that rule or behavior:
@@ -148,5 +192,55 @@ run 目錄繼續，不需要每次從 round-1 重來。
 失敗時的 exit code、JSON 輸出是否穩定可解析。沒有這輪驗證就直接寫
 orchestration，容易卡在 CLI 行為細節上。
 
-在腳本做出來之前，council 流程可以手動走（使用者自己分別呼叫 Codex/
-Claude CLI，貼上對應檔案內容），一樣照上面的檔案結構與格式執行。
+在腳本做出來之前，`ai-chat` 只會在目前這個 agent 端建立 brief / round 檔案；
+它不會自動喚醒另一個 Claude CLI session。需要使用者手動回到 Claude CLI，
+要求它讀取同一個 `brief.md` 並輸出到對應的 `round-1-claude.md` 或
+`round-2-claude-review.md`。自動化腳本完成後，才由腳本負責呼叫兩個 CLI、
+收集輸出、寫入作者 header、保留失敗中間檔。
+
+## 手動觸發另一個 CLI 的標準指令
+
+在 `scripts/agent-council.mjs` 完成前，使用者要手動把任務交給另一個 CLI。
+不要貼整段對話；只要求它讀 repo 裡的 council 檔案並寫入下一個 round 檔。
+
+### 叫 Claude 產出 round-1
+
+```text
+請讀：
+/Users/3qb/Code/Figma/specs/agent-council.md
+/Users/3qb/Code/Figma/specs/agent-council/{topic}/brief.md
+
+依 specs/agent-council.md 的規則，產出：
+/Users/3qb/Code/Figma/specs/agent-council/{topic}/round-1-claude.md
+
+檔案開頭請包含 author header。
+```
+
+### 叫 Claude review Codex round-1
+
+```text
+請讀：
+/Users/3qb/Code/Figma/specs/agent-council.md
+/Users/3qb/Code/Figma/specs/agent-council/{topic}/brief.md
+/Users/3qb/Code/Figma/specs/agent-council/{topic}/round-1-codex.md
+
+依 specs/agent-council.md 的規則，產出：
+/Users/3qb/Code/Figma/specs/agent-council/{topic}/round-2-claude-review.md
+
+檔案開頭請包含 author header。
+```
+
+### 叫 Codex 接續 Claude 輸出
+
+```text
+Claude 已寫好 round-1-claude.md，請依 ai-chat 流程產出 round-1-codex.md
+和 round-2-codex-review.md。
+```
+
+### 叫任一 CLI 做 synthesizer
+
+```text
+請讀 specs/agent-council/{topic}/ 內的 brief、round-1、round-2 檔案，
+依 specs/agent-council.md 產出 consensus.md。consensus 必須是
+DRAFT - pending user decision，且每個候選方案標 source。
+```

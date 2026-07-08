@@ -53,11 +53,14 @@
 |---|---|---|---|
 | Input「房間預訂」 | 127 × 36 | x:0 | bg `Color/Neutral/75`、border `#86b7fe`（active focus）、radius 6、pad 6/12，trailing icons/close |
 | Input「xxoo」 | 96 × 36 | x:139 | bg `Color/Neutral/0`、border `Color/Neutral/200`、radius 6、pad 6/12，trailing icons/close |
-| Function icons | 156 × 24 | x:984, y:6 | 4 icons × 24，gap 20px |
+| Function icons | 112 x 24 | x:1028, y:6 | 3 icons x 24，gap 20px |
 
 **Function icons badge 顏色**：
-- bulletin(99)、person-md(99+)、system(99+)：bg `Color/Brand/Brand-500`、文字 `Color/Neutral/50`
+- bulletin(99)：bg `Color/Brand/Brand-500`、文字 `Color/Neutral/50`
 - message(0)：bg `Color/Neutral/200`、文字 `Color/Neutral/800`（零值灰）
+- person-md：無 badge，開啟「會員安全管理」modal
+
+> 2026-07-08 使用者拍板：`system` function icon 與 aside「系統設定」語意重疊，已從 topbar/mobile drawer 移除；Figma 也會同步保留三個 function icons。
 
 ---
 

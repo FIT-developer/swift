@@ -7,6 +7,98 @@
 
 ---
 
+## Session 99 交接 (2026-07-08)
+
+### 任務: ai-chat 首次實戰 - 移除 function icons 的 system icon
+
+使用者用 `ai-chat` 練習 Codex/Claude repo-file-mediated council 流程，討論
+aside「系統設定」父項與 topbar/mobile drawer 的 `system` function icon
+是否語意衝突。Claude 與 Codex round-1 / round-2 都收斂到同一方向：
+`system` icon 目前零互動，且 `specs/icons.md` 將 `system` 語意標成
+「系統設定 / 齒輪設定」，與 aside「系統設定」構成真實語意重疊，不應繼續
+當作有效入口或未定義佔位露出。
+
+使用者拍板選 **候選 1**：移除 topbar/mobile drawer 的 `system` icon，讓
+aside「系統設定」成為目前唯一設定入口。使用者補充：會到 Figma 把原版
+function icons 裡的 `system` icon 移除，只保留三個 function icons，所以
+這次不是 code-only override，Figma 也會同步。
+
+### 本輪改動
+
+1. `specs/agent-council.md`：補強 ai-chat 流程：
+   - round / review / consensus 檔案必須具名 author header
+   - consensus 的候選方案必須標 `source`
+   - 自動化腳本未完成前，Claude CLI 不會自動被喚醒，需使用者手動叫 Claude
+     讀同一份 brief
+   - 使用者拍板 comment 固定包含「拍板：選擇候選版本」與「補充說明」
+   - 拍板 comment 若影響執行，先記到 topic 的 `user-decision.md`，再收斂
+     到權威檔案
+2. `specs/agent-council/aside-system-icon-overlap/`（新 topic）：
+   - `brief.md`
+   - `round-1-codex.md`
+   - `round-1-claude.md`
+   - `round-2-codex-review.md`
+   - `round-2-claude-review.md`
+   - `consensus.md`
+   - `user-decision.md`
+3. `components/function-icons.md`：current function icons 由 4 顆改為 3 顆：
+   bulletin / message / person-md。移除 `system` 列與 HTML 範例，並記錄
+   2026-07-08 使用者拍板：`system` 與 aside「系統設定」語意重疊、無對應
+   內容，topbar/mobile drawer 移除，Figma 也會同步三顆 icon。
+4. `preview/partials/topbar.html`：移除 desktop topbar 的 `system.svg`
+   靜態 `<img>`，保留公告 / 訊息 / 會員安全管理三個 button。
+5. `preview/partials/aside.html`：移除 mobile drawer function icons row 的
+   `system.svg`，保留公告 / 訊息 / 會員安全管理三個 button。
+6. `specs/pages/order-processing.md`：desktop top toolbar 從 function icons
+   x4 改成 x3；頂部工具列表格改為 bulletin/message/person，並寫明
+   `system` 已由 2026-07-08 使用者拍板移除，設定入口收斂到 aside。
+7. `specs/pages/room-booking.md`：Top Bar function icons 尺寸從 156x24 改為
+   112x24，描述改為 3 icons x 24；移除 person/system badge 舊描述，補
+   `system` 已移除且 Figma 會同步三顆 icon 的決策註記。
+
+### 驗證（self-tested）
+
+- `rg` 檢查受影響 current source 後，`system.svg` 只剩
+  `operation-system.svg` 這個 aside 區塊標題 icon，不是被移除的 function
+  icon
+- `git diff --check` pass
+- `./scripts/lint-conventions.sh` pass
+- `./scripts/lint-fonts.sh` pass
+- `./scripts/lint-partials.sh` pass（3 pages, 3 standalone）
+- `./scripts/lint-tokens.sh` pass（86 raw hex tokens 一致）
+- `node scripts/smoke-test.mjs` pass：landing 11 checks、order-processing 9
+  checks、room-booking 10 checks
+- `run-swift` driver eval：
+  - order-processing desktop `#topWrap img` = bulletin / message / person-md
+  - room-booking mobile drawer function row = bulletin / message / person-md
+    （另有 logo，屬 drawer header，不是 function icon）
+- 視覺截圖：
+  - `specs/qa-screenshots/session-99/order-processing-desktop-topbar.png`
+    顯示右上只剩三顆 function icons，無 system 齒輪
+  - `specs/qa-screenshots/session-99/room-booking-mobile-drawer-open.png`
+    顯示 mobile drawer function row 只剩公告 / 訊息 / 會員三顆，無 system
+    齒輪
+
+### 重要決定
+
+- `system` function icon 移除是使用者拍板後的正式決策，不是 council draft
+  自動升格；後續實作以 `components/function-icons.md` 與頁面 spec 為
+  current source，不以 `consensus.md` 為 current source。
+- 這次不用 `start.md`：本決策是元件/頁面行為，不是跨任務 workflow rule。
+- Figma 會同步移除原版 `system` icon，只保留三個 function icons；本輪不是
+  code-only override。
+
+### 下一步
+
+- 使用者已驗收通過
+- 本輪依指示 commit / push
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 98 交接 (2026-07-08)
 
 ### 任務: 建立 agent council 流程規格（Codex/Claude 雙 agent 決策協作）
