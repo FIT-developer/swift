@@ -7,6 +7,71 @@
 
 ---
 
+## Session 100 交接 (2026-07-08)
+
+### 任務: 實作 ai-chat 自動化腳本
+
+使用者在 Session 99 完成首次 ai-chat 實戰後，要求把手動切 Codex / Claude
+CLI 的流程自動化：實作 `scripts/agent-council.mjs`，讓既有 `ai-chat`
+流程可以自動呼叫 `claude -p` 與 `codex exec`，省掉手動切 CLI。
+
+### 本輪改動
+
+1. `scripts/agent-council.mjs`（新）：
+   - `run <brief.md>`：依序產出 `round-1-codex.md`、
+     `round-1-claude.md`、`round-2-codex-review.md`、
+     `round-2-claude-review.md`、`consensus.md`
+   - `smoke`：用固定字串測試 Codex / Claude CLI 是否可被腳本呼叫
+   - `--dry-run`：只列出將執行的步驟，不呼叫 CLI、不寫 round 輸出
+   - `--only <step>`：只跑單一步驟，方便中斷後接續
+   - `--force`：覆寫既有 round/review/consensus 檔；預設保留既有檔案並
+     skip，支援 resume
+   - `--synthesizer codex|claude`：指定 consensus 由哪個 CLI 產出
+   - `--timeout-ms <n>`：設定每個 CLI 呼叫 timeout
+   - nested agent 只輸出 markdown body；腳本負責寫檔、加 author header、
+     source_files，避免 nested agent 直接改 repo
+   - 某一步失敗時不刪除既有檔案，錯誤寫到 `<target>.error.md`
+2. `specs/agent-council.md`：
+   - 「執行工具現狀」改成「自動化腳本」
+   - 補 `run` / `smoke` / `--dry-run` / `--only` / `--force` /
+     `--synthesizer` 用法
+   - 記錄在受限 sandbox 中，CLI 可能需要讀寫本機 auth/state（例如
+     `~/.codex` 或 Claude auth），因此 smoke / run 可能需要使用者批准
+     升級權限
+   - 手動觸發 Claude 的指令保留為 fallback
+
+### 驗證（self-tested）
+
+- `node --check scripts/agent-council.mjs` pass
+- `node scripts/agent-council.mjs --help` pass
+- `node scripts/agent-council.mjs run specs/agent-council/aside-system-icon-overlap/brief.md --dry-run --force` pass，列出 5 個預期步驟
+- `node scripts/agent-council.mjs smoke --agent codex --timeout-ms 120000` pass
+- `node scripts/agent-council.mjs smoke --agent claude --timeout-ms 120000` pass
+- 第一次 smoke：
+  - Claude 在 sandbox 內先回 `Not logged in`，升級權限後通過
+  - Codex 在 sandbox 內因 `~/.codex/state_5.sqlite` readonly / app-server
+    EPERM 失敗，升級權限後通過
+
+### 重要決定
+
+- 腳本採「CLI 產生 markdown，腳本寫檔」架構，避免兩個 nested agent 直接
+  編輯 repo 檔案，降低權限與覆寫風險。
+- 預設 skip existing files 而不是覆寫，讓中途失敗可 resume；需要覆寫時
+  明確加 `--force`。
+- 目前不做「一句問題自動生成 brief」；仍由 agent 先依 template 建 brief
+  草稿、使用者確認後，再把 brief path 丟給腳本。
+
+### 下一步
+
+- 使用者驗收自動化腳本
+- 驗收後依指示 commit / push
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 99 交接 (2026-07-08)
 
 ### 任務: ai-chat 首次實戰 - 移除 function icons 的 system icon

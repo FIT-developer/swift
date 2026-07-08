@@ -48,9 +48,9 @@ brief 重點；使用者確認後才進入 round-1/round-2。
 ai-chat specs/agent-council/{topic}/brief.md
 ```
 
-在 `scripts/agent-council.mjs` 做出來之前，`ai-chat` 代表啟動手動
-repo-file-mediated 流程；腳本完成後，同一個關鍵字改由腳本執行，不需要換
-新的觸發詞。
+`scripts/agent-council.mjs` 已可執行自動化 round 流程；同一個關鍵字
+`ai-chat` 維持不變。若使用者只給一句問題，仍先建立 brief 草稿並等使用者
+確認；若已有 brief，agent 可直接呼叫腳本跑 council。
 
 ## 檔案結構
 
@@ -184,24 +184,51 @@ has been written back into the appropriate authority file.
 帶著目前已有的內容自己判斷。council 執行工具（見下）必須支援從既有
 run 目錄繼續，不需要每次從 round-1 重來。
 
-## 執行工具現狀
+## 自動化腳本
 
-`scripts/agent-council.mjs`（自動化這整個流程的腳本）**尚未實作**。
-先決條件是對本機的 `claude -p ...` 與 `codex exec ...` 做 CLI smoke test，
-確認：stdin/stdout 格式、cwd 繼承行為、permission mode、timeout 行為、
-失敗時的 exit code、JSON 輸出是否穩定可解析。沒有這輪驗證就直接寫
-orchestration，容易卡在 CLI 行為細節上。
+`scripts/agent-council.mjs` 會依序呼叫 Codex CLI 與 Claude CLI，收集 markdown
+輸出，並由腳本寫入 round / review / consensus 檔案與 author header。nested
+agent 不直接改 repo 檔案。
 
-在腳本做出來之前，`ai-chat` 只會在目前這個 agent 端建立 brief / round 檔案；
-它不會自動喚醒另一個 Claude CLI session。需要使用者手動回到 Claude CLI，
-要求它讀取同一個 `brief.md` 並輸出到對應的 `round-1-claude.md` 或
-`round-2-claude-review.md`。自動化腳本完成後，才由腳本負責呼叫兩個 CLI、
-收集輸出、寫入作者 header、保留失敗中間檔。
+基本用法：
+
+```bash
+node scripts/agent-council.mjs run specs/agent-council/{topic}/brief.md
+```
+
+常用選項：
+
+```bash
+node scripts/agent-council.mjs run specs/agent-council/{topic}/brief.md --dry-run
+node scripts/agent-council.mjs run specs/agent-council/{topic}/brief.md --only round-1-claude
+node scripts/agent-council.mjs run specs/agent-council/{topic}/brief.md --force
+node scripts/agent-council.mjs run specs/agent-council/{topic}/brief.md --synthesizer claude
+node scripts/agent-council.mjs smoke --agent both
+```
+
+執行規則：
+
+- 預設保留既有檔案並跳過，所以同一個 topic 可 resume。
+- `--force` 才會覆寫已存在的 round / review / consensus。
+- `--only` 可只重跑單一步驟。
+- 某一步失敗時，已產出的檔案保留；失敗細節寫到 `<target>.error.md`。
+- smoke test 會呼叫 `claude -p` 和 `codex exec` 回傳固定字串，用來確認本機
+  auth/state 與 CLI 呼叫可用。
+- 在受限 sandbox 中，CLI 可能需要讀寫各自的本機 state（例如 `~/.codex` 或
+  Claude auth），因此 smoke / run 可能需要使用者批准升級權限。
+
+已驗證：
+
+- `node --check scripts/agent-council.mjs`
+- `node scripts/agent-council.mjs --help`
+- `node scripts/agent-council.mjs run specs/agent-council/aside-system-icon-overlap/brief.md --dry-run --force`
+- `node scripts/agent-council.mjs smoke --agent codex`
+- `node scripts/agent-council.mjs smoke --agent claude`
 
 ## 手動觸發另一個 CLI 的標準指令
 
-在 `scripts/agent-council.mjs` 完成前，使用者要手動把任務交給另一個 CLI。
-不要貼整段對話；只要求它讀 repo 裡的 council 檔案並寫入下一個 round 檔。
+若自動化腳本無法使用，仍可手動把任務交給另一個 CLI。不要貼整段對話；
+只要求它讀 repo 裡的 council 檔案並寫入下一個 round 檔。
 
 ### 叫 Claude 產出 round-1
 
