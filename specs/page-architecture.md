@@ -147,9 +147,15 @@ preview/
 - landing 已拆成 dashboard-only；房間預定與訂單處理為獨立頁
 - `partials/aside.html` 是全站唯一 aside，純 markup 不含 script；選單變動只改
   這一份，active 狀態由 `partials.js` 依 `body[data-page]` 標示
-- `partials/topbar.html`、`partials/session-modals.html` 與
-  `partials/room-booking-modals.html` 是目前共用 partial；partial 內不放
-  script，行為由頁面 module 初始化
+- `partials/topbar.html`、`partials/session-modals.html`、
+  `partials/room-booking-modals.html` 與 `partials/topbar-modals.html`
+  是目前共用 partial；partial 內不放 script，行為由頁面 module 初始化
+- `partials/topbar-modals.html`（2026-07-08 起）：公告 / 管理訊息 / 會員
+  安全管理三個 modal，三頁固定顯示且行為一致（修正 Session 84-85 誤將
+  這組 icon 設計成「非 landing 頁隱藏」的回歸）；modal 開關本身沿用各頁
+  既有 controller（landing 走 `landing-modals.js`、op/rb 走
+  `order-modals.js`），內部行為（tab 切換 / eye-toggle / 公告列展開）由
+  `js/topbar-modals.js` 的 `initTopbarModals()` 提供，三頁各自呼叫一次
 - `js/tailwind-config.js`、`js/page-shell.js`、`js/partials.js` 為跨頁基礎
   module；新增頁面必須同步登記 `scripts/lint-partials.py` 的 MANIFEST
 

@@ -1,4 +1,4 @@
-# 訂單處理作業 > 訂單處理 (order-processing)
+# 訂單管理 > 訂單處理 (order-processing)
 
 > Figma frame（讀取記錄詳見 `specs/order-processing-reading-notes.md`，本檔為 Spec checkpoint 後的正式規格）：
 > - Desktop default：`Content page - 訂單處理 desktop default 0701`（`2032:86476`），1440x1542

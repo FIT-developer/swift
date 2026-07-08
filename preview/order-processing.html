@@ -727,6 +727,9 @@
     <div data-partial="room-booking-modals"></div>
     <!-- 確定登出 / 帳號切換（aside 觸發，全站共用；Stage 2 抽出） -->
     <div data-partial="session-modals"></div>
+    <!-- topbar 公告/管理訊息/會員安全管理（2026-07-08 起三頁共用，見
+         partials/topbar-modals.html 檔頭說明） -->
+    <div data-partial="topbar-modals"></div>
 
     <!-- ====================================
          訂單修改 modal (Figma 2032:81567, 一般會員版) - 觸發：狀態 pill 下拉選單「修改」。
@@ -797,6 +800,7 @@
       import { initPageShell } from "./js/page-shell.js";
       import { initOrderProcessing } from "./js/order-processing.js";
       import { initOrderModals } from "./js/order-modals.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
 
       await loadPartials();
       // page shell（Stage 2）：aside accordion / 收合全部 / mobile drawer
@@ -805,6 +809,8 @@
       initOrderProcessing(document);
       // modal 接線（Stage 1d）：開關核心 + 訂單/簡訊/修改 + 巢狀疊層
       initOrderModals();
+      // topbar 公告/管理訊息/會員安全管理內部行為（2026-07-08 起三頁共用）
+      initTopbarModals();
 
       var pageTabsInline = document.getElementById("pageTabsInline");
       if (pageTabsInline) {

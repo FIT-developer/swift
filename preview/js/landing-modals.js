@@ -1,79 +1,12 @@
+// landing.html 自己的 modal controller 實例。
+// landing 沒有 order-modals.js（那是 op/rb 頁專屬），所以需要獨立建一個
+// controller 給它的 session-modals（登出/更換帳號）與 topbar-modals（公告/
+// 管理訊息/會員安全管理）用；三個 modal 的 data-modal-open 觸發已經是
+// topbar.html / aside.html 裡的靜態屬性，這裡不需要再手動 wiring。
+// modal 內部行為（tab 切換等）交給 js/topbar-modals.js 的 initTopbarModals()，
+// landing.html 的 bootstrap 會另外呼叫。
 import { createModalController } from "./modal-controller.js";
 
 export function initLandingModals() {
-  setModalOpen(
-    ["desktopBulletinBtn", "mobileBulletinBtn"],
-    "modalBulletinBackdrop",
-  );
-  setModalOpen(
-    ["desktopMessageBtn", "mobileMessageBtn"],
-    "modalAdministerBackdrop",
-  );
-  setModalOpen(
-    ["desktopMemberBtn", "mobileMemberBtn"],
-    "modalMemberBackdrop",
-  );
-
   createModalController();
-
-  bindTabGroup(".administer-tab", "bg-tab-yellow", "font-medium");
-  bindTabGroup(".bulletin-tab", "bg-tab-yellow", "font-medium");
-  bindMemberSecurityModal();
-  bindBulletinRows();
-}
-
-function setModalOpen(ids, modalId) {
-  ids.forEach(function (id) {
-    var btn = document.getElementById(id);
-    if (btn) btn.dataset.modalOpen = modalId;
-  });
-}
-
-function bindTabGroup(selector, activeBgClass, activeWeightClass) {
-  document.querySelectorAll(selector).forEach(function (tab) {
-    tab.addEventListener("click", function () {
-      document.querySelectorAll(selector).forEach(function (item) {
-        item.classList.remove(activeBgClass, activeWeightClass);
-        item.classList.add("bg-white");
-      });
-      tab.classList.remove("bg-white");
-      tab.classList.add(activeBgClass, activeWeightClass);
-    });
-  });
-}
-
-function bindMemberSecurityModal() {
-  document.querySelectorAll(".member-tab").forEach(function (tab) {
-    tab.addEventListener("click", function () {
-      var target = tab.dataset.tab;
-      document.querySelectorAll(".member-tab").forEach(function (item) {
-        var isActive = item.dataset.tab === target;
-        item.classList.toggle("bg-border-default", isActive);
-        item.classList.toggle("bg-white", !isActive);
-      });
-      document.querySelectorAll(".member-panel").forEach(function (panel) {
-        panel.classList.toggle("hidden", panel.id !== "memberPanel-" + target);
-      });
-      var origPwd = document.getElementById("memberOriginalPwd");
-      if (origPwd) origPwd.classList.toggle("hidden", target === "ip");
-    });
-  });
-
-  document.querySelectorAll(".eye-toggle").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var input = btn.parentElement.querySelector("input");
-      if (input) input.type = input.type === "password" ? "text" : "password";
-    });
-  });
-}
-
-function bindBulletinRows() {
-  document.querySelectorAll("[data-bulletin-row-toggle]").forEach(function (row) {
-    row.addEventListener("click", function () {
-      var detail = document.getElementById(
-        "bulletinRow" + row.dataset.bulletinRowToggle + "Content",
-      );
-      if (detail) detail.classList.toggle("hidden");
-    });
-  });
 }

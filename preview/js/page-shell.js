@@ -3,8 +3,11 @@
 // 「收合」全部選單、desktop 收折/展開、mobile drawer 開關
 // （menu button / backdrop / close / Esc）。
 // landing 與新頁共用同一份 shell 行為。
-// 新頁沒有公告/訊息/會員安全管理 modal；對應 function icons 會隱藏，
-// 避免留下可見但無反應的控制。
+// function icons（公告/訊息/會員安全管理）在三頁一律固定顯示，不因該頁
+// 沒有對應 modal 就隱藏（2026-07-08 使用者訂正：這組 icon 一直都是
+// 全頁固定顯示的既定規格，Stage 2 引入的隱藏邏輯是誤加，見
+// specs/progress.md Session 97）。新頁點擊沒反應是允許的狀態，跟 aside
+// 選單裡本來就存在的 inert 項目同一類，不需要為此隱藏 icon。
 export function initPageShell() {
   // aside accordion（分類展開/收合）
   document.querySelectorAll(".accordion-trigger").forEach(function (trigger) {
@@ -92,21 +95,6 @@ export function initPageShell() {
   if (compactSwitchBtn) {
     compactSwitchBtn.dataset.modalOpen = "modalSwitchBackdrop";
   }
-
-  // Hide controls whose target modals are landing-only.
-  [
-    ["desktopBulletinBtn", "modalBulletinBackdrop"],
-    ["mobileBulletinBtn", "modalBulletinBackdrop"],
-    ["desktopMessageBtn", "modalAdministerBackdrop"],
-    ["mobileMessageBtn", "modalAdministerBackdrop"],
-    ["desktopMemberBtn", "modalMemberBackdrop"],
-    ["mobileMemberBtn", "modalMemberBackdrop"],
-  ].forEach(function (pair) {
-    var btn = document.getElementById(pair[0]);
-    if (btn && !document.getElementById(pair[1])) {
-      btn.classList.add("hidden");
-    }
-  });
 
   // Mobile sidebar drawer 開關
   var mobileMenuBtn = document.getElementById("mobileMenuBtn");

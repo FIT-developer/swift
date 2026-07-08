@@ -41,6 +41,7 @@
               type="button"
               class="relative cursor-pointer border-0 bg-transparent p-0"
               aria-label="開啟公告"
+              data-modal-open="modalBulletinBackdrop"
             >
               <img
                 src="./assets/icons/bulletin.svg"
@@ -57,6 +58,7 @@
               type="button"
               class="relative cursor-pointer border-0 bg-transparent p-0"
               aria-label="開啟訊息"
+              data-modal-open="modalAdministerBackdrop"
             >
               <img
                 src="./assets/icons/message.svg"
@@ -73,6 +75,7 @@
               type="button"
               class="relative cursor-pointer border-0 bg-transparent p-0"
               aria-label="開啟會員安全管理"
+              data-modal-open="modalMemberBackdrop"
             >
               <img
                 src="./assets/icons/person-md.svg"
@@ -178,265 +181,7 @@
               </button>
             </div>
             <div class="flex flex-col gap-1 pl-1">
-              <!-- 1. 前台作業 -->
-              <div class="menu-category">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>前台作業</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <!-- Stage 2：房間預定為獨立頁，真實連結（同 訂單處理 pattern） -->
-                  <a
-                    href="./room-booking.html"
-                    class="block py-1 px-2 text-base text-menu no-underline cursor-pointer hover:bg-surface-hover rounded"
-                  >
-                    房間預定
-                  </a>
-                </div>
-              </div>
-
-              <!-- 2. 訂單處理作業 -->
-              <div class="menu-category">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>訂單處理作業</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    自動對帳紀錄查詢
-                  </div>
-                  <!-- Stage 1d：訂單處理為獨立頁，真實連結（不走 landing SPA）；
-                       landing 的 SPA click 綁定與 partials.js 的 active 標示
-                       selector 都以 :is(div, a) 區分處理 -->
-                  <a
-                    href="./order-processing.html"
-                    class="block py-1 px-2 text-base text-menu no-underline cursor-pointer hover:bg-surface-hover rounded"
-                  >
-                    訂單處理
-                  </a>
-                </div>
-              </div>
-
-              <!-- 3. 基本資料設定 -->
-              <div class="menu-category">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>基本資料設定</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                    data-role="hotel"
-                  >
-                    房型資料設定
-                  </div>
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    須知設定
-                  </div>
-                </div>
-              </div>
-
-              <!-- 4. 訂房資料設定 -->
-              <div class="menu-category">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>訂房資料設定</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                    data-role="hotel"
-                  >
-                    房間數量設定
-                  </div>
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    定義日期種類
-                  </div>
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                    data-role="hotel"
-                  >
-                    專案價格數量設定
-                  </div>
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                    data-role="hotel"
-                  >
-                    數量價格表
-                  </div>
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                    data-role="hotel"
-                  >
-                    通路庫存設定
-                  </div>
-                </div>
-              </div>
-
-              <!-- 5. 其他消費設定 -->
-              <div class="menu-category">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>其他消費設定</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    類別設定
-                  </div>
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    產品設定
-                  </div>
-                </div>
-              </div>
-
-              <!-- 6. 財務專區（飯店限定）-->
-              <div class="menu-category" data-role="hotel">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>財務專區</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    訂金處理
-                  </div>
-                </div>
-              </div>
-
-              <!-- 7. 會員管理 -->
-              <div class="menu-category">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>會員管理</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    會員資料查詢
-                  </div>
-                </div>
-              </div>
-
-              <!-- 8. 簡訊管理 -->
-              <div class="menu-category">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>簡訊管理</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    訂單簡訊及樣本管理
-                  </div>
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    定時簡訊管理
-                  </div>
-                </div>
-              </div>
-
-              <!-- 9. 報表 -->
-              <div class="menu-category">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>報表</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                  >
-                    住房統計表
-                  </div>
-                </div>
-              </div>
-
-              <!-- 10. 系統設定 -->
+              <!-- 1. 系統設定 -->
               <div class="menu-category">
                 <div
                   class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
@@ -454,45 +199,37 @@
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
                   >
-                    帳號及權限設定
+                    系統基本
                   </div>
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
                   >
-                    系統基本設定
+                    帳號及權限
                   </div>
-                </div>
-              </div>
-
-              <!-- 11. 對應設定（飯店限定）-->
-              <div class="menu-category" data-role="hotel">
-                <div
-                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
-                >
-                  <span>對應設定</span>
-                  <img
-                    src="./assets/icons/up.svg"
-                    alt="up"
-                    class="w-4 h-4 opacity-60 accordion-icon"
-                  />
-                </div>
-                <div
-                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
-                >
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
                   >
-                    OTA串接設定
+                    民宿資料
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
+                  >
+                    房型
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
+                  >
+                    加購商品
                   </div>
                 </div>
               </div>
 
-              <!-- 12. 多國語設定 -->
+              <!-- 2. 產品設定（OTA/通路庫存現階段預設顯示，未來由後端控制是否顯示） -->
               <div class="menu-category">
                 <div
                   class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
                 >
-                  <span>多國語設定</span>
+                  <span>產品設定</span>
                   <img
                     src="./assets/icons/up.svg"
                     alt="up"
@@ -505,34 +242,76 @@
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
                   >
-                    飯店基本設定
+                    OTA
                   </div>
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
                   >
-                    規約設定
+                    通路庫存
                   </div>
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                    data-role="hotel"
                   >
-                    房型設定
+                    平日定義
                   </div>
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
-                    data-role="hotel"
                   >
-                    套裝設定
+                    房間與數量
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
+                  >
+                    專案內容
+                  </div>
+                  <div
+                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
+                  >
+                    數量價格表
                   </div>
                 </div>
               </div>
 
-              <!-- 13. 系統商服務 -->
+              <!-- 3. 訂單管理（2026-07-08 起訂單處理與房間預定併為同一父項） -->
               <div class="menu-category">
                 <div
                   class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
                 >
-                  <span>系統商服務</span>
+                  <span>訂單管理</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <!-- Stage 1d：訂單處理為獨立頁，真實連結（不走 landing SPA）；
+                       landing 的 SPA click 綁定與 partials.js 的 active 標示
+                       selector 都以 :is(div, a) 區分處理 -->
+                  <a
+                    href="./order-processing.html"
+                    class="block py-1 px-2 text-base text-menu no-underline cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    訂單處理
+                  </a>
+                  <!-- Stage 2：房間預定為獨立頁，真實連結（同 訂單處理 pattern） -->
+                  <a
+                    href="./room-booking.html"
+                    class="block py-1 px-2 text-base text-menu no-underline cursor-pointer hover:bg-surface-hover rounded"
+                  >
+                    房間預定
+                  </a>
+                </div>
+              </div>
+
+              <!-- 4. 會員管理 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>會員管理</span>
                   <img
                     src="./assets/icons/up.svg"
                     alt="up"
@@ -545,12 +324,58 @@
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
                   >
-                    線上授權單
+                    會員資訊
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. 報表資訊 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>報表資訊</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
+                  >
+                    住房統計
+                  </div>
+                </div>
+              </div>
+
+              <!-- 6. 簡訊管理 -->
+              <div class="menu-category">
+                <div
+                  class="accordion-trigger flex items-center justify-between py-1.5 px-2 text-base text-text-default cursor-pointer hover:bg-surface-hover rounded"
+                >
+                  <span>簡訊管理</span>
+                  <img
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-4 h-4 opacity-60 accordion-icon"
+                  />
+                </div>
+                <div
+                  class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
+                >
+                  <div
+                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
+                  >
+                    簡訊文本與發送設定
                   </div>
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
                   >
-                    請款紀錄查詢
+                    排程發送
                   </div>
                 </div>
               </div>

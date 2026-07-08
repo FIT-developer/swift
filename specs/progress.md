@@ -7,6 +7,219 @@
 
 ---
 
+## Session 97 交接 (2026-07-08)
+
+### 任務: 修正 function icons（公告/訊息/會員安全管理）在新頁被隱藏的回歸
+
+使用者回報右上角 function icons 在 order-processing.html / room-booking.html
+消失，且手機版 aside drawer 裡的同組 icon 也消失。我一開始誤判成「這是
+Stage 2 刻意設計，避免死按鈕」，被使用者當場糾正：**這組 icon 一直都是
+全頁固定顯示的既定規格**，過去也一直是這樣說明/設計/實作的；「看起來能
+點、實際點了沒反應」在這個專案裡不是問題（aside 選單本來就允許 inert
+項目留著），不可以拿這個當理由隱藏。
+
+### 查證（找根因，不只信自己上一輪的判斷）
+
+- `git log -S` 定位到隱藏邏輯的引入點：commit `a2e0614`
+  "Complete stages 1d-2"（Session 84-85，2026-07-04），`page-shell.js`
+  新增時就帶了這段「Hide controls whose target modals are landing-only」
+- 對照拆頁前的單檔 `landing.html`（commit `5cf5af7`，Stage 1a-1c 完成後、
+  page-shell.js 誕生前）：三個 icon 的 JS 只有 desktop/mobile 雙 id 綁定
+  開 modal，**沒有任何隱藏邏輯**。確認這組隱藏行為是 Stage 2 重構時新加的
+  判斷，不是延續舊規格，是我方（AI）自己的臆測被誤當成設計決策一路延續
+  到現在
+- 使用者指出手機版也消失後，才發現 `mobileBulletinBtn`/`mobileMessageBtn`/
+  `mobileMemberBtn`（在 `partials/aside.html` 的「Mobile function icons
+  row」）套用同一段隱藏邏輯，跟桌機版同根因，不是兩個獨立問題
+
+### 本輪改動
+
+`preview/js/page-shell.js`：刪除 `initPageShell()` 內「Hide controls whose
+target modals are landing-only」整段 forEach（6 組 id/modal 對照表 +
+`classList.add("hidden")`）。檔頭註解同步更正：function icons 三頁一律
+固定顯示，不因該頁沒有對應 modal 就隱藏；點擊在 op/rb 頁沒反應是允許狀態。
+
+### 驗證（self-tested）
+
+- 用 `run-swift` driver `eval` 逐一檢查 6 個 icon id
+  （desktop/mobile x bulletin/message/member）在 landing / order-processing /
+  room-booking 三頁的 `hidden` class 狀態：修正前 op/rb 兩頁 6 個全部
+  `hidden=true`，修正後三頁全部 `hidden=false`
+- 桌機截圖：order-processing.html 右上角 4 個 icon（含系統齒輪）跟 landing
+  一致
+- 手機 390 寬 drawer 截圖：room-booking.html 頂部 4 個 icon 完整顯示
+- 4 個既有 lint 全 pass、smoke test 三頁 11/9/10 checks 全 PASS、
+  `git diff --check` pass
+
+### 重要決定
+
+- 這個回歸的根本問題不是程式碼本身，是**我把 AI 自己在前一輪重構時的
+  假設，誤判成使用者的既有規格**，還在被問到時繼續辯護（「避免死按鈕」）
+  而不是先查證。之後遇到「這是不是故意的」這類問題，要先查 git history/
+  對照重構前版本，不能只憑目前程式碼裡的註解就當作規格來源 - 註解也可能
+  是同一個誤判寫出來的
+- 不回頭修 Session 85 那筆舊交接記錄裡「避免 visible dead controls」的
+  描述文字（`specs/progress.md` 舊段落），沿用本專案「只修最新一筆，不
+  回溯改寫歷史記錄」的原則（見 Session 93）；該筆歷史記錄本身就是這次
+  要修正的錯誤判斷的第一手證據，保留原文更有價值
+
+### 追加修正（同一輪，使用者二次糾正）
+
+上面「只讓 icon 顯示，op/rb 頁點了沒反應是允許狀態」的說法，被使用者當場
+推翻：**同一組 icon 在不同頁行為不一致（landing 能開 modal、op/rb 只留
+死 icon）本身就是不正常，不是「跟 aside inert 選單同類可接受」**。這個
+判斷比第一次的隱藏 bug 更根本 - 只讓 icon 露臉不夠，modal 本體要三頁都能
+真的用。
+
+**追加改動**：
+1. `preview/landing.html`：抽出公告(Modal D/`modalAdministerBackdrop`)、
+   管理訊息(Modal C/`modalBulletinBackdrop`)、會員安全管理
+   (Modal E/`modalMemberBackdrop`) 三個 modal 完整 HTML（665 行），
+   改為 `<div data-partial="topbar-modals"></div>`；搬移時順手清掉
+   box-drawing 分隔線與全形破折號（區塊本來就有裝飾符號違規，搬進新檔
+   全算新增行，必須清）
+2. `preview/partials/topbar-modals.html`（新）：上述三個 modal 的全站
+   共用單一來源
+3. `preview/js/topbar-modals.js`（新）：`initTopbarModals()`，內容是
+   原 `landing-modals.js` 的 `bindTabGroup`（公告/管理訊息 tab）、
+   `bindMemberSecurityModal`（會員 tab + eye-toggle）、`bindBulletinRows`
+   （公告列展開）原樣搬出，供三頁各自呼叫一次
+4. `preview/js/landing-modals.js`：瘦身到只剩
+   `createModalController()`（landing 沒有 order-modals.js，仍需要自己
+   建一個 controller 實例給 session-modals + topbar-modals 用）
+5. `preview/partials/topbar.html`：三個桌機按鈕補靜態
+   `data-modal-open="modal{Bulletin,Administer,Member}Backdrop"`
+   （原本靠 `landing-modals.js` 的 `setModalOpen()` 動態加、只在
+   landing 執行；現在寫死在 markup，三頁共用同一份 topbar.html 自然
+   三頁都有）
+6. `preview/partials/aside.html`：三個手機按鈕比照補相同的靜態
+   `data-modal-open`
+7. `preview/order-processing.html`、`preview/room-booking.html`：新增
+   `data-partial="topbar-modals"` 掛載 + import/呼叫 `initTopbarModals()`
+   （不需要另建 modal controller，這兩頁既有的 `order-modals.js` 的
+   controller 是全頁通用的 delegated handler，modal 只要存在於 DOM 就會
+   被接住）
+8. `scripts/lint-partials.py`：三頁 MANIFEST 補 `topbar-modals` partial
+   與 `./js/topbar-modals.js` module（依三頁各自實際 import 順序）
+9. `specs/page-architecture.md`：補 `partials/topbar-modals.html` 說明
+
+**驗證（self-tested，重點是真的點得開，不只是 icon 可見）**：
+- `run-swift` driver `eval`：三頁的 desktopBulletinBtn/desktopMessageBtn/
+  desktopMemberBtn 逐一 click 開啟 -> 確認 `classList.contains("open")`
+  -> backdrop click 關閉 -> 確認關閉，三頁三個 modal 全部 `OK (open+close)`
+  （含 landing 自身回歸測試，開關依然正常，不是只圖 op/rb 能動而壞了
+  landing）
+- 額外驗證 modal 內部行為在新頁真的生效：order-processing.html 點會員
+  安全管理 -> 切到「IP 紀錄」tab -> 確認 tab 高亮切換、原密碼欄位正確
+  隱藏、IP 紀錄面板正確顯示（不是外殼會開但內容行為沒接上）
+- 桌機截圖：order-processing.html 開啟會員安全管理 modal，視覺與 landing
+  上的版本一致（置中、樣式、內容排版）
+- 4 個既有 lint 全 pass（`lint-partials.sh` 含新 partial/module 的
+  duplicate id / modal target 檢查）、smoke test 三頁 11/9/10 checks
+  全 PASS、`git diff --check` pass
+
+**重要決定（追加）**：
+- 三頁不各自建一個新的 modal controller 實例；op/rb 頁沿用
+  `order-modals.js` 已建立的 controller（本來就是全頁 generic 的
+  delegated click/backdrop/ESC handler，不挑 modal id），只要
+  topbar-modals 的 HTML 存在於 DOM，既有 controller 自然接得住，不需要
+  重複呼叫 `createModalController()`（重複呼叫會產生重複的全域
+  listener，這裡刻意避免）
+
+### 下一步
+
+- 使用者驗收本輪修正（含追加修正）
+- 驗收後依指示 commit / push
+
+### 未解問題
+
+- 無
+
+---
+
+## Session 96 交接 (2026-07-08)
+
+### 任務: aside menu list 依使用者新內容整體重整（13 個父分類 -> 6 個）
+
+使用者直接提供完整新 menu 內容（# 父項 / - 子項格式）。因為新內容只有 6
+個父項，而舊結構有 13 個，且多個舊分類（財務專區、對應設定、多國語設定、
+系統商服務）與部分子項（自動對帳紀錄查詢、須知設定等）完全沒出現在新內容
+裡，動工前先問使用者這是完整取代還是新增/合併，確認為**完整取代**。
+
+### 本輪改動
+
+1. `preview/partials/aside.html`：13 個父分類 -> 6 個父分類，依序為
+   系統設定 / 產品設定 / 訂單管理 / 會員管理 / 報表資訊 / 簡訊管理。
+   - 系統設定：系統基本、帳號及權限、民宿資料、房型、加購商品（5 子項，
+     皆 inactive）
+   - 產品設定：OTA、通路庫存、平日定義、房間與數量、專案內容、數量價格表
+     （6 子項，皆 inactive；使用者註記 OTA/通路庫存現階段預設顯示，未來
+     由後端控制，本輪不加對應前端邏輯）
+   - 訂單管理：訂單處理（真實連結 order-processing.html）、房間預定
+     （真實連結 room-booking.html），原本「前台作業」「訂單處理作業」
+     兩個父項合併為此
+   - 會員管理：會員資訊（1 子項，inactive；原子項「會員資料查詢」改名）
+   - 報表資訊：住房統計（1 子項，inactive；父項原名「報表」、子項原名
+     「住房統計表」皆改名）
+   - 簡訊管理：簡訊文本與發送設定、排程發送（2 子項，inactive；原子項
+     「訂單簡訊及樣本管理」「定時簡訊管理」改名）
+   - 消失：財務專區（訂金處理）、對應設定（OTA串接設定）、多國語設定
+     （飯店基本設定/規約設定/房型設定/套裝設定）、系統商服務（線上授權單/
+     請款紀錄查詢）、以及舊「訂單處理作業」的「自動對帳紀錄查詢」、舊
+     「基本資料設定」的「須知設定」「房型資料設定」、舊「訂房資料設定」
+     的其餘子項、舊「其他消費設定」整個分類
+   - 新分類/子項一律不加 `data-role="hotel"`（使用者新內容未提及飯店限定
+     區分，不腦補）
+2. `specs/pages/room-booking.md`、`specs/pages/room-booking-collapsed.md`、
+   `specs/pages/order-processing.md`、`specs/order-processing-reading-notes.md`：
+   H1 標題裡的舊父分類名稱（前台作業、訂單處理作業）改成新名稱「訂單管理」，
+   避免規格污染（標題仍在但分類已不存在會誤導後續讀者）
+3. `.claude/skills/run-swift/driver.mjs` + `SKILL.md`：驗證過程中發現
+   `withPage()` 沒有等 `Page.loadEventFired` 就開始輪詢 `[data-partial]`，
+   會對還沒 navigate 完成的 `about:blank` 誤判為「已就緒」（`eval` 回傳
+   `asideExists: false` + `readyState: "loading"` 才抓到）。修法：`Page.navigate`
+   前先掛 `Page.loadEventFired` listener 再 await，跟 `scripts/smoke-test.mjs`
+   已驗證過的作法一致。修完後連續跑 3 次確認不是巧合過關。SKILL.md 補上
+   這個 gotcha 與教訓。
+
+### 驗證（self-tested）
+
+- HTML div 開合數量對稱（68/68）、`menu-category`/`accordion-trigger`
+  各 6 個
+- 4 個既有 lint 全 pass；`node scripts/smoke-test.mjs` 三頁 11/9/10 checks
+  全 PASS（含 aside accordion/收合全部/mobile drawer 檢查）
+- 用修好的 `run-swift` driver 逐項肉眼+程式化驗證：
+  - 桌機截圖：展開「系統設定」子項順序、文字、藍色皆正確
+  - 「訂單管理」展開後兩個子項是 `<a>` 且 href 正確指向
+    order-processing.html / room-booking.html
+  - order-processing.html / room-booking.html 的 `.sub-item-selected`
+    正確落在巢狀後的「訂單處理」「房間預定」上（`partials.js` 的
+    active-page selector 對合併後的結構依然生效）
+  - 該 active 項所屬的「訂單管理」父分類自動展開（`submenuHidden: false`,
+    `iconOpen: true`）
+  - 手機 390 寬 drawer 截圖：6 個分類完整顯示、無水平溢出
+
+### 重要決定
+
+- 完整取代 vs 新增合併：使用者明確選「完整取代」，四個舊父分類與多個舊
+  子項確認整個消失，不是遺漏
+- 新分類/子項不加 `data-role="hotel"`：Figma/使用者都沒提到飯店限定區分，
+  不腦補
+- run-swift driver 的 race condition 修復＋教訓寫回 SKILL.md，不是只默默
+  修掉，下次改動這個 driver 的人會看到為什麼要在 navigate 後 await
+  loadEventFired
+
+### 下一步
+
+- 使用者驗收本輪 aside 重整
+- 驗收後依指示 commit / push
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 95 交接 (2026-07-05)
 
 ### 任務: 新增 `figma-read` skill

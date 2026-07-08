@@ -95,6 +95,19 @@ Static checks (no browser needed, faster, part of pre-commit):
 
 ## Gotchas
 
+- **(Fixed, but know why) `withPage()` used to not wait for navigation to
+  actually finish before polling.** It called `Page.navigate` and went
+  straight into the `[data-partial]` poll loop without waiting for
+  `Page.loadEventFired` first. Since the poll's condition is "no
+  `[data-partial]` elements found," it could false-positive against the
+  still-blank `about:blank` document (which trivially has zero of
+  anything) and report "ready" before the target page had even started
+  loading - caught live when `eval landing.html` returned `asideExists:
+  false` and `readyState: "loading"` while verifying an aside.html
+  content change. Fixed by awaiting a `Page.loadEventFired` listener
+  registered *before* calling `Page.navigate`. Re-verified 3x in a row
+  after the fix (previously this had only been tested a few times and
+  happened to not lose the race).
 - **`shot`/`eval` only wait for partials, not page-specific JS.** Tested
   live: `eval room-booking.html 'document.querySelectorAll("#calGrid .day").length'`
   without `--wait` returned `0`, because the calendar renders after

@@ -64,6 +64,7 @@ class CDP {
     this.ws = ws;
     this.seq = 0;
     this.pending = new Map();
+    this.eventHandlers = [];
     ws.addEventListener("message", (ev) => {
       const msg = JSON.parse(ev.data);
       if (msg.id !== undefined && this.pending.has(msg.id)) {
@@ -71,6 +72,8 @@ class CDP {
         this.pending.delete(msg.id);
         if (msg.error) reject(new Error(msg.error.message));
         else resolve(msg.result);
+      } else if (msg.method) {
+        for (const fn of this.eventHandlers) fn(msg);
       }
     });
   }
@@ -80,6 +83,9 @@ class CDP {
       this.pending.set(id, { resolve, reject });
       this.ws.send(JSON.stringify({ id, method, params: params || {}, sessionId }));
     });
+  }
+  onEvent(fn) {
+    this.eventHandlers.push(fn);
   }
 }
 
@@ -158,7 +164,18 @@ async function withPage(page, viewport, fn) {
       { width: w, height: h, deviceScaleFactor: 1, mobile: w < 768 },
       sessionId,
     );
+    // Wait for the actual navigation to finish (Page.loadEventFired) before
+    // polling anything - without this, the [data-partial] poll below can
+    // false-positive against the still-blank about:blank document and
+    // return "ready" instantly. (Bug found live while verifying against
+    // the aside menu rewrite - see Gotchas.)
+    const loaded = new Promise((resolve) => {
+      cdp.onEvent((msg) => {
+        if (msg.method === "Page.loadEventFired") resolve();
+      });
+    });
     await cdp.send("Page.navigate", { url: baseUrl + "/" + page }, sessionId);
+    await loaded;
 
     async function evl(expr) {
       const r = await cdp.send(

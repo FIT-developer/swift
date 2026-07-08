@@ -1,4 +1,4 @@
-# 訂單處理作業 > 訂單處理 — Figma 讀取記錄（進行中，尚未寫入正式 spec）
+# 訂單管理 > 訂單處理 - Figma 讀取記錄（進行中，尚未寫入正式 spec）
 
 > 這是 figma-go 多批次讀取的工作記錄檔，不是正式 component/section/layout spec。
 > 依 start.md 三階段流程，目前停在 **Read** 階段；使用者說「讀完」後才進入 Spec checkpoint。

@@ -29,21 +29,29 @@ PARTIALS = PREVIEW / 'partials'
 # 說明文件在 specs/page-architecture.md「Partial dependency manifest」段。
 MANIFEST = {
     'landing.html': {
-        'partials': ['aside', 'topbar', 'session-modals'],
+        'partials': ['aside', 'topbar', 'topbar-modals', 'session-modals'],
         'modules': [
             './js/partials.js',
             './js/page-shell.js',
             './js/landing-modals.js',
+            './js/topbar-modals.js',
             './js/landing-charts.js',
         ],
     },
     'order-processing.html': {
-        'partials': ['aside', 'topbar', 'room-booking-modals', 'session-modals'],
+        'partials': [
+            'aside',
+            'topbar',
+            'room-booking-modals',
+            'session-modals',
+            'topbar-modals',
+        ],
         'modules': [
             './js/partials.js',
             './js/page-shell.js',
             './js/order-processing.js',
             './js/order-modals.js',
+            './js/topbar-modals.js',
         ],
     },
     'room-booking.html': {
@@ -53,6 +61,7 @@ MANIFEST = {
             'room-booking-sections',
             'room-booking-modals',
             'session-modals',
+            'topbar-modals',
         ],
         'modules': [
             './js/partials.js',
@@ -60,6 +69,7 @@ MANIFEST = {
             './js/room-booking-behaviors.js',
             './js/order-modals.js',
             './js/arrival-method-modal.js',
+            './js/topbar-modals.js',
         ],
     },
 }
