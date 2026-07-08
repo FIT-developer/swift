@@ -38,9 +38,24 @@
 ai-chat: 要不要把 aside active state 改成 data-page 驅動？
 ```
 
-如果使用者只給一句問題，agent 先依 `_template.md` 建立
-`specs/agent-council/{topic}/brief.md` 草稿，回報 topic 路徑與待確認的
-brief 重點；使用者確認後才進入 round-1/round-2。
+`ai-chat` 是執行觸發詞，不是請使用者補一段長提示詞。當使用者在任一 CLI
+輸入 `ai-chat ...` 且問題本身足以形成可審計 brief 時，當前 agent 必須：
+
+1. 從問題摘要出 kebab-case `{topic}`。
+2. 依 `_template.md` 建立 `specs/agent-council/{topic}/brief.md`。
+3. 把使用者原文放進 brief 的背景或問題段落，並補上可從 repo 現況查到的
+   relevant files / constraints。
+4. 直接呼叫：
+
+```bash
+node scripts/agent-council.mjs run specs/agent-council/{topic}/brief.md
+```
+
+使用者不需要再明講「請建立 brief 並執行腳本」。只有以下情況才先停下詢問：
+
+- 使用者的一句話不足以界定題目或限制，寫不出可審計 brief。
+- 跑 council 前就會需要直接修改產品實作或 spec 權威檔案。
+- 需要使用者提供不可從 repo 推得的 Figma 狀態、產品意圖、或外部決策。
 
 如果使用者已經準備好 brief，可直接指定路徑：
 
@@ -49,8 +64,8 @@ ai-chat specs/agent-council/{topic}/brief.md
 ```
 
 `scripts/agent-council.mjs` 已可執行自動化 round 流程；同一個關鍵字
-`ai-chat` 維持不變。若使用者只給一句問題，仍先建立 brief 草稿並等使用者
-確認；若已有 brief，agent 可直接呼叫腳本跑 council。
+`ai-chat` 維持不變。若使用者只給一句問題，agent 建 brief 後直接呼叫腳本跑
+council；若已有 brief，agent 直接呼叫腳本跑 council。
 
 ## 檔案結構
 

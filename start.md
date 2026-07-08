@@ -171,6 +171,11 @@ tokens -> icons -> components -> specs/pages -> 實作
 **重大分歧決策**：需要 Codex 與 Claude 交叉 review 才能拍板的架構/技術選型
 問題，可使用 `specs/agent-council.md` 流程；細節與門檻判準見該檔，拍板結果
 一律收斂回上述對應的權威檔案，不停留在 council 產出的 draft 裡。
+當使用者訊息以 `ai-chat` 開頭或明確要求 `ai-chat` 時，這是執行觸發詞：
+任一 CLI agent 都應直接依問題建立 `specs/agent-council/{topic}/brief.md`
+並呼叫 `node scripts/agent-council.mjs run <brief.md>`，不需要使用者再寫
+「請建立 brief 並執行腳本」。只有在問題資訊不足以寫出可審計 brief、會立刻
+改動產品實作、或需要使用者先提供不可推測的 Figma/產品意圖時，才先停下詢問。
 
 **衝突處理**: 如果 Figma 和 md 檔衝突,先停下來問我,不要自己決定。
 **檔案命名規範**:

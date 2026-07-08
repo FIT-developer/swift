@@ -7,6 +7,52 @@
 
 ---
 
+## Session 101 交接 (2026-07-08)
+
+### 任務: 補強 ai-chat 一句話觸發規則
+
+使用者指出 Session 100 的自動化仍要求使用者輸入過長提示詞，期待是只要對任
+一 CLI 說 `ai-chat ...`，當前 agent 就自動建立 topic / brief，並呼叫另一個
+agent 進入 council 流程。
+
+### 本輪改動
+
+1. `start.md`：
+   - 在重大分歧決策段落明確定義 `ai-chat` 是執行觸發詞。
+   - 任一 CLI agent 收到足夠明確的 `ai-chat ...` 後，應直接建立
+     `specs/agent-council/{topic}/brief.md` 並執行
+     `node scripts/agent-council.mjs run <brief.md>`。
+   - 使用者不需要再輸入「請建立 brief 並執行腳本」。
+   - 只有題目不足、會立刻改產品實作、或需要不可推測的 Figma/產品意圖時，
+     才先停下詢問。
+2. `specs/agent-council.md`：
+   - 將「一句問題先建 brief 草稿並等確認」改成「一句 `ai-chat` 問題足夠
+     明確時，直接建 brief 並跑腳本」。
+   - 補上 agent 執行步驟：摘要 topic、建立 brief、寫入原始問題與 repo
+     constraints、呼叫 `scripts/agent-council.mjs run`。
+
+### 驗證（self-tested）
+
+- `git diff --check` pass
+- `./scripts/lint-conventions.sh` pass
+
+### 重要決定
+
+- `ai-chat` 的正確使用者介面是一句自然語言問題，不是要求使用者背誦
+  `brief.md` 路徑與腳本命令。
+- 此規則是跨 CLI workflow rule，因此寫入 `start.md`；細節仍由
+  `specs/agent-council.md` 管理。
+
+### 下一步
+
+- 使用者確認後再依指示 commit / push。
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 100 交接 (2026-07-08)
 
 ### 任務: 實作 ai-chat 自動化腳本
