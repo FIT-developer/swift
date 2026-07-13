@@ -798,6 +798,7 @@
     <script type="module">
       import { loadPartials } from "./js/partials.js";
       import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
       import { initOrderProcessing } from "./js/order-processing.js";
       import { initOrderModals } from "./js/order-modals.js";
       import { initTopbarModals } from "./js/topbar-modals.js";
@@ -805,21 +806,14 @@
       await loadPartials();
       // page shell（Stage 2）：aside accordion / 收合全部 / mobile drawer
       initPageShell();
+      // topbar page tab chips：sessionStorage 多 tab 共存 + 關閉行為
+      initPageTabs();
       // 頁面互動（Stage 1c）：partial 就位後綁定，root = document
       initOrderProcessing(document);
       // modal 接線（Stage 1d）：開關核心 + 訂單/簡訊/修改 + 巢狀疊層
       initOrderModals();
       // topbar 系統商公告/會員安全管理內部行為（2026-07-08 起三頁共用）
       initTopbarModals();
-
-      var pageTabsInline = document.getElementById("pageTabsInline");
-      if (pageTabsInline) {
-        var tab = document.createElement("a");
-        tab.href = "./order-processing.html";
-        tab.className = "page-tab active";
-        tab.textContent = "訂單處理";
-        pageTabsInline.appendChild(tab);
-      }
     </script>
   </body>
 </html>

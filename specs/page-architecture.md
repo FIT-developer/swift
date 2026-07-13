@@ -139,8 +139,20 @@ preview/
   `房間預定` -> `room-booking.html`，`訂單處理` -> `order-processing.html`
 - aside 其餘尚未拆頁項目維持 inactive markup，不開 placeholder，不新增空白頁；
   未來有真實頁面時再改成真實連結
-- topbar page chip 在 demo 中降級為目前頁面的導航提示；不重現舊 SPA 的多開
-  tab / close chip 語意
+- topbar page chips（2026-07-13 使用者訂正，推翻 2026-07-04「降級為導航列」
+  決策）：恢復多開 tab + 關閉 chip 語意。共用 module `js/page-tabs.js` 的
+  `initPageTabs()` 以 sessionStorage（key `swift-open-page-tabs`）保存已開
+  頁面清單，三頁載入時 render 全部已開 tab：
+  - 進入 room-booking / order-processing 時把自己 upsert 進清單（保持開啟
+    順序），當前頁 chip 標 `active`
+  - 點 chip 本體或 label 導向該頁（真實跳頁，非 SPA 切換）
+  - 點關閉鈕從清單移除：關閉當前頁跳最近剩餘 tab（優先原位右側、退回
+    左側），全部關閉回 `landing.html`；關閉非當前頁原地重繪不跳頁
+  - landing 本身不是 tab，只 render 既有清單（皆 inactive）
+  - chips 列仍在 `#desktopTopRow`（`hidden md:flex`），mobile 不顯示，
+    維持既有 topbar RWD 設計
+  - 之後新 tab 頁面上線時，除 MANIFEST 外必須同步登記 `js/page-tabs.js`
+    的 `TAB_PAGES`（filename -> 顯示名稱），否則該頁不會產生 chip
 
 ## 遷移策略（current）
 
@@ -156,8 +168,9 @@ preview/
   既有 controller（landing 走 `landing-modals.js`、op/rb 走
   `order-modals.js`），內部行為（tab 切換 / eye-toggle / 公告列展開）由
   `js/topbar-modals.js` 的 `initTopbarModals()` 提供，三頁各自呼叫一次
-- `js/tailwind-config.js`、`js/page-shell.js`、`js/partials.js` 為跨頁基礎
-  module；新增頁面必須同步登記 `scripts/lint-partials.py` 的 MANIFEST
+- `js/tailwind-config.js`、`js/page-shell.js`、`js/page-tabs.js`、
+  `js/partials.js` 為跨頁基礎 module；新增頁面必須同步登記
+  `scripts/lint-partials.py` 的 MANIFEST
 
 ## 對後端的意義
 
@@ -173,6 +186,8 @@ partial、模組化 JS。比 11583 行單檔更接近他們要重寫的形狀。
 
 **分頁 tab chips 決策**：demo 降級為導航列（顯示當前頁、點擊為真實跳頁連結）；
 「同時多開 + 關閉 chip」的 SPA 語意屬後端範疇，不在 demo 重現。
+（2026-07-13 使用者訂正推翻本決策，多 tab 行為已恢復，現行規格見上方
+「導航（current）」的 topbar page chips 段。）
 
 **目標終態**：
 - landing.html = 只剩 dashboard（今日總覽）

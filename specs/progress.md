@@ -7,6 +7,63 @@
 
 ---
 
+## Session 104 交接 (2026-07-13)
+
+### 任務: 修復 topbar page tab chips 只剩單一 tab 的問題
+
+使用者回報：過去點房間預定與訂單處理會各生成一個 tab（複數共存），
+現在 #pageTabsInline 只剩單一 tab，要求修正。
+
+### 根因分析
+
+- 舊 SPA（commit 7cdb6d7）在 landing 內有 pages[] state machine
+  （openPage / renderChips / closePageByName），tab 可複數、可關閉
+- 2026-07-04 拆頁時 page-architecture.md 明文決策「chips 降級為導航列，
+  多開 + 關閉語意不在 demo 重現」，各頁只 append 自己的靜態 chip，
+  跨頁無 state 保存，所以永遠單一 tab
+- 本輪使用者訂正推翻該決策，恢復多 tab 行為
+
+### 本輪改動
+
+- 新增 `preview/js/page-tabs.js`：`initPageTabs()`，sessionStorage
+  （key `swift-open-page-tabs`）保存已開頁面清單；chip = div.page-tab
+  （label anchor `.page-tab-link` + 關閉鈕 `.page-tab-close`）；
+  關閉當前頁跳最近剩餘 tab（優先右、退回左），全關回 landing；
+  landing 只 render 清單不自成 tab。新 tab 頁上線要登記 TAB_PAGES
+- 三頁 inline script 接線 initPageTabs()（initPageShell 之後）；
+  移除 room-booking / order-processing 原本的單顆靜態 chip 程式碼
+- `shell.css` 新增 `.page-tab-link`（color inherit + no underline）
+- `scripts/lint-partials.py` MANIFEST 三頁 modules 補 `./js/page-tabs.js`
+- `specs/page-architecture.md`：「導航（current）」改寫 chips 段為
+  多 tab 現行規格；2026-07-04 歷史決策段加註已被推翻（不改寫原文）
+
+### 驗證（self-tested, pending review）
+
+- lint-fonts / lint-conventions / lint-partials 全 exit 0
+- `node scripts/smoke-test.mjs` 三頁 PASS
+- Chrome 實測（isolated context, 1440/768/375）：
+  - rb -> op：兩 chip 共存，op active、rb inactive，順序照開啟序
+  - 點 rb chip 跳回 rb，active 正確跟隨當前頁
+  - 關閉非當前 tab：原地移除不跳頁
+  - 關閉當前 tab：跳剩餘 tab；關最後一個回 landing，storage 清空
+  - landing render 既有 tab（皆 inactive）
+  - mobile 375 不顯示 chips 列為既有設計（#desktopTopRow hidden md:flex），
+    非 regression
+- 截圖：specs/qa-screenshots/session-104/（1440 / 768 / 375 / landing）
+
+### 重要決定
+
+- 2026-07-04「chips 降級為導航列」決策被使用者訂正推翻；現行權威規格
+  在 page-architecture.md「導航（current）」topbar page chips 段
+- tab 狀態用 sessionStorage（分頁工作階段語意，關瀏覽器 tab 重置），
+  不用 localStorage
+
+### 未解問題
+
+- 無；使用者已在本機預覽驗收後指示 commit & push
+
+---
+
 ## Session 103 交接 (2026-07-08)
 
 ### 任務: 獨立驗證 Session 99-102 的產出，準備 commit & push

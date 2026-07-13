@@ -521,12 +521,15 @@
     <script type="module">
       import { loadPartials } from "./js/partials.js";
       import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
       import { initLandingModals } from "./js/landing-modals.js";
       import { initTopbarModals } from "./js/topbar-modals.js";
       import { initLandingCharts } from "./js/landing-charts.js";
 
       await loadPartials();
       initPageShell();
+      // topbar page tab chips：render 已開啟頁面清單（landing 本身非 tab）
+      initPageTabs();
       initLandingModals();
       initTopbarModals();
       initLandingCharts();

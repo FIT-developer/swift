@@ -33,6 +33,7 @@ MANIFEST = {
         'modules': [
             './js/partials.js',
             './js/page-shell.js',
+            './js/page-tabs.js',
             './js/landing-modals.js',
             './js/topbar-modals.js',
             './js/landing-charts.js',
@@ -49,6 +50,7 @@ MANIFEST = {
         'modules': [
             './js/partials.js',
             './js/page-shell.js',
+            './js/page-tabs.js',
             './js/order-processing.js',
             './js/order-modals.js',
             './js/topbar-modals.js',
@@ -66,6 +68,7 @@ MANIFEST = {
         'modules': [
             './js/partials.js',
             './js/page-shell.js',
+            './js/page-tabs.js',
             './js/room-booking-behaviors.js',
             './js/order-modals.js',
             './js/arrival-method-modal.js',

@@ -29,6 +29,11 @@
   background: var(--color-modal-hover);
   border-color: var(--color-chart-blue);
 }
+/* chip 內導頁 anchor - 覆蓋 UA 預設 underline/link color，樣式全由 .page-tab 決定 */
+.page-tab-link {
+  color: inherit;
+  text-decoration: none;
+}
 .page-tab-close {
   display: flex;
   align-items: center;
