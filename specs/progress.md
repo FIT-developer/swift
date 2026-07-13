@@ -42,6 +42,14 @@ Figma 來源: SECTION 2061:72550（desktop 1440）+ 2061:72551
   switch-account modal 檢查（功能退役）; 新增 system-basic 頁（8 checks）
 - lint-conventions.py 修正: base.css 自訂屬性定義行豁免 hex/rgba 檢查
   （與檔頭聲明意圖一致; --color-switch-off-track rgba 前例早於 lint）
+- 追加（使用者訂正: 點 stepper icon 數字要會動）: up-and-down icon 改為
+  可點按鈕, 上半 +1 / 下半 -1, stepUp/stepDown clamp 1~24, disabled 時
+  不動作; 實測 up/down/clamp/disabled 四情境全過（79b6ab2 之後的追加,
+  實際 SHA 以 git history 為準）
+- 新規則（使用者定調「只有裝飾沒功能 = 大 bug」）: 藏原生控件必接替代
+  行為, 已登記 html-conventions.md「藏原生控件必接替代行為」段; 回溯
+  audit 全庫 appearance:none 僅另有兩處且都是 select（功能未斷）, 無
+  其他違規; 規則無法 grep 判定, 靠 review + 實測 checklist
 - 追加（使用者驗收時新增需求）: aside POS 入口整組移除 - markup +
   shell.css `.pos-entrance-*` / `.icon-mask-pos` / `.icon-mask-attached-link`
   （無 JS binding; pos.svg 與 linear-pos tokens 保留未用）; 決策記錄在

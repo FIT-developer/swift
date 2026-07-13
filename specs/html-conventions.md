@@ -210,6 +210,19 @@
 - on track 色 `--color-accent-green` / off track 色 `--color-switch-off-track` / knob `--color-neutral-0`
 - 來源：`components/member-data-modal.md`（會員資料 modal 常用會員、訂閱電子報）
 
+### 藏原生控件必接替代行為（強制）
+- 用 `appearance: none` 或覆蓋層藏掉原生 UI（number spinner、select chrome
+  等）時, 疊上去的自訂 icon / 按鈕**必須同步接上等價行為**, 不可只有外觀。
+  只有裝飾沒有功能 = 大 bug（2026-07-13 使用者訂正, 案例: 系統基本頁
+  stepper icon 一開始是 pointer-events-none 裝飾圖, 點了數字不會動）
+- 標準做法: 藏原生後用 JS 呼叫原生 API 補回（`input.stepUp()/stepDown()`
+  自帶 min/max clamp）, 鍵盤路徑保留 input 原生行為, 替代鈕 `tabindex="-1"`
+- select 例外: `appearance: none` 只拿掉外觀 chrome, 點擊整個 select 仍開
+  原生下拉, 不需補 JS（自繪 chevron 畫在 select 自身 background 即可）
+- 驗證要求: 實作後必須實際點擊替代控件確認值/狀態會變, 不可只做視覺驗證
+- 機器可判定性: 無法 grep（需行為比對）, 靠本條 + review + 實測 checklist
+- 參考實作: `preview/js/system-basic.js` stepper 段
+
 ### Pill chip 單選 toggle（橫向 scroll）
 - CSS scoped class：`.member-data-title-chip` / `.is-selected`（黃底 `--color-subitem-selected`）
 - 容器：`flex-nowrap overflow-x-auto`，chip `flex-shrink: 0`

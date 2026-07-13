@@ -183,11 +183,21 @@
                           class="sb-stepper-input w-full border border-border-disabled rounded-[6px] pl-3 pr-8 py-1.5 text-base text-text-default outline-none focus:border-border-focus bg-white"
                           aria-label="當日網路訂房終止時間"
                         />
-                        <img
-                          src="./assets/icons/up-and-down.svg"
-                          alt=""
-                          class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-                        />
+                        <!-- 上半點擊 +1 / 下半 -1（stepUp/stepDown, 鍵盤操作
+                             走 input 本身的上下鍵, 故此鈕不進 tab 順序） -->
+                        <button
+                          type="button"
+                          data-sb-sameday-step
+                          tabindex="-1"
+                          aria-hidden="true"
+                          class="absolute right-1 top-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-full border-0 bg-transparent p-0 cursor-pointer"
+                        >
+                          <img
+                            src="./assets/icons/up-and-down.svg"
+                            alt=""
+                            class="w-4 h-4 pointer-events-none"
+                          />
+                        </button>
                       </div>
                       <span class="text-base text-text-default whitespace-nowrap"
                         >時，終止</span

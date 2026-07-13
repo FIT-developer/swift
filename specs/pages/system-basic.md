@@ -90,6 +90,10 @@
 - **toggle 連動**（2026-07-13 使用者新增）: toggle off -> input disabled +
   灰底 `bg-border-default`（沿用 room-booking lock toggle 慣例）; on ->
   恢復可輸入白底。實作在 `js/system-basic.js` `initSystemBasic()`
+- **stepper 點擊**（2026-07-13 使用者訂正: 點 icon 數字要會動）: 原生
+  spinner 已藏, up-and-down icon 為可點按鈕 - 上半 +1、下半 -1,
+  `stepUp/stepDown` 自動 clamp min(1)/max(24); input disabled 時不動作;
+  鍵盤操作走 input 原生上下鍵（step 鈕 tabindex=-1 不進 tab 順序）
 
 ### 5. ATM 設定（Figma 2061:71160 / 71893）
 - 標題「ATM 設定」
