@@ -342,6 +342,11 @@
 | CSS variable | 值 | 用途 | 來源 |
 |---|---|---|---|
 | `--color-switch-off-track` | `rgba(60, 60, 67, 0.3)` | iOS toggle switch off state track | Figma `Toggle - Switch` instance frame (`member-data-modal` 常用會員 / 訂閱電子報) |
+| `--color-template-green` | `#BBF7D0` | 版型示意（系統基本頁）大圖/縮圖佔位底色 | Figma 0713 系統基本稿 node "Green"（2061:71222），客戶端訂房網縮影專用，不與產品 UI token 混用 |
+| `--color-template-text` | `#000000` | 版型示意內文字 | 同上 |
+| `--color-template-text-muted` | `rgba(0, 0, 0, 0.5)` | 版型示意 subtitle 半透明黑 | 同上（Figma `#00000080`） |
+| `--color-template-divider` | `rgba(0, 0, 0, 0.1)` | 版型示意 article 分隔線 | 同上（Figma `#0000001a`） |
+| `--color-template-thumb-tint` | `rgba(0, 0, 0, 0.05)` | 版型示意第二縮圖疊色 | 同上（Figma `#0000000d`） |
 
 ---
 

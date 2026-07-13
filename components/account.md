@@ -3,6 +3,10 @@
 **Figma Node ID**: `63:461`（COMPONENT_SET）  
 **Type**: COMPONENT_SET  
 **最後同步**: 2026-04-13
+**現行訂正**（2026-07-13 使用者確認）: 快速切換帳號功能整組移除 -
+aside 帳號列的 switch icon、topbar `compactSwitchBtn`、
+`session-modals.html` 的帳號切換 modal、`page-shell.js` 對應接線皆已刪除。
+帳號列僅保留登出。本檔以下規格中涉及「切換帳號」的部分為歷史內容。
 
 ---
 

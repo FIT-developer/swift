@@ -1,0 +1,36 @@
+/* System-basic page styles - 系統基本頁專用（specs/pages/system-basic.md）
+   版型示意（客戶端訂房網縮影）顏色一律走 base.css 的 --color-template-*
+   變數（demo 專用，不與產品 UI token 混用）。 */
+
+.sb-template-image {
+  background: var(--color-template-green);
+}
+.sb-template-thumb-tint {
+  background: var(--color-template-thumb-tint);
+}
+.sb-template-text {
+  color: var(--color-template-text);
+}
+.sb-template-muted {
+  color: var(--color-template-text-muted);
+}
+.sb-template-article {
+  border-bottom: 1px solid var(--color-template-divider);
+}
+.sb-template-btn {
+  border: 1px solid var(--color-template-text);
+  border-radius: 4px;
+  color: var(--color-template-text);
+}
+
+/* 當日網路訂房 stepper input - 隱藏原生 spinner，右側改放 up-and-down icon
+   （Figma Input + icons/up-and-down 樣式；數值仍可鍵盤輸入） */
+.sb-stepper-input::-webkit-outer-spin-button,
+.sb-stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.sb-stepper-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

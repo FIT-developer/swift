@@ -3,6 +3,11 @@
 **Figma Node ID**: `57:439`  
 **Type**: COMPONENT_SET  
 **Total Variants**: 6
+**現行訂正**（2026-07-13 使用者確認）: POS 入口按鈕整組移除 - aside 的
+POS entrance markup 與 shell.css 的 `.pos-entrance-*` / `.icon-mask-pos` /
+`.icon-mask-attached-link` 樣式皆已刪除（無 JS binding）。`pos.svg` 檔案與
+`--color-accent-linear-pos-*` tokens 保留未用。本檔以下 POS 相關 variants
+（state=POS - list / pattern）為歷史規格, 不作為實作依據。
 
 ---
 

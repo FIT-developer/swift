@@ -110,13 +110,6 @@
                   ></span>
                 </span>
               </div>
-              <!-- Switch account -->
-              <img
-                data-modal-open="modalSwitchBackdrop"
-                src="./assets/icons/switch.svg"
-                class="w-6 h-6 cursor-pointer opacity-70 hover:opacity-100"
-                alt="更換帳號"
-              />
             </div>
           </div>
 
@@ -172,11 +165,13 @@
                 <div
                   class="hidden flex flex-col gap-0.5 ml-4 pl-3 border-l border-menu mt-1"
                 >
-                  <div
-                    class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
+                  <!-- 系統基本為獨立頁，真實連結（同 訂單處理 pattern） -->
+                  <a
+                    href="./system-basic.html"
+                    class="block py-1 px-2 text-base text-menu no-underline cursor-pointer hover:bg-surface-hover rounded"
                   >
                     系統基本
-                  </div>
+                  </a>
                   <div
                     class="py-1 px-2 text-base text-menu cursor-default rounded" data-nav-state="inactive"
                   >
@@ -358,7 +353,9 @@
             </div>
           </div>
 
-          <!-- 客服 -->
+          <!-- 客服（2026-07-13 使用者訂正：聯絡資訊僅保留 Email，
+               移除 LINE QR / 電話 / 傳真 / 北西東客服 / 營業時間，
+               見 components/customers-service.md） -->
           <div class="mb-4 border-t border-border-default pt-3">
             <div class="flex items-center gap-2 mb-2">
               <img
@@ -367,42 +364,10 @@
                 class="w-6 h-6"
               />
               <span class="text-xl font-semibold text-text-default">客服</span>
-              <span class="text-xs font-normal text-text-default ml-auto"
-                >平日 09:00~18:00</span
-              >
             </div>
             <div
               class="border border-border-disabled rounded-lg p-3 flex flex-col gap-2"
             >
-              <div class="flex justify-center">
-                <img
-                  src="./assets/images/service_line.png"
-                  class="w-[120px] h-[120px] object-contain"
-                  alt="LINE 客服 QR Code"
-                />
-              </div>
-              <div class="flex flex-col gap-2 text-base text-text-default">
-                <div class="flex">
-                  <span class="w-[68px] shrink-0">電話</span
-                  ><span>02-2826-3881</span>
-                </div>
-                <div class="flex">
-                  <span class="w-[68px] shrink-0">傳真</span
-                  ><span>02-2821-8289</span>
-                </div>
-                <div class="flex">
-                  <span class="w-[68px] shrink-0">北客服</span
-                  ><span>#13 紅樹林</span>
-                </div>
-                <div class="flex">
-                  <span class="w-[68px] shrink-0">西客服</span
-                  ><span>#12 Jimmy</span>
-                </div>
-                <div class="flex">
-                  <span class="w-[68px] shrink-0">東客服</span
-                  ><span>#22 Luka</span>
-                </div>
-              </div>
               <div class="flex items-center gap-1.5 text-xs text-text-default">
                 <img
                   src="./assets/icons/email.svg"
@@ -452,25 +417,6 @@
             </div>
           </div>
 
-          <!-- POS 入口 (state=POS - pattern) -->
-          <div class="mt-4 pos-entrance-btn">
-            <div class="pos-entrance-frame p-[3px] rounded-full">
-              <div
-                class="pos-entrance-inner grid grid-cols-3 items-center px-3 h-[33px] rounded-full cursor-pointer"
-              >
-                <span
-                  class="icon-mask icon-mask-pos w-6 h-6 shrink-0 justify-self-start text-icon-default"
-                  aria-hidden="true"
-                ></span>
-                <span class="text-sm font-semibold text-text-default text-center"
-                  >POS</span
-                >
-                <span
-                  class="icon-mask icon-mask-attached-link w-6 h-6 shrink-0 justify-self-end text-icon-default"
-                  aria-hidden="true"
-                ></span>
-              </div>
-            </div>
-          </div>
+          <!-- POS 入口於 2026-07-13 使用者訂正整組移除（見 components/menu.md 檔頭） -->
           </div>
         </aside>

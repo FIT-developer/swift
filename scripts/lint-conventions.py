@@ -85,9 +85,11 @@ for raw in sys.stdin:
         if re.search(r'\[#[0-9a-fA-F]{3,8}\]', code):
             violations.append((loc, 'Tailwind arbitrary hex（改用 var(--color-*) token）', line.strip()[:70]))
     if cur_file and cur_file.startswith('preview/assets/css/') and cur_file.endswith('.css'):
-        if re.search(r':\s*[^;{]*#[0-9a-fA-F]{3,8}', code) and '--color-' not in code:
+        # base.css 是 token 定義檔：自訂屬性定義行（--x: ...）可含 hex/rgba
+        is_base_token_def = cur_file.endswith('base.css') and re.match(r'\s*--[\w-]+\s*:', code)
+        if re.search(r':\s*[^;{]*#[0-9a-fA-F]{3,8}', code) and '--color-' not in code and not is_base_token_def:
             violations.append((loc, 'CSS hardcoded hex（顏色走 base.css token）', line.strip()[:70]))
-        if re.search(r':\s*[^;{]*rgba?\(', code):
+        if re.search(r':\s*[^;{]*rgba?\(', code) and not is_base_token_def:
             violations.append((loc, 'CSS raw rgb/rgba（改用 base.css --effect-* 或 --color-*）', line.strip()[:70]))
 
 if violations:

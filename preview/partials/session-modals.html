@@ -1,7 +1,9 @@
 <!-- 共用 session modal partial（Stage 2，specs/page-architecture.md）
-     內容自 landing.html 抽出：確定登出（Modal A）/ 帳號切換（Modal B）。
-     aside 的 登出 / 更換帳號 icon 以 data-modal-open 觸發，aside 為全站共用
-     partial，故這兩個 modal 也必須全站存在。
+     內容自 landing.html 抽出：確定登出（Modal A）。
+     （帳號切換 Modal B 於 2026-07-13 使用者訂正整組移除：aside/topbar 的
+     快速切換帳號功能退役，觸發 icon 與 modal 一併刪除）
+     aside 的 登出 icon 以 data-modal-open 觸發，aside 為全站共用
+     partial，故此 modal 也必須全站存在。
      - landing.html / room-booking.html / order-processing.html 皆以
        js/partials.js async 注入
      - partial 內不放 script；開關由各頁 modal 系統的 delegated handler 處理 -->
@@ -58,68 +60,3 @@
       </div>
     </div>
 
-    <!-- ====================================
-         Modal B - 帳號切換
-    ==================================== -->
-    <div
-      id="modalSwitchBackdrop"
-      class="modal-backdrop"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modalSwitchTitle"
-    >
-      <div class="modal-box">
-        <!-- Header -->
-        <div
-          class="modal-header-shadow-soft flex items-center justify-between border-b border-border-focus px-3 py-3"
-        >
-          <span
-            id="modalSwitchTitle"
-            class="text-xl font-semibold text-text-default"
-            >帳號切換</span
-          >
-          <button
-            class="modal-close-btn w-6 h-6 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100"
-            data-modal="modalSwitchBackdrop"
-            aria-label="關閉"
-          >
-            <img src="./assets/icons/close.svg" alt="close" class="w-6 h-6" />
-          </button>
-        </div>
-        <!-- Content -->
-        <div class="px-3 py-3 flex flex-col gap-3 border-b border-border-disabled">
-          <div class="flex flex-col gap-1.5">
-            <span class="text-base text-text-default">暱稱</span>
-            <select class="sidebar-select">
-              <option>xiaomi999</option>
-              <option>elaon999</option>
-              <option>admin001</option>
-            </select>
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <span class="text-base text-text-default">密碼</span>
-            <input
-              type="password"
-              value="password"
-              class="w-full border border-border-disabled rounded-md px-3 py-1.5 text-base text-text-default outline-none focus:border-menu"
-            />
-          </div>
-        </div>
-        <!-- Footer -->
-        <div class="flex justify-end gap-3 px-3 py-3">
-          <button
-            class="modal-close-btn px-3 py-1.5 rounded-md bg-border-disabled text-text-default text-base border border-border-disabled cursor-pointer hover:opacity-80"
-            data-modal="modalSwitchBackdrop"
-          >
-            取消
-          </button>
-          <!-- 確定 = 切換帳號動作屬後端；demo 行為與其他 modal 一致：點擊即關閉 -->
-          <button
-            class="modal-close-btn px-3 py-1.5 rounded-md bg-text-default text-text-inverse text-base border border-border-disabled cursor-pointer hover:opacity-80"
-            data-modal="modalSwitchBackdrop"
-          >
-            確定
-          </button>
-        </div>
-      </div>
-    </div>

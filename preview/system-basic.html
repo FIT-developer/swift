@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 系統基本</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body data-page="系統基本">
+    <div
+      id="rootWrap"
+      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto p-3"
+    >
+      <!-- Mobile top bar (page shell; desktop top row is partials/topbar.html) -->
+      <div class="flex items-center justify-between md:hidden">
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
+        <button
+          id="mobileMenuBtn"
+          class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="w-6 h-5" alt="選單" />
+        </button>
+      </div>
+
+      <div id="bodyArea" class="flex flex-col md:flex-row gap-3 flex-1 min-w-0">
+        <div data-partial="aside"></div>
+
+        <div id="mainColumn" class="flex-1 flex flex-col min-w-0 gap-3">
+          <div data-partial="topbar"></div>
+
+          <main class="flex-1 flex flex-col min-w-0 w-full">
+            <!-- 頁面內容（specs/pages/system-basic.md）
+                 外層容器 Neutral/75 底 + border，卡片兩欄:
+                 <640 單欄 / 640-767 兩欄 / >=768 desktop 兩欄 -->
+            <div
+              class="flex-1 flex flex-col rounded-xl border border-border-disabled bg-surface-hover p-5"
+            >
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
+                <!-- 卡 1: 網路訂房 - IP 白名單 -->
+                <section
+                  class="flex flex-col gap-6 rounded-xl border border-border-focus bg-white p-4"
+                >
+                  <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    <h2 class="text-xl font-semibold text-text-default">
+                      網路訂房
+                    </h2>
+                    <span class="text-base text-text-default"
+                      >僅下列 IP 允許登入系統</span
+                    >
+                  </div>
+                  <textarea
+                    class="w-full min-h-[118px] flex-1 border border-border-disabled rounded-md px-3 py-1.5 text-xs text-text-default outline-none focus:border-border-focus"
+                    aria-label="允許登入系統的 IP 清單"
+                  >
+110.121.99.01, 110.121.99.02</textarea
+                  >
+                  <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                    <span class="text-xs text-text-default"
+                      >使用「,」符號，分隔一筆以上的 IP</span
+                    >
+                    <!-- 僅示意: 後端功能 = 將當前使用者 IP 嵌入 textarea -->
+                    <button
+                      type="button"
+                      class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer whitespace-nowrap"
+                    >
+                      當前環境 IP
+                    </button>
+                  </div>
+                </section>
+
+                <!-- 卡 2: 網路訂房 - 開關群 -->
+                <section
+                  class="rounded-xl border border-border-focus bg-white p-4"
+                >
+                  <h2 class="text-xl font-semibold text-text-default">
+                    網路訂房
+                  </h2>
+                  <div class="flex flex-col gap-5 mt-4">
+                    <label
+                      class="flex items-center justify-between gap-3 cursor-pointer"
+                    >
+                      <span class="text-base text-text-default min-w-0"
+                        >檢查身份證</span
+                      >
+                      <span class="member-data-switch shrink-0">
+                        <input type="checkbox" />
+                        <span class="member-data-switch-track"></span>
+                        <span class="member-data-switch-knob"></span>
+                      </span>
+                    </label>
+                    <label
+                      class="flex items-center justify-between gap-3 cursor-pointer"
+                    >
+                      <span class="text-base text-text-default min-w-0 flex-1"
+                        >訂房 Email 專案顯示詳細內容
+                        超長文字超長文字超長文字超長文字超長文字</span
+                      >
+                      <span class="member-data-switch shrink-0">
+                        <input type="checkbox" checked />
+                        <span class="member-data-switch-track"></span>
+                        <span class="member-data-switch-knob"></span>
+                      </span>
+                    </label>
+                    <label
+                      class="flex items-center justify-between gap-3 cursor-pointer"
+                    >
+                      <span class="text-base text-text-default min-w-0"
+                        >顯示發票資料</span
+                      >
+                      <span class="member-data-switch shrink-0">
+                        <input type="checkbox" />
+                        <span class="member-data-switch-track"></span>
+                        <span class="member-data-switch-knob"></span>
+                      </span>
+                    </label>
+                    <label
+                      class="flex items-center justify-between gap-3 cursor-pointer"
+                    >
+                      <span class="text-base text-text-default min-w-0"
+                        >訂房 Email 顯示需知</span
+                      >
+                      <span class="member-data-switch shrink-0">
+                        <input type="checkbox" checked />
+                        <span class="member-data-switch-track"></span>
+                        <span class="member-data-switch-knob"></span>
+                      </span>
+                    </label>
+                  </div>
+                </section>
+
+                <!-- 左下欄: 4 張獨立卡 -->
+                <div class="flex flex-col gap-6">
+                  <!-- 卡 3: 預設加購訂金規則 -->
+                  <section
+                    class="rounded-xl border border-border-focus bg-white p-4"
+                  >
+                    <h2 class="text-xl font-semibold text-text-default">
+                      預設加購訂金規則
+                    </h2>
+                    <select
+                      class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base mt-3"
+                      aria-label="預設加購訂金規則"
+                    >
+                      <option>不含加購</option>
+                      <option>含加購</option>
+                    </select>
+                  </section>
+
+                  <!-- 卡 4: 當日網路訂房 -->
+                  <section
+                    class="rounded-xl border border-border-focus bg-white p-4"
+                  >
+                    <label
+                      class="flex items-center justify-between gap-3 cursor-pointer"
+                    >
+                      <h2 class="text-xl font-semibold text-text-default">
+                        當日網路訂房
+                      </h2>
+                      <span class="member-data-switch shrink-0">
+                        <input type="checkbox" checked data-sb-sameday-toggle />
+                        <span class="member-data-switch-track"></span>
+                        <span class="member-data-switch-knob"></span>
+                      </span>
+                    </label>
+                    <div class="flex items-center gap-3 mt-3">
+                      <div class="relative flex-1 min-w-0">
+                        <input
+                          type="number"
+                          value="13"
+                          min="1"
+                          max="24"
+                          data-sb-sameday-input
+                          class="sb-stepper-input w-full border border-border-disabled rounded-[6px] pl-3 pr-8 py-1.5 text-base text-text-default outline-none focus:border-border-focus bg-white"
+                          aria-label="當日網路訂房終止時間"
+                        />
+                        <img
+                          src="./assets/icons/up-and-down.svg"
+                          alt=""
+                          class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+                        />
+                      </div>
+                      <span class="text-base text-text-default whitespace-nowrap"
+                        >時，終止</span
+                      >
+                    </div>
+                    <p class="text-xs text-text-default mt-3">
+                      時間範圍：1～24。關閉開關時，當日不開放。
+                    </p>
+                  </section>
+
+                  <!-- 卡 5: ATM 設定 -->
+                  <section
+                    class="rounded-xl border border-border-focus bg-white p-4"
+                  >
+                    <h2 class="text-xl font-semibold text-text-default">
+                      ATM 設定
+                    </h2>
+                    <div class="flex flex-col gap-5 mt-4">
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-base text-text-default">虛擬帳號</span>
+                        <span class="flex items-center gap-1 shrink-0">
+                          <img
+                            src="./assets/icons/check-green.svg"
+                            alt=""
+                            class="w-6 h-6"
+                          />
+                          <span class="text-base text-text-default">啟用</span>
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-base text-text-default">ATM 銀行</span>
+                        <span class="text-base text-text-default text-right"
+                          >玉山銀行（808）</span
+                        >
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-base text-text-default whitespace-nowrap"
+                          >虛擬帳號前置碼</span
+                        >
+                        <span class="text-base text-text-default text-right break-all"
+                          >88888888888888</span
+                        >
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-base text-text-default">檢查碼</span>
+                        <span class="text-base text-text-default text-right break-all"
+                          >88888888888888</span
+                        >
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-base text-text-default">分行戶名</span>
+                        <span class="text-base text-text-default text-right"
+                          >歐巴颱風超讚</span
+                        >
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- 卡 6: 刷卡設定 -->
+                  <section
+                    class="rounded-xl border border-border-focus bg-white p-4"
+                  >
+                    <h2 class="text-xl font-semibold text-text-default">
+                      刷卡設定
+                    </h2>
+                    <div class="flex flex-col gap-5 mt-4">
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-base text-text-default">線上刷卡</span>
+                        <span class="flex items-center gap-1 shrink-0">
+                          <img
+                            src="./assets/icons/failure-red.svg"
+                            alt=""
+                            class="w-6 h-6"
+                          />
+                          <span class="text-base text-text-default">未啟用</span>
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-base text-text-default">收單銀行</span>
+                        <span class="text-base text-text-default text-right"
+                          >富邦銀行（xxx）</span
+                        >
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-base text-text-default">刷卡付全額</span>
+                        <span class="flex items-center gap-1 shrink-0">
+                          <img
+                            src="./assets/icons/failure-red.svg"
+                            alt=""
+                            class="w-6 h-6"
+                          />
+                          <span class="text-base text-text-default">未啟用</span>
+                        </span>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+
+                <!-- 卡 7: 網路訂房版型（radius 16 為刻意設計，見 spec 確認事項 2） -->
+                <section
+                  class="rounded-2xl border border-border-focus bg-white p-4"
+                >
+                  <h2 class="text-xl font-semibold text-text-default">
+                    網路訂房版型
+                  </h2>
+                  <select
+                    class="w-full border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-text-default text-base mt-3"
+                    aria-label="網路訂房版型"
+                  >
+                    <option>湖水綠</option>
+                  </select>
+                  <!-- 版型預覽: 客戶端訂房網縮影，靜態示意（將來由後端渲染
+                       真實圖片）。英文為 demo 假文案不翻譯; 字體套 Noto Sans
+                       （spec 確認事項 3、9） -->
+                  <div class="flex flex-col py-3 mt-3">
+                    <div class="px-3">
+                      <div
+                        class="sb-template-image rounded-md h-[360px] flex items-center justify-center px-4"
+                      >
+                        <span
+                          class="sb-template-text text-base font-medium text-center"
+                          >Featured images of the product, swipe to view</span
+                        >
+                      </div>
+                    </div>
+                    <div class="px-3">
+                      <div class="flex items-start justify-between gap-3 pt-4">
+                        <div class="flex flex-col min-w-0">
+                          <span class="sb-template-text text-lg font-medium"
+                            >AirSoft Running Shoes</span
+                          >
+                          <span class="sb-template-muted text-xs"
+                            >Lightweight - Breathable - Everyday comfort</span
+                          >
+                        </div>
+                        <button
+                          type="button"
+                          class="sb-template-btn shrink-0 self-center inline-flex items-center gap-1 pl-2 pr-1 py-0.5 text-xs bg-transparent cursor-pointer"
+                        >
+                          Buy now
+                          <img
+                            src="./assets/icons/right.svg"
+                            alt=""
+                            class="w-3 h-3"
+                          />
+                        </button>
+                      </div>
+                      <div class="sb-template-article flex gap-3 py-2 mt-2">
+                        <div
+                          class="sb-template-image w-20 h-20 shrink-0 rounded-sm"
+                        ></div>
+                        <div class="flex flex-col min-w-0">
+                          <span class="sb-template-text text-base font-medium"
+                            >Comfort Fit</span
+                          >
+                          <span class="sb-template-muted text-xs"
+                            >All-day cushioning</span
+                          >
+                          <span class="sb-template-text text-xs"
+                            >Soft midsole and flexible upper for smoother
+                            strides.</span
+                          >
+                        </div>
+                      </div>
+                      <div class="sb-template-article flex gap-3 py-2">
+                        <div
+                          class="sb-template-image w-20 h-20 shrink-0 rounded-sm relative overflow-hidden"
+                        >
+                          <div
+                            class="sb-template-thumb-tint absolute inset-0"
+                          ></div>
+                        </div>
+                        <div class="flex flex-col min-w-0">
+                          <span class="sb-template-text text-base font-medium"
+                            >Breathable Upper</span
+                          >
+                          <span class="sb-template-muted text-xs"
+                            >Keeps feet cool</span
+                          >
+                          <span class="sb-template-text text-xs"
+                            >Ventilated knit design helps reduce heat
+                            build-up.</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- footer: 清除 / 修改（demo 無行為，Figma 未定義，後端範疇） -->
+              <div class="flex justify-end gap-2 pt-5 pb-2 mt-auto">
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base cursor-pointer"
+                >
+                  清除
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer"
+                >
+                  修改
+                </button>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="mobileSidebarBackdrop"
+      class="mobile-sidebar-backdrop md:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <!-- 確定登出（aside 觸發，全站共用） -->
+    <div data-partial="session-modals"></div>
+    <!-- topbar 系統商公告/會員安全管理（三頁共用，見 partials/topbar-modals.html） -->
+    <div data-partial="topbar-modals"></div>
+
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
+      import { initSystemBasic } from "./js/system-basic.js";
+      import { createModalController } from "./js/modal-controller.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
+
+      await loadPartials();
+      // page shell：aside accordion / 收合全部 / mobile drawer
+      initPageShell();
+      // topbar page tab chips：sessionStorage 多 tab 共存 + 關閉行為
+      initPageTabs();
+      // 頁面行為：當日網路訂房 toggle 連動終止時間 input disabled
+      initSystemBasic();
+      // modal 開關核心（本頁只有共用 modal：session / topbar 群，
+      // 不需要 order-modals 的訂單專屬接線）
+      createModalController();
+      // topbar 系統商公告/會員安全管理內部行為
+      initTopbarModals();
+    </script>
+  </body>
+</html>

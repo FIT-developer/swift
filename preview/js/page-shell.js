@@ -87,13 +87,10 @@ export function initPageShell() {
   expandBtn && expandBtn.addEventListener("click", expandSidebar);
 
   // Compact account icons reuse order-modals.js delegated [data-modal-open].
+  // （快速切換帳號 2026-07-13 使用者訂正移除，僅剩登出）
   var compactLogoutBtn = document.getElementById("compactLogoutBtn");
-  var compactSwitchBtn = document.getElementById("compactSwitchBtn");
   if (compactLogoutBtn) {
     compactLogoutBtn.dataset.modalOpen = "modalLogoutBackdrop";
-  }
-  if (compactSwitchBtn) {
-    compactSwitchBtn.dataset.modalOpen = "modalSwitchBackdrop";
   }
 
   // Mobile sidebar drawer 開關

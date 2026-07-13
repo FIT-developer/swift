@@ -77,6 +77,14 @@
   /* iOS switch off track - system color (Figma frame instance reference, not yet in Variables) */
   --color-switch-off-track: rgba(60, 60, 67, 0.3);
 
+  /* 版型示意（系統基本頁 網路訂房版型 preview）專用色 - 客戶端訂房網縮影，
+     來源 Figma 0713 系統基本稿 node "Green"，不與產品 UI token 混用 */
+  --color-template-green: #bbf7d0;
+  --color-template-text: #000000;
+  --color-template-text-muted: rgba(0, 0, 0, 0.5);
+  --color-template-divider: rgba(0, 0, 0, 0.1);
+  --color-template-thumb-tint: rgba(0, 0, 0, 0.05);
+
   /* Color/Icon */
   --color-icon-default: #000000;
 

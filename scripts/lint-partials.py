@@ -56,6 +56,22 @@ MANIFEST = {
             './js/topbar-modals.js',
         ],
     },
+    'system-basic.html': {
+        'partials': [
+            'aside',
+            'topbar',
+            'session-modals',
+            'topbar-modals',
+        ],
+        'modules': [
+            './js/partials.js',
+            './js/page-shell.js',
+            './js/page-tabs.js',
+            './js/system-basic.js',
+            './js/modal-controller.js',
+            './js/topbar-modals.js',
+        ],
+    },
     'room-booking.html': {
         'partials': [
             'aside',

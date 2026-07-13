@@ -217,10 +217,6 @@ const SESSION_MODAL_CHECKS = [
     expr: `__smoke.modalCheck('[data-modal-open="modalLogoutBackdrop"]', "modalLogoutBackdrop")`,
   },
   {
-    name: "switch-account modal open/close",
-    expr: `__smoke.modalCheck('[data-modal-open="modalSwitchBackdrop"]', "modalSwitchBackdrop")`,
-  },
-  {
     name: "logout modal closes on ESC",
     expr: `__smoke.escCheck('[data-modal-open="modalLogoutBackdrop"]', "modalLogoutBackdrop")`,
   },
@@ -232,15 +228,16 @@ const SHELL_CHECKS = [
   { name: "mobile drawer opens and closes", expr: "__smoke.drawerCheck()" },
 ];
 
-// app.css 是 5 個分域檔（shell/dashboard/modals/room-booking/order-processing）
+// app.css 是 6 個分域檔（shell/dashboard/modals/room-booking/order-processing/system-basic）
 // 的 @import entrypoint。Session 90 教訓：斷頭註解（兩個 /* 沒有任何 */）會讓
 // 整份檔案含全部 @import 被吞進同一個未閉合註解，document.styleSheets 裡的
 // app.css 會是空的（cssRules.length === 0），但這個失效狀態不會拋 JS 例外、
 // 不會被既有 lint（只 regex 檢查行，不驗證 CSS 語法）攔到，三頁看起來
 // "大致正常"（多數版面由 Tailwind utility class 撐起）。
 // 此檢查直接驗證瀏覽器實際解析出的 CSSOM：app.css 必須依序 import 固定
-// 5 個 domain CSS 檔（順序即 page-architecture.md 記錄的 cascade 順序，
-// shell -> dashboard -> modals -> room-booking -> order-processing），且
+// domain CSS 檔（順序即 page-architecture.md 記錄的 cascade 順序，
+// shell -> dashboard -> modals -> room-booking -> order-processing ->
+// system-basic），且
 // 每個 domain 檔自己的 cssRules.length > 0。少 import、多 import、順序錯、
 // 重複 import 都判定失敗（陣列不完全相等即 fail，一次覆蓋四種錯法）。
 //
@@ -257,7 +254,8 @@ const APP_CSS_LOADED_CHECK = {
         "dashboard.css",
         "modals.css",
         "room-booking.css",
-        "order-processing.css"
+        "order-processing.css",
+        "system-basic.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -353,6 +351,43 @@ const PAGES = [
           (document.getElementById("modalOrderEditBackdrop") &&
            document.getElementById("modalSmsBackdrop") &&
            document.getElementById("invCalendarOffcanvas")) ? true : "modal ids missing"
+        `,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
+  {
+    file: "system-basic.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalLogoutBackdrop") &&
+      document.querySelectorAll(".member-data-switch").length >= 5
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "setting cards rendered (toggles + status icons)",
+        expr: `
+          (function () {
+            var switches = document.querySelectorAll(".member-data-switch").length;
+            var status = document.querySelectorAll(
+              'img[src$="check-green.svg"], img[src$="failure-red.svg"]'
+            ).length;
+            if (switches < 5) return "switch count: " + switches;
+            if (status < 3) return "status icon count: " + status;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "template preview mounted (sb-template block)",
+        expr: `
+          document.querySelectorAll(".sb-template-image").length >= 3
+            ? true
+            : "sb-template-image count: " +
+              document.querySelectorAll(".sb-template-image").length
         `,
       },
       ...SHELL_CHECKS,

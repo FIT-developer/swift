@@ -7,6 +7,81 @@
 
 ---
 
+## Session 105 交接 (2026-07-13)
+
+### 任務: 系統基本 新頁實作 + 全域調整（figma-go 三階段流程）
+
+Figma 來源: SECTION 2061:72550（desktop 1440）+ 2061:72551
+（mobile ~ tablet 768, 代表 767 以下）。實作前使用者拍板事項全記錄在
+`specs/pages/system-basic.md`「使用者確認事項」段（10 條）。
+
+### 本輪改動
+
+- 新增 `specs/pages/system-basic.md`（頁面規格 + 確認事項）
+- 新增 `preview/system-basic.html`：6 卡片 + footer；shell 沿用共用
+  partial；modal 開關用 `createModalController()`（不需 order-modals 的
+  訂單接線）；欄數 <640 單欄 / 640-767 兩欄 / >=768 desktop
+- 新增 `preview/assets/css/system-basic.css`（.sb-* scoped：版型示意色、
+  stepper spinner 隱藏）；`app.css` 補 import
+- base.css + tokens.md 新增 `--color-template-*` 5 個版型示意專用 token
+  （demo 專用, 不與產品 UI token 混用）
+- 全域移除（共用 partial, 四頁生效）:
+  - 快速切換帳號: aside switch icon、topbar compactSwitchBtn、
+    session-modals 帳號切換 modal、page-shell.js 接線（binding audit 4 處
+    全列, 無遺漏; 確定登出保留）
+  - aside 客服區僅留 Email（LINE QR/電話/傳真/北西東/營業時間移除）
+  - AI bot float 按鈕: room-booking-modals partial 區塊 + shell.css
+    `.float-service-frame`（無 JS binding; ai.svg 與 tokens 保留未用）
+  - 「客戶公告系統」（bulletin/target icon 組）Session 99-103 已移除,
+    本輪無改動; icons/message 的系統公告保留（使用者確認）
+- 決策記錄: components/float-icons-ai.md / customers-service.md /
+  account.md 檔頭標記; page-architecture.md 導航段 + 目標結構更新
+- aside「系統設定 > 系統基本」接真實連結; page-tabs.js TAB_PAGES 登記
+- lint-partials.py MANIFEST 登記 system-basic.html
+- smoke-test.mjs: app.css expected 清單 +system-basic.css; 移除
+  switch-account modal 檢查（功能退役）; 新增 system-basic 頁（8 checks）
+- lint-conventions.py 修正: base.css 自訂屬性定義行豁免 hex/rgba 檢查
+  （與檔頭聲明意圖一致; --color-switch-off-track rgba 前例早於 lint）
+- 追加（使用者驗收時新增需求）: aside POS 入口整組移除 - markup +
+  shell.css `.pos-entrance-*` / `.icon-mask-pos` / `.icon-mask-attached-link`
+  （無 JS binding; pos.svg 與 linear-pos tokens 保留未用）; 決策記錄在
+  components/menu.md 檔頭, POS variants 標為歷史規格
+- 追加（使用者驗收時新增需求）: 當日網路訂房 toggle 連動 - off 時終止
+  時間 input disabled + 灰底 bg-border-default（room-booking lock toggle
+  慣例）, input 寬度改 flex-1 填滿剩餘寬度（設計稿意圖, Figma 232px 即
+  當時剩餘寬度）。新增 `js/system-basic.js` initSystemBasic(), MANIFEST
+  同步登記, spec 卡 4 段更新
+
+### 重要決定
+
+- Figma「mobile ~ tablet」768 畫布代表 767 以下階段; 768 以上 = desktop
+  不變（使用者 Q2/Q3 拍板, 之後 tablet 稿會改設 767）
+- mobile 階段 content page 上方只有 logo + 收合鈕; function icons 在
+  drawer 內（既有實作已符合, 無斷點變更）
+- 版型示意區英文假文案套 Noto Sans 不翻譯; Figma 的 U+2022 圓點分隔符
+  依 ASCII-only 規則改 "-"
+- 版型卡 radius 16 是刻意設計（其他卡 12）
+
+### 驗證（self-tested, pending review）
+
+- 4 個 lint 全 exit 0; smoke-test 4 頁全 PASS
+- Chrome 實測: 1440/767/640 各欄數正確; 375 emulated 單欄無橫向溢出
+  （scrollWidth 375=375）; drawer 內 message+person icons、客服僅 Email、
+  帳號列僅登出; member modal 開關正常; 多 tab 與系統基本互通
+  （系統基本+房間預定 chips 共存）; textarea 曾在單欄被 flex-1 壓縮,
+  已改 min-h-[118px] 修正
+- 截圖: specs/qa-screenshots/session-105/system-basic-*.png
+  （1440/767/640/375/drawer/sameday-off）
+- toggle 連動實測: off -> disabled + rgb(225,225,224); on -> 白底可輸入;
+  input 寬 356/row 432 = 填滿 label 外剩餘寬度
+
+### 未解問題
+
+- 無; 使用者驗收後追加 toggle 連動與 POS 移除兩項需求, 均已實作並
+  再驗收, 指示 commit & push
+
+---
+
 ## Session 104 交接 (2026-07-13)
 
 ### 任務: 修復 topbar page tab chips 只剩單一 tab 的問題

@@ -2,6 +2,11 @@
 
 **Figma Node ID**: `266:13224`（COMPONENT）  
 **最後同步**: 2026-04-16
+**狀態**: removed（2026-07-13 使用者訂正：AI bot 服務與隨附功能全站移除。
+實作已自 `partials/room-booking-modals.html` 與 `shell.css` 刪除；
+`ai.svg` 檔案與 tokens（float-circle-mixed / effect-float-shadow）保留未用。
+Figma 0713 系統基本 mobile 稿中此 instance 亦為隱藏圖層。
+本檔以下內容為歷史規格，不作為實作依據。）
 
 ---
 

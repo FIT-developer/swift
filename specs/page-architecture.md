@@ -41,7 +41,8 @@ preview/
   assets/
     css/
       app.css               (CSS entrypoint imports domain files)
-      {domain}.css          (shell / dashboard / modals / room-booking / order-processing)
+      {domain}.css          (shell / dashboard / modals / room-booking /
+                             order-processing / system-basic)
     icons/
     images/
 ```
@@ -136,7 +137,8 @@ preview/
 
 - `landing.html` 只代表今日總覽 dashboard；logo 一律連回 `landing.html`
 - aside 已有真實頁面的項目用一般 `<a href="{page}.html">`：
-  `房間預定` -> `room-booking.html`，`訂單處理` -> `order-processing.html`
+  `房間預定` -> `room-booking.html`，`訂單處理` -> `order-processing.html`，
+  `系統基本` -> `system-basic.html`（2026-07-13 新增，specs/pages/system-basic.md）
 - aside 其餘尚未拆頁項目維持 inactive markup，不開 placeholder，不新增空白頁；
   未來有真實頁面時再改成真實連結
 - topbar page chips（2026-07-13 使用者訂正，推翻 2026-07-04「降級為導航列」
