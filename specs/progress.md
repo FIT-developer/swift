@@ -7,6 +7,60 @@
 
 ---
 
+## Session 106 交接 (2026-07-14)
+
+### 任務: ai-chat council 交叉驗證 Session 104-105 是否落實
+
+使用者觸發 `ai-chat 互相驗證 session 104 ~ 105 是不是有落實完成`。
+建立 `specs/agent-council/session-104-105-verification/brief.md`
+（列 104 宣稱 5 項 + 105 宣稱 9 項為驗證對象），跑完整 council 5 輪
+（round-1/2 x codex/claude + consensus）。
+
+### Council 結論 + 本輪獨立核實
+
+- consensus 判定: Session 104 全 5 項落實; Session 105 除宣稱 3 外落實,
+  並列 3 個待確認發現（F1/F2/F3）, 要求補 runtime 驗證後才可 close
+- 本輪對 3 個發現逐一獨立核實, **全部為誤報**:
+  - F1「room-booking.js:211-215 殘留 AI float dead wiring」: 該檔不存在
+    （實為 room-booking-behaviors.js）, 該行號是庫存加總 code; 全庫 grep
+    floatIcons/icons\/ai/float-service 僅剩 partial 內的移除決策註解
+  - F2「app.css 重複 import order-processing.css」: 實檔 6 個 import
+    各一次, 無重複
+  - F3「lint-partials.py 檔尾不完整」: 檔尾完整, 實際執行 exit 0
+  - 誤報來源: council round-1 的檔案讀取 artifact（agent 幻覺行號/檔名）,
+    屬 council tooling 異常, 記於此供未來 council 參考
+- Runtime 驗證（consensus 行動計畫 2/3/5）: 4 lint 全 exit 0、smoke test
+  4 頁 PASS、動態抽測 stepper 上半+1/下半-1、關非當前 tab 原地移除、
+  關最後一個 tab 回 landing, 全過
+
+### 最終判定
+
+Session 104 宣稱 1-5、Session 105 宣稱 1-9: **全部落實**（verified）。
+無需修正任務。
+
+### 使用者裁決兩項（2026-07-14, 已落地）
+
+1. **移除記錄格式 = B（每次重寫內文）**: 元件移除/縮減時 spec 內文必須
+   重寫成現況, 不可只加檔頭註記留過期內文; 歷史交給 git history。
+   - 規則寫入 start.md 檔案地圖 components 段
+   - 回溯 audit + 重寫 5 檔: float-icons-ai.md（tombstone）、
+     customers-service.md（現行=僅 Email）、account.md（現行=僅登出）、
+     menu.md（4 variants, POS/switch 段移除）、bulletin-vendor.md
+     （tombstone - audit 抓到的漏網: 功能早在 99-103 移除但 spec 無標記）
+   - function-icons.md 已符合（內文即現況）; bulletin-administer.md 為
+     保留功能不需動
+   - 機器可判定性: 無法 lint（需語意判斷）, 靠規則 + review
+2. **agent-council.md 加「引用必須可重現」規則**: round 產出中 repo
+   現況級指控必須附可重現證據（指令+輸出）, 無證據引用由 synthesizer
+   降級為 unverified, 不可進 Decision Candidates; 已寫入「角色與流程」
+   段, 附本次 3 個幻覺發現的教訓
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 105 交接 (2026-07-13)
 
 ### 任務: 系統基本 新頁實作 + 全域調整（figma-go 三階段流程）

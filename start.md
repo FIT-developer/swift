@@ -156,6 +156,12 @@ tokens -> icons -> components -> specs/pages -> 實作
    - 例如 components/toggle.md, components/input.md
    - 檔名一律 kebab-case
    - 查詢元件規格時先找這個資料夾
+   - **移除/縮減記錄格式（2026-07-14 使用者拍板）**: 元件功能被移除或
+     縮減時, 對應 spec **內文必須重寫成現況**（整組移除 -> 精簡
+     tombstone; 部分縮減 -> 內文改寫為現行規格）, 不可只在檔頭加註記
+     而把過期規格原文留在下方; 歷史細節一律交給 git history（註明
+     對應 commit）。理由: 過期內文是規格污染源, 漏看檔頭註記就會照
+     歷史段落實作
 4. **specs/pages/{name}.md** - 頁面規格 (2026-05 中之後的現行做法)
    - 整頁的佈局、區塊組成、RWD 斷點行為，直接引用 components/
    - 例如 specs/pages/room-booking.md, specs/pages/order-processing.md

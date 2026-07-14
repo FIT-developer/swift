@@ -123,6 +123,20 @@ header。
 **synthesizer 不裁決，只整理**。它的任務是讓使用者能快速看懂雙方立場、
 快速拍板，不是替使用者做決定，也不是判誰對誰錯。
 
+### 引用必須可重現（2026-07-14 使用者拍板新增）
+
+round 產出中任何「檔名:行號」「某檔含有某內容」等 repo 現況級的指控，
+必須附**可重現的證據**：實際執行過的指令（grep / sed / 執行 lint）與其
+輸出摘要，讓 reviewer 與 synthesizer 能原樣重跑。沒附證據的引用，
+synthesizer 整理 consensus 時必須標記為「未證實（unverified）」並降級，
+不可寫進 Decision Candidates 當事實。
+
+背景教訓（session-104-105-verification, 2026-07-14）：round-1 曾產出
+3 個幻覺發現 - 引用不存在的檔名（`room-booking.js`）、錯誤行號（該處
+實為庫存加總 code）、誤判 lint script 檔尾缺損 - 全部一路傳進
+consensus 成為「待修復項」，事後逐一人工核實才推翻。引用可重現規則
+就是針對這個失敗模式。
+
 ## `consensus.md` 是 draft，不是權威來源
 
 `consensus.md` 一律標記為 draft / pending user decision。固定格式：
