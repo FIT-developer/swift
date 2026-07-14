@@ -41,18 +41,19 @@
           <main class="flex-1 flex flex-col min-w-0 w-full">
             <!-- 頁面內容（specs/pages/system-basic.md）
                  外層容器 Neutral/75 底 + border，卡片兩欄:
-                 <640 單欄 / 640-767 兩欄 / >=768 desktop 兩欄 -->
+                 上排 <640 單欄 / 640-767 兩欄 wrap / >=768 三欄等高;
+                 下排 <640 單欄 / 640+ 兩欄 -->
             <div
               class="flex-1 flex flex-col rounded-xl border border-border-disabled bg-surface-hover p-5"
             >
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
-                <!-- 卡 1: 網路訂房 - IP 白名單 -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- 卡 1: 白名單設定 -->
                 <section
                   class="flex flex-col gap-6 rounded-xl border border-border-focus bg-white p-4"
                 >
-                  <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                  <div class="flex flex-col gap-2">
                     <h2 class="text-xl font-semibold text-text-default">
-                      網路訂房
+                      白名單設定
                     </h2>
                     <span class="text-base text-text-default"
                       >僅下列 IP 允許登入系統</span
@@ -64,26 +65,27 @@
                   >
 110.121.99.01, 110.121.99.02</textarea
                   >
-                  <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                  <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-4">
                     <span class="text-xs text-text-default"
                       >使用「,」符號，分隔一筆以上的 IP</span
                     >
-                    <!-- 僅示意: 後端功能 = 將當前使用者 IP 嵌入 textarea -->
+                    <!-- 僅示意: 後端功能 = 將當前使用者 IP 嵌入 textarea。
+                         ml-auto 讓窄版換行後按鈕維持右對齊（375 稿） -->
                     <button
                       type="button"
-                      class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer whitespace-nowrap"
+                      class="ml-auto inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer whitespace-nowrap"
                     >
                       當前環境 IP
                     </button>
                   </div>
                 </section>
 
-                <!-- 卡 2: 網路訂房 - 開關群 -->
+                <!-- 卡 2: 網路訂房設定 - 開關群 -->
                 <section
                   class="rounded-xl border border-border-focus bg-white p-4"
                 >
                   <h2 class="text-xl font-semibold text-text-default">
-                    網路訂房
+                    網路訂房設定
                   </h2>
                   <div class="flex flex-col gap-5 mt-4">
                     <label
@@ -138,6 +140,57 @@
                   </div>
                 </section>
 
+                <!-- 卡 3: 簡訊設定（2026-07-14 新增）
+                     demo 值 = desktop 稿狀態（分館未啟用）。
+                     後端條件: 通數列 label 隨啟用組合連動 - 總部+分館皆啟用
+                     時顯示「共用剩餘通數」（375 稿參考畫面）, 分館未啟用時
+                     顯示「總部剩餘通數」; 詳見 specs/pages/system-basic.md -->
+                <section
+                  class="rounded-xl border border-border-focus bg-white p-4"
+                >
+                  <h2 class="text-xl font-semibold text-text-default">
+                    簡訊設定
+                  </h2>
+                  <div class="flex flex-col gap-4 mt-4">
+                    <div class="flex items-center justify-between gap-3">
+                      <span class="text-base text-text-default"
+                        >總部簡訊功能</span
+                      >
+                      <span class="flex items-center gap-1 shrink-0">
+                        <img
+                          src="./assets/icons/check-green.svg"
+                          alt=""
+                          class="w-6 h-6"
+                        />
+                        <span class="text-base text-text-default">啟用</span>
+                      </span>
+                    </div>
+                    <div class="flex items-center justify-between gap-3">
+                      <span class="text-base text-text-default"
+                        >分館簡訊功能</span
+                      >
+                      <span class="flex items-center gap-1 shrink-0">
+                        <img
+                          src="./assets/icons/failure-red.svg"
+                          alt=""
+                          class="w-6 h-6"
+                        />
+                        <span class="text-base text-text-default">未啟用</span>
+                      </span>
+                    </div>
+                    <div class="flex items-center justify-between gap-3">
+                      <span class="text-base text-text-default"
+                        >總部剩餘通數</span
+                      >
+                      <span class="text-base text-text-default text-right"
+                        >8 通</span
+                      >
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 mt-8">
                 <!-- 左下欄: 4 張獨立卡 -->
                 <div class="flex flex-col gap-6">
                   <!-- 卡 3: 預設加購訂金規則 -->

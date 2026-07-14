@@ -1,13 +1,15 @@
 # Page: 系統基本 (system-basic)
 
-**Figma 來源（current version, read date 2026-07-13）**:
+**Figma 來源（current version, read date 2026-07-14 重讀）**:
 - Desktop: SECTION `2061:72550`「Content page - 系統基本 desktop default 0713」1440x1284
 - Mobile ~ Tablet: SECTION `2061:72551`「Content page - 系統基本 mobile ~ tablet default 0713-1」768x1274
   - 注意: 此 frame 畫布寬 768, 但代表的是 **767 以下**的階段（使用者 2026-07-13
     確認: 之後 tablet 稿會改設 767; 768 以上 = desktop 不變）
+- Mobile 375: SECTION `2061:72552`「Content page - 系統基本 mobile ~ tablet default 0713-2」375x2374
+  （2026-07-14 新增稿, 單欄堆疊參考 + 簡訊設定「皆啟用」狀態參考畫面）
 
 **實作**: `preview/system-basic.html`
-**狀態**: 本輪新增
+**狀態**: 2026-07-14 依重讀三稿更新（上排 2 卡 -> 3 卡, 卡名變更, 新增簡訊設定卡）
 
 ---
 
@@ -28,6 +30,13 @@
 9. 版型示意區文字套 Noto Sans（Figma 稿用 Roboto 是文字體未統一, 不跟）,
    英文假文案不翻譯
 10. 欄數切換點: >=768 desktop 佈局; 640-767 兩欄（mobile shell）; <640 單欄
+11. （2026-07-14 重讀對齊）簡訊設定卡三稿的值差異是「狀態展示」不是不一致:
+    375 稿畫「總部+分館皆啟用 -> 共用剩餘通數」, desktop/768 稿畫
+    「分館未啟用 -> 總部剩餘通數」。demo 實作一律套 desktop 狀態,
+    不做切換互動; 條件邏輯記錄於本檔簡訊設定卡一節（後端範疇）
+12. （2026-07-14）上排三卡: >=768 三卡並排等高（簡訊卡拉伸）;
+    640-767 兩欄自然 wrap（簡訊卡第二列左欄, 自然高度, 右欄留空）;
+    <640 單欄; 白名單卡 footer 換行時按鈕維持右對齊
 
 ## 佈局
 
@@ -44,9 +53,12 @@
 - 容器: bg `Color/Neutral/75`(#f6fafd), radius 12, border `#d1d1d1`
   (border-disabled), padding 20
 - 頁面外距: desktop 20px, mobile 12px（Figma frame 實測）
-- 卡片區兩欄: desktop 每欄 538px gap 24（row gap 32）; 767 以下每欄流動
-  （Figma 稿 340px @768 畫布）gap 24; <640 單欄
-- 單欄堆疊順序（DOM order）: 網路訂房(IP) -> 網路訂房(toggles) ->
+- 上排卡片區（2026-07-14 起 3 卡）: >=768 三欄並排等高（Figma 每卡
+  350.67 @1100, 流動）; 640-767 兩欄自然 wrap（簡訊卡落第二列左欄,
+  自然高度）; <640 單欄。gap 24
+- 下排卡片區兩欄: desktop 每欄 538px gap 24; 767 以下每欄流動
+  （Figma 稿 340px @768 畫布）gap 24; <640 單欄。上下排間距 32
+- 單欄堆疊順序（DOM order）: 白名單設定 -> 網路訂房設定 -> 簡訊設定 ->
   預設加購訂金規則 -> 當日網路訂房 -> ATM 設定 -> 刷卡設定 -> 網路訂房版型
 - 欄內卡片間距 24
 
@@ -58,17 +70,18 @@
 
 ## 卡片規格
 
-### 1. 網路訂房 - IP 白名單（desktop 左上, Figma 2061:71118 / 71849）
-- header 列: 標題「網路訂房」+ 右側 label「僅下列 IP 允許登入系統」(16/400,
-  靠右)
+### 1. 白名單設定（2026-07-14 改名, Figma 2061:71118 / 71849 / 72323）
+- header 兩行（2026-07-14 變更）: 標題「白名單設定」(20/600),
+  下一行 label「僅下列 IP 允許登入系統」(16/400, 左對齊, 與標題間距 8)
 - textarea: 全寬, 高 118, border `#d1d1d1` radius 6, padding 6/12,
   內文 12px（demo 值 `110.121.99.01, 110.121.99.02`）, 原生 resize 樣式即可
 - 底列: 左 hint「使用「,」符號，分隔一筆以上的 IP」(12/400) +
   右深色按鈕「當前環境 IP」（Button Y/N dark: bg `#454545` text-text-inverse
   radius 6 padding 6/12, 沿用 components/button-yn.md）; demo 無行為（確認事項 7）
+  - 窄版換行時（375 稿）: hint 整行在上, 按鈕右對齊換到第二行, 間距 16
 
-### 2. 網路訂房 - 開關群（desktop 右上, Figma 2061:71127 / 71858）
-- 標題「網路訂房」
+### 2. 網路訂房設定（2026-07-14 改名, Figma 2061:71127 / 71858 / 72332）
+- 標題「網路訂房設定」
 - 4 列 label + 右側 toggle, 列距 20:
   1. 檢查身份證 - off
   2. 訂房 Email 專案顯示詳細內容 超長文字超長文字超長文字超長文字超長文字 - on
@@ -78,10 +91,27 @@
 - toggle: `.member-data-switch`（on `--color-accent-green`,
   off `--color-switch-off-track`）
 
-### 3. 預設加購訂金規則（Figma 2061:71149 / 71880）
+### 3. 簡訊設定（2026-07-14 新增, Figma desktop 2071:70802 / 768 稿 2072:71047 / 375 稿 2072:71200）
+- 標題「簡訊設定」(20/600)
+- 3 列 label 左 / value 右, 標題後間距 16, 列距 16:
+  | label | value（demo 套 desktop 狀態） |
+  |---|---|
+  | 總部簡訊功能 | check-green icon 24 + 啟用 |
+  | 分館簡訊功能 | failure-red icon 24 + 未啟用 |
+  | 總部剩餘通數 | 8 通（純文字） |
+- **後端條件邏輯（demo 不實作, 供接手者理解）**:
+  - 分館簡訊功能有「啟用 / 未啟用」兩態, 由後端依實際開通狀況渲染
+  - 通數列 label 隨啟用組合連動: 總部與分館**皆啟用** ->
+    「**共用**剩餘通數」; 分館未啟用（僅總部啟用）-> 「**總部**剩餘通數」
+  - Figma 參考畫面: desktop/768 稿 = 分館未啟用狀態; 375 稿
+    （2061:72552）= 皆啟用狀態（分館 check-green 啟用 + 共用剩餘通數）
+  - 其他組合（如總部未啟用）Figma 未畫, 標記「未定義」
+- 高度行為: >=768 與同列兩卡等高（拉伸）; <768 自然高度（Figma 177）
+
+### 4. 預設加購訂金規則（Figma 2061:71149 / 71880）
 - 標題 + select（全寬, 值「不含加購」, icons/down, 沿用 select 慣例）
 
-### 4. 當日網路訂房（Figma 2061:71152 / 71883）
+### 5. 當日網路訂房（Figma 2061:71152 / 71883）
 - header 列: 標題 + toggle（default on）
 - 內容列: stepper input（值 13, icons/up-and-down）+ 右側 label「時，終止」
   - input 寬度 = 填滿 label 以外的剩餘寬度（flex-1; 2026-07-13 使用者確認
@@ -95,7 +125,7 @@
   `stepUp/stepDown` 自動 clamp min(1)/max(24); input disabled 時不動作;
   鍵盤操作走 input 原生上下鍵（step 鈕 tabindex=-1 不進 tab 順序）
 
-### 5. ATM 設定（Figma 2061:71160 / 71893）
+### 6. ATM 設定（Figma 2061:71160 / 71893）
 - 標題「ATM 設定」
 - 5 列 label 左 / value 右, 列距 20:
   | label | value |
@@ -107,7 +137,7 @@
   | 分行戶名 | 歐巴颱風超讚 |
 - 「歐巴颱風超讚」「888...」為 demo 佔位資料, 照放不賦予語意
 
-### 6. 刷卡設定（Figma 2061:71194 / 71927）
+### 7. 刷卡設定（Figma 2061:71194 / 71927）
 - 標題「刷卡設定」
 - 3 列, 列距 20:
   | label | value |
@@ -116,7 +146,7 @@
   | 收單銀行 | 富邦銀行（xxx） |
   | 刷卡付全額 | failure-red icon 24 + 未啟用 |
 
-### 7. 網路訂房版型（Figma 2061:71217 / 71950, radius 16）
+### 8. 網路訂房版型（Figma 2061:71217 / 71950, radius 16）
 - 標題「網路訂房版型」+ select（值「湖水綠」）
 - 版型預覽（node "Green"）: 客戶端訂房網縮影, 靜態示意 DOM（確認事項 3、9）:
   - 白底, 上下 padding 12
@@ -149,5 +179,8 @@
 
 - 兩顆狀態 icon 用 check-green.svg / failure-red.svg, 不重畫
 - 版型卡 radius 16, 其他卡 12
-- 640 / 767 / 768 / 1440 四個 viewport 欄數行為: 1 / 2 / desktop / desktop
+- 上排欄數: <640 單欄 / 640-767 兩欄 wrap（簡訊卡第二列左欄自然高）/
+  >=768 三欄等高; 下排欄數: <640 單欄 / 640+ 兩欄
+- 簡訊設定卡 demo 值 = desktop 狀態（分館未啟用 + 總部剩餘通數）;
+  條件邏輯僅記錄不實作
 - 版型示意區顏色全部走 --color-template-* 變數
