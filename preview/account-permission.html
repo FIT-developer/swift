@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 帳號及權限</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+    <style>
+      /* 本頁專用 scoped 樣式（specs/pages/account-permission.md）。
+         .ap-collapsible.ap-hidden: 與 rb-hidden 同理，避免 Tailwind
+         .hidden 與 .flex 的順序衝突 */
+      .ap-collapsible.ap-hidden {
+        display: none;
+      }
+      /* 模式按鈕 active（components/account-accordion.md 模式列） */
+      .ap-mode-btn.ap-mode-active {
+        background: var(--color-subitem-selected);
+        border-color: var(--color-subitem-selected);
+      }
+      /* 紀錄 table（分隔線 = Text/800，Figma node 2087:95259） */
+      .ap-records-table {
+        border-collapse: collapse;
+      }
+      .ap-records-table th,
+      .ap-records-table td {
+        white-space: nowrap;
+        text-align: left;
+        vertical-align: middle;
+        font-weight: 400;
+        font-size: var(--font-size-base);
+        color: var(--color-text-800);
+        padding: 8px 12px;
+      }
+      .ap-records-table thead th,
+      .ap-records-table tbody tr td {
+        border-bottom: 1px solid var(--color-text-800);
+      }
+    </style>
+  </head>
+  <body data-page="帳號及權限">
+    <div
+      id="rootWrap"
+      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto p-3"
+    >
+      <!-- Mobile top bar (page shell; desktop top row is partials/topbar.html) -->
+      <div class="flex items-center justify-between md:hidden">
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
+        <button
+          id="mobileMenuBtn"
+          class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="w-6 h-5" alt="選單" />
+        </button>
+      </div>
+
+      <div id="bodyArea" class="flex flex-col md:flex-row gap-3 flex-1 min-w-0">
+        <div data-partial="aside"></div>
+
+        <div id="mainColumn" class="flex-1 flex flex-col min-w-0 gap-3">
+          <div data-partial="topbar"></div>
+
+          <main class="flex-1 flex flex-col min-w-0 w-full">
+            <!-- 頁面內容（specs/pages/account-permission.md）
+                 外層容器 Neutral/75 底 + border（Figma node 2087:95008），
+                 內為 重整列 + 單一帳號 accordion -->
+            <div
+              class="flex-1 flex flex-col gap-3 rounded-xl border border-border-disabled bg-surface-hover p-5"
+            >
+              <!-- 重整列: 刷新當前頁 -->
+              <div class="flex justify-end">
+                <button
+                  id="apReloadBtn"
+                  type="button"
+                  class="flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer hover:opacity-80"
+                >
+                  <img
+                    src="./assets/icons/restore.svg"
+                    alt=""
+                    class="w-6 h-6"
+                  />
+                  <span>重整</span>
+                </button>
+              </div>
+
+              <!-- 帳號 accordion（components/account-accordion.md）
+                   初始 = 關閉態；Figma 稿的 3 個展開態由
+                   模式按鈕（修改/紀錄/刪除）切換呈現 -->
+              <section
+                class="rounded-xl border border-border-disabled bg-surface-hover p-5"
+              >
+                <!-- header: 整條可點擊 toggle；關=up / 開=down（全站慣例） -->
+                <div
+                  id="apAccordionHeader"
+                  class="flex items-center gap-3 cursor-pointer select-none"
+                >
+                  <span
+                    class="w-12 h-12 rounded-full bg-surface-action text-white text-xl flex items-center justify-center shrink-0"
+                    >琳</span
+                  >
+                  <span
+                    class="flex-1 min-w-0 truncate text-xl font-semibold text-text-default"
+                    >琳龍滿目滿目滿目</span
+                  >
+                  <img
+                    id="apAccordionIcon"
+                    src="./assets/icons/up.svg"
+                    alt="up"
+                    class="w-6 h-6 shrink-0"
+                  />
+                </div>
+
+                <!-- 內容區欄數以「內容可用寬度」為準（2026-07-16 拍板）:
+                     <640 單欄 / 640-767 兩欄（mobile shell 滿版）/
+                     768-1023 回單欄（desktop shell aside 佔 240px）/
+                     >=1024 兩欄（content ~700px = Figma 767 稿欄寬） -->
+                <div
+                  id="apAccordionContent"
+                  class="ap-collapsible ap-hidden mt-4 rounded-xl bg-white p-2.5"
+                >
+                  <div
+                    class="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2.5 items-stretch"
+                  >
+                    <!-- 左欄: 帳號資訊區 -->
+                    <div
+                      class="sm:w-1/2 md:w-full lg:w-1/2 min-w-0 flex flex-col gap-3"
+                    >
+                      <div class="flex flex-col gap-4 p-3">
+                        <!-- 名稱 + 高權限 badge + 帳號 ID
+                             （badge/pill 全 render，後端控顯示） -->
+                        <div class="flex flex-col gap-1">
+                          <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-xl text-text-default"
+                              >琳龍滿目滿目滿目</span
+                            >
+                            <span
+                              class="rounded-full bg-[var(--color-brand-100)] px-2.5 py-0.5 text-base text-brand-500"
+                              >高權限</span
+                            >
+                          </div>
+                          <span class="text-base text-text-default"
+                            >Lin 001</span
+                          >
+                        </div>
+
+                        <!-- 身分 pill -->
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="rounded-lg bg-[var(--color-bootstrap-components-focus)] px-1.5 py-1 text-base text-white leading-none"
+                            >總部</span
+                          >
+                          <span
+                            class="rounded-lg bg-[var(--color-bootstrap-components-focus)] px-1.5 py-1 text-base text-white leading-none"
+                            >分館</span
+                          >
+                        </div>
+
+                        <!-- 分館清單卡: >=3 間才有展開 bar，
+                             預設收合示前 2 間 -->
+                        <div
+                          class="rounded-xl border border-border-focus bg-white p-3 flex flex-col gap-3"
+                        >
+                          <div
+                            class="border-b border-border-focus pb-2 flex flex-col gap-1.5"
+                          >
+                            <div
+                              class="flex items-center gap-1 text-base text-text-default"
+                            >
+                              <span>99</span><span>麥當勞</span>
+                            </div>
+                            <div class="pl-9 flex flex-col gap-2">
+                              <div class="flex items-center gap-1">
+                                <span
+                                  class="border-l-2 border-menu pl-2 text-xs text-text-default"
+                                  >資料</span
+                                >
+                                <span class="flex items-center gap-3 pl-1">
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EN</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EU</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >简</span
+                                  >
+                                </span>
+                              </div>
+                              <div class="flex items-center gap-1">
+                                <span
+                                  class="border-l-2 border-menu pl-2 text-xs text-text-default"
+                                  >介紹</span
+                                >
+                                <span class="flex items-center gap-3 pl-1">
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EN</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EU</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >简</span
+                                  >
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            class="border-b border-border-focus pb-2 flex flex-col gap-1.5"
+                          >
+                            <div
+                              class="flex items-center gap-1 text-base text-text-default"
+                            >
+                              <span>29</span><span>Mos</span>
+                            </div>
+                            <div class="pl-9 flex flex-col gap-2">
+                              <div class="flex items-center gap-1">
+                                <span
+                                  class="border-l-2 border-menu pl-2 text-xs text-text-default"
+                                  >資料</span
+                                >
+                                <span class="flex items-center gap-3 pl-1">
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EN</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EU</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >简</span
+                                  >
+                                </span>
+                              </div>
+                              <div class="flex items-center gap-1">
+                                <span
+                                  class="border-l-2 border-menu pl-2 text-xs text-text-default"
+                                  >介紹</span
+                                >
+                                <span class="flex items-center gap-3 pl-1">
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EN</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EU</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >简</span
+                                  >
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- 第 3 間起: 預設收合（.ap-branch-extra） -->
+                          <div
+                            class="ap-branch-extra ap-collapsible ap-hidden border-b border-border-focus pb-2 flex flex-col gap-1.5"
+                          >
+                            <div
+                              class="flex items-center gap-1 text-base text-text-default"
+                            >
+                              <span>87</span><span>漢堡王</span>
+                            </div>
+                            <div class="pl-9 flex flex-col gap-2">
+                              <div class="flex items-center gap-1">
+                                <span
+                                  class="border-l-2 border-menu pl-2 text-xs text-text-default"
+                                  >介紹</span
+                                >
+                                <span class="flex items-center gap-3 pl-1">
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EN</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EU</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >简</span
+                                  >
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            class="ap-branch-extra ap-collapsible ap-hidden border-b border-border-focus pb-2 flex flex-col gap-1.5"
+                          >
+                            <div
+                              class="flex items-center gap-1 text-base text-text-default"
+                            >
+                              <span>91</span><span>星巴克</span>
+                            </div>
+                            <div class="pl-9">
+                              <span class="text-xs text-text-muted"
+                                >未設定多語系</span
+                              >
+                            </div>
+                          </div>
+
+                          <div
+                            class="ap-branch-extra ap-collapsible ap-hidden border-b border-border-focus pb-2 flex flex-col gap-1.5"
+                          >
+                            <div
+                              class="flex items-center gap-1 text-base text-text-default"
+                            >
+                              <span>104</span><span>人力銀行</span>
+                            </div>
+                            <div class="pl-9 flex flex-col gap-2">
+                              <div class="flex items-center gap-1">
+                                <span
+                                  class="border-l-2 border-menu pl-2 text-xs text-text-default"
+                                  >資料</span
+                                >
+                                <span class="flex items-center gap-3 pl-1">
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EN</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >EU</span
+                                  >
+                                  <span
+                                    class="w-5 h-5 bg-[var(--color-brand-100)] text-xs text-text-default flex items-center justify-center"
+                                    >简</span
+                                  >
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- 展開/收摺 bar（分館 >=3 間才顯示） -->
+                          <button
+                            id="apBranchToggle"
+                            type="button"
+                            aria-expanded="false"
+                            class="w-full flex items-center justify-between rounded-2xl bg-[var(--color-neutral-500)] px-2 py-1.5 border-0 cursor-pointer"
+                          >
+                            <span
+                              data-branch-more
+                              class="ap-collapsible text-xs text-text-inverse"
+                              >另外 3 間</span
+                            >
+                            <span
+                              data-branch-less
+                              class="ap-collapsible ap-hidden text-xs text-text-inverse"
+                              >收起</span
+                            >
+                            <!-- 黑色 svg 借 filter 翻白（同 room-booking.css 手法） -->
+                            <img
+                              src="./assets/icons/outline-plus.svg"
+                              alt="expand"
+                              class="w-5 h-5 [filter:brightness(0)_invert(1)]"
+                            />
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- 基本資料（唯讀展示，值欄僅底線） -->
+                      <div class="flex flex-col gap-5 p-3">
+                        <div class="flex items-center gap-3">
+                          <span class="w-16 shrink-0 text-base text-text-default"
+                            >顯示名稱</span
+                          >
+                          <div
+                            class="flex-1 min-w-0 border-b border-border-disabled px-3 pb-1 text-base text-text-default"
+                          >
+                            王大頭
+                          </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="w-16 shrink-0 text-base text-text-default"
+                            >Email</span
+                          >
+                          <div
+                            class="flex-1 min-w-0 border-b border-border-disabled px-3 pb-1 text-base text-text-default break-all"
+                          >
+                            abc@bbb.aaa.ccc
+                          </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="w-16 shrink-0 text-base text-text-default"
+                            >行動電話</span
+                          >
+                          <div
+                            class="flex-1 min-w-0 border-b border-border-disabled px-3 pb-1 text-base text-text-default"
+                          >
+                            0999111333
+                          </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                          <span class="w-16 shrink-0 text-base text-text-default"
+                            >帳號說明</span
+                          >
+                          <div
+                            class="flex-1 min-w-0 border-b border-border-disabled px-3 pb-1 text-base text-text-default"
+                          >
+                            高雄發大財 高雄發大財 高雄發大財 高雄發大財
+                            高雄發大財 高雄發大財
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 右欄: 模式區（修改/紀錄/刪除） -->
+                    <div
+                      class="sm:w-1/2 md:w-full lg:w-1/2 min-w-0 flex flex-col gap-2.5"
+                    >
+                      <!-- 模式按鈕列: 窄版原生橫向 scroll -->
+                      <div class="flex flex-nowrap overflow-x-auto gap-5">
+                        <button
+                          type="button"
+                          data-ap-mode="edit"
+                          class="ap-mode-btn ap-mode-active flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer whitespace-nowrap"
+                        >
+                          <img
+                            src="./assets/icons/edit.svg"
+                            alt=""
+                            class="w-6 h-6"
+                          />
+                          <span>修改</span>
+                        </button>
+                        <button
+                          type="button"
+                          data-ap-mode="records"
+                          class="ap-mode-btn flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer whitespace-nowrap"
+                        >
+                          <img
+                            src="./assets/icons/document.svg"
+                            alt=""
+                            class="w-6 h-6"
+                          />
+                          <span>紀錄</span>
+                        </button>
+                        <button
+                          type="button"
+                          data-ap-mode="delete"
+                          class="ap-mode-btn flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer whitespace-nowrap"
+                        >
+                          <img
+                            src="./assets/icons/trash-can.svg"
+                            alt=""
+                            class="w-6 h-6"
+                          />
+                          <span>刪除</span>
+                        </button>
+                      </div>
+
+                      <!-- 面板 A: 修改（預設 active） -->
+                      <div
+                        id="apPanelEdit"
+                        class="ap-collapsible flex-1 bg-brand-50 p-3 flex flex-col gap-5"
+                      >
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                          <span
+                            class="shrink-0 sm:w-[6.25rem] text-base text-text-default"
+                            >顯示名稱</span
+                          >
+                          <input
+                            type="text"
+                            value="王大頭"
+                            aria-label="顯示名稱"
+                            class="w-full min-w-0 sm:flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+                          />
+                        </div>
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                          <span
+                            class="shrink-0 sm:w-[6.25rem] text-base text-text-default"
+                            >Email</span
+                          >
+                          <input
+                            type="text"
+                            value="abc@bbb.aaa.ccc"
+                            aria-label="Email"
+                            class="w-full min-w-0 sm:flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+                          />
+                        </div>
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                          <span
+                            class="shrink-0 sm:w-[6.25rem] text-base text-text-default"
+                            >行動電話</span
+                          >
+                          <input
+                            type="text"
+                            value="0999111333"
+                            aria-label="行動電話"
+                            class="w-full min-w-0 sm:flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+                          />
+                        </div>
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                          <span
+                            class="shrink-0 sm:w-[6.25rem] text-base text-text-default"
+                            >帳號說明</span
+                          >
+                          <textarea
+                            rows="4"
+                            aria-label="帳號說明"
+                            class="w-full min-w-0 sm:flex-1 rounded-md border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+>
+高雄發大財 高雄發大財 高雄發大財 高雄發大財 高雄發大財 高雄發大財</textarea
+                          >
+                        </div>
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                          <span class="shrink-0 sm:w-[6.25rem] flex flex-col">
+                            <span class="text-base text-text-default"
+                              >原始密碼</span
+                            >
+                            <span class="text-xs text-text-default"
+                              >確認身份</span
+                            >
+                          </span>
+                          <!-- 密碼 + eye toggle（html-conventions 慣例:
+                               icon 反映當前狀態，預設遮罩 = eye-close） -->
+                          <div
+                            class="w-full min-w-0 sm:flex-1 flex items-center rounded-md border border-border-disabled bg-white pr-2"
+                          >
+                            <input
+                              id="apPwdInput"
+                              type="password"
+                              value="12345678"
+                              aria-label="原始密碼"
+                              class="flex-1 min-w-0 border-0 bg-transparent px-3 py-1.5 text-base text-text-default outline-none"
+                            />
+                            <button
+                              id="apPwdEye"
+                              type="button"
+                              aria-label="切換密碼顯示"
+                              class="p-0 border-0 bg-transparent cursor-pointer shrink-0"
+                            >
+                              <img
+                                src="./assets/icons/eye-close.svg"
+                                alt="eye-close"
+                                class="w-6 h-6"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                        <div class="mt-auto flex justify-end gap-2 pt-5">
+                          <button
+                            id="apEditClearBtn"
+                            type="button"
+                            class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-border-disabled text-text-default text-base cursor-pointer"
+                          >
+                            清除
+                          </button>
+                          <!-- 修改送出 = 後端範疇，demo 不動作 -->
+                          <button
+                            type="button"
+                            class="inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-text-default text-text-inverse text-base cursor-pointer hover:opacity-80"
+                          >
+                            修改
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- 面板 B: 紀錄（table 超寬 = 橫向 scroll） -->
+                      <div
+                        id="apPanelRecords"
+                        class="ap-collapsible ap-hidden flex-1 bg-brand-50 p-3"
+                      >
+                        <div
+                          class="rounded-xl border border-border-disabled bg-white px-4 py-3 overflow-x-auto"
+                        >
+                          <table class="ap-records-table w-full">
+                            <thead>
+                              <tr>
+                                <th>編號</th>
+                                <th>日期</th>
+                                <th>IP</th>
+                                <th>期間</th>
+                                <th>裝置</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>1</td>
+                                <td>
+                                  <div>2026-07-01<br />15：33：41</div>
+                                  <div>2026-07-01<br />16：33：41</div>
+                                </td>
+                                <td>199.100.99.01 [TW]</td>
+                                <td>15 分 21 秒</td>
+                                <td>Web</td>
+                              </tr>
+                              <tr>
+                                <td>2</td>
+                                <td>
+                                  <div>2026-07-01<br />15：33：41</div>
+                                  <div>操作逾時，系統登出</div>
+                                </td>
+                                <td>200.100.99.01 [JP]</td>
+                                <td>22 時 3 分 0 秒</td>
+                                <td>iOS</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      <!-- 面板 C: 刪除 -->
+                      <div
+                        id="apPanelDelete"
+                        class="ap-collapsible ap-hidden flex-1 bg-brand-50 p-3 flex flex-col"
+                      >
+                        <div
+                          class="flex-1 flex flex-col items-center justify-center gap-4 text-center"
+                        >
+                          <span class="text-xl text-text-default"
+                            >確定刪除以下帳號？</span
+                          >
+                          <span class="flex flex-col gap-1">
+                            <span class="text-xl text-menu"
+                              >琳龍滿目滿目滿目</span
+                            >
+                            <span class="text-base text-menu">Lin 001</span>
+                          </span>
+                        </div>
+                        <!-- 刪除確定 = 後端範疇，demo 不動作 -->
+                        <button
+                          type="button"
+                          class="self-end inline-flex items-center justify-center leading-none h-[34px] px-3 border border-border-disabled rounded-[6px] bg-status-negative text-text-inverse text-base cursor-pointer hover:opacity-80"
+                        >
+                          確定
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="mobileSidebarBackdrop"
+      class="mobile-sidebar-backdrop md:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <!-- 確定登出（aside 觸發，全站共用） -->
+    <div data-partial="session-modals"></div>
+    <!-- topbar 系統商公告/會員安全管理（全站共用，見 partials/topbar-modals.html） -->
+    <div data-partial="topbar-modals"></div>
+
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
+      import { initAccountPermission } from "./js/account-permission.js";
+      import { createModalController } from "./js/modal-controller.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
+
+      await loadPartials();
+      // page shell：aside accordion / 收合全部 / mobile drawer
+      initPageShell();
+      // topbar page tab chips：sessionStorage 多 tab 共存 + 關閉行為
+      initPageTabs();
+      // 頁面行為：帳號 accordion 開關 / 模式切換 / 分館展開 /
+      // 密碼 eye / 清除 / 重整
+      initAccountPermission();
+      // modal 開關核心（本頁只有共用 modal：session / topbar 群）
+      createModalController();
+      // topbar 系統商公告/會員安全管理內部行為
+      initTopbarModals();
+    </script>
+  </body>
+</html>

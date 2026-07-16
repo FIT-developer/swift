@@ -12,6 +12,7 @@ var TAB_PAGES = {
   "room-booking.html": "房間預定",
   "order-processing.html": "訂單處理",
   "system-basic.html": "系統基本",
+  "account-permission.html": "帳號及權限",
 };
 
 function readTabs() {

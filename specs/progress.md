@@ -7,7 +7,78 @@
 
 ---
 
-## Session 108 交接 (2026-07-16)
+## Session 110 交接 (2026-07-16)
+
+### 任務: Session 109 帳號及權限頁與 eye-toggle 修正交接 commit/push
+
+### 本輪處理
+- 依 commit/push flow 複核目前工作樹, 主要內容為 Session 109 的
+  `account-permission` 新頁、account accordion spec、aside/topbar tab
+  登記、partials manifest 與 smoke test checks。
+- 本輪未新增產品規格或開發規則; `specs/assets/tokens.md` 與 `start.md`
+  無需同步修改。
+- 本輪進入 commit/push flow, 實際 SHA 與遠端狀態以 git history 為準。
+
+### 驗證
+- `git diff --check` 無 whitespace 錯誤。
+- 新檔逐一跑 `git diff --no-index --check /dev/null <file>` 無 whitespace
+  錯誤輸出。
+- `./scripts/lint-fonts.sh`, `./scripts/lint-conventions.sh`,
+  `./scripts/lint-partials.sh`, `./scripts/lint-tokens.sh` 全 exit 0。
+- `node scripts/smoke-test.mjs` exit 0: landing / order-processing /
+  system-basic / account-permission / room-booking 5 頁 PASS。
+
+### 未解問題
+- 無。
+
+## Session 109 交接 (2026-07-16)
+
+### 任務: 新頁「帳號及權限」(account-permission) figma-go 讀取 + spec + 實作
+
+### Figma 讀取記錄 (current version, read 2026-07-16)
+- Desktop 頁面 frame `2087:94594`「cp- 帳號及權限 desktop default 0716」
+  1440x2799: 內含 accordion 關閉態 (2087:95021) + 展開 1 修改
+  (2087:95137) + 展開 2 紀錄 (2087:95298) + 展開 3 刪除 (2087:95391)
+- Tablet 767 寬三展開態: 2087:96149 / 2087:96510 / 2087:96603
+- Mobile 340 寬單欄: 2078:91740
+- 稿上多狀態並列 = 展示; 實頁只 render 一個 accordion
+
+### 使用者拍板 (實作依據, 詳見兩份 spec)
+- chevron 關=up/開=down (全站慣例, 已 verify 三處既有實作一致)
+- 高權限/總部/分館 badge 全 render, 後端控顯示
+- 分館 bar: >=3 間才顯示「另外 n 間 +」/「收起 -」, 點擊展開/收摺;
+  1-2 間無 bar
+- 紀錄 table 與模式按鈕列窄版 = 原生橫向 scroll
+- 展開預設模式 = 修改; 頁面初始 = 關閉
+- 刪除確定紅 = `#E12129` Status-Negative (從 JSON verify, 非 pixel 誤差)
+- #86B7FE 的 token 是 `Color/Bootstrap/components/focus`
+  (`--color-bootstrap-components-focus`), 不是 focus-background #D3EBFD
+
+### 本輪改動
+- 新 spec: `components/account-accordion.md`,
+  `specs/pages/account-permission.md`
+- 新實作: `preview/account-permission.html`,
+  `preview/js/account-permission.js`
+- 登記: `scripts/lint-partials.py` MANIFEST, `js/page-tabs.js`
+  TAB_PAGES, aside「帳號及權限」改真實連結,
+  `scripts/smoke-test.mjs` 新增本頁 10 checks (accordion 開關/模式
+  切換/分館展開/eye toggle 皆實測)
+
+### 驗證
+- lint-fonts / lint-conventions / lint-partials / lint-tokens 全 exit 0
+- smoke test 5 頁全 PASS
+- QA 截圖 `specs/qa-screenshots/session-109/` (closed/edit/records+
+  branches/delete @1440, edit @375/640/768, closed @360), 狀態 =
+  self-tested, 待使用者驗收
+
+### RWD 補充拍板 (2026-07-16, 原未解問題已結案)
+- **768-1023 兩欄擠壓**: Figma 只給 767 (無 aside) 與 1440 稿,
+  768-1023 desktop shell aside 佔 240px 造成兩欄擠爆。使用者拍板採
+  「欄數以內容可用寬度為準」: <640 單欄 / 640-767 兩欄 / 768-1023
+  回單欄 / >=1024 兩欄 (`flex-col sm:flex-row md:flex-col
+  lg:flex-row`)。已改實作 + 兩份 spec, smoke 5 頁重跑 PASS,
+  補拍 edit-768 (單欄) 與 edit-1024 (兩欄) 截圖
+
 
 ### 任務: 會員安全管理 modal 密碼 eye-toggle icon 切換
 

@@ -395,6 +395,115 @@ const PAGES = [
     ],
   },
   {
+    file: "account-permission.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalLogoutBackdrop") &&
+      !!document.getElementById("apAccordionHeader")
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "accordion toggles open/close (chevron follows)",
+        expr: `
+          (function () {
+            var header = document.getElementById("apAccordionHeader");
+            var content = document.getElementById("apAccordionContent");
+            var icon = document.getElementById("apAccordionIcon");
+            if (!content.classList.contains("ap-hidden"))
+              return "initial state should be closed";
+            header.click();
+            if (content.classList.contains("ap-hidden"))
+              return "content did not open";
+            if (!/down\\.svg$/.test(icon.src)) return "open icon not down.svg";
+            header.click();
+            if (!content.classList.contains("ap-hidden"))
+              return "content did not close";
+            if (!/up\\.svg$/.test(icon.src)) return "closed icon not up.svg";
+            header.click(); // 留在展開態給後續檢查
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "mode buttons swap panels (edit/records/delete)",
+        expr: `
+          (function () {
+            var btns = document.querySelectorAll(".ap-mode-btn");
+            var byMode = {};
+            btns.forEach(function (b) {
+              byMode[b.getAttribute("data-ap-mode")] = b;
+            });
+            var panels = {
+              edit: document.getElementById("apPanelEdit"),
+              records: document.getElementById("apPanelRecords"),
+              delete: document.getElementById("apPanelDelete"),
+            };
+            function visible(key) {
+              return !panels[key].classList.contains("ap-hidden");
+            }
+            if (!visible("edit")) return "edit panel should be default";
+            byMode.records.click();
+            if (!visible("records") || visible("edit"))
+              return "records switch failed";
+            byMode["delete"].click();
+            if (!visible("delete") || visible("records"))
+              return "delete switch failed";
+            byMode.edit.click();
+            if (!visible("edit") || visible("delete"))
+              return "edit switch back failed";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "branch list expand/collapse bar",
+        expr: `
+          (function () {
+            var toggle = document.getElementById("apBranchToggle");
+            var extras = document.querySelectorAll(".ap-branch-extra");
+            if (extras.length !== 3) return "extra branches: " + extras.length;
+            function shownCount() {
+              var n = 0;
+              extras.forEach(function (r) {
+                if (!r.classList.contains("ap-hidden")) n++;
+              });
+              return n;
+            }
+            if (shownCount() !== 0) return "extras should start hidden";
+            toggle.click();
+            if (shownCount() !== 3) return "expand failed";
+            if (!/outline-minus\\.svg$/.test(toggle.querySelector("img").src))
+              return "expanded icon not minus";
+            toggle.click();
+            if (shownCount() !== 0) return "collapse failed";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "password eye toggle reveals/masks",
+        expr: `
+          (function () {
+            var input = document.getElementById("apPwdInput");
+            var eye = document.getElementById("apPwdEye");
+            if (input.type !== "password") return "should start masked";
+            eye.click();
+            if (input.type !== "text") return "reveal failed";
+            if (!/eye-open\\.svg$/.test(eye.querySelector("img").src))
+              return "revealed icon not eye-open";
+            eye.click();
+            if (input.type !== "password") return "mask back failed";
+            return true;
+          })()
+        `,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
+  {
     file: "room-booking.html",
     readyExpr: `
       !document.querySelector("[data-partial]") &&
