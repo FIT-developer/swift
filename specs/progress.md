@@ -7,6 +7,45 @@
 
 ---
 
+## Session 108 交接 (2026-07-16)
+
+### 任務: 會員安全管理 modal 密碼 eye-toggle icon 切換
+
+使用者詢問 eye-open/eye-close 沒有互換是漏要求還是沒示意。查證結論:
+**Figma 原稿只畫 eye-open**（components/modal.md 2026-04-13 讀取記錄
+即註明「Figma 未定義 eye-closed icon」）, 當時實作只切 input
+password/text, icon 不動。本輪使用者拍板補行為。
+
+### 本輪改動
+
+- `js/topbar-modals.js` eye-toggle handler: icon 隨狀態切換。初版做成
+  「icon = 下一步動作」, 使用者預覽後訂正為「**icon = 當前狀態**」:
+  eye-open = 資料顯示中, eye-close = 資料隱藏中（預設）; markup 預設
+  icon 同步改為 eye-close, alt 同步
+- `components/modal.md` 密碼 toggle 條目改寫為拍板後行為規格
+- 影響範圍: 全站僅會員安全管理 modal 的 3 顆 eye-toggle（grep 確認
+  無其他使用處）, 單一 handler, 三頁共用
+- 新慣例（使用者 2026-07-16 明示）: 密碼欄 Figma 只會示意 eye-open 或
+  eye-close 其中一態, 完整 toggle 互動永遠是預期行為, 之後直接實作
+  不列疑點; 已登記 specs/html-conventions.md「密碼欄 eye toggle」段
+
+### 驗證（self-tested, pending review）
+
+- 3 個欄位機器實測（訂正後映射）: 預設 type=password + eye-close;
+  點擊 -> type=text + eye-open; 再點 -> 回 password + eye-close, 全過
+- lint-fonts / conventions / partials 全 exit 0
+- 截圖: specs/qa-screenshots/session-108/
+  member-security-eye-state-mapping-1280.png（第一欄顯示中 = eye-open,
+  其餘隱藏中 = eye-close）
+- 注意: partial 是 fetch 載入, 驗證時瀏覽器快取會吃到舊 markup,
+  需 hard reload（本輪實測時遇到, 非程式問題）
+
+### 未解問題
+
+- 無
+
+---
+
 ## Session 107 交接 (2026-07-14)
 
 ### 任務: 系統基本頁 0714 改版（figma-go 重讀三稿 -> 對齊 -> 實作）

@@ -750,7 +750,10 @@ Modal (320×455px)
 2. **置中**：`position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)`
 3. **關閉**：點 icons/close 或遮罩關閉 Modal
 4. **Tab 切換**：password / nick name / IP 共用同一 Modal，tab 控制顯示內容
-5. **密碼 toggle**：`icons/eye-open` 點擊後切換顯示/隱藏（Figma 未定義 eye-closed icon）
+5. **密碼 toggle**（2026-07-16 使用者拍板補行為, Figma 原稿只畫單一態）：
+   點擊切換 input 顯示/隱藏, icon 反映**當前狀態** -
+   `icons/eye-open` = 資料顯示中, `icons/eye-close` = 資料隱藏中（預設）。
+   實作: `js/topbar-modals.js` eye-toggle handler
 
 ---
 

@@ -40,10 +40,23 @@ function bindMemberSecurityModal() {
     });
   });
 
+  // 密碼顯示/隱藏 toggle: icon 反映「當前狀態」（2026-07-16 使用者訂正）-
+  // eye-open = 資料顯示中, eye-close = 資料隱藏中（預設）。
+  // Figma 原稿只畫單一態, 完整互動為預期行為, 見 components/modal.md 與
+  // specs/html-conventions.md「密碼欄 eye toggle」段
   document.querySelectorAll(".eye-toggle").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var input = btn.parentElement.querySelector("input");
-      if (input) input.type = input.type === "password" ? "text" : "password";
+      var icon = btn.querySelector("img");
+      if (!input) return;
+      var reveal = input.type === "password";
+      input.type = reveal ? "text" : "password";
+      if (icon) {
+        icon.src = reveal
+          ? "./assets/icons/eye-open.svg"
+          : "./assets/icons/eye-close.svg";
+        icon.alt = reveal ? "eye-open" : "eye-close";
+      }
     });
   });
 }

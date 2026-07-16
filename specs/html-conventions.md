@@ -210,6 +210,14 @@
 - on track 色 `--color-accent-green` / off track 色 `--color-switch-off-track` / knob `--color-neutral-0`
 - 來源：`components/member-data-modal.md`（會員資料 modal 常用會員、訂閱電子報）
 
+### 密碼欄 eye toggle（Figma 單態示意 = 完整互動）
+- 使用者在 Figma 對密碼欄只會示意 eye-open 或 eye-close **其中一種**狀態
+  （2026-07-16 明示）; 實作一律直接補完整 toggle, 不列「另一態未定義」疑點
+- 行為: 點擊切換 input `password`/`text`, icon 反映**當前狀態**（2026-07-16
+  使用者訂正, 不是「下一步動作」）- `eye-open` = 資料顯示中,
+  `eye-close` = 資料隱藏中（預設態）, alt 同步
+- 參考實作: `js/topbar-modals.js` eye-toggle handler（會員安全管理 modal）
+
 ### 藏原生控件必接替代行為（強制）
 - 用 `appearance: none` 或覆蓋層藏掉原生 UI（number spinner、select chrome
   等）時, 疊上去的自訂 icon / 按鈕**必須同步接上等價行為**, 不可只有外觀。
