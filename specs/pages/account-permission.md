@@ -5,9 +5,13 @@
   (內含 accordion 關閉 + 展開 1/2/3 狀態並列, 見 components/account-accordion.md)
 - Tablet 767: `2087:96149` / `2087:96510` / `2087:96603` (accordion 展開 1/2/3)
 - Mobile 340: `2078:91740` (accordion 展開 1, 單欄堆疊)
+- Mobile~tablet (read date 2026-07-28): FRAME `2126:77592`
+  「cp- 帳號及權限 mobile ~ tablet default 0716」375x1555, 用於本輪
+  <768 外層 padding 架構調整 + 分館子列移除的依據
 
 **實作**: `preview/account-permission.html` + `preview/js/account-permission.js`
-**狀態**: 2026-07-16 初版
+**狀態**: 2026-07-16 初版; 2026-07-28 調整 <768 外層 padding 架構 +
+分館子列 RWD 收斂
 
 ---
 
@@ -22,6 +26,15 @@
 5. RWD 斷點 (2026-07-16 拍板, 欄數以內容可用寬度為準): <640 單欄 /
    640-767 兩欄 (mobile shell 滿版) / 768-1023 回單欄 (aside 佔
    240px) / >=1024 兩欄; 詳見 components/account-accordion.md
+6. `<768` 外層 padding 架構調整 (2026-07-28 拍板, 只本頁, `md:` 以上
+   不動): `#rootWrap` 的 `p-3` 改 `md:p-3`(<768 變 0), 改由各區塊
+   自己撐開; mobile top bar(logo + 選單鈕)自帶 `px-3 pt-3`(對應
+   Figma `Frame 427319026` 量到的 padding top12/left12/right12/
+   bottom0); 淺藍色 accordion 卡片不用額外加 padding, 拿掉外層後會
+   自然貼齊螢幕左右邊緣; aside 為獨立元件(自帶 `p-3` + border,
+   mobile 收成 drawer), 不受影響
+7. 分館子列(資料/介紹/語系 chip/未設定多語系)**全數移除, 不分斷點**
+   (2026-07-28 拍板); 詳見 components/account-accordion.md
 
 ## 佈局
 
@@ -49,8 +62,11 @@
 
 ### RWD
 - 頁寬流動, max-w-[1440px] (既有 rootWrap)
+- `#rootWrap` 外層 padding `<768` 為 0(`md:p-3`), 見上方使用者確認
+  事項 6; mobile top bar 自帶 `px-3 pt-3`
 - accordion 內部斷點見 components/account-accordion.md
-  (>=640 兩欄 / <640 單欄; 模式按鈕列與紀錄 table 窄版橫向 scroll)
+  (>=640 兩欄 / <640 單欄; 模式按鈕列與紀錄 table 窄版橫向 scroll;
+  分館子列已全數移除, 不分斷點, 見使用者確認事項 7)
 
 ## Partial / module manifest (lint-partials.py 登記)
 

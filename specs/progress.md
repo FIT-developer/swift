@@ -7,6 +7,66 @@
 
 ---
 
+## Session 112 交接 (2026-07-28)
+
+### 任務: figma-go 讀 account-permission mobile~tablet frame,調整 <768 外層
+padding 架構 + 移除分館子列(資料/介紹/語系 chip/未設定多語系)
+
+### Figma 讀取記錄 (current version, read 2026-07-28)
+- FRAME `2126:77592`「cp- 帳號及權限 mobile ~ tablet default 0716」
+  375x1555,root 下 2 個直接子節點:
+  1. `2126:77593` Frame 427319026(375x36,mobile top bar,logo + 選單鈕,
+     padding top12/left12/right12/bottom0),對應現有 code 53-64 行的
+     mobile top bar,非 Figma 畫布裝飾(先前讀取時誤判為視窗外框,已用
+     code 交叉確認排除此疑點)
+  2. `2126:77864` Frame 427318911(375x1507):內含 Accordion 9(收合態,
+     icons/up = 收合示意,空 flexible content,示意用)+「content」
+     frame(2126:77863,內含 Accordion 8 展開態,帳號卡片本體)
+- 文字內容(「琳龍滿目滿目滿目」「BBBBBAAAA」等)確認為佔位假字,真實
+  資料由後端渲染
+- `icons/eye-open` 確認比照既有慣例(單態示意, 直接實作 open/close 互換,
+  見 [[feedback_eye_icon_implies_toggle]])
+
+### 本輪處理
+1. **`<768` 外層 padding 架構調整**(只 account-permission 這頁,`md:`
+   以上不動):
+   - `#rootWrap`(`preview/account-permission.html`)`p-3` 改
+     `md:p-3`,<768 時整層 padding 歸零
+   - mobile top bar 那一行自帶 `px-3 pt-3`(對應 Figma 量到的
+     top12/left12/right12/bottom0)
+   - 淺藍色 accordion 卡片、aside、其餘內容不用額外補 padding(aside
+     是獨立元件自帶 `p-3`+border,mobile 收成 drawer 不受影響)
+2. **分館子列(資料/介紹/語系 chip EN/EU/简/未設定多語系)全數移除**
+   (原本先討論成「只 mobile~tablet 移除,桌面保留」,使用者後續更正為
+   **不分斷點,全部移除**):
+   - `preview/account-permission.html`:直接刪除 5 個分館項目(麥當勞/
+     Mos/漢堡王/星巴克/人力銀行)底下的子列 markup,不是加
+     `hidden`/`md:` class 隱藏
+   - `components/account-accordion.md` 79-99 行依 start.md 移除記錄
+     格式改寫成 tombstone(分館列只剩「編號 名稱」一行,舊內容註明查
+     git history);展開/收起 bar 不受影響維持原樣
+   - `specs/pages/account-permission.md` 確認事項 7 + RWD 段落同步
+
+### 驗證
+- 截圖比對 375px(mobile)與 1024px(桌面 `md:` 以上): 兩個寬度分館列
+  都只剩「99 麥當勞」「29 Mos」單行,無資料/介紹/語系 chip;mobile
+  外層貼齊螢幕邊緣、top bar 保留 12px 左右上 padding；桌面版外層
+  12px padding 與改動前一致
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0
+- `node .claude/skills/run-swift/driver.mjs smoke` 5 頁全 PASS
+
+### 重要決定
+- account-permission 的 `#rootWrap` 外層 padding <768 歸零、改由各
+  區塊自行撐開,是**本頁專屬**調整,不是新的全站頁殼慣例;
+  room-booking / order-processing / system-basic 的 `rootWrap p-3`
+  維持不動
+- 分館子列(資料/介紹/語系 chip/未設定多語系)是**整組移除**,不是
+  RWD 斷點差異顯示;舊規格細節只留在 git history,不留在 spec 內文
+
+### 未解問題
+- 無
+
 ## Session 111 交接 (2026-07-28)
 
 ### 任務: 新 modal desktop max-width 規則拍板；加購項目 modal 1194px 定調為特規

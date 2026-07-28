@@ -81,14 +81,13 @@
    - 分館列: 編號 + 名稱 16px `Color/Text/800`, 列間 gap 12,
      每列 border-bottom `Color/Neutral/300` + padding-bottom 8
      (最後一列如後面接展開 bar 也保留底線, 照 Figma)
-   - 子列 (縮排 36px): 「資料」「介紹」label 12px, 左側 2px 藍色邊線
-     `Color/MenuItem/Default` (#2178cf) + padding-left 8; 兩子列 gap 8
-   - 語系 chip (EN / EU / 简): 20x20, bg `Color/Brand/Brand-100`,
-     文字 12px `Color/Text/800`, chip 間 gap 12, 與 label gap 4
-   - 特例: 無語系設定的分館顯示「未設定多語系」12px
-     `Color/Text/500` (#6d6d6d), 無藍線無 chip
-   - 展開 bar (>= 3 間才有, 規則見確認事項 6): 整寬, bg
-     `Color/Neutral/500` (#6d6d6d), radius 16, padding 6px 8px;
+   - 分館列下方**沒有子列內容**(2026-07-28 拍板全數移除, 不分斷點):
+     舊版曾有「資料」「介紹」label + 語系 chip(EN/EU/简)、以及
+     「未設定多語系」特例文案, 現已整段移除, 分館列只顯示
+     「編號 名稱」一行, desktop / mobile~tablet 兩者皆同; 舊內容見
+     git history(account-accordion.md 本段落 2026-07-28 前版本)
+   - 展開 bar (>= 3 間才有, 規則見確認事項 6, 不受本次調整影響): 整寬,
+     bg `Color/Neutral/500` (#6d6d6d), radius 16, padding 6px 8px;
      文字 12px `Color/Text/100` (#e1e1e0); 右側 icon 20x20 白色圓形
      (radius-full) 內 plus/minus 線條 `Color/Text/100`
      - 收合態: 「另外 n 間」 + `icons/outline-plus.svg`
