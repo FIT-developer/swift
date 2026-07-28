@@ -74,6 +74,15 @@
 
 ---
 
+## 共用 Desktop Max-width（大型內容 modal 預設值，2026-07-28 拍板）
+
+> 適用範圍：**新增**的大型內容 modal，且該 modal 在 Figma 沒有自己明確的 reference width 時，desktop max-width 統一採用 **1140px**。
+> 既有 modal 若本身有明確 Figma reference width（member-data 1140px、order summary 1019px、sms 648px 等），維持各自 Figma 尺寸，不因此規則被覆蓋或改動。
+> 例外：`state=purchase add-on`（加購項目）**維持原 Figma reference 1194px，不收斂到 1140px**。2026-07-28 曾試過收斂至 1140px（含微調左側「分類」欄與右側「購物車」欄寬度），驗證中間 3 欄 grid 不跑版可行，但使用者最終拍板：這顆 modal 內容本來就比其他 modal 寬，1194px 算特規，直接維持 Figma 原尺寸，不需要為了套用 1140 統一值而犧牲欄寬。實作已還原為 1194px / 分類 240px / 購物車 327px（與 Figma reference 一致）。
+> 共用 RWD 行為不變：viewport 小於 max-width 時採 `calc(100vw - 24px)`；mobile 滿版。
+
+---
+
 ## 共用 Header（Frame 10）
 
 ```
@@ -420,7 +429,7 @@ Modal
 |---|---|
 | Header | h 51px, padding 12px，title left、close right |
 | Footer | h 58px, padding 左右 20px / 上下 0，buttons right aligned |
-| Modal desktop | max width follows 1194px reference; content may cap to viewport minus 24px |
+| Modal desktop | max width follows 1194px reference（2026-07-28 確認維持特規，不套用共用 1140px 預設值；見上方「共用 Desktop Max-width」段例外說明）；content may cap to viewport minus 24px |
 | Modal body | content higher than viewport 時，body 垂直 scroll；header / footer 保持可見 |
 | Desktop layout | body 內是兩個主要 sibling：`main group(left menu + Frame 410)` / `right result cart`；main group 內 left + middle 橫向 flex |
 | Tablet layout | content swap 寬 744px 參考：main group 約 397px，right result 約 327px，中間 gap 20px；main group 內 left + middle 改為 `flex-col` |

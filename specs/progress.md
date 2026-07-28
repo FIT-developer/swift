@@ -7,6 +7,47 @@
 
 ---
 
+## Session 111 交接 (2026-07-28)
+
+### 任務: 新 modal desktop max-width 規則拍板；加購項目 modal 1194px 定調為特規
+
+### 本輪處理
+- 使用者拍板：**新增**大型內容 modal（Figma 沒有自己 reference width 時）
+  desktop max-width 統一採用 1140px；既有 modal（member-data 1140、order
+  summary 1019、sms 648 等）維持原 Figma 尺寸不受影響。
+- 加購項目（purchase add-on）modal 曾嘗試收斂至 1140px（過程見下方「本輪
+  嘗試過程」），最終使用者拍板：**維持原 Figma reference 1194px，列為特規
+  例外，不套用 1140px 統一值**。相關實作（`preview/assets/css/modals.css`）
+  已還原為 1194px / 分類欄 240px / 購物車欄 327px，與 Figma reference 一致，
+  沒有殘留任何本輪測試用的中間值。
+- `components/modal.md`「共用 Desktop Max-width」段落記錄此規則，並明講
+  1194px 例外是「試過收斂可行但使用者選擇維持特規」，不是「做不到」。
+
+### 本輪嘗試過程（僅供參考，不是現行狀態）
+- 依序測試：1140px 不動欄寬（中間 3 欄 grid 跑版）-> 1140px + 分類欄縮到
+  200px（grid 恢復，但分類欄文字/count pill 太擠）-> 1140px + 分類欄 230px
+  + 購物車欄 304px（互相挪讓，grid 與兩側欄位都不擠）。
+- 最後一版驗證通過（lint 全 exit 0、smoke 5 頁 PASS、375px mobile 不受
+  影響），證明「加購項目 modal 技術上可以收斂到 1140px」，但使用者最終
+  判斷這顆 modal 內容本來就比其他 modal 寬，不需要為了套用統一值犧牲欄寬，
+  拍板維持 1194px 特規。
+
+### 驗證
+- CSS 三個值（max-width / 分類欄 / 購物車欄）確認已還原為 1194px / 240px /
+  327px，與變更前一致
+- `components/modal.md` 已無殘留 1140px / 230px / 304px 之類的已推翻數值
+
+### 下一步應做
+- 無待辦；本項已定案
+
+### 重要決定
+- 新 modal desktop max-width 預設 1140px，已有 Figma reference 的既有
+  modal 不受影響，只有明確拍板要收斂的才動
+- 加購項目 modal 1194px 正式列為特規例外，不受共用 1140px 規則約束
+
+### 未解問題
+- 無
+
 ## Session 110 交接 (2026-07-16)
 
 ### 任務: Session 109 帳號及權限頁與 eye-toggle 修正交接 commit/push
