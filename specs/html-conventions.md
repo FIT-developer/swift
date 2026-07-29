@@ -242,6 +242,13 @@
 - 與 pill button 不同：active 用底線 + semibold，沒有 border / radius / bg
 - 來源：`components/member-data-modal.md`（訂房記錄 5 filter）
 
+### Folder-tab 分類頁籤（只有頂部圓角，選中蓋住內容區上緣）
+- 選中：bg `Color/Neutral/0`（白），border `Color/Border/Default`，只有 `border-top-left-radius`/`border-top-right-radius`，底部與下方內容區無縫相接
+- 未選中：bg `Color/Neutral/200`，同樣只有頂部圓角，視覺位置略低於選中 tab（folder-tab 堆疊感）
+- padding `10px 20px`
+- 跟「Pill chip button」（全圓角 28px，用於 chip/tag）、既有翻譯按鈕（radius 6 方形）都不同，三種 pill 幾何規則不可混用
+- 來源：`components/lodging-branch-notice-card.md`（須知與聲明卡 4 個分類：訂房/成為會員/團體訂房/不退款聲明）
+
 ### Modal-scoped IIFE delegation pattern
 - Modal markup 放 `<body>` level（不在 `#tpl-room-booking` 內），listener 在 script load 時 `document.getElementById(modalId)` 找到後直接掛
 - 若 trigger button 在 template 內（會被 cloned）：用 `document.addEventListener("click", e => { var btn = e.target.closest("[data-...]"); ... })` event delegation，**不要** `querySelectorAll().forEach()` 預掛
