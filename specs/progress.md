@@ -7,6 +7,114 @@
 
 ---
 
+## Session 116 交接 (2026-07-29)
+
+### 任務: 系統設定 -> 民宿資料頁面 figma-go 讀取(續) - 須知與聲明卡 +
+基本資訊卡（企業官網/訂房網/自助報到）+ 網域安全卡
+
+延續 Session 115，讀取分館卡片區第 2 張卡「須知與聲明」的完整編輯流程，
+補齊 Session 114 標記的未完成項（「須知與聲明」卡「有資料」state）。同一輪
+內接著補完第 1 張卡（基本資訊卡）最後未讀的部分，以及第 3 張卡（網域安全
+卡）的完整樣式，至此分館卡片區 3 張卡全部讀取完畢。
+
+### Figma 讀取記錄 (current version, read 2026-07-29)
+- 5 個示意 frame（`2118:76180` ~ `2119:76924`）：全無資料預設值 / 點編輯
+  開始編輯(僅繁中) / 點擊來源按鈕 / 多語系 tabs / 多語系繁中空值切換
+- 核心 SunEditor 編輯行為與 `components/lodging-branch-suneditor.md`
+  完全相同，差異是多一層「分類 tab」（訂房/成為會員/團體訂房/不退款
+  聲明，folder-tab 樣式：選中白底頂部圓角蓋住內容區、未選中灰底位置
+  略低）+「來源」功能（從系統範本建立/從總部範本建立兩顆按鈕）
+- 用 `save_screenshots` 截圖交叉核對，抓到一處 JSON 陷阱：frame 005
+  JSON 裡有文字「已匯入總部範本，可進行編輯。」，但渲染截圖完全沒有
+  這段文字，判定是 Figma 端隱藏圖層殘留，不採用；另外 JSON 裡一顆來源
+  按鈕的 `fills` key 曾消失，截圖確認視覺上兩顆按鈕點擊前後其實沒有
+  差異，屬 MCP 序列化雜訊，不是真實設計差異
+
+### 本輪處理
+1. **6 點疑點確認**（使用者已回覆）：
+   - 來源按鈕只在繁體中文 tab 顯示，其他語言 tab 顯示翻譯按鈕（互斥，
+     依目前 active 語言 tab 切換顯示哪一組按鈕）
+   - 點擊來源按鈕直接覆蓋繁中編輯區內容，不跳確認
+   - 內容區白底(`#ffffff`) vs 文案卡片家族淡藍底(`#f6fafd`)是刻意設計
+     差異，用來區分「整個須知與聲明模組」跟「目前選取分類的內容區域」
+   - 分類切換與語言切換的暫存規則相同：兩個維度都不遺失未儲存內容，
+     只有「全部儲存」才一次送出 4 分類 x 所有語系，「取消」放棄本次
+     編輯 session 全部修改
+   - 來源按鈕本輪先做行為佔位，範本內容用前端固定示意資料，不接真實
+     範本 API
+   - 範本資料模型說明（系統範本/總部範本/本館自訂三層，來源按鈕本質是
+     複製不是持續連動）記錄供後端理解，非本輪實作範圍
+2. **新增 `components/lodging-branch-notice-card.md`**：完整 Implementation
+   contract，SunEditor 核心行為以引用 `lodging-branch-suneditor.md` 方式
+   避免重複記錄，只記兩個差異點（分類 tab 外殼 + 來源按鈕）
+3. **`specs/html-conventions.md` 新增「Folder-tab 分類頁籤」可復用
+   pattern**：登記選中/未選中樣式、跟既有 Pill chip button（全圓角）、
+   翻譯按鈕（radius 6 方形）的幾何差異，避免下次重新發明
+4. **確認「基本資訊卡」名稱疑義**：使用者原本不確定我說的「基本資訊卡」
+   指什麼，釐清後確認是分館卡片區第 1 張卡（總部/分館名稱 + 圓形照片
+   觸發器 + 修改/設定 pill，已在 Session 115 讀完寫進
+   `components/modal.md` 與 `components/lodging-branch-info-modal.md`），
+   唯一還沒讀的是卡片內「企業官網/訂房網/自助報到」三個連結 chip
+5. **讀取並確認網域安全卡 + 基本資訊卡剩餘部分**：
+   - 網域安全卡（`2119:78165` 有效態 / `2131:97217`~`2131:97222` 失效態）：
+     憑證到期日 label+值、有效(綠 `icons/check`)/失效(紅 `icons/failure`，
+     本機檔名 `failure-red.svg`) 狀態、查詢網域期限/更新網域期限 2 顆
+     按鈕；使用者確認**沒有下一層**，2 顆按鈕各自行為交給後端，前端只需
+     正確渲染版位與元件外觀
+   - 企業官網/訂房網/自助報到 三個連結 chip（`2119:78436`~`2119:78439`，
+     其實資料早在 Session 115 讀圓形照片觸發器時已一併抓到，本輪只是
+     確認用途並正式寫進 spec）：使用者確認同樣**沒有下一層**，chip 本質
+     是按鈕，實際導轉行為留給後端，前端只需正確渲染
+6. **新增 `components/lodging-branch-basic-card.md`**：統整「基本資訊卡」
+   3 個部分（照片觸發器/修改-設定按鈕 用指向既有檔案的方式引用，避免
+   重複記錄；三個連結 chip 完整寫在本檔）
+7. **新增 `components/lodging-branch-domain-security-card.md`**：網域安全
+   卡完整 Implementation contract
+
+### 驗證
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0（conventions 第一輪因新檔用了全形乘號
+  `x`(U+00D7) 被擋下，已改用 ASCII `x` 後過）
+- 尚未跑 `run-swift` smoke test：本輪只寫 spec，尚未產出 HTML/JS 實作，
+  無新頁面/partial 可測
+- 截圖驗證用 `save_screenshots` 存到專案內 `.scratch/`（非
+  `specs/qa-screenshots/`，屬讀取階段的視覺核對，非正式 QA 截圖），
+  分析完畢後已刪除，不留在 working tree
+
+### 下一步應做
+- 依 `components/lodging-branch-notice-card.md` spec 實作分類 tab +
+  來源按鈕行為佔位（含跨分類/跨語言的本地暫存邏輯）
+- 依 `components/lodging-branch-basic-card.md` / 
+  `components/lodging-branch-domain-security-card.md` 實作連結 chip 與
+  網域安全按鈕（純版位/外觀，無前端行為邏輯）
+- 系統範本/總部範本的固定示意文字內容，待使用者提供或開發階段自行
+  先寫一段合理 placeholder（不影響規格判讀）
+- 分館卡片區 3 張卡在 lodging-info 頁面上的 RWD 斷點行為皆尚未個別
+  讀取，待補
+- 分館卡片區 3 張卡（基本資訊卡/須知與聲明卡/網域安全卡）內容至此全部
+  讀取完畢，`specs/pages/lodging-info.md` 頁面 spec 可以開始統整寫檔
+  （仍需頁面層級的 RWD 佈局細節，非本輪範圍）
+
+### 重要決定
+- 「須知與聲明」卡是 lodging-info 頁面分館卡片區的第 2 張獨立卡片，
+  跟 `state=branch-basic-info` modal 是平行關係，不是巢狀在該 modal 內
+- Folder-tab 分類頁籤是繼 Pill chip button / 翻譯按鈕(radius 6) 之後
+  第三種 pill 幾何規則，三者不可互換使用
+- 讀取階段的視覺核對截圖一律存專案內暫存路徑、核對完就刪，不當作
+  正式 QA 截圖保留（正式 QA 截圖才進 `specs/qa-screenshots/session-N/`）
+- 「基本資訊卡」是我方沿用的口語代稱（分館卡片區第 1 張卡），不是
+  Figma 節點上的正式命名；下次交接或跟使用者對話時若用這類自訂代稱，
+  最好附上對應 node id 或既有 spec 檔名避免對方混淆（本輪使用者就
+  反問了這個代稱指什麼）
+- 網域安全卡、基本資訊卡的連結 chip，兩者都是「有元件外觀、無前端
+  互動邏輯」的按鈕，行為完全交給後端；這類「純版位」需求不用比照
+  其他複雜 modal 走完整 Interaction 表，用一段簡短說明「行為交給
+  後端」即可，避免過度規格化不存在的前端邏輯
+
+### 未解問題
+- 無（範本示意文字內容、頁面 RWD 斷點待後續 session 處理；分館卡片區
+  3 張卡內容已全部讀完）
+
 ## Session 115 交接 (2026-07-29)
 
 ### 任務: 系統設定 -> 民宿資料頁面 figma-go 讀取(續) - 照片管理 modal + 圓形照片觸發器 +
