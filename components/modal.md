@@ -38,7 +38,7 @@
 | `state=arrival method` | `1106:19329` / `1109:19460` / `1110:19603` / `1121:16398` / `1124:17174` / `1135:16863` | 175–993 × 507/834 | 訂單條件 → 到店方式 button 觸發；4 個 chip 切 4 個 sub-state（自行到店 / 自駕 / 包車或專車 / 接送），State D 接送含並排 swiper card stack。詳見 `components/arrival-method-modal.md` |
 | `state=multilingual-status` | `2129:81569` | 948x552px | 「多語系狀態」總覽 modal；共用元件，由頁面右上角「多語系狀態」按鈕（`icons/translation`）開啟，本次讀取來源為「系統設定 -> 民宿資料」頁，未來其他有多語系欄位的頁面可複用；desktop max-width 直接採 Figma 實測 948px，不套用共用 1140px 上限（948 < 1140，不需封頂） |
 | `state=photo-gallery` | `2125:75472` | 1140x1134px | 「Modal（照片）」5 張圖片管理 modal；由「系統設定 -> 民宿資料」頁 headquarters/分館卡片左側圓形照片觸發器開啟（有圖/無圖兩態共用同一 modal），desktop max-width 直接採 Figma 實測 1140px（等於共用上限，不需再封頂） |
-| `state=branch-basic-info` | `2129:79343` | 800x1534px | 分館資料編輯 modal；由「系統設定 -> 民宿資料」頁 headquarters/分館卡片「修改 4-1」/「設定 4-2」pill 按鈕開啟，內容相同僅 header 標題依觸發按鈕切換「資料修改」/「資料設定」；詳見獨立檔 `components/lodging-branch-info-modal.md`（內容複雜度比照 order-edit-modal.md，不塞進本檔 variant 列表） |
+| `state=branch-basic-info` | `2129:79343` | 800x1534px | 分館資料編輯 modal；由「系統設定 -> 民宿資料」頁 headquarters/分館卡片「修改 4-1」/「設定」（不帶編號）pill 按鈕開啟，內容相同僅 header 標題依觸發按鈕切換「資料修改」/「資料設定」；詳見獨立檔 `components/lodging-branch-info-modal.md`（內容複雜度比照 order-edit-modal.md，不塞進本檔 variant 列表） |
 
 ---
 
@@ -797,9 +797,15 @@ Modal (320×455px)
 
 | 斷點 | Node ID | 尺寸 | 說明 |
 |---|---|---|---|
-| >=768px (desktop) | `2125:75472` | 1140x1134px | Header title 文字 `Modal（照片）`；desktop max-width 直接採此 Figma 實測寬度（等於共用 1140px 上限，不再封頂） |
-| 640~767px | `2125:75209` | 640x1722px | Header title 節點文字為 `照片管理`，與 desktop 版不同；使用者拍板統一採用 desktop 版 `Modal（照片）` 文案，此節點文字視為 Figma 端未同步，不採用 |
-| <=639px (mobile) | `2131:97352` | 375x2215.93px | Header title 節點文字同樣是 `照片管理`，同上不採用；結構跟 640px 版有實質差異（見下方 Layout/RWD），不是單純等比縮小 |
+| >=768px (desktop) | `2125:75472` | 1140x1134px | 節點名稱顯示 `Modal（照片）`+"DEMO"副標；desktop max-width 直接採此 Figma 實測寬度（等於共用 1140px 上限，不再封頂） |
+| 640~767px | `2125:75209` | 640x1722px | Header title 節點文字為 `照片管理` |
+| <=639px (mobile) | `2131:97352` | 375x2215.93px | Header title 節點文字同樣是 `照片管理`；結構跟 640px 版有實質差異（見下方 Layout/RWD），不是單純等比縮小 |
+
+**Header 文字修正（Session 118 使用者訂正）**：三個斷點的 header 顯示文字統一
+採用 `照片管理`（640px/mobile 節點的實際文字），`Modal（照片）` 只是 desktop
+節點自己的命名，不是要顯示的文案；desktop 版另外還有一個字面「demo」副標
+文字，一併顯示（見下方「固定文字內容」）。這推翻了先前「desktop 版文案
+Modal（照片）優先，640/mobile 視為 Figma 未同步」的錯誤判斷。
 
 ### Open trigger（圓形照片觸發器，位於卡片內，非 modal 本體一部分）
 
@@ -818,7 +824,7 @@ Modal (320×455px)
 ```
 Modal (1140x1134px)
 - Header Frame 10 (77px)
-  - "Modal（照片）" title + "DEMO" 副標
+  - "照片管理" title + "demo" 副標（字面副標文字，非開發狀態標記）
   - icons/close
 - Body (999px)
   - 說明 banner (bg Color/Bootstrap/focus-background, radius 8, padding 8)
@@ -853,11 +859,12 @@ Modal (1140x1134px)
 
 | 區塊 | 內容 |
 |---|---|
-| Header title | `Modal（照片）` |
+| Header title | `照片管理`（Session 118 訂正，見上方「Header 文字修正」） |
+| Header 副標 | `demo`（字面文字，desktop 版節點內容） |
 | 說明 banner | `最多上傳 5 張圖片`、`建議尺寸：900px * 600px`、`檔案格式：JPEG、JPG`、`首張圖片於主頁預覽` |
 | 提示列 | `依編號順序顯示，可拖曳調整排序` |
 | Card 標題 | `圖片 1` ~ `圖片 5`（依目前排序位置動態渲染，不是固定綁定原始上傳順序） |
-| 主圖 pill | `主圖`；只出現在目前排序第 1 位的 card，拖曳排序後動態跟著移動到新的第 1 位 |
+| 主圖 pill | `主圖`；只在目前排序第 1 位的 card **同時有圖片**時才出現（無圖 card 一律無 pill，即使排在第 1 位），拖曳排序後動態跟著圖片移動 |
 | 有圖 card 按鈕 | `更換圖片`、`刪除` |
 | 無圖 card 按鈕 | `上傳圖片` |
 | 無圖 card 佔位文字 | `尚未上傳圖片` |
@@ -897,8 +904,8 @@ Modal (1140x1134px)
 | 說明 banner 背景 | `Color/Bootstrap/focus-background` | `Color/Bootstrap/focus-background` |
 | 說明 banner icon | fill `Color/Accent/float-circle-mixed-2` | `Color/Accent/float-circle-mixed-2` |
 | 主圖 pill | 16px Regular，白字；bg `Color/Bootstrap/components/focus`（與 `Color/Chart/blue`／`Color/Dots/alternative` 同值 `#86b7fe`，沿用既有 token，未新增） | `Color/Bootstrap/components/focus` |
-| 更換圖片 / 上傳圖片按鈕 | border + 文字 `Color/MenuItem/Default` | `Color/MenuItem/Default` |
-| 刪除按鈕 | border + 文字 `Color/Surface/Status-Negative` | `Color/Surface/Status-Negative` |
+| 更換圖片 / 上傳圖片按鈕 | border + 文字 `Color/MenuItem/Default`；icon 一併吃同色（用 `.icon-mask` + `currentColor` 遮罩，不是原始 SVG 黑色），按鈕高度依內容 hug，不撐滿所在容器 | `Color/MenuItem/Default` |
+| 刪除按鈕 | border + 文字 `Color/Surface/Status-Negative`；icon 一併吃同色（同上 `.icon-mask` 手法），高度同樣 hug 內容 | `Color/Surface/Status-Negative` |
 | 無圖佔位 icon | fill `Color/Neutral/300` | `Color/Neutral/300` |
 | Footer 上傳按鈕 bg | `Color/Neutral/800` | `Color/Neutral/800` |
 | Footer 取消按鈕 bg | `Color/Neutral/200` | `Color/Neutral/200` |

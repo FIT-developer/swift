@@ -1,7 +1,7 @@
 # Component Specification: 分館資料 Modal（`state=branch-basic-info`）
 
 **Figma Node ID**：見下方「Figma RWD 來源」表（desktop `2129:79343` / 640~767px `2129:80387` / <=639px `2129:80629`）
-**觸發來源**：`specs/pages/lodging-info.md`（尚未寫檔）headquarters/分館卡片的「修改 4-1」/「設定 4-2」pill 按鈕（`icons/edit` + 文字），見 `components/modal.md` `state=photo-gallery` 段落同一批 Session 讀取的相鄰觸發物
+**觸發來源**：`specs/pages/lodging-info.md`（尚未寫檔）headquarters/分館卡片的「修改 4-1」/「設定」pill 按鈕（`icons/edit` + 文字；「設定」不帶編號，因為代表尚未設定過，無資料可對應編號，見 Session 118 使用者訂正），見 `components/modal.md` `state=photo-gallery` 段落同一批 Session 讀取的相鄰觸發物
 **讀取日期**：2026-07-29
 
 ## Figma RWD 來源
@@ -23,7 +23,7 @@
 | 觸發按鈕 | Modal 標題 |
 |---|---|
 | 「修改 4-1」（已有資料的分館） | `資料修改` |
-| 「設定 4-2」（尚未填過資料的分館） | `資料設定` |
+| 「設定」（尚未填過資料的分館，不帶編號） | `資料設定` |
 
 Figma 節點名稱與 header 文字節點內容「資料設定/資料修改」直接對應這個切換規則。除標題外，欄位、佈局、互動規則完全一致。
 

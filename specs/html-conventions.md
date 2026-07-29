@@ -5,6 +5,48 @@
 
 ---
 
+## 巢狀多欄佈局必須用 container query，不能用 viewport 斷點（Session 118 血淚教訓）
+
+**背景**：`lodging-info.html` 分館列 3 卡橫排原本用 Tailwind `md:flex-row`
+（viewport 768px 斷點），使用者實測回報「大跑版」。根因：這個 row 巢狀在
+240px aside 側欄裡，`md:` 斷點只看 viewport 寬度，不知道 aside 已經吃掉
+一大塊空間；768-1391px viewport 之間，row 實際可用寬度遠小於 3 欄卡片
+需要的寬度，導致嚴重擠壓跑版。
+
+**規則**：任何會被巢狀在 aside 側欄、grid 欄位、或其他會分走可用寬度的
+容器裡的多欄/並排佈局，斷點判斷依據必須是**該元素自己的實際可用寬度**
+（container query），不能用 viewport 斷點（`md:`/`min-[640px]:` 等）。
+用 `container-type: inline-size` 在外層容器上，內層用 `@container
+(min-width: Npx)` 判斷，跟既有 `.purchase-addon-frame410`
+(`preview/assets/css/modals.css`) 同一套 convention。
+
+**Container query 門檻算法**：不要沿用原本 viewport 斷點的數字（例如
+768/640）直接套用在 container width 上，要重新用「這個元素實際需要多少
+px 才放得下」反推：
+- 3 欄 row：每欄最窄可用內容（本例：160px 照片 + 8px 間距 + 標題欄
+  最小內容寬）反推每欄最小寬度，乘以欄數加上 gap，才是 row 該用的門檻
+- 若卡片內部本身也有並排/堆疊切換（例如照片+標題），卡片自己也要是
+  container（`container-type: inline-size`），門檻依卡片自己的最小內容寬
+  計算，不要跟 row 的門檻搞混（兩層各自獨立）
+
+**已知陷阱：Tailwind utility class 跟 container query 自訂 class 衝突**：
+若同一個元素身上同時掛 Tailwind utility（例如 `grid-cols-1`）跟自訂
+class（例如 `.lodging-photo-card-grid`）控制同一個 CSS 屬性
+（`grid-template-columns`），兩者 specificity 相同（都是單一 class
+selector），會由「後出現於 stylesheet 的規則」勝出 - Tailwind Play CDN
+的 `<style>` 通常比外部連結的 CSS 檔晚出現在 document 裡，所以 Tailwind
+的 utility 會贏，`@container` 規則被靜默蓋掉，flex/grid 完全沒反應但也
+不會報錯。**解法：同一個屬性只讓自訂 class 管，不要在 HTML 上疊加控制
+同屬性的 Tailwind utility**（其他不衝突的屬性，例如 `gap-5`、`flex`
+單純設 display，仍可以混用 Tailwind class）。
+
+**驗證方法**：只在 1-2 個固定寬度測不夠，必須對可疑的巢狀佈局做寬度
+掃描（例如 320/500/640/768/900/1024/1200/1440 全跑一輪截圖），因為問題
+往往只在某個中間寬度區間出現，剛好落在原本測試的固定寬度之間就會被
+漏掉。
+
+---
+
 ## Table 格線規範
 
 **確認日期**：2026-04-15
@@ -248,6 +290,13 @@
 - padding `10px 20px`
 - 跟「Pill chip button」（全圓角 28px，用於 chip/tag）、既有翻譯按鈕（radius 6 方形）都不同，三種 pill 幾何規則不可混用
 - 來源：`components/lodging-branch-notice-card.md`（須知與聲明卡 4 個分類：訂房/成為會員/團體訂房/不退款聲明）
+- **實作陷阱（Session 118）**：選中/未選中用 `-mb-px`/`mt-1` 做堆疊視覺時，
+  外層 tab 列容器若同時需要窄版 `overflow-x-auto` 橫向捲動，**不要只寫
+  `overflow-x-auto`**：CSS 規則會把沒特別指定的 `overflow-y`（預設
+  `visible`）強制算成 `auto`，只要 margin 疊加造成 1px 級的高度誤差，就會
+  跑出多餘的垂直捲軸。要同時明寫 `overflow-y-hidden`（不要用
+  `overflow-y-visible`，那樣兩邊都會被瀏覽器判斷成 `auto`，一樣跑出捲軸），
+  確保只有水平可以捲動。
 
 ### Modal-scoped IIFE delegation pattern
 - Modal markup 放 `<body>` level（不在 `#tpl-room-booking` 內），listener 在 script load 時 `document.getElementById(modalId)` 找到後直接掛
