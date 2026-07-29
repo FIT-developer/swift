@@ -37,6 +37,7 @@
 | `state=order edit` | `2032:81567`（一般會員版）/ 讀取合約會員版另一 instance | 1192x2474px（一般會員版；合約會員版因多一列高度略增） | `訂單處理` 頁表格列狀態 pill 下拉選單「修改」action 開啟；把房間預訂頁 [A]/[B]/[C]/[D]/[E] 全部區塊搬進 modal、預填該筆訂單資料供編輯。詳見 `components/order-edit-modal.md` |
 | `state=arrival method` | `1106:19329` / `1109:19460` / `1110:19603` / `1121:16398` / `1124:17174` / `1135:16863` | 175–993 × 507/834 | 訂單條件 → 到店方式 button 觸發；4 個 chip 切 4 個 sub-state（自行到店 / 自駕 / 包車或專車 / 接送），State D 接送含並排 swiper card stack。詳見 `components/arrival-method-modal.md` |
 | `state=multilingual-status` | `2129:81569` | 948x552px | 「多語系狀態」總覽 modal；共用元件，由頁面右上角「多語系狀態」按鈕（`icons/translation`）開啟，本次讀取來源為「系統設定 -> 民宿資料」頁，未來其他有多語系欄位的頁面可複用；desktop max-width 直接採 Figma 實測 948px，不套用共用 1140px 上限（948 < 1140，不需封頂） |
+| `state=photo-gallery` | `2125:75472` | 1140x1134px | 「Modal（照片）」5 張圖片管理 modal；由「系統設定 -> 民宿資料」頁 headquarters/分館卡片左側圓形照片觸發器開啟（有圖/無圖兩態共用同一 modal），desktop max-width 直接採 Figma 實測 1140px（等於共用上限，不需再封頂） |
 
 ---
 
@@ -781,6 +782,125 @@ Modal (320×455px)
   `--color-table-column2`
 - 語系 tab active 邊框沿用既有 `#f28b45`（`Color/Brand/Brand-400`），已有
   token，不算 gap
+
+---
+
+## state=photo-gallery（照片管理）
+
+**使用位置**：`specs/pages/lodging-info.md`（尚未寫檔，頁面 spec 待卡片 2/3 細節補齊後才一次寫）；
+由「系統設定 -> 民宿資料」頁 headquarters 卡與各分館卡左側的圓形照片觸發器開啟。
+**Figma 讀取日期**：2026-07-29。
+**Figma source**：3 個 RWD node，見下方「Figma RWD 來源」表。
+
+### Figma RWD 來源
+
+| 斷點 | Node ID | 尺寸 | 說明 |
+|---|---|---|---|
+| >=768px (desktop) | `2125:75472` | 1140x1134px | Header title 文字 `Modal（照片）`；desktop max-width 直接採此 Figma 實測寬度（等於共用 1140px 上限，不再封頂） |
+| 640~767px | `2125:75209` | 640x1722px | Header title 節點文字為 `照片管理`，與 desktop 版不同；使用者拍板統一採用 desktop 版 `Modal（照片）` 文案，此節點文字視為 Figma 端未同步，不採用 |
+| <=639px (mobile) | `2131:97352` | 375x2215.93px | Header title 節點文字同樣是 `照片管理`，同上不採用；結構跟 640px 版有實質差異（見下方 Layout/RWD），不是單純等比縮小 |
+
+### Open trigger（圓形照片觸發器，位於卡片內，非 modal 本體一部分）
+
+觸發器是「總部名稱」/「分館名稱一」標題左側的圓形頭像，實際資料由後端決定要渲染哪一態；前端固定實作兩種視覺示意，皆完整可點擊：
+
+| 狀態 | Figma node | 結構 | Token |
+|---|---|---|---|
+| 有圖 | `2119:78149`（分館 1 範例） | 外層容器 160x160，padding 12；內含圓形照片 136x136（radius 999，圖片來源由後端提供）+ 右下角 overlay badge 44x44（radius 72，bg `Color/Neutral/0`，border `Color/Neutral/50`，內置中 `icons/image` 24x24 fill `Color/Neutral/800`） | `Color/Neutral/0`、`Color/Neutral/50`、`Color/Neutral/800` |
+| 未上傳（Figma 節點名 "to be uploaded"） | `2119:78426`（分館 2 範例） | 160x160，radius 999，bg `Color/Neutral/0`，border `Color/Neutral/200`，padding 12；置中 `icons/image-empty` 74x74 fill `Color/Neutral/400`，無右下角 badge | `Color/Neutral/0`、`Color/Neutral/200`、`Color/Neutral/400` |
+
+- 兩態的整個圓形區域（含有圖態右下角小 icon）都是同一個 click target，開啟同一顆 `modalPhotoGallery`。
+- headquarters 卡與每個分館卡各自對應獨立一份圖片資料（各自開啟時帶各自的既有圖片，由後端決定內容），modal 結構與行為完全相同，只是資料來源不同。
+
+### 結構（desktop 版，>=768px 參照 `2125:75472`）
+
+```
+Modal (1140x1134px)
+- Header Frame 10 (77px)
+  - "Modal（照片）" title + "DEMO" 副標
+  - icons/close
+- Body (999px)
+  - 說明 banner (bg Color/Bootstrap/focus-background, radius 8, padding 8)
+    - icons/info(fill Color/Accent/float-circle-mixed-2) + 4 段文字（分隔線 Line）:
+      "最多上傳 5 張圖片" / "建議尺寸：900px * 600px" /
+      "檔案格式：JPEG、JPG" / "首張圖片於主頁預覽"
+  - 提示列：icons/dots-line + "依編號順序顯示，可拖曳調整排序"
+  - 5 張 Card，2 欄排列（548px 寬/卡，20px padding，radius 8，border Color/Neutral/200）
+    - 有圖 card：拖曳把手(icons/dots-line) + "圖片 N" + [僅第 1 張] 主圖 pill
+      (bg Color/Bootstrap/components/focus, radius 72) + 280x185 圖片(radius 16) +
+      「更換圖片」btn(icons/image-ai-line, border/text Color/MenuItem/Default) +
+      「刪除」btn(icons/trash-can, border/text Color/Surface/Status-Negative)
+    - 無圖 card：拖曳把手 + "圖片 N"（無 pill）+ 280x185 空框(border
+      Color/Neutral/300, radius 16, 置中 icons/image fill Color/Neutral/300 +
+      "尚未上傳圖片") + 「上傳圖片」btn(icons/upload-outline, border/text Color/MenuItem/Default)
+- Footer (58px)
+  - icons/security + "儲存後生效"
+  - 「取消」btn(bg Color/Neutral/200) / 「上傳」btn(bg Color/Neutral/800)
+```
+
+### Card 內部佈局差異（三個斷點結構不同，非單純等比縮放）
+
+| 斷點 | Card 排列 | 圖片位置 | 操作按鈕排列 |
+|---|---|---|---|
+| >=768px (desktop, `2125:75472`) | 2 欄 grid，每卡內容寬 508px | 左欄固定 280px，與按鈕欄並排（同一列） | 垂直堆疊，each btn 204px 滿寬 |
+| 640~767px (`2125:75209`) | 單欄堆疊，每卡內容寬 576px | 左欄固定 280px，與按鈕欄並排（同一列） | 水平並排，更換圖片 120px + 刪除 88px（或上傳圖片 272px 單顆） |
+| <=639px (mobile, `2131:97352`) | 單欄堆疊，每卡內容寬 311px | 圖片滿版 311px，置於按鈕列**上方**（不與按鈕並排） | 水平並排，同 640px 版寬度（120px+88px，或上傳圖片單顆 120px） |
+
+說明 banner 的 4 段提示文字：desktop/tablet 橫排（用 24px 垂直分隔線隔開），mobile 改垂直堆疊（每段獨立一行，用短橫線分隔）。
+
+### 固定文字內容
+
+| 區塊 | 內容 |
+|---|---|
+| Header title | `Modal（照片）` |
+| 說明 banner | `最多上傳 5 張圖片`、`建議尺寸：900px * 600px`、`檔案格式：JPEG、JPG`、`首張圖片於主頁預覽` |
+| 提示列 | `依編號順序顯示，可拖曳調整排序` |
+| Card 標題 | `圖片 1` ~ `圖片 5`（依目前排序位置動態渲染，不是固定綁定原始上傳順序） |
+| 主圖 pill | `主圖`；只出現在目前排序第 1 位的 card，拖曳排序後動態跟著移動到新的第 1 位 |
+| 有圖 card 按鈕 | `更換圖片`、`刪除` |
+| 無圖 card 按鈕 | `上傳圖片` |
+| 無圖 card 佔位文字 | `尚未上傳圖片` |
+| Footer | `儲存後生效`、`取消`、`上傳` |
+
+### Layout / RWD
+
+| 區塊 | 規格 |
+|---|---|
+| Modal width | desktop(>=768px) max-width 1140px（等於共用上限，不封頂）；viewport 小於 max-width 時 `calc(100vw - 24px)` |
+| Modal height | body 內容高於 viewport 時，header/footer 固定，body 垂直 scroll |
+| Breakpoint: >=768px | Card 2 欄 grid（每卡內容寬 508px 參照 Figma）；圖片欄(280px)與操作按鈕欄同列並排；按鈕垂直堆疊滿寬 204px |
+| Breakpoint: 640~767px | Card 改單欄堆疊（每卡內容寬 576px 參照 Figma）；圖片欄(280px)仍與操作按鈕欄同列並排；按鈕改水平並排(120px+88px，不再滿寬) |
+| Breakpoint: <=639px (mobile) | Card 單欄堆疊（每卡內容寬 311px 參照 Figma）；圖片改滿版寬度，移到按鈕列**上方**（不再並排）；按鈕維持水平並排(同 640px 版寬度) |
+| Card 內部圖片區 | 各斷點圖片皆維持約 16:9~1.5:1 比例、radius 16；無圖 card 用相同尺寸的空框佔位，維持有圖/無圖切換時版面不跳動 |
+| 說明 banner | >=640px 4 段提示橫排、24px 垂直分隔線；<=639px 改垂直堆疊、每段一行、短橫線分隔 |
+
+### Interaction
+
+| 行為 | 規則 |
+|---|---|
+| 開啟 | 點擊 headquarters/分館卡片左側圓形照片觸發器（有圖態含右下角小 icon）開啟 `modalPhotoGallery`；開啟時依該筆資料實際張數渲染對應 card 狀態，無資料的位置一律渲染無圖 card |
+| 拖曳排序 | dots-line 把手支援拖放排序（本輪做完整功能）；排序後即時更新每張 card 的 `圖片 N` 標題與「主圖」pill 歸屬（永遠跟著新的第 1 位）；排序結果為 modal 內 local state，需等按「上傳」才視為送出 |
+| 上傳圖片 / 更換圖片 | click 觸發 `input[type=file]`（accept `image/jpeg`）；選檔後立即以 `URL.createObjectURL` 本地預覽取代該 card 圖片；無圖 card 選檔後立即切換為有圖 card 版型（新增拖曳把手旁的圖片顯示、按鈕從「上傳圖片」變成「更換圖片」+「刪除」）；本地預覽為 prototype 行為，實際上傳/儲存由後端接手 |
+| 刪除 | click 後該 card 從有圖 state 立即切回無圖 state（清除本地預覽），並釋放對應 `URL.createObjectURL` object URL；若刪除的是主圖(第 1 位)，主圖 pill 自動移到新的第 1 張有圖 card；刪除不影響其他 card 排序位置（原地變空） |
+| 取消 | 關閉 modal，捨棄本輪所有本地變更（拖曳排序 / 新選檔 / 刪除），下次開啟回到上次「上傳」成功後的狀態 |
+| 上傳（Footer） | 點擊後批次送出本輪所有變更（新排序 + 新增/更換/刪除的圖片），送出後關閉 modal；prototype 階段沒有實際後端 API，行為僅為 local state 送出動作 + 關閉 |
+| 關閉方式 | header close、footer 取消、backdrop、Esc；除「取消」與「上傳」外，其餘關閉方式行為等同取消（捨棄本輪變更） |
+
+### Typography / Colors
+
+| 元素 | 規格 | Token |
+|---|---|---|
+| Header title | 20px SemiBold 600 | `Color/Text/800` |
+| Card 標題「圖片 N」 | 20px Regular | `Color/Text/800` |
+| 說明 banner 文字 | 16px Regular | `Color/Text/800` |
+| 說明 banner 背景 | `Color/Bootstrap/focus-background` | `Color/Bootstrap/focus-background` |
+| 說明 banner icon | fill `Color/Accent/float-circle-mixed-2` | `Color/Accent/float-circle-mixed-2` |
+| 主圖 pill | 16px Regular，白字；bg `Color/Bootstrap/components/focus`（與 `Color/Chart/blue`／`Color/Dots/alternative` 同值 `#86b7fe`，沿用既有 token，未新增） | `Color/Bootstrap/components/focus` |
+| 更換圖片 / 上傳圖片按鈕 | border + 文字 `Color/MenuItem/Default` | `Color/MenuItem/Default` |
+| 刪除按鈕 | border + 文字 `Color/Surface/Status-Negative` | `Color/Surface/Status-Negative` |
+| 無圖佔位 icon | fill `Color/Neutral/300` | `Color/Neutral/300` |
+| Footer 上傳按鈕 bg | `Color/Neutral/800` | `Color/Neutral/800` |
+| Footer 取消按鈕 bg | `Color/Neutral/200` | `Color/Neutral/200` |
 
 ---
 
