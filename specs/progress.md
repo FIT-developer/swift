@@ -7,6 +7,58 @@
 
 ---
 
+## Session 117 交接 (2026-07-29)
+
+### 任務: 寫 specs/pages/lodging-info.md 頁面 spec（分館卡片區 3 張卡讀完後
+的統整），為銜接新對話做交接準備
+
+使用者要求在結束這輪長對話、開新對話前，先把 `specs/pages/lodging-info.md`
+寫出來（趁還有本輪讀取記憶時）。
+
+### 本輪處理
+- 新增 `specs/pages/lodging-info.md`：
+  - 「Component 規格」表彙整本輪(Session 115/116)產出的所有 component
+    檔案指標（basic-card / notice-card / domain-security-card /
+    branch-basic-info modal / photo-gallery modal / suneditor /
+    multilingual-status modal / folder-tab pattern）
+  - 「使用者確認事項」彙整散落各 component 檔的重大決策索引（含出處
+    session 編號）
+  - 「佈局」段落只寫入**確實有記錄依據**的內容：Session 114 讀取的
+    3 個 RWD frame 摘要（頂部工具列 + 分館列 x 3 張卡的結構、3 個斷點
+    收合方式的文字敘述）
+  - **刻意不捏造**頁面容器層級的精確數值（外層 padding、卡片間 gap、
+    頂部工具列精確佈局、3 斷點卡片確切寬度）：這些數值 Session 114
+    只留下文字敘述沒有像素紀錄，本輪(Session 115-117)全程都是針對個別
+    元件孤立讀取，沒有重新讀過頁面容器本身；逐一列在「Figma 未定義 /
+    待補讀取」段，明確標記「不可用其他頁面數值或 component 孤立尺寸
+    拼湊」，避免下一個對話的 AI agent 誤把這些當已確認數值
+  - Shell 段落標記為「推測沿用」account-permission/system-basic 的
+    shell pattern，同樣未實際核對，不當作確認事實
+
+### 驗證
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0
+- 尚未跑 `run-swift` smoke test：本頁還沒有 HTML 實作可測
+
+### 下一步應做
+- 開新對話前的交接到此為止；新對話開始時讀 `start.md` + 本檔即可接續
+- 下一步應該是針對 `lodging-info.md` 「Figma 未定義」段列出的頁面容器
+  層級項目（外層 padding、gap、頂部工具列細節、3 斷點確切寬度）重新
+  figma-go 讀取，讀完才能真正開始實作 `preview/lodging-info.html`
+- 「須知與聲明」卡「有資料」state 示意圖仍待使用者提供（多輪未完成項）
+
+### 重要決定
+- 頁面 spec 允許在元件級細節都齊全、但容器級數值缺漏的狀態下先落筆，
+  只要缺漏的部分明確標記「未定義」且說明不可拼湊替代；不必等容器級
+  細節也讀完才動筆，避免這輪讀取成果失去銜接文件
+- 「Figma 未定義」段落的措辭刻意加了「不可用其他頁面數值或
+  component 孤立尺寸拼湊」這類提醒，是因為下一個對話的 agent 沒有
+  這輪對話的完整脈絡，容易把「個別元件都量過」誤判成「頁面佈局也量
+  過」，需要在 spec 裡明講避免誤用
+
+### 未解問題
+- 無（頁面容器級 Figma 讀取待下次 session 進行）
+
 ## Session 116 交接 (2026-07-29)
 
 ### 任務: 系統設定 -> 民宿資料頁面 figma-go 讀取(續) - 須知與聲明卡 +
