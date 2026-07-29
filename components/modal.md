@@ -38,6 +38,7 @@
 | `state=arrival method` | `1106:19329` / `1109:19460` / `1110:19603` / `1121:16398` / `1124:17174` / `1135:16863` | 175–993 × 507/834 | 訂單條件 → 到店方式 button 觸發；4 個 chip 切 4 個 sub-state（自行到店 / 自駕 / 包車或專車 / 接送），State D 接送含並排 swiper card stack。詳見 `components/arrival-method-modal.md` |
 | `state=multilingual-status` | `2129:81569` | 948x552px | 「多語系狀態」總覽 modal；共用元件，由頁面右上角「多語系狀態」按鈕（`icons/translation`）開啟，本次讀取來源為「系統設定 -> 民宿資料」頁，未來其他有多語系欄位的頁面可複用；desktop max-width 直接採 Figma 實測 948px，不套用共用 1140px 上限（948 < 1140，不需封頂） |
 | `state=photo-gallery` | `2125:75472` | 1140x1134px | 「Modal（照片）」5 張圖片管理 modal；由「系統設定 -> 民宿資料」頁 headquarters/分館卡片左側圓形照片觸發器開啟（有圖/無圖兩態共用同一 modal），desktop max-width 直接採 Figma 實測 1140px（等於共用上限，不需再封頂） |
+| `state=branch-basic-info` | `2129:79343` | 800x1534px | 分館資料編輯 modal；由「系統設定 -> 民宿資料」頁 headquarters/分館卡片「修改 4-1」/「設定 4-2」pill 按鈕開啟，內容相同僅 header 標題依觸發按鈕切換「資料修改」/「資料設定」；詳見獨立檔 `components/lodging-branch-info-modal.md`（內容複雜度比照 order-edit-modal.md，不塞進本檔 variant 列表） |
 
 ---
 
