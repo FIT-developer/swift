@@ -7,6 +7,196 @@
 
 ---
 
+## Session 118 交接 (2026-07-29)
+
+### 任務: 系統設定 -> 民宿資料頁面容器層級 figma-go 補讀 + 補一個遺漏的
+「須知與聲明」有資料 state，完成 `specs/pages/lodging-info.md` 定案
+
+延續 Session 117 標記的「待補讀取」，針對頁面容器本身（非卡片內容）
+重新 figma-go 讀取，並補讀一個先前 5 輪都漏掉的狀態。
+
+### Figma 讀取記錄 (current version, read 2026-07-29)
+- 桌面 `2119:78284`(1440x943.48) / 平板 `2126:76269`(767x1646) /
+  手機 `2126:76796`(375x2162) 三個 frame 的容器層級結構，全部截圖交叉
+  核對過
+- 頁面容器（"content"）：`fill #f6fafd`(Neutral/75) / `stroke #d1d1d1`
+  (Neutral/200) / `radius 12` / `padding 20`，三斷點一致，且跟
+  `preview/system-basic.html` 既有 class `rounded-xl border
+  border-border-disabled bg-surface-hover p-5` 完全對應
+- 分館列（新發現，之前沒讀到）：每一列本身是獨立白底卡片
+  `fill #ffffff` / `stroke #b0b0b0`(Neutral/300) / `radius 12` /
+  `padding 16`，不是單純排版 frame；列間垂直 gap 24px（三斷點一致）
+- 頂部工具列兩顆按鈕（多語系狀態/重整）：白底 pill radius28、
+  padding 10/16、icon+8gap+文字，靠右對齊；重整按鈕 icon 是
+  `icons/restore`（非 refresh）；兩鈕間距桌面讀 20px、平板/手機讀 24px
+  不一致（Figma 端本身的量測落差）
+- headquarters 那一筆跟分館筆數：截圖 + JSON 交叉核對，**沒有**額外視覺
+  標記或拖曳排序 UI，只有「排序」數字與「修改/設定」按鈕文字不同
+- 3 斷點卡片排列取得實際像素：桌面 3 卡橫排(348/348/351px, gap12)、
+  平板/手機皆改 3 卡直排(695px / 303px 滿版, gap24)；平板卡片內部
+  照片+標題維持並排、手機連卡片內部也改直排置中、連結 chip 在手機版
+  wrap 成 2 排置中(非既有 nowrap+scroll pattern)
+- 補讀先前 5 輪都遺漏的「須知與聲明」卡「已儲存內容」state（node
+  `2132:97812`，"006 - 003 完成編輯時畫面"）：內容區顯示橘字「已儲存
+  內容」標籤(`Color/Brand/Brand-400` #f28b45) + 唯讀全文 + 置中「編輯」
+  按鈕，容器樣式跟空狀態/編輯狀態共用同一個 padding/border/radius
+
+### 本輪處理
+1. 用 `AskUserQuestion` 請使用者拍板兩件事：
+   - 工具列按鈕間距 20/24px 不一致 -> 統一採用 24px
+   - 是否要等資料全齊再寫 spec -> 使用者選「全部補齊再寫」，因此先補
+     讀「須知與聲明」有資料 state 才動筆
+2. 使用者一開始以為「須知與聲明有資料」state 之前已經讀過，經比對
+   Session 116 的 5 個示意 frame 後確認那 5 個都是編輯流程畫面，不是
+   本輪要的「未編輯、卡片靜態顯示已儲存內容」畫面；使用者確認 Figma
+   裡原本漏畫，即席補畫後再次 `figma-go` 才讀到
+3. 更新 `components/lodging-branch-notice-card.md`：新增「006 -
+   完成編輯時畫面」狀態記錄、Typography 表補「已儲存內容」標籤 token、
+   Token gaps 補 `#f28b45`、未讀取待補項目調整
+4. 改寫 `specs/pages/lodging-info.md`：
+   - 「使用者確認事項」補 4 條（6-8：headquarters 無區分、須知與聲明
+     已儲存狀態摘要、工具列間距拍板）
+   - 「佈局」段落從「文字敘述+推測沿用」全面改寫成「已讀取確認的實際
+     像素值」：Shell（含 mobile top bar 逐字比對既有 5 個頁面通過）、
+     頁面容器、頂部工具列、分館列、3 斷點卡片排列表格
+   - 「Figma 未定義」段落大幅縮減，只剩非容器的次要項目（範本示意文字
+     內容、多分類部分有資料部分無資料的示意圖未提供，皆不影響開始實作）
+   - 檔頭「狀態」改為「規格已齊全，可以開始實作」
+
+### 驗證
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0
+- 截圖驗證：`.scratch/desktop.png` / `tablet.png` / `mobile.png` /
+  `notice-filled.png`，核對完畢已刪除（讀取階段核對用，非正式 QA 截圖）
+- 尚未跑 `run-swift` smoke test：本輪只完成 spec 定案，
+  `preview/lodging-info.html` 尚未產出
+
+### 重要決定（spec 定案階段）
+- 分館列容器本身也是白底卡片（bg Neutral/0 + border Neutral/300），跟
+  頁面外層容器（bg Neutral/75 + border Neutral/200）是兩層不同的卡片
+  樣式疊在一起，實作時不要合併成一層
+- 工具列按鈕間距三斷點統一 24px 是使用者明確拍板的值，不是 Figma 原始
+  讀值（桌面原始讀值其實是 20px），如果之後有人回頭比對 Figma 發現桌面
+  是 20px 不要當成本次實作有誤，這是刻意的統一決策
+- 桌面 3 卡橫排時網域安全卡比另外兩卡寬 3px，判斷為 Figma 量測雜訊，
+  實作採 3 卡等寬 flex，不重現這個 3px 差異
+- 手機版連結 chip 換行置中（wrap+center）跟既有 tab/chip 橫向 scroll
+  慣例（nowrap+overflow-x-auto）是兩種不同 pattern，不要混用；本頁連結
+  chip 明確是前者
+
+---
+
+## 本 session 後續：開始實作 preview/lodging-info.html（task 1-6/10 完成）
+
+spec 定案後同一個 session 內接續開始實作，依「粒度原則」拆成 10 個
+task 逐一做完 + 截圖驗收 + 使用者確認才進下一步。以下是 task 1-6 的
+交接記錄（task 7-10 尚未開始：branch-basic-info 編輯 modal / 須知與聲明
+編輯完整流程 / 多語系狀態 modal / 全頁驗證）。
+
+### 已完成 task
+1. 頁面骨架：shell partial 組合 + 頁面容器 + 頂部工具列。註冊進
+   `scripts/lint-partials.py` MANIFEST、`preview/js/page-tabs.js`
+   TAB_PAGES、`preview/partials/aside.html`「民宿資料」改真連結
+2. 分館列 1（headquarters，有照片，"修改 4-1"）+ 基本資訊卡
+3. 須知與聲明卡（folder-tab 分類頁籤 + 空狀態）
+4. 網域安全卡（有效態）
+5. 分館列 2（分館名稱一，無照片，"設定"，須知與聲明示範「已儲存內容」
+   狀態，網域安全示範失效態）- 兩列合起來涵蓋須知與聲明卡的兩種狀態
+6. 照片管理 modal（`state=photo-gallery`）：5 卡 grid、完整拖曳排序/
+   上傳/刪除/取消/儲存邏輯（不是純外觀），row1/row2 各自獨立圖片資料
+
+### 過程中發現並修正的問題（供後續 task 參考，避免重複踩雷）
+
+**1. Figma 漸層 fill 被 JSON 靜默省略**：「修改/設定」pill 按鈕背景其實
+是白->Brand-200 垂直漸層，`get_selection` 只回報邊框色。SVG export 覆核
+才抓到。CSS 實作在 `preview/assets/css/lodging-info.css`
+`.lodging-branch-edit-btn`。
+
+**2. Figma 給的 stroke 可能是停用的裝飾屬性，不代表真的有邊框**：須知
+與聲明卡「尚未填寫」placeholder，JSON 回報 `strokes:["#d1d1d1"]`，但 SVG
+export 顯示完全沒有邊框 path。截圖比對後拿掉了邊框。
+
+**3. 標題區塊 padding/gap 讀漏**：`get_node` 全樹核對後才發現 Title 區塊
+本身有 12px 上下 padding、兩個名稱行之間是 12px（不是 4px）、三大段之間
+是 20px（不是 12px）。已更新 `components/lodging-branch-basic-card.md`。
+
+**4. RWD 嚴重跑版 - viewport 斷點 vs 巢狀容器實際寬度**：分館列 3 卡
+橫排、照片 modal 的卡片 grid，原本都用 Tailwind viewport 斷點
+（`md:`/`min-[640px]:`），但這些元素巢狀在 240px aside 側欄或 modal 的
+grid 欄位裡，導致 768-1391px viewport 之間嚴重擠壓跑版。**全面改用
+CSS container query**（`container-type: inline-size` + `@container
+(min-width: Npx)`，跟既有 `.purchase-addon-frame410` 同一套
+convention），斷點門檻依「元素自己實際需要多少 px」重新反推，不能沿用
+原本 viewport 斷點的數字。詳細規則、算法、已知陷阱（Tailwind utility
+class 跟自訂 class 控制同屬性時的 specificity/source-order 衝突）已寫進
+`specs/html-conventions.md`「巢狀多欄佈局必須用 container query」。
+**這是本輪最大的教訓，下一個 session 如果要做任何巢狀在 aside 側欄裡的
+多欄佈局，一定要先讀這段，不要重蹈覆轍。**
+
+**5. 照片管理 modal header 文字**：使用者訂正為主標題「照片管理」+
+副標「demo」（垂直堆疊），推翻了先前「desktop 版 Modal（照片）優先」的
+錯誤判斷（已更新 `components/modal.md`）。
+
+**6. 主圖 pill 邏輯 bug（自動化測試抓到）**：原本寫成「永遠顯示在第 1
+格」，正確應該是「只有第 1 格同時有圖片時才顯示」。用模擬 drag/drop
+事件測過拖曳後 pill 正確跟隨/消失。
+
+**7. 照片卡按鈕列缺 flex-wrap**：`.lodging-photo-actions` 在 container
+寬度剛好卡在「還沒到達直排門檻(480px)、但兩顆按鈕橫排也擠不太下」的
+邊界（約 1036px viewport 附近）會被壓縮破版。加上 `flex-wrap: wrap`
+當安全網，掃過 950-1440 全範圍確認不再破版。
+
+**（誤報，非 bug）按鈕垂直置中一度懷疑失效**：使用者用瀏覽器 devtools
+檢視時一度回報「按鈕永遠垂直置中，不對」，後來確認是**使用者自己
+devtools 分頁視窗寬度不夠**，不是 code 問題；另外過程中我自己第一次
+用 eval 快速量測也一度誤判成沒置中，原因是 Tailwind CDN 動態產生
+`h-[185px]` 這類 CSS 規則有非同步延遲，沒等它跑完就量測會拿到錯誤的
+84px（而非 185px）高度。**下次若又覺得「置中沒生效」，先確認是不是
+量測時機太早（Tailwind CDN 非同步）或觀察視窗太窄，不要急著改 code。**
+
+### 驗證
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0（過程中也順手修正了
+  `scripts/lint-conventions.py` 對 `@container (min-width:...)` 誤判成
+  「未 gate 的 min-width」的 false positive）
+- 截圖：`specs/qa-screenshots/session-118/` 下大量截圖，含 8+ 個寬度
+  （320~1440）的 RWD 掃描
+- 尚未跑 `scripts/smoke-test.mjs` 的完整頁面清單登記（該 script 的
+  APP_CSS_LOADED_CHECK 已補上 `lodging-info.css`，但 lodging-info.html
+  本身尚未加進 smoke test 的頁面清單，留給 task 10）
+
+### 下一步應做
+- **Task 7 尚未動工**（只讀完 `components/lodging-branch-info-modal.md`
+  完整內容，還沒寫任何 HTML/CSS/JS）：branch-basic-info 編輯 modal，
+  由分館卡「修改 4-1」/「設定」pill 按鈕開啟。內容是 2 欄 grid 表單
+  （代號唯讀/飯店名稱/英文名稱/Email/市話/傳真/地址(`components/location.md`
+  Location 元件)/企業官網/4 張文案卡片(空狀態靜態顯示即可,不接真
+  SunEditor)/飯店設施項目 chip 多選），詳細欄位規格見該檔「Body 欄位」
+  表。RWD：桌面/平板 2 欄並排（純等比縮窄）、手機單欄堆疊。開始前記得
+  也讀一下 `components/location.md`（本 session 尚未讀入 context）
+- Task 8：須知與聲明卡完整編輯流程（SunEditor + 分類 tab 切換 + 來源
+  按鈕 + 多語系），這是剩餘 task 裡最複雜的一個
+- Task 9：多語系狀態總覽 modal（頂部工具列按鈕開啟）
+- Task 10：全頁驗證（4 lint + smoke test 頁面登記 + 多角度截圖 + 更新
+  progress.md）
+
+### 重要決定（實作階段新增）
+- 「修改/設定」pill 按鈕寬度依內容 hug，不用固定寬度數值（Figma 兩態
+  寬度差異純粹是文字長度不同）
+- 分館列容器（`.lodging-branch-row`）與各卡片（`.lodging-branch-card`、
+  `.lodging-photo-card`）都是獨立的 container query context，兩層各自
+  獨立判斷斷點，不要混用同一個門檻數字
+- 連結 chip（企業官網/訂房網/自助報到）補了 Figma 未定義的 hover 態
+  （使用者指定沿用 `landing.html`「日營收」按鈕的 `attached-link`
+  default/hover pattern），非腦補，已記錄在
+  `components/lodging-branch-basic-card.md`
+
+### 未解問題
+- 無（本輪範圍內的問題都已解決；task 7-10 待後續 session 或本 session
+  接續處理）
+- （spec 定案階段遺留，非阻塞）範本示意文字內容、部分分類有資料部分
+  無資料的示意圖，皆屬次要項目，已在 spec 內明確標記不影響實作
+
 ## Session 117 交接 (2026-07-29)
 
 ### 任務: 寫 specs/pages/lodging-info.md 頁面 spec（分館卡片區 3 張卡讀完後
