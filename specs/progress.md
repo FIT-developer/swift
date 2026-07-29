@@ -7,6 +7,54 @@
 
 ---
 
+## Session 113 交接 (2026-07-29)
+
+### 任務: figma-go 同步 icons variants(系統設定 -> 民宿資料頁面開工前置作業)
+
+### Figma 讀取記錄 (current version, read 2026-07-29)
+- FRAME `25:93`「Icons」402x805,components page 既有 icon 庫,共 137 個
+  component/instance
+- 跟現有 `specs/icons.md` + `preview/assets/icons/`(122 檔)交叉比對後,
+  找出 40 個 Figma 有、本地沒有的新 icon variants
+
+### 本輪處理
+- 匯出 40 個新 icon SVG 到 `preview/assets/icons/`(`save_screenshots`
+  SVG format,逐一核對 node id 後批次匯出,並用截圖網格肉眼驗證 40 顆都
+  正常渲染、無破圖空圖)
+- `specs/icons.md` 更新:
+  - 主表新增 21 個一般 icon(archive, checkmark-filled-error, dash-16,
+    decision-solid, dots-line, empty-image, headquarters,
+    health-worker-form-outline, image-ai-line, info-circle-off,
+    message-share, new-brand, office, print, process, security,
+    single-symbol-warning, star, translation, upload, upload-outline)
+  - 新增「SunEditor / ckeditor Icon Set」段落,收錄 17 個 SunEditor +
+    2 個 ckeditor 命名空間 icon(`suneditor-*` / `ckeditor-*` 前綴);
+    目前專案未整合任何富文本編輯器,純粹存檔,不預設用途
+  - 色彩語意表補 `checkmark-filled-error`(`#FFB6B6`,對應既有 token
+    `Color/Accent/float-circle-filled-2`)、`single-symbol-warning`
+    (`#EF6F25`+`#FDEBD7`,對應既有 `Brand-500`/`Brand-100`)
+  - 非標準尺寸表補 `info-circle-off`(26x26)、`star`/
+    `suneditor-rotate-to-left/right`(20x20)、`suneditor-s-slash`(24x27)
+  - 頁尾統計數字更新為現況
+
+### 驗證
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0(conventions 第一輪因新增行用了 `x` 全形
+  乘號與色彩 emoji 被擋下,已改用 ASCII `x` 與文字描述修正後過)
+- `node .claude/skills/run-swift/driver.mjs smoke` 5 頁全 PASS
+
+### 重要決定
+- 40 個新 icon 全數先同步進 spec + 匯出 SVG,即使目前用不到也記錄起來
+  (使用者拍板「看之前怎麼做就怎麼做,不一定用到的也沒關係」)
+- SunEditor/ckeditor 這批不預先假設用途,哪個元件會用、用哪一顆,等實際
+  需要時再確認
+
+### 未解問題
+- 既有 `icons/language`(`language.svg`)這次在 Figma 找不到同名節點,但
+  多了一個新的 `icons/translation`,視覺語意接近,懷疑是 Figma 端改名;
+  已當作獨立新 icon 收錄,未動 `language.svg` 或改寫舊條目,是否要汰換
+  待使用者確認
+
 ## Session 112 交接 (2026-07-28)
 
 ### 任務: figma-go 讀 account-permission mobile~tablet frame,調整 <768 外層

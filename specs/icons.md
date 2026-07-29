@@ -15,6 +15,7 @@
 |---|---|---|---|---|
 | advertisement | assets/icons/advertisement.svg | 24×24 | 廣告/促銷 | icons/advertisement |
 | ai | assets/icons/ai.svg | 24×24 | AI 功能 | icons/ai |
+| archive | assets/icons/archive.svg | 24x24 | 歸檔/封存 | icons/archive |
 | arrow-down-drop | assets/icons/arrow-down-drop.svg | 24×24 | 下拉箭頭（含底色） | icons/arrow-down-drop |
 | arrow-drop-up | assets/icons/arrow-drop-up.svg | 24×23 | 上拉箭頭（含底色） | icons/arrow-drop-up |
 | arrow-left | assets/icons/arrow-left.svg | 24×24 | 向左箭頭（大） | icons/arrow-left |
@@ -29,22 +30,27 @@
 | chart | assets/icons/chart.svg | 24×24 | 圖表 | icons/chart |
 | check | assets/icons/check.svg | 16×16 | 勾選（中性黑色） | icons/check |
 | check-green | assets/icons/check-green.svg | 24×24 | 勾選（成功/綠色）🟢 fill #2ACA18 | icons/check |
+| checkmark-filled-error | assets/icons/checkmark-filled-error.svg | 24x24 | 錯誤勾選（紅底填色，語意紅）見色彩語意表 | icons/checkmark-filled-error |
 | clock | assets/icons/clock.svg | 24×24 | 時鐘/時間 | icons/clock |
 | close | assets/icons/close.svg | 24×24 | 關閉/清除 | icons/close |
 | count | assets/icons/count.svg | 24×24 | 計數/數量 | icons/count |
 | cursor | assets/icons/cursor.svg | 24×24 | 子項目指示 / 游標 | icons/cursor |
+| dash-16 | assets/icons/dash-16.svg | 24x24 | 減號/破折號（16px 內縮） | icons/dash-16 |
 | dashboard | assets/icons/dashboard.svg | 24×24 | 儀表板 | icons/dashboard |
+| decision-solid | assets/icons/decision-solid.svg | 24x24 | 決策/裁決（實心） | icons/decision-solid |
 | deposit | assets/icons/deposit.svg | 24×24 | 訂金/押金 | icons/deposit |
 | direction-left | assets/icons/direction-left.svg | 25×25 | 方向左（雙色）⚠️ stroke #306CFE + #344054 | icons/direction-left |
 | document | assets/icons/document.svg | 24×24 | 文件 | icons/document |
 | dollar | assets/icons/dollar.svg | 20×20 | 金錢/貨幣 | icons/dollar |
 | door | assets/icons/door.svg | 24×24 | 門/房門 | icons/door |
+| dots-line | assets/icons/dots-line.svg | 24x24 | 更多選項（直式三點） | icons/dots-line |
 | down | assets/icons/down.svg | 24×24 | 向下（小箭頭） | icons/down |
 | download | assets/icons/download.svg | 24×24 | 下載 | icons/download |
 | duplicate | assets/icons/duplicate.svg | 24×24 | 複製/重複 | icons/duplicate |
 | duration | assets/icons/duration.svg | 20×20 | 住宿期間/時段 | icons/duration |
 | edit | assets/icons/edit.svg | 24×24 | 編輯 | icons/edit |
 | email | assets/icons/email.svg | 24×24 | 電子郵件 | icons/email |
+| empty-image | assets/icons/empty-image.svg | 24x24 | 圖片空狀態 | icons/empty-image |
 | eraser | assets/icons/eraser.svg | 16×16 | 清除/橡皮擦 | icons/eraser |
 | eye-close | assets/icons/eye-close.svg | 24×24 | 隱藏密碼 | icons/eye-close |
 | eye-open | assets/icons/eye-open.svg | 24×24 | 顯示密碼 | icons/eye-open |
@@ -53,11 +59,15 @@
 | flow | assets/icons/flow.svg | 16×16 | 流程 | icons/flow |
 | focus | assets/icons/focus.svg | 24×24 | 焦點/聚焦 | icons/focus |
 | google | assets/icons/google.svg | 24×24 | Google 登入 🎨 品牌四色 | icons/google |
+| headquarters | assets/icons/headquarters.svg | 24x24 | 總部/總公司 | icons/headquarters |
+| health-worker-form-outline | assets/icons/health-worker-form-outline.svg | 24x24 | 健康表單/醫療紀錄 | icons/health-worker-form-outline |
 | help | assets/icons/help.svg | 24×24 | 說明/幫助 | icons/help |
 | home | assets/icons/home.svg | 24×24 | 首頁 | icons/home |
 | hotel | assets/icons/hotel.svg | 31×24 | 飯店建築（非正方形） | icons/hotel |
 | image | assets/icons/image.svg | 24×24 | 圖片 | icons/image |
+| image-ai-line | assets/icons/image-ai-line.svg | 24x24 | AI 圖片生成 | icons/image-ai-line |
 | info | assets/icons/info.svg | 24×24 | 資訊提示 | icons/info |
+| info-circle-off | assets/icons/info-circle-off.svg | 26x26 | 資訊提示（關閉態） | icons/info-circle-off |
 | inventory | assets/icons/inventory.svg | 24×24 | 庫存 | icons/inventory |
 | label | assets/icons/label.svg | 24×24 | 標籤 | icons/label |
 | language | assets/icons/language.svg | 24×24 | 語言切換 | icons/language |
@@ -68,8 +78,11 @@
 | logo | assets/icons/logo.svg | 24×24 | 品牌 Logo 🎨 #00A5E3 + #8FC31F | icons/logo |
 | logout | assets/icons/logout.svg | 24×24 | 登出 | icons/logout |
 | message | assets/icons/message.svg | 24×24 | 訊息/通訊 | icons/message |
+| message-share | assets/icons/message-share.svg | 24x24 | 訊息分享/轉發 | icons/message-share |
+| new-brand | assets/icons/new-brand.svg | 24x24 | 新品牌/新標籤 | icons/new-brand |
 | night | assets/icons/night.svg | 24×24 | 夜晚/夜數 | icons/night |
 | ~~none~~ | *(未匯出)* | — | 空狀態佔位符（無可見圖層） | icons/none |
+| office | assets/icons/office.svg | 24x24 | 辦公室/分館 | icons/office |
 | operation-system | assets/icons/operation-system.svg | 24×24 | 作業系統/系統操作（方形+圓形設計） | icons/operation-system |
 | order | assets/icons/order.svg | 24x24 | 訂單（訂單處理下拉選單「訂單」） | icons/order |
 | order-info | assets/icons/order-info.svg | 24×24 | 訂單資訊 | icons/order-info |
@@ -83,6 +96,8 @@
 | plus-list | assets/icons/plus-list.svg | 24×24 | 新增清單項目 | icons/plus-list |
 | pos | assets/icons/pos.svg | 24×24 | POS 系統入口 | icons/pos |
 | price | assets/icons/price.svg | 24×24 | 價格 | icons/price |
+| print | assets/icons/print.svg | 24x24 | 列印 | icons/print |
+| process | assets/icons/process.svg | 24x24 | 流程/處理中 | icons/process |
 | prohibited | assets/icons/prohibited.svg | 24×24 | 禁止/不可用 | icons/prohibited |
 | purchase-item | assets/icons/purchase-item.svg | 24×24 | 採購項目 | icons/purchase-item |
 | ranking | assets/icons/ranking.svg | 20×20 | 排名/排行 | icons/ranking |
@@ -93,13 +108,17 @@
 | right | assets/icons/right.svg | 16×16 | 向右（小箭頭） | icons/right |
 | road | assets/icons/road.svg | 24×24 | 道路/路線 | icons/road |
 | search | assets/icons/search.svg | 24×24 | 搜尋 | icons/search |
+| security | assets/icons/security.svg | 24x24 | 安全性/權限保護 | icons/security |
 | service | assets/icons/service.svg | 24×24 | 客服 | icons/service |
+| single-symbol-warning | assets/icons/single-symbol-warning.svg | 24x24 | 警告（單一符號，語意橙）見色彩語意表 | icons/single-symbol-warning |
+| star | assets/icons/star.svg | 20x20 | 星號/收藏 | icons/star |
 | submit | assets/icons/submit.svg | 15×16 | 送出 ⚠️ fill #2178CF（藍色，建議改 currentColor） | icons/submit |
 | switch | assets/icons/switch.svg | 24×24 | 切換帳號 | icons/switch |
 | system | assets/icons/system.svg | 24×24 | 系統設定（齒輪造型） | icons/system |
 | tasks-day | assets/icons/tasks-day.svg | 24×24 | 每日任務 | icons/tasks-day |
 | thumbtack | assets/icons/thumbtack.svg | 20x20 | 圖釘/釘選 | icons/thumbtack |
 | transit | assets/icons/transit.svg | 25×25 | 交通轉乘 | icons/transit |
+| translation | assets/icons/translation.svg | 24x24 | 翻譯/語系 | icons/translation |
 | trash-can | assets/icons/trash-can.svg | 24×24 | 刪除 🔴 stroke #D90000 | icons/trash-can |
 | trend-down-green | assets/icons/trend-down-green.svg | 24×24 | 趨勢下降（綠=正向）🟢 stroke #2ACA18 | icons/trend-down |
 | trend-up-red | assets/icons/trend-up-red.svg | 24×24 | 趨勢上升（紅=負向）🔴 stroke #E12129 | icons/trend-up |
@@ -107,6 +126,8 @@
 | unlock | assets/icons/unlock.svg | 24×24 | 解鎖 | icons/unlock |
 | up | assets/icons/up.svg | 24×24 | 向上（小箭頭） | icons/up |
 | up-and-down | assets/icons/up-and-down.svg | 16×16 | 雙向排序 | icons/up-and-down |
+| upload | assets/icons/upload.svg | 24x24 | 上傳 | icons/upload |
+| upload-outline | assets/icons/upload-outline.svg | 24x24 | 上傳（外框樣式） | icons/upload-outline |
 | warning-orange | assets/icons/warning-orange.svg | 24×24 | 警告 🟠 fill #E05216 | icons/warning |
 | yes | assets/icons/yes.svg | 20x20 | 確認/勾選（黑勾） | icons/yes |
 
@@ -146,6 +167,48 @@
 | menu-list-service | assets/icons/menu-list-service-fill.svg | assets/icons/menu-list-service-none-fill.svg | 38×38 | 服務 | service=fill / service=none-fill |
 | menu-list-wellness | assets/icons/menu-list-wellness-fill.svg | assets/icons/menu-list-wellness-none-fill.svg | 38×38 | 健康/療癒 | wellness=fill / wellness=none-fill |
 | menu-list-promotion | assets/icons/menu-list-promotion-fill.svg | assets/icons/menu-list-promotion-none-fill.svg | 38×38 | 促銷/折扣 | promotion=fill / promotion=none-fill |
+
+---
+
+## SunEditor / ckeditor Icon Set（富文本編輯器工具列，未使用中）
+
+> 來源：Figma `components` page 同一份 Icons frame（selection `25:93`），
+> 命名空間 `icons/SunEditor/*` 與 `icons/ckeditor/*`。
+> 匯出日期：2026-07-29。
+> 用途：目前專案未整合任何富文本編輯器，這批純粹是 Figma 既有 icon 庫存
+> 同步存檔；哪個頁面/元件會用到、用哪一顆，屆時再個別確認，不預先假設。
+
+### 使用規則
+
+- 檔名一律加 `suneditor-` 或 `ckeditor-` 前綴（依 Figma 命名空間對應），
+  避免跟既有共用 icon 撞名（例如 `icons/code` 若未來新增，不會跟
+  `suneditor-code` 衝突）。
+- 這批 icon 目前為黑色線稿，尚未套用 `currentColor` 轉換，套用前需比照
+  「使用約定」段落處理。
+
+### 清單
+
+| 名稱 | 檔案路徑 | 尺寸 | 語意用途 | Figma 原名 |
+|---|---|---|---|---|
+| suneditor-bold | assets/icons/suneditor-bold.svg | 24x24 | 粗體 | icons/SunEditor/bold |
+| suneditor-code | assets/icons/suneditor-code.svg | 24x24 | 程式碼區塊 | icons/SunEditor/code |
+| suneditor-filled-a | assets/icons/suneditor-filled-a.svg | 24x24 | 文字顏色（黑底白 A） | icons/SunEditor/filled-A |
+| suneditor-horizontal-line | assets/icons/suneditor-horizontal-line.svg | 24x24 | 水平分隔線 | Icons/SunEditor/horizontal-line |
+| suneditor-indent | assets/icons/suneditor-indent.svg | 24x24 | 增加縮排 | icons/SunEditor/indent |
+| suneditor-italics | assets/icons/suneditor-italics.svg | 24x24 | 斜體 | icons/SunEditor/italics |
+| suneditor-link-disabled | assets/icons/suneditor-link-disabled.svg | 24x24 | 連結（停用態） | icons/SunEditor/link-disabled |
+| suneditor-number-list | assets/icons/suneditor-number-list.svg | 24x24 | 編號清單 | icons/SunEditor/number-list |
+| suneditor-outdent | assets/icons/suneditor-outdent.svg | 24x24 | 減少縮排 | icons/SunEditor/outdent |
+| suneditor-quote | assets/icons/suneditor-quote.svg | 24x24 | 引用區塊 | icons/SunEditor/quote |
+| suneditor-rotate-to-left | assets/icons/suneditor-rotate-to-left.svg | 20x20 | 圖片向左旋轉 | icons/SunEditor/rotate-to-left |
+| suneditor-rotate-to-right | assets/icons/suneditor-rotate-to-right.svg | 20x20 | 圖片向右旋轉 | icons/SunEditor/rotate-to-right |
+| suneditor-s-slash | assets/icons/suneditor-s-slash.svg | 24x27 | 刪除線 | icons/SunEditor/s-slash |
+| suneditor-ul-li | assets/icons/suneditor-ul-li.svg | 24x24 | 項目符號清單 | icons/SunEditor/ul-li |
+| suneditor-underline | assets/icons/suneditor-underline.svg | 24x24 | 底線 | icons/SunEditor/underline |
+| suneditor-word-adjusted | assets/icons/suneditor-word-adjusted.svg | 24x24 | 字級調整 | icons/SunEditor/word-adjusted |
+| suneditor-word-color | assets/icons/suneditor-word-color.svg | 24x24 | 文字顏色選取 | icons/SunEditor/word-color |
+| ckeditor-align | assets/icons/ckeditor-align.svg | 24x24 | 文字對齊 | icons/ckeditor/align |
+| ckeditor-link-bold | assets/icons/ckeditor-link-bold.svg | 24x24 | 連結（粗體樣式） | icons/ckeditor/link-bold |
 
 ---
 
@@ -196,6 +259,8 @@
 | `trash-can.svg` | `#D90000` | 刪除/危險操作，語意紅 |
 | `google.svg` | 四色品牌色 | Google 品牌規範 |
 | `logo.svg` | `#00A5E3` + `#8FC31F` | 公司品牌色 |
+| `checkmark-filled-error.svg` | `#FFB6B6`（`Color/Accent/float-circle-filled-2`） | 錯誤狀態勾選，語意淡紅 |
+| `single-symbol-warning.svg` | `#EF6F25` + `#FDEBD7`（`Color/Brand/Brand-500` + `Brand-100`） | 警告狀態，語意品牌橙 |
 
 ### 建議改為 `currentColor`
 | 檔名 | 問題 | 處理方式 |
@@ -222,10 +287,13 @@
 | `check` | 16×16 | 小版勾選，用於 checkbox 內 |
 | `left`, `right` | 16×16 | 小導航箭頭 |
 | `eraser`, `flow`, `pin`, `return`, `reservations`, `up-and-down` | 16×16 | 小尺寸系列 |
-| `dollar`, `duration`, `ranking` | 20×20 | 中間尺寸 |
+| `dollar`, `duration`, `ranking`, `star` | 20x20 | 中間尺寸 |
+| `suneditor-rotate-to-left`, `suneditor-rotate-to-right` | 20x20 | 中間尺寸 |
 | `hotel` | 31×24 | 非正方形，使用時注意對齊 |
 | `transit`, `direction-left` | 25×25 | 略大於標準，注意排版 |
+| `info-circle-off` | 26x26 | 略大於標準 |
 | `submit` | 15×16 | 非正方形，注意對齊 |
+| `suneditor-s-slash` | 24x27 | 非正方形，注意對齊 |
 | `menu-list-*` | 38×38 | 含 10px padding 與 4px radius 的 menu list icon 容器；不是純 24×24 共用 icon |
 
 ---
@@ -247,4 +315,4 @@
 
 ---
 
-*Generated from Figma components page · 111 icons exported · Updated 2026-05-06*
+*Generated from Figma components page - 116 一般 icon + 12 menu-list icon(各 fill/none-fill 兩檔) + 17 SunEditor + 2 ckeditor icon exported(`~~none~~` 未匯出不計) - Updated 2026-07-29*
