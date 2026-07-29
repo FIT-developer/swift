@@ -195,6 +195,19 @@
 | Color/Accent/float-circle-mixed-2 | `#3F930B` | Floating customer service circle 漸層終點 |
 | Color/Accent/float-circle-filled-1 | `#F2BEFD` | POS 入口 hover fill 漸層起點 |
 | Color/Accent/float-circle-filled-2 | `#FFB6B6` | POS 入口 hover fill 漸層終點 |
+| Color/Accent/linear-small-badge | `#D7FFFB` | 小型 badge 點綴色（2026-07-29 新增，尚無對應實作） |
+
+---
+
+### Table（表格底色，多語系狀態 modal）
+
+> 2026-07-29 新增，來源 Figma Variables 匯出。目前唯一使用者：
+> `components/modal.md` `state=multilingual-status` 面板標題列／欄位表頭列底色。
+
+| Variable 名稱 | Hex 值 | 語意用途 |
+|---|---|---|
+| Color/Table/Column1 | `#DDE9FB` | 表格區塊標題列底色（較深淡藍） |
+| Color/Table/Column2 | `#EFF4FC` | 表格欄位表頭列底色（較淺淡藍） |
 
 ---
 

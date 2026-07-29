@@ -7,6 +7,82 @@
 
 ---
 
+## Session 114 交接 (2026-07-29)
+
+### 任務: 系統設定 -> 民宿資料頁面 figma-go 讀取(進行中)+ 多語系狀態 modal
+spec 定案 + modal max-width 規則修正 + Figma Variables 同步
+
+### Figma 讀取記錄 (current version, read 2026-07-29)
+- 「民宿資料」頁 3 個 RWD frame 已讀:desktop `2119:78284`(1440x943.48)、
+  mobile~tablet `2126:76269`(767x1646)、mobile `2126:76796`(375x2162)。
+  結構一致:頂部工具列(多語系狀態 + 重整)+ 2 個分館列 x 3 張卡(基本資訊
+  卡 / 須知與聲明卡 / 網域安全卡)。三個尺寸的收合方式不同:1440 三欄橫
+  排;767 收成單欄但卡片內部(照片+標題)仍並排;375 連卡片內部也上下堆疊
+- 「多語系狀態」modal 已讀(`2129:81569`,948x552),讀取記錄與 spec 見下方
+- 讀 icon 庫時抓到一個先前(Session 113)漏掉的 icon:`icons/image-empty`
+  (id `2100:97539`,Figma 裡是 INSTANCE 不是 COMPONENT,上次比對 script
+  只抓 COMPONENT 所以漏掉),已補匯出 + 登記進 `icons.md`
+
+### 本輪處理
+1. **民宿資料頁面疑點確認**(3 點,使用者已回覆,尚未寫入頁面 spec,因為
+   卡片 2/3「有資料」state 與編輯 modal 使用者稍後才補圖):
+   - 分館名稱重複「分館名稱一」= 佔位文字示意,將來後端渲染,正常
+   - 分館基本資訊卡橘框 pill 文字「修改」vs「設定」不是示意不一致,是
+     刻意設計:對應不同 modal(不同 title);使用者已填過資料 -> 「修改」
+     (搭配已上傳照片);使用者從未填過資料、首次使用 -> 「設定」(搭配
+     `icons/image-empty` 尚未上傳狀態);兩者是同一個「有無填過資料」
+     state 同時驅動照片顯示方式與按鈕文字,不是兩條獨立規則
+   - 「須知與聲明」卡「有資料」state 稍後補圖,是一系列操作,會用
+     SunEditor(呼應 Session 113 同步的 SunEditor icon set);「編輯」
+     按鈕開的 modal 也稍後批次補上
+2. **`components/modal.md` 共用 Desktop Max-width 規則修正**:2026-07-28
+   寫的規則原意是「新 modal 沒有 Figma reference 時預設 1140px」,但
+   使用者這輪明確拍板:**1140px 是上限(cap),不是每顆新 modal 的固定
+   值**。新 modal 一律先用自己 Figma 實測的內容寬度,只有超過 1140 才
+   收斂封頂。規則段落已改寫,不留舊的「預設 1140」措辭
+3. **新增 `state=multilingual-status`(多語系狀態) modal spec**:
+   Variants 表新增一列 + 完整 Implementation contract / Layout RWD 段落
+   - modal size 948px(不封頂,因為 948 < 1140)
+   - 4 個並排面板(資料設定/須知與聲明/房間資料/專案設定),面板 1/2 單
+     狀態欄、面板 3/4 雙狀態欄(名稱+介紹)雙欄不對稱經使用者確認是刻意
+     設計(房型/專案本身有兩種可翻譯欄位)
+   - 小尺寸橫向 scroll(`overflow-x-auto`)經使用者確認,因為內容是
+     table 形式,比照既有長 table 慣例不改堆疊
+   - 定位為共用 modal(不是頁面專屬),因為未來其他多語系頁面可能複用
+4. **Figma Variables 同步**:使用者貼了完整 Variables JSON,程式化 diff
+   出跟舊版 `specs/assets/figma-variables.json` 的差異,真正新增只有 3
+   個(diff 過程一度誤判出一堆假的 Spacing/Radius 新增,是 script bug
+   不是真的變動,已修正 script 邏輯重跑確認):
+   - `Color/Table/Column1` = `#DDE9FB`、`Color/Table/Column2` = `#EFF4FC`
+     (剛好解掉上一步驟 multilingual-status modal 的 token gap)
+   - `Color/Accent/linear-small-badge` = `#D7FFFB`(目前未使用,先收錄)
+   - 已更新 `specs/assets/figma-variables.json`(完整覆蓋)、`tokens.md`
+     (新增 Table 段落 + Accent 補一行)、`base.css`(對應 CSS 變數)、
+     `components/modal.md` 的 token gap 段落(改成已解決,引用真實 token)
+
+### 驗證
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh`
+  (89 raw hex tokens 一致)/ `lint-partials.sh` 全 exit 0
+- `node .claude/skills/run-swift/driver.mjs smoke` 5 頁全 PASS
+
+### 下一步應做
+- 等使用者補「須知與聲明」卡「有資料」state 的圖(會用 SunEditor)+
+  分館基本資訊卡「修改/設定」pill 對應的編輯 modal 畫面
+- 民宿資料頁面本身的 `specs/pages/lodging-info.md` 尚未寫檔(目前只在
+  `components/modal.md` 寫了共用的多語系 modal;頁面 spec 要等卡片
+  2/3 細節補齊、確認完整頁面範圍後才一次寫,避免中途多次改版造成規格
+  污染)
+
+### 重要決定
+- modal max-width 的「1140px」定位是上限,不是預設固定值;新 modal 一
+  律先用自己 Figma 實測寬度,超過才封頂
+- 「多語系狀態」modal 是共用元件,登記在 `components/modal.md`,不是
+  民宿資料頁面專屬 spec
+
+### 未解問題
+- 無(卡片 2/3 細節與編輯 modal 待使用者後續提供,不算未解問題,是待補
+  輸入)
+
 ## Session 113 交接 (2026-07-29)
 
 ### 任務: figma-go 同步 icons variants(系統設定 -> 民宿資料頁面開工前置作業)

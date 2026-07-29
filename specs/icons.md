@@ -66,6 +66,7 @@
 | hotel | assets/icons/hotel.svg | 31×24 | 飯店建築（非正方形） | icons/hotel |
 | image | assets/icons/image.svg | 24×24 | 圖片 | icons/image |
 | image-ai-line | assets/icons/image-ai-line.svg | 24x24 | AI 圖片生成 | icons/image-ai-line |
+| image-empty | assets/icons/image-empty.svg | 24x24 | 圖片空狀態（含新增符號） | icons/image-empty |
 | info | assets/icons/info.svg | 24×24 | 資訊提示 | icons/info |
 | info-circle-off | assets/icons/info-circle-off.svg | 26x26 | 資訊提示（關閉態） | icons/info-circle-off |
 | inventory | assets/icons/inventory.svg | 24×24 | 庫存 | icons/inventory |
@@ -170,13 +171,15 @@
 
 ---
 
-## SunEditor / ckeditor Icon Set（富文本編輯器工具列，未使用中）
+## SunEditor / ckeditor Icon Set（富文本編輯器工具列）
 
 > 來源：Figma `components` page 同一份 Icons frame（selection `25:93`），
 > 命名空間 `icons/SunEditor/*` 與 `icons/ckeditor/*`。
 > 匯出日期：2026-07-29。
-> 用途：目前專案未整合任何富文本編輯器，這批純粹是 Figma 既有 icon 庫存
-> 同步存檔；哪個頁面/元件會用到、用哪一顆，屆時再個別確認，不預先假設。
+> 用途：2026-07-29 確認會用在「系統設定 -> 民宿資料」頁的「須知與聲明」
+> 卡「有資料」state（訂房/成為會員/團體訂房/不退款聲明四類聲明文字的
+> 編輯功能，使用者拍板走 SunEditor）；具體畫面/操作稍後由使用者批次
+> 補上，屆時再確認實際會用到哪幾顆、對應哪個工具列按鈕。
 
 ### 使用規則
 

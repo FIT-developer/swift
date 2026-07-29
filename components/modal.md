@@ -36,6 +36,7 @@
 | `state=sms / order summary` | `1436:43555` | 648×1161px | Order summary header `簡訊` action opens this SMS modal；**另一觸發入口**：`訂單處理` 頁表格列狀態 pill 下拉選單「簡訊」選項（同一 modal，見 `specs/pages/order-processing.md`） |
 | `state=order edit` | `2032:81567`（一般會員版）/ 讀取合約會員版另一 instance | 1192x2474px（一般會員版；合約會員版因多一列高度略增） | `訂單處理` 頁表格列狀態 pill 下拉選單「修改」action 開啟；把房間預訂頁 [A]/[B]/[C]/[D]/[E] 全部區塊搬進 modal、預填該筆訂單資料供編輯。詳見 `components/order-edit-modal.md` |
 | `state=arrival method` | `1106:19329` / `1109:19460` / `1110:19603` / `1121:16398` / `1124:17174` / `1135:16863` | 175–993 × 507/834 | 訂單條件 → 到店方式 button 觸發；4 個 chip 切 4 個 sub-state（自行到店 / 自駕 / 包車或專車 / 接送），State D 接送含並排 swiper card stack。詳見 `components/arrival-method-modal.md` |
+| `state=multilingual-status` | `2129:81569` | 948x552px | 「多語系狀態」總覽 modal；共用元件，由頁面右上角「多語系狀態」按鈕（`icons/translation`）開啟，本次讀取來源為「系統設定 -> 民宿資料」頁，未來其他有多語系欄位的頁面可複用；desktop max-width 直接採 Figma 實測 948px，不套用共用 1140px 上限（948 < 1140，不需封頂） |
 
 ---
 
@@ -74,11 +75,11 @@
 
 ---
 
-## 共用 Desktop Max-width（大型內容 modal 預設值，2026-07-28 拍板）
+## 共用 Desktop Max-width（大型內容 modal 規則，2026-07-28 拍板，2026-07-29 修正）
 
-> 適用範圍：**新增**的大型內容 modal，且該 modal 在 Figma 沒有自己明確的 reference width 時，desktop max-width 統一採用 **1140px**。
+> **1140px 是上限（cap），不是每顆新 modal 的固定值。** 新增的大型內容 modal，desktop max-width 預設採用該 modal 自己在 Figma 上量到的實際內容寬度（例如 948px 的 modal 就用 948px）；只有當 Figma 內容寬度超過 1140px 時，才收斂封頂在 1140px。不要不管內容多寬，一律套 1140px。
 > 既有 modal 若本身有明確 Figma reference width（member-data 1140px、order summary 1019px、sms 648px 等），維持各自 Figma 尺寸，不因此規則被覆蓋或改動。
-> 例外：`state=purchase add-on`（加購項目）**維持原 Figma reference 1194px，不收斂到 1140px**。2026-07-28 曾試過收斂至 1140px（含微調左側「分類」欄與右側「購物車」欄寬度），驗證中間 3 欄 grid 不跑版可行，但使用者最終拍板：這顆 modal 內容本來就比其他 modal 寬，1194px 算特規，直接維持 Figma 原尺寸，不需要為了套用 1140 統一值而犧牲欄寬。實作已還原為 1194px / 分類 240px / 購物車 327px（與 Figma reference 一致）。
+> 例外：`state=purchase add-on`（加購項目）**維持原 Figma reference 1194px，不收斂到 1140px**。2026-07-28 曾試過收斂至 1140px（含微調左側「分類」欄與右側「購物車」欄寬度），驗證中間 3 欄 grid 不跑版可行，但使用者最終拍板：這顆 modal 內容本來就比其他 modal 寬，1194px 算特規，直接維持 Figma 原尺寸，不需要為了套用 1140 上限而犧牲欄寬。實作已還原為 1194px / 分類 240px / 購物車 327px（與 Figma reference 一致）。
 > 共用 RWD 行為不變：viewport 小於 max-width 時採 `calc(100vw - 24px)`；mobile 滿版。
 
 ---
@@ -736,6 +737,50 @@ Modal (320×455px)
 | 過久（90 天前） | `Color/Surface/Negative` | `Color/Surface/Negative` |
 
 > 密碼 "90天" 未更換的警示也使用 `Color/Surface/Negative`。
+
+---
+
+## state=multilingual-status（多語系狀態）
+
+**使用位置**：共用元件；由頁面右上角「多語系狀態」按鈕（`icons/translation`）開啟。
+本次讀取來源為「系統設定 -> 民宿資料」頁（`specs/pages/lodging-info.md`，
+2026-07-29 讀取中），未來其他有多語系欄位的頁面若需要同類總覽，直接複用
+本 variant，不另立新 modal。
+**Figma 讀取日期**：2026-07-29。
+**Figma source**：selected node `2129:81569`，948x552px，「Modal（多語系）」。
+
+### Implementation contract
+
+| 項目 | 規則 |
+|---|---|
+| Open trigger | 頁面右上角「多語系狀態」按鈕（pill，`icons/translation` + 文字）開啟 |
+| Modal size | desktop max width 直接採 Figma 實測 **948px**（948 < 1140 共用上限，不封頂，見上方「共用 Desktop Max-width」段）；viewport 小於 948 時 `calc(100vw - 24px)` |
+| Header | 標題「多語系狀態」20px SemiBold；副標「檢查各語系內容是否完成設定」16px Regular；`icons/close` |
+| 語系 tab | 「英文」「韓文」「日文」「德文」4 個切換 tab；預設選中「英文」（橘色邊框樣式，同既有 tab active 慣例）。**Figma 未定義**：預設語系是否跟後端/瀏覽器語系設定連動，或固定英文為 default，先固定英文，待確認 |
+| 狀態圖例 | 三態圖例列在 tab 下方：已完成（綠 `icons/check`）/ 未設定（橘 `icons/single-symbol-warning`）/ 不適用（灰 `icons/dash-16`） |
+| 內容面板（4 個並排） | 各面板結構一致：標題列（bg `Color/Table/Column1`）+ 欄位表頭列（bg `Color/Table/Column2`，欄名依面板而定）+ 可捲動內容區（border `Color/Border/Default`） |
+| 面板 1：資料設定 | 寬 170px，單一「狀態」欄；項目：飯店名稱／地址／介紹／設施／提醒事項／交通資訊 |
+| 面板 2：須知與聲明 | 寬 170px，單一「狀態」欄；項目：訂房須知／成為會員／不可退款 |
+| 面板 3：房間資料 | 寬 292px，「名稱」＋「介紹」雙狀態欄；逐房型列出（demo 資料為佔位房型名） |
+| 面板 4：專案設定 | 寬 292px，「名稱」＋「介紹」雙狀態欄；逐加購專案列出（demo 資料為佔位專案名） |
+| 面板欄數不對稱 | 面板 1／2 只有單一狀態欄，面板 3／4 有雙狀態欄（名稱＋介紹），這是刻意設計：房型與加購專案本身有「名稱」「介紹」兩種可翻譯欄位，資料設定／須知與聲明底下每個項目只對應一種可翻譯內容，不是 Figma 疏漏（2026-07-29 使用者確認） |
+| Footer | 單一「關閉」按鈕（深底 `Color/Text/800`），右對齊；純唯讀總覽，無確認／儲存動作 |
+
+### Layout / RWD
+
+| 區塊 | 規格 |
+|---|---|
+| Shell | 沿用共用 modal header/footer（固定 header/footer，body 可捲動） |
+| 面板排列 | desktop 4 面板橫向並排。tablet／mobile 小尺寸維持橫向排列，容器 `flex-nowrap overflow-x-auto` 橫向 scroll（2026-07-29 使用者確認：內容是 table 形式，比照既有長 table 慣例，不改直式堆疊），依賴瀏覽器原生 scrollbar，不加 fade mask／自訂 scrollbar |
+
+### Token gaps / unresolved
+
+- 已解決（2026-07-29）：面板標題列／欄位表頭列 bg 對應到新收錄的
+  `Color/Table/Column1`（`#dde9fb`）／`Color/Table/Column2`（`#eff4fc`），
+  見 `tokens.md` Table 段落 + `base.css` `--color-table-column1` /
+  `--color-table-column2`
+- 語系 tab active 邊框沿用既有 `#f28b45`（`Color/Brand/Brand-400`），已有
+  token，不算 gap
 
 ---
 
