@@ -72,11 +72,17 @@ for raw in sys.stdin:
 
     code = strip_comments(line)
 
-    # 2b. CSS min-width: 新增行需 @media 同行或 min-width-ok 標記（註解不算）
+    # 2b. CSS min-width: 新增行需 @media/@container 同行或 min-width-ok 標記
+    # （註解不算）。@container (min-width: ...) 本身就是 query condition，
+    # 跟 @media 一樣是 gate 本體，不是需要被 gate 的裸值。
     if cur_file and cur_file.endswith('.css'):
         if re.search(r'min-width\s*:\s*[1-9]', code):
-            if '@media' not in line and 'min-width-ok' not in line:
-                violations.append((loc, 'CSS min-width 未 gate（需 @media 包或 /* min-width-ok: 原因 */ 標記）', line.strip()[:70]))
+            if (
+                '@media' not in line
+                and '@container' not in line
+                and 'min-width-ok' not in line
+            ):
+                violations.append((loc, 'CSS min-width 未 gate（需 @media/@container 包或 /* min-width-ok: 原因 */ 標記）', line.strip()[:70]))
 
     # 3. hardcoded hex
     if cur_file and cur_file.endswith('.html'):

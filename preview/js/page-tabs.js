@@ -13,6 +13,7 @@ var TAB_PAGES = {
   "order-processing.html": "訂單處理",
   "system-basic.html": "系統基本",
   "account-permission.html": "帳號及權限",
+  "lodging-info.html": "民宿資料",
 };
 
 function readTabs() {

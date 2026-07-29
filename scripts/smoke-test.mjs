@@ -255,7 +255,8 @@ const APP_CSS_LOADED_CHECK = {
         "modals.css",
         "room-booking.css",
         "order-processing.css",
-        "system-basic.css"
+        "system-basic.css",
+        "lodging-info.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;

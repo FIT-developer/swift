@@ -1,0 +1,167 @@
+/* Lodging-info page styles - 系統設定 -> 民宿資料頁專用
+   (specs/pages/lodging-info.md, components/lodging-branch-basic-card.md) */
+
+/* 分館基本資訊卡「修改/設定」pill 按鈕：get_selection 對此節點只回報
+   border stroke 色值，完全沒有 fills key - 漸層 fill 被靜默省略
+   （start.md「JSON 不等於視覺」已知陷阱）。SVG export 覆核（Session 118）
+   確認實際背景是 linear 漸層：白（下）-> Color/Brand/Brand-200（上），
+   垂直方向；邊框是實心 Color/Brand/Brand-400（非漸層）。 */
+.lodging-branch-edit-btn {
+  background: linear-gradient(
+    to top,
+    var(--color-neutral-0),
+    var(--color-brand-200)
+  );
+}
+
+/* 照片管理 modal 按鈕 icon：吃父層按鈕文字色（MenuItem 藍 / Status-Negative
+   紅），不是原始 SVG 內建的黑/灰色。用既有 .icon-mask（base.css）+
+   currentColor 遮罩手法，跟 icon-mask-lock/unlock（shell.css）同一套
+   convention。（Session 118 使用者訂正） */
+.icon-mask-image-ai-line {
+  -webkit-mask-image: url("../icons/image-ai-line.svg");
+  mask-image: url("../icons/image-ai-line.svg");
+}
+.icon-mask-upload-outline {
+  -webkit-mask-image: url("../icons/upload-outline.svg");
+  mask-image: url("../icons/upload-outline.svg");
+}
+.icon-mask-trash-can {
+  -webkit-mask-image: url("../icons/trash-can.svg");
+  mask-image: url("../icons/trash-can.svg");
+}
+
+/* ------------------------------------------------------------------
+   Container queries（Session 118 修正嚴重 RWD 跑版）
+   問題根因：分館列/卡片巢狀在 240px aside 側欄裡，可用寬度 = viewport
+   減掉 aside/padding/gap，遠小於 viewport 本身；原本用 Tailwind md:/
+   min-[640px]: 等「以 viewport 寬度」為準的斷點，在 768-1391px viewport
+   之間會把 3 欄硬擠進遠小於需要的實際寬度，導致嚴重跑版。改用
+   container query（跟 modals.css 既有 .purchase-addon-frame410 同一套
+   convention）以「元素自己實際可用寬度」為準，才能正確反映巢狀情境下的
+   真實可用空間，不受 aside 或外層 grid 佔用空間影響。
+   ------------------------------------------------------------------ */
+
+/* 分館列（headquarters/分館各一列）：3 卡橫排 vs 直排的判斷依據是這一列
+   "自己" 的實際寬度，不是 viewport。row 需要 >=~1040px 實際寬度才夠 3 張
+   卡各自舒適容納下方 photo+title 並排（見下一段），這在多數
+   768-1391px viewport（扣掉 aside 後）事實上並不夠，此時維持單欄堆疊 -
+   跟 Figma 只定義「單欄」/「三欄橫排」兩態一致，不新增中間態。 */
+.lodging-branch-row {
+  container-type: inline-size;
+}
+.lodging-branch-row-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+@container (min-width: 1040px) {
+  .lodging-branch-row-cards {
+    flex-direction: row;
+    gap: 12px;
+  }
+}
+
+/* 基本資訊卡：照片(160px)+標題區並排 vs 堆疊，依卡片自己的實際寬度
+   （不是 viewport）。160(照片) + 8(間距) + 標題欄內容最小舒適寬度
+   約 340px 才夠並排，卡片變窄（例如分館列擠成 3 欄時每卡只有 ~340px
+   以下）就應該堆疊，不能只看 viewport。 */
+.lodging-branch-card {
+  container-type: inline-size;
+}
+.lodging-photo-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.lodging-photo-trigger {
+  margin-left: auto;
+  margin-right: auto;
+}
+.lodging-title-column {
+  align-items: center;
+  text-align: center;
+}
+.lodging-link-chips {
+  justify-content: center;
+}
+@container (min-width: 340px) {
+  .lodging-photo-title-wrapper {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+    text-align: left;
+  }
+  .lodging-photo-trigger {
+    margin-left: 0;
+  }
+  .lodging-title-column {
+    align-items: flex-start;
+    text-align: left;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .lodging-link-chips {
+    justify-content: flex-start;
+  }
+}
+
+/* 照片管理 modal：5 卡 grid 兩欄 vs 單欄，依 modal body 自己的實際寬度
+   （不是 viewport）。每欄需要 >=~440px 才夠放下 280px 固定寬圖片 + 至少
+   一顆按鈕，2 欄 + 20px gap 需要 body 至少 ~900px 寬。 */
+.lodging-photo-modal-body {
+  container-type: inline-size;
+}
+.lodging-photo-card-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+@container (min-width: 900px) {
+  .lodging-photo-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 每張照片卡：對應 spec 三種版型（mobile 圖上按鈕下+按鈕橫排／
+   tablet 圖左按鈕右+按鈕橫排／desktop 圖左按鈕右+按鈕直排滿寬），依卡片
+   自己的實際寬度分兩個 container 門檻，不是 viewport：
+   - >=430px：圖片(280 固定)+按鈕欄改並排（原本 640px tablet 門檻）
+   - >=480px：按鈕欄改直排滿寬（原本 768px desktop 門檻）。Figma desktop
+     參照本身是 2 欄 grid、每卡內容寬 508px 時就已經是直排按鈕，所以門檻
+     訂在略低於 508，讓 2 欄 grid 常見的 420-540px 卡寬範圍都能吃到直排
+     設計，不是純粹擠不擠得下的問題 */
+.lodging-photo-card {
+  container-type: inline-size;
+}
+.lodging-photo-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.lodging-photo-preview {
+  width: 100%;
+}
+.lodging-photo-actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+@container (min-width: 430px) {
+  .lodging-photo-card-body {
+    flex-direction: row;
+  }
+  .lodging-photo-preview {
+    width: 280px;
+  }
+}
+@container (min-width: 480px) {
+  .lodging-photo-actions {
+    flex-direction: column;
+  }
+  .lodging-photo-actions > button {
+    width: 204px;
+    flex: none;
+  }
+}

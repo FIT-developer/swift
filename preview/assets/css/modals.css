@@ -72,6 +72,28 @@
   flex-direction: column;
   overflow: hidden;
 }
+#modalPhotoGalleryBackdrop .modal-box {
+  /* components/modal.md state=photo-gallery，Figma 1140px 等於共用上限，
+     不再封頂 */
+  width: min(calc(100vw - 24px), 1140px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* 說明 banner 分隔線：>=640 垂直短線、<640 水平短線 */
+.lodging-photo-banner-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border-default);
+}
+.lodging-photo-banner-divider-h {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--color-border-default);
+}
 /* 訂單修改 modal 的 [A] 區塊鎖定「庫存」模式：
    空房/庫存 mode 切換、Excel 下載、棟別 chips 一律不顯示（DOM 保留給共用 JS
    解析用，僅視覺隱藏；規格見 components/order-edit-modal.md [A] 差異段） */
@@ -608,7 +630,8 @@
   #modalPurchaseAddonBackdrop,
   #modalSmsBackdrop,
   #modalOrderSummaryBackdrop,
-  #modalOrderEditBackdrop {
+  #modalOrderEditBackdrop,
+  #modalPhotoGalleryBackdrop {
     align-items: stretch;
     justify-content: stretch;
     padding: 0;
@@ -619,7 +642,8 @@
   #modalPurchaseAddonBackdrop .modal-box,
   #modalSmsBackdrop .modal-box,
   #modalOrderSummaryBackdrop .modal-box,
-  #modalOrderEditBackdrop .modal-box {
+  #modalOrderEditBackdrop .modal-box,
+  #modalPhotoGalleryBackdrop .modal-box {
     width: 100%;
     max-width: 100%;
     max-height: none;
