@@ -7,6 +7,200 @@
 
 ---
 
+## Session 115 交接 (2026-07-29)
+
+### 任務: 系統設定 -> 民宿資料頁面 figma-go 讀取(續) - 照片管理 modal + 圓形照片觸發器 +
+分館資料編輯 modal（修改/設定 pill 觸發）
+
+延續 Session 114 進度，讀取「總部名稱」/「分館名稱一」左側圓形照片觸發器
+與其開啟的 5 張圖片管理 modal，走完整 Read -> Spec checkpoint -> Write 流程。
+
+### Figma 讀取記錄 (current version, read 2026-07-29)
+- `Modal（照片）` (`2125:75472`, 1140x1134): Header + 說明 banner(4 段提示) +
+  拖曳排序提示列 + 5 張 Card 2 欄佈局(有圖 card 帶「主圖」pill 只在第 1 張 /
+  無圖 card 空框佔位 + 上傳按鈕) + Footer(取消/上傳，按上傳才批次送出並關閉)
+- 圓形照片觸發器：從 desktop frame `2119:78284` 用 `scan_text_nodes` 定位
+  「總部名稱」文字節點，往上追蹤找到觸發器結構（不是「總部名稱」旁的
+  `icons/headquarters` 小圖示，那只是欄位標籤圖示）：
+  - 有圖態 `2119:78149`：160x160 圓形照片容器 + 右下角 44x44 overlay badge
+    (`icons/image`)
+  - 無圖態 `2119:78426`("to be uploaded")：160x160 空心圓框，置中
+    `icons/image-empty`
+  - 使用者確認：兩態的整個圓形區域(含有圖態右下角小 icon)都是同一個
+    click target，開啟同一顆 modal；實際資料由後端決定要渲染哪一態，前端
+    固定實作兩態視覺示意
+- 照片管理 modal 的另外 2 個 RWD node（同一 session 續讀）：
+  - 640~767px：`2125:75209`，640x1722，header title 節點文字「照片管理」
+  - <=639px (mobile)：`2131:97352`，375x2215.93，header title 節點文字同樣
+    「照片管理」
+  - 使用者拍板：兩個斷點名稱統一採用 desktop 版文案「Modal（照片）」，
+    tablet/mobile 節點上的「照片管理」視為 Figma 端文案未同步，不採用
+  - 三個斷點 card 內部佈局並非單純等比縮放，是結構性差異：
+    - >=768px：圖片固定 280px 左欄，與按鈕欄同列並排；按鈕垂直堆疊滿寬
+    - 640~767px：圖片仍固定 280px 左欄並排；按鈕改水平並排(120+88px)
+    - <=639px：圖片改滿版寬度，移到按鈕列**上方**（不再並排）；按鈕维持
+      水平並排
+  - 說明 banner：>=640px 橫排 + 垂直分隔線；<=639px 改垂直堆疊 + 短橫線
+    分隔
+
+### 本輪處理
+1. **3 點範圍確認**（使用者已回覆）：
+   - 觸發物 = 圓形照片(含小 icon) / empty-image 整個範圍，兩態共用同一 modal
+   - Footer「上傳」按鈕文字色偏淺是正常樣式，非 disabled，pass
+   - 「上傳」按下後才批次送出修改並關閉 modal（非即時上傳）
+2. **3 點實作範圍拍板**（AskUserQuestion 確認）：
+   - 拖曳排序：本輪做**完整可拖曳排序功能**（非僅視覺）
+   - 上傳/更換圖片按鈕：接真的 `input[type=file]` + 本地預覽
+     (`URL.createObjectURL`)
+   - 新 modal variant 命名：`state=photo-gallery`
+3. **`components/modal.md` 新增 `state=photo-gallery` 段落**：完整
+   Implementation contract(含 Open trigger 兩態結構)、結構圖(改用 ASCII
+   縮排清單，非 box-drawing，符合 lint)、固定文字內容、Layout/RWD、
+   Interaction（含拖曳排序/上傳/更換/刪除/取消/footer 上傳的完整行為
+   規則）、Typography/Colors
+4. **Token 對照修正**：初稿誤寫了不存在的 token 名
+   (`Color/Brand/Brand-500`、`Color/Status/Negative`、
+   `Color/Accent/info-banner`)，回頭用 `grep tokens.md` 逐一核對 hex 後
+   改為實際存在的 token：
+   - `#2178cf`(更換圖片/上傳圖片 border/text) -> `Color/MenuItem/Default`
+   - `#e12129`(刪除 border/text) -> `Color/Surface/Status-Negative`
+   - `#d3ebfd`(說明 banner bg) -> `Color/Bootstrap/focus-background`
+   - `#86b7fe`(主圖 pill bg) -> `Color/Bootstrap/components/focus`
+     (與 `Color/Chart/blue`／`Color/Dots/alternative` 同值，沿用既有
+     token，未新增)
+   - `#3f930b`(說明 banner icon) -> `Color/Accent/float-circle-mixed-2`
+5. **補上 3 個 RWD 斷點的完整 Layout/RWD 規格**（同一輪內先寫單一 desktop
+   版 spec，使用者接著補了另外 2 個尺寸，回頭把 `state=photo-gallery` 的
+   Layout/RWD 表格從「單一 desktop 值 + 未提供小尺寸 reference」改寫成
+   三段斷點表；新增「Figma RWD 來源」表 + 「Card 內部佈局差異」表，記錄
+   >=768px / 640~767px / <=639px 三種結構
+
+### Figma 讀取記錄（分館資料編輯 modal，同一輪續讀）
+- `Modal（有分資料設定與資料修改 title）` (`2129:79343`, 800x1534)：由
+  headquarters/分館卡「修改 4-1」/「設定 4-2」pill 按鈕開啟；使用者確認
+  內容完全相同，只有 header 標題依觸發按鈕切換「資料修改」/「資料設定」
+- 欄位：代號(唯讀灰底)/飯店名稱、英文名稱/Email、市話/傳真、
+  地址(Location 元件)/企業官網、4 張文案卡片(飯店介紹文案/飯店設施文案/
+  飯店提醒事項文案/飯店交通文案，各自「尚未填寫」+「編輯」按鈕)、
+  飯店設施項目(chip 多選，滿版)
+- 中途發現初讀時「飯店設施」卡片跟底部「飯店設施項目」chip 列名稱太像，
+  疑似重複；使用者在 Figma 上把 4 張卡片標題改成「XX文案」
+  (飯店介紹文案/飯店設施文案/飯店提醒事項文案/飯店交通文案) 後重讀確認：
+  兩者是不同欄位，卡片是文字內容欄位、底部 chip 是 tag 式設施多選
+
+### 本輪處理（分館資料編輯 modal）
+1. **3 點行為確認**（使用者回覆）：
+   - 4 張文案卡片「編輯」按鈕觸發 SunEditor，但**不是 modal**，是在原本
+     卡片自己的 container 內 inline 編輯
+   - 所有 `placeholder` 字面文字欄位一律照字面渲染 `placeholder` 字串
+     （給後端看欄位長相，之後由後端替換真實內容），不當 HTML placeholder
+     屬性處理
+   - 「設施五六七八九」是佔位文案，照實渲染，不試圖拆解成多顆
+2. **2 點實作範圍拍板**（AskUserQuestion 確認）：
+   - 獨立新檔 `components/lodging-branch-info-modal.md`（比照
+     order-edit-modal.md / arrival-method-modal.md 的複雜度慣例，不塞進
+     `components/modal.md` variant 列表）
+   - SunEditor 本輪先做行為佔位（editable textarea inline 切換），不接
+     真實 SunEditor library；等使用者提供 SunEditor 示意圖後再換真實元件
+3. **新增 `components/lodging-branch-info-modal.md`**：完整 Implementation
+   contract（欄位表、代號唯讀規則、placeholder 字面渲染規則、文案卡片
+   editor 佔位互動、飯店設施項目 chip 多選第三種色彩語意、Typography/
+   Colors）；`components/modal.md` Variants 表新增一行指向此檔
+4. **Token 對照**：`#f6fafd`->`Color/Neutral/75`、
+   `#e1e1e0`->`Color/Neutral/100`/`Color/Border/Default`、
+   `#2178cf`->`Color/MenuItem/Default`（用於 chip 選中態，記錄為第三種
+   pill 色彩語意，跟既有黃/藍語意不同不可混用）
+5. **補上分館資料編輯 modal 的 640~767px RWD 版本**（`2129:80387`，
+   767x1534）：結構跟 desktop 800px 版完全一致，純內容寬度等比縮窄
+   （2 欄 grid 各欄 378px->361.5px），不是像 `state=photo-gallery` 那種
+   結構性改版；使用者確認此斷點對應同一套 >=768/640~767/<=639 劃分。
+   `components/lodging-branch-info-modal.md` 新增「Figma RWD 來源」表，
+   Layout/RWD 表格改寫成三段斷點（<=639px 當時標記待補）
+6. **補上分館資料編輯 modal 的 <=639px (mobile) RWD 版本**（`2129:80629`，
+   640x2432，使用者確認畫布寬雖標 640 但就是 <=639px 這一層）：**結構性
+   改版**，不是等比縮放，原本 2 欄並排的欄位(代號/排序/飯店名稱/英文
+   名稱/Email/市話/傳真/地址/企業官網)全部改成單欄堆疊各自滿版，4 張
+   文案卡片與飯店設施項目 chip 列因為本來就是滿版區塊不受影響；整體高度
+   因此從 1534px 暴增到 2432px。`components/lodging-branch-info-modal.md`
+   「Figma RWD 來源」表補上第三層，Layout/RWD 表格三段斷點填滿，
+   「未讀取/待補項目」移除已解決的 RWD 待補項；至此
+   `state=branch-basic-info` 三個斷點全部讀取完畢
+7. **讀取 4 張文案卡片的 SunEditor 完整流程示意稿**（7 個 frame，
+   `2129:79547` ~ `2129:80150`，飯店介紹文案示意，套用到設施/提醒事項/
+   交通 3 張卡片）：涵蓋空狀態/單語言編輯/單語言已儲存/多語系 tabs+翻譯
+   按鈕/多語系已儲存/多語系無值/繁中空值翻譯按鈕 disabled 共 7 態，含
+   SunEditor 完整工具列 icon 清單（16 顆按鈕，本機 icon 全數已存在）。
+   讀完後列出 10 點待確認問題，使用者逐一回覆後新增獨立檔
+   `components/lodging-branch-suneditor.md`，重點拍板：
+   - 翻譯按鈕：繁中 tab 完全隱藏(不顯示 disabled)；其他語言 tab 依繁中
+     是否有內容顯示 enabled/disabled；disabled 時 hover tooltip「請先
+     填寫繁體中文」
+   - 翻譯按鈕點擊本輪只顯示 Toast「翻譯功能尚未串接」+ 內容不變，不可
+     把繁中原文複製到目標語言（避免使用者誤以為是翻譯結果並儲存）；
+     專案目前無 toast pattern，本輪新增最小可用版本（沿用 tooltip 深底
+     token）
+   - 語言 tab 清單由後端多語系設定驅動，不是這張卡片自己管理；tabs
+     顯示與否跟各語系是否有內容是兩組獨立資料
+   - SunEditor 本輪不安裝不串接，但完整研究套件版本/引入方式/plugins/
+     輸入輸出格式並記錄，減少後續真正串接時的返工（研究內容明確標記
+     為外部套件資訊，非 Figma 來源）
+   - Format 下拉、文字/反白色色票、清單/縮排/對齊等全部照 SunEditor
+     官方預設，不客製；色票只有明顯破版才回頭討論獨立 token
+   - 連結按鈕本輪不做；正式串接時沿用 SunEditor 原生浮動面板
+   - 原始碼檢視按鈕本輪不接，正式版接原生 code view，但後端儲存前必須
+     過濾危險標籤/事件屬性/不安全網址，前端檢查不可作為唯一防線
+   - 儲存後顯示框必須渲染 HTML 格式（不能永遠顯示純文字）
+   - 使用者主動補充「全部儲存」語意：切換語言 tab 時各語系未儲存內容
+     保留在前端本地暫存，按「全部儲存」才一次送出所有語系，按「取消」
+     放棄本次所有語系修改
+   - `components/lodging-branch-info-modal.md` 「文案卡片」段改寫成
+     只保留外殼結構，完整規格指向新檔
+
+### 驗證
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0（conventions 第一輪因新檔用了全形破折號
+  `-`(U+2014) 被擋下，已改用 ASCII `,` 或拆句後過）
+- 尚未跑 `run-swift` smoke test：本輪只寫 spec，尚未產出 HTML/JS 實作，
+  無新頁面/partial 可測
+
+### 下一步應做
+- 依 `components/modal.md` `state=photo-gallery` spec 實作
+  `modalPhotoGallery`（含拖曳排序、file input 本地預覽邏輯）
+- 依 `components/lodging-branch-info-modal.md` spec 實作
+  `modalBranchBasicInfo`（含 textarea 佔位互動、chip 多選）
+- 圓形照片觸發器與「修改/設定」pill 觸發器目前只記錄在各自 modal 檔的
+  「Open trigger」/「觸發來源」小節；完整頁面 spec
+  `specs/pages/lodging-info.md` 仍待卡片 2/3(須知與聲明「有資料」state)
+  補齊後才一次寫檔，觸發器結構屆時直接引用本輪記錄
+- 依 `components/lodging-branch-suneditor.md` spec 實作 4 張文案卡片的
+  textarea 佔位版本（含語言 tab 切換、翻譯按鈕 disabled/Toast、全部
+  儲存/取消跨語言暫存邏輯）
+- 正式串接真實 SunEditor 的時機：待該檔「SunEditor 套件研究」段列出的
+  版本號/CDN URL 實際查證後才進行，目前只是研究記錄不是安裝
+- 等使用者補「須知與聲明」卡「有資料」state 的圖（同 Session 114 未完成
+  項，尚未提供）
+
+### 重要決定
+- `state=photo-gallery` modal 由 headquarters 卡與各分館卡共用，不因
+  「有圖/無圖」觸發態不同而拆成兩顆 modal
+- 拖曳排序與檔案上傳本地預覽本輪明確拍板要做完整功能，不是視覺佔位
+- Token 命名務必先 grep tokens.md 核對 hex 是否已有對應項，不可憑印象
+  現編 token 路徑名稱（本輪初稿犯了這個錯，已修正，記錄避免下次重演）
+- 分館資料編輯 modal 的「編輯」按鈕觸發 inline SunEditor，不是巢狀 modal；
+  `start.md` 的「巢狀 modal 規則」不適用於這個按鈕
+- `placeholder` 字面文字欄位刻意保留原樣渲染（給後端看欄位），不要自作主
+  張改成空值或改成看起來更「正常」的示例文字
+- SunEditor 相關的 Format/色票/清單/縮排/對齊等全部照官方預設不客製，
+  是使用者明確拍板「不用花時間在這」，之後不要主動提議客製化這些細節
+- 翻譯按鈕點擊不可把繁中原文複製到目標語言當作假翻譯結果，這是使用者
+  特別強調的風險點（使用者可能誤存假翻譯），只能顯示 Toast 提示未串接
+- 富文本原始碼檢視功能前端檢查不是唯一防線，後端儲存前必須再過濾危險
+  標籤/事件屬性/不安全網址，兩層防護缺一不可
+
+### 未解問題
+- 無（模組化實作與頁面 spec 整合待後續 session 進行；SunEditor 真實元件
+  與 <768px RWD 版本待使用者後續提供）
+
 ## Session 114 交接 (2026-07-29)
 
 ### 任務: 系統設定 -> 民宿資料頁面 figma-go 讀取(進行中)+ 多語系狀態 modal
