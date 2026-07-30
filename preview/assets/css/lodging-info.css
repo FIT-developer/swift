@@ -96,6 +96,7 @@
   }
   .lodging-photo-trigger {
     margin-left: 0;
+    margin-right: 0;
   }
   .lodging-title-column {
     align-items: flex-start;
@@ -245,11 +246,21 @@
 }
 
 /* SunEditor 佔位工具列（不安裝真實套件，見 components/lodging-branch-
-   suneditor.md）：按鈕群組各自獨立小容器，群組間 flex-wrap 因應變窄 */
+   suneditor.md「已知落差」段，2026-07-30 使用者確認本輪不會真的串接
+   SunEditor，所以佔位版本也要照 Figma 刻好，不能等真正串接才修）：
+   工具列跟下方文字內容區共用一個直角外框（無 cornerRadius），border
+   顏色 Neutral/200，兩者是緊鄰的兩個 box（工具列的 bottom border 跟
+   textarea 的 border 共用同一條分隔線，textarea 不重複畫 top border
+   避免疊成 2px 粗線）。按鈕群組各自獨立小容器（本身圓角 6px，跟外層
+   直角外框刻意不同），群組間 flex-wrap 因應變窄 */
 .lodging-suneditor-toolbar {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 0;
+  background: var(--color-neutral-0);
+  padding: 12px 6px;
 }
 .lodging-suneditor-toolbar-group {
   display: flex;
@@ -270,18 +281,21 @@
   cursor: not-allowed;
 }
 .lodging-suneditor-textarea {
+  display: block;
   width: 100%;
   min-height: 160px;
   resize: vertical;
   border: 1px solid var(--color-neutral-200);
-  border-radius: 8px;
-  padding: 12px;
+  border-top: none;
+  border-radius: 0;
+  padding: 6px 12px;
   font-size: var(--font-size-base);
   color: var(--color-neutral-800);
   outline: none;
 }
 .lodging-suneditor-textarea:focus {
   border-color: var(--color-border-focus);
+  border-top: none;
 }
 
 /* Toast（最小可用版本，components/lodging-branch-suneditor.md「Toast

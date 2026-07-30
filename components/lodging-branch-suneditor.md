@@ -229,35 +229,36 @@ Row 3 續: 原始碼檢視(SunEditor/code)
 
 ---
 
-## 已知落差：placeholder 實作 vs Figma 示意稿（2026-07-30 figma-go 重讀，暫不修正）
+## Placeholder 實作 vs Figma 示意稿（2026-07-30 figma-go 重讀，已全數修正）
 
 使用者對照自己畫的 Figma UI layout（單語言編輯態，node `2129:79591` 內含
-`2129:79594` SunEditor instance），發現目前 task 8 的 textarea 佔位版跟
-示意稿有幾處外觀落差。**本輪只記錄，不修正**：待正式安裝、串接真實
-SunEditor package 時，外觀直接以套件官方預設渲染為準（呼應上方「只用
-CDN 版原生套件，不客製化」），現在這份 placeholder CSS 只是過渡展示，
-不必為了追平示意稿而先做一次可能白工的樣式調整。screenshot 已截圖交叉
-核對過（非只憑 JSON），核對後即刪除暫存檔。
+`2129:79594` SunEditor instance），發現 task 8 的 textarea 佔位版跟示意稿
+有幾處外觀落差。**首次記錄時（同一輪稍早）判斷「待正式串接 SunEditor
+套件時再調整」**，但使用者隨後拍板：本輪確定不會真的串接 SunEditor，
+placeholder 版本本身就要照設計稿刻好，不能等到真正串接才修，因此已
+**全數修正**，不再是「已知落差」。screenshot 已截圖交叉核對過（非只憑
+JSON），核對後即刪除暫存檔。
 
-### 落差清單
+### 已修正的 3 處落差
 
-1. **整個工具列 + 文字內容區共用一個直角外框（目前完全缺漏這層）**：
-   Figma 裡工具列 3 排 icon 跟下方文字內容被同一個外層 frame 包住，這層
-   外框是**直角**（無 cornerRadius），border 顏色 `Color/Neutral/200`
-   (`#d1d1d1`)，padding 上下 12px、左右 6px。目前 `.lodging-suneditor-
-   toolbar` 只是單純 flex 容器，完全沒有這層外框
-2. **工具列跟文字內容區之間是一條分隔線，不是單純留白間距**：Figma 第 3
-   排 icon（對齊/分隔線/引言/連結/清除格式/原始碼）下方有一條橫跨全寬的
-   分隔線，線下方留約 6px 內距文字內容才開始。目前實作工具列跟 textarea
-   之間只是 `.flex.flex-col.gap-4` 帶來的一般 16px 垂直間距，沒有分隔線
-3. **文字內容區本身是直角，不是圓角**：Figma 的內容 Input frame 本身無
-   cornerRadius，border 顏色同樣是 `Color/Neutral/200`。目前
-   `.lodging-suneditor-textarea` 用了 `border-radius: 8px`，跟示意稿不符
-4. **（已正確，對照用）工具列個別按鈕群組本身是圓角**：Figma 每個按鈕
-   群組小容器 `cornerRadius:6`，border 顏色 `Color/Neutral/100`
-   (`#e1e1e0`，即 `Color/Border/Default`)。目前 `.lodging-suneditor-
-   toolbar-group` 已經是 `border-radius:6px` + `var(--color-border-
-   default)`，跟示意稿一致，這項不用改
+1. **整個工具列 + 文字內容區共用一個直角外框**：Figma 裡工具列 3 排
+   icon 跟下方文字內容被同一個外層 frame 包住，這層外框是**直角**
+   （無 cornerRadius），border 顏色 `Color/Neutral/200`（`#d1d1d1`），
+   padding 上下 12px、左右 6px。已在 `.lodging-suneditor-toolbar`
+   （`preview/assets/css/lodging-info.css`）補上 `border: 1px solid
+   var(--color-neutral-200)` + `border-radius: 0` + 對應 padding
+2. **工具列跟文字內容區之間是一條分隔線，不是單純留白間距**：實作採
+   「工具列跟 textarea 是緊鄰的兩個 box、共用同一條分隔線」處理 -
+   `.lodging-suneditor-toolbar` 保留完整 4 邊 border，`.lodging-
+   suneditor-textarea` 只有 `border-top: none`（不重複畫，避免疊成 2px
+   粗線），視覺上跟 Figma 一致
+3. **文字內容區本身是直角，不是圓角**：`.lodging-suneditor-textarea`
+   的 `border-radius` 從 `8px` 改成 `0`
+4. **（已正確，對照用，未變動）工具列個別按鈕群組本身是圓角**：Figma
+   每個按鈕群組小容器 `cornerRadius:6`，border 顏色 `Color/Neutral/100`
+   (`#e1e1e0`，即 `Color/Border/Default`)。`.lodging-suneditor-toolbar-
+   group` 維持 `border-radius:6px` + `var(--color-border-default)`，跟
+   示意稿一致，這項本來就沒有改動需要
 
 ### 附帶發現（同一次讀取，非 SunEditor 主題，已自行更正）
 
@@ -273,8 +274,11 @@ start.md「JSON 不等於視覺」的既知陷阱類型，跟隱藏圖層/單邊
 
 ### 待正式串接時處理
 
-落差 1-3 待正式串接 SunEditor 套件時一併比對調整；落差 4 已確認現況正確
-不用改；附帶發現的底線疑慮已自行更正排除，無待辦事項。
+上述 1-3 目前已用 CSS 手刻方式照 Figma 還原，非套件本身樣式；真正串接
+SunEditor package 時，外觀改以套件官方預設渲染為準（呼應上方「只用 CDN
+版原生套件，不客製化」），屆時這幾條手刻的 CSS 規則可能需要拿掉或調整，
+不是永久保留的樣式決策。落差 4 已確認現況正確不用改；附帶發現的底線
+疑慮已自行更正排除。無待辦事項。
 
 ---
 

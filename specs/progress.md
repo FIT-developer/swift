@@ -291,21 +291,69 @@ var(--color-brand-200); }`（`preview/assets/css/lodging-info.css`），
 驗證：4 lint 全 exit 0、`driver.mjs smoke` 6 頁全 PASS、chrome-devtools
 截圖確認兩處都正確顯示左側細線。
 
+### 驗收後再追加：基本資訊卡照片+標題並排時的 CSS bug（非 Figma 落差）
+
+使用者回報：大螢幕（實測是 768~1039px 單欄 row 寬版面，卡片本身變寬）下
+基本資訊卡右側「總部名稱」等欄位看起來像 `space-between`、沒有貼著左邊
+照片。**這不是 Figma 落差，是實作本身的 CSS bug**：`.lodging-photo-
+trigger` 在堆疊態（container <340px）用 `margin-left: auto` +
+`margin-right: auto` 讓圓形照片置中；切到並排態（container >=340px）的
+container query 只把 `margin-left` 歸零，漏了同時歸零
+`margin-right`，導致殘留的 `margin-right: auto` 在 flex row 裡把後面的
+`.lodging-title-column` 推到最右側，視覺上就是照片靠左、標題欄位貼右側
+的「space-between」假象。
+
+修正：`preview/assets/css/lodging-info.css` 的 `@container (min-width:
+340px)` 區塊內 `.lodging-photo-trigger` 補上 `margin-right: 0`。
+
+驗證：375（堆疊置中不受影響）/768/1000/1440（並排態，照片與標題欄位
+貼近）四個寬度截圖確認正常；4 lint 全 exit 0、`driver.mjs smoke` 6 頁
+全 PASS。
+
+### 驗收後再追加：SunEditor placeholder 外觀補齊（拍板：這輪不會真的串接，佔位版也要照設計稿刻）
+
+前面「已知落差」段記錄的 3 處 SunEditor 佔位版外觀落差，原本判斷「待
+正式串接 SunEditor 套件時再一併調整」，使用者這輪明確拍板：**這個版本
+確定不會真的串接 SunEditor，所以佔位版本本身就要照設計稿刻好**，不能
+拖到真正串接才修。已全數修正（`preview/assets/css/lodging-info.css`）：
+
+1. `.lodging-suneditor-toolbar` 補上直角外框（`border: 1px solid
+   var(--color-neutral-200)` + `border-radius: 0`）+ padding 12px/6px，
+   工具列跟文字內容區共用同一個外觀
+2. 工具列跟 textarea 之間改成「緊鄰兩個 box、共用同一條分隔線」：
+   toolbar 保留完整 4 邊 border，textarea 用 `border-top: none` 避免
+   在接縫處疊出 2px 粗線
+3. `.lodging-suneditor-textarea` 的 `border-radius` 從 `8px` 改成 `0`
+   （直角，跟工具列外框一致）
+
+`components/lodging-branch-suneditor.md` 對應段落已從「已知落差，暫不
+修正」改寫成「已全數修正」，並註記：這是本輪手刻 CSS 照 Figma 刻出來的
+效果，不是套件本身樣式，之後真的串接 SunEditor 套件時可能需要拿掉這幾
+條規則、改用套件官方預設渲染，不是永久保留的樣式決策。
+
+驗證：4 lint 全 exit 0、`driver.mjs smoke` 6 頁全 PASS、chrome-devtools
+截圖確認須知與聲明卡（主頁）+ 分館資料編輯 modal 飯店介紹文案（兩處共用
+同一套 `suneditor-instance.js`）都正確套用新外觀，桌面/mobile 兩個寬度
+都測過，console 無新增錯誤。
+
 ### lodging-info.html 頁面狀態
 
 **task 1-10 全部完成**（Session 118 起跑 task 1-7、Session 119 完成
 task 8-10），加上驗收後追加的「飯店介紹文案」SunEditor UI 補充、翻譯列
-左側細線訂正。這頁的實作、規格訂正、視覺覆核、自動化 smoke coverage、
-正式 QA 截圖皆已收斂，等待使用者最終驗收；若之後有新的視覺/行為回饋，
-沿用本頁既有 `preview/js/lodging-notice-card.js` /
-`lodging-branch-content-card.js` / `lodging-info-modals.js` /
-`suneditor-instance.js` / `toast.js` 模組架構修改，不需要重新拆分。
+左側細線訂正、基本資訊卡並排態 margin-right 殘留 bug 修正、SunEditor
+placeholder 外觀（直角外框/分隔線/textarea 直角）全數補齊。這頁的實作、
+規格訂正、視覺覆核、自動化 smoke coverage、正式 QA 截圖皆已收斂，等待
+使用者最終驗收；若之後有新的視覺/行為回饋，沿用本頁既有
+`preview/js/lodging-notice-card.js` / `lodging-branch-content-card.js` /
+`lodging-info-modals.js` / `suneditor-instance.js` / `toast.js` 模組
+架構修改，不需要重新拆分。
 
 ### 下一步應做
 
-- 無待辦（lodging-info.html 頁面本身已完成，含飯店介紹文案補充與翻譯列
-  細線訂正）；下一個工作項目待使用者指派新任務（例如下一頁的 Figma
-  讀取，或既有頁面的其他回饋）
+- 無待辦（lodging-info.html 頁面本身已完成，含飯店介紹文案補充、翻譯列
+  細線訂正、基本資訊卡並排態 CSS bug 修正、SunEditor placeholder 外觀
+  補齊）；下一個工作項目待使用者
+  指派新任務（例如下一頁的 Figma 讀取，或既有頁面的其他回饋）
 
 ---
 
