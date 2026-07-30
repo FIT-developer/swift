@@ -92,6 +92,99 @@
   flex-direction: column;
   overflow: hidden;
 }
+#modalMultilingualStatusBackdrop .modal-box {
+  /* components/modal.md state=multilingual-status，Figma 948px 參照，
+     < 1140px 共用上限不封頂 */
+  width: min(calc(100vw - 24px), 948px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* 4 面板彼此整襯（無 gap），共用一個外框；面板間用 border-l 當直向格線，
+   跟 html-conventions.md「Table 格線規範」(無垂直線的一般 table) 是不同
+   pattern - 這裡是 Figma 明確設計的多面板並排表格，非泛用 table */
+.lodging-ml-panels-wrap {
+  overflow-x: auto;
+}
+.lodging-ml-panels {
+  display: flex;
+  width: max-content;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.lodging-ml-panel {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lodging-ml-panel-narrow {
+  width: 170px;
+}
+.lodging-ml-panel-wide {
+  width: 292px;
+}
+.lodging-ml-panel + .lodging-ml-panel {
+  border-left: 1px solid var(--color-border-default);
+}
+.lodging-ml-panel-title {
+  background: var(--color-table-column1);
+  padding: 8px 12px;
+  font-size: 20px;
+  color: var(--color-neutral-800);
+}
+.lodging-ml-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--color-table-column2);
+  padding: 4px 12px;
+  font-size: 16px;
+  color: var(--color-neutral-800);
+}
+.lodging-ml-panel-header-status {
+  flex-shrink: 0;
+  width: 48px;
+  text-align: center;
+}
+.lodging-ml-panel-body {
+  flex: 1;
+  min-height: 0;
+  max-height: 224px;
+  overflow-y: auto;
+  /* 左右 padding 對齊 header/title 列（12px），狀態 icon 欄位才會跟表頭
+     「狀態/名稱/介紹」文字對齊 - 之前用不對稱 padding(8/20) 幫捲軸預留
+     空間，副作用是 icon 欄位整體左移 6-8px、跟表頭對不齊（2026-07-30
+     使用者發現訂正）。demo 資料本身不觸發捲軸；真的有捲軸出現時 icon
+     欄位會因為瀏覽器捲軸佔寬而略往左偏幾 px，屬可接受的邊界情況，優先
+     保證一般情況下對齊 */
+  padding: 12px 12px 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lodging-ml-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.lodging-ml-row-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  color: var(--color-neutral-800);
+}
+.lodging-ml-row-status {
+  flex-shrink: 0;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* 說明 banner 分隔線：>=640 垂直短線、<640 水平短線 */
 .lodging-photo-banner-divider {
   width: 1px;
@@ -642,7 +735,8 @@
   #modalOrderSummaryBackdrop,
   #modalOrderEditBackdrop,
   #modalPhotoGalleryBackdrop,
-  #modalBranchInfoBackdrop {
+  #modalBranchInfoBackdrop,
+  #modalMultilingualStatusBackdrop {
     align-items: stretch;
     justify-content: stretch;
     padding: 0;
@@ -655,7 +749,8 @@
   #modalOrderSummaryBackdrop .modal-box,
   #modalOrderEditBackdrop .modal-box,
   #modalPhotoGalleryBackdrop .modal-box,
-  #modalBranchInfoBackdrop .modal-box {
+  #modalBranchInfoBackdrop .modal-box,
+  #modalMultilingualStatusBackdrop .modal-box {
     width: 100%;
     max-width: 100%;
     max-height: none;

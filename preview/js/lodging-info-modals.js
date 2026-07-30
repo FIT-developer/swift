@@ -71,7 +71,11 @@ function buildCard(slot, idx) {
   head.innerHTML =
     '<img src="./assets/icons/dots-line.svg" alt="拖曳排序" class="w-6 h-6 cursor-grab" />' +
     '<span class="text-xl text-text-default">圖片 ' + (idx + 1) + "</span>";
-  if (idx === 0 && slot.hasImage) {
+  if (idx === 0) {
+    // 「主圖」永遠顯示在排序第 1 位，不管該格有沒有圖片（2026-07-30
+    // 使用者訂正，取代 Session 118 當時的「只有第 1 格同時有圖片時才顯示」
+    // 規則）：即使第 1 格是空的也要顯示，讓使用者從外層就能看出「這格
+    // 還沒選圖」，避免漏設定
     var pill = document.createElement("span");
     pill.className =
       "inline-flex items-center rounded-full bg-chart-blue px-3 py-0.5 text-base text-white";
@@ -253,6 +257,7 @@ export function initLodgingInfoModals() {
 
   initDragAndDrop();
   initBranchInfoModal();
+  initMultilingualStatusModal();
 }
 
 // 分館資料編輯 modal（components/lodging-branch-info-modal.md）：內容
@@ -275,4 +280,19 @@ function initBranchInfoModal() {
       chip.dataset.facilitySelected = selected ? "false" : "true";
     });
   }
+}
+
+// 多語系狀態總覽 modal（components/modal.md state=multilingual-status）：
+// 純唯讀，4 語言 tab 目前共用同一份 demo 資料，切換只換 active 樣式
+function initMultilingualStatusModal() {
+  var tabs = document.getElementById("lodgingMultilingualLangTabs");
+  if (!tabs) return;
+  tabs.addEventListener("click", function (e) {
+    var tab = e.target.closest(".member-data-filter-tab");
+    if (!tab) return;
+    tabs.querySelectorAll(".member-data-filter-tab").forEach(function (t) {
+      t.classList.remove("is-active");
+    });
+    tab.classList.add("is-active");
+  });
 }

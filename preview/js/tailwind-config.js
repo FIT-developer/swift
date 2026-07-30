@@ -60,6 +60,8 @@ tailwind.config = {
         "accent-float-circle-filled-2":
           "var(--color-accent-float-circle-filled-2)",
         "tab-yellow": "var(--color-tab-yellow)",
+        "table-column1": "var(--color-table-column1)",
+        "table-column2": "var(--color-table-column2)",
       },
     },
   },

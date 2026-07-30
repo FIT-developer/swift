@@ -758,31 +758,46 @@ Modal (320×455px)
 | Open trigger | 頁面右上角「多語系狀態」按鈕（pill，`icons/translation` + 文字）開啟 |
 | Modal size | desktop max width 直接採 Figma 實測 **948px**（948 < 1140 共用上限，不封頂，見上方「共用 Desktop Max-width」段）；viewport 小於 948 時 `calc(100vw - 24px)` |
 | Header | 標題「多語系狀態」20px SemiBold；副標「檢查各語系內容是否完成設定」16px Regular；`icons/close` |
-| 語系 tab | 「英文」「韓文」「日文」「德文」4 個切換 tab；預設選中「英文」（橘色邊框樣式，同既有 tab active 慣例）。**Figma 未定義**：預設語系是否跟後端/瀏覽器語系設定連動，或固定英文為 default，先固定英文，待確認 |
-| 狀態圖例 | 三態圖例列在 tab 下方：已完成（綠 `icons/check`）/ 未設定（橘 `icons/single-symbol-warning`）/ 不適用（灰 `icons/dash-16`） |
-| 內容面板（4 個並排） | 各面板結構一致：標題列（bg `Color/Table/Column1`）+ 欄位表頭列（bg `Color/Table/Column2`，欄名依面板而定）+ 可捲動內容區（border `Color/Border/Default`） |
+| 語系 tab | 「英文」「韓文」「日文」「德文」4 個切換 tab；預設選中「英文」。**2026-07-30 figma-go 重讀 + 截圖覆核訂正**：active 不是四邊框，是**底線樣式**（`border-bottom` 1px `Color/Brand/Brand-400` + SemiBold），inactive 純文字無框 Regular，跟 `components/member-data-modal.md` 的 filter tab 是同一個 Figma 元件（同節點名 "Frame 606"），直接共用 `.member-data-filter-tab` CSS class 實作，不需另建新 class。**Figma 未定義**：預設語系是否跟後端/瀏覽器語系設定連動，或固定英文為 default，先固定英文，待確認 |
+| 狀態圖例 | 三態圖例列在 tab 下方、**靠右對齊**：已完成（綠 `icons/check-green`）/ 未設定（橘 `icons/single-symbol-warning`）/ 不適用（灰 `icons/dash-16`）。三個 icon 本身都是「圓形徽章+符號」的自帶色 SVG（非需要額外上色的黑白 icon），直接原圖使用 |
+| 內容面板（4 個並排） | 各面板結構一致：標題列（bg `Color/Table/Column1`，20px Regular 非 SemiBold）+ 欄位表頭列（bg `Color/Table/Column2`，16px Regular，欄名依面板而定）+ 可捲動內容區（border `Color/Border/Default`，padding 上12/左8/右20/下8，右側加大是為了預留 scrollbar 空間不擋內容）；4 面板彼此無 gap、整襯並排，共用一個外層 border（非各自獨立 4 個 bordered box），面板間用 `border-left` 當直向格線 |
 | 面板 1：資料設定 | 寬 170px，單一「狀態」欄；項目：飯店名稱／地址／介紹／設施／提醒事項／交通資訊 |
-| 面板 2：須知與聲明 | 寬 170px，單一「狀態」欄；項目：訂房須知／成為會員／不可退款 |
-| 面板 3：房間資料 | 寬 292px，「名稱」＋「介紹」雙狀態欄；逐房型列出（demo 資料為佔位房型名） |
-| 面板 4：專案設定 | 寬 292px，「名稱」＋「介紹」雙狀態欄；逐加購專案列出（demo 資料為佔位專案名） |
+| 面板 2：須知與聲明 | 寬 170px，單一「狀態」欄；項目：訂房須知／成為會員／不可退款（**注意**：只有 3 項，Figma demo 沒有對應主頁須知與聲明卡的「團體訂房」第 4 項，判定為這顆 modal 自己的獨立 demo 資料，不強行對應主頁 4 分類，已如實照 Figma 呈現） |
+| 面板 3：房間資料 | 寬 292px，「名稱」＋「介紹」雙狀態欄；逐房型列出（demo 資料為佔位房型名，已直接沿用 Figma 讀到的示意文字：`[SB]國民旅遊雙人房`／`[SB]國民旅遊多人房（可動）`／`[XY]造飛機造飛機造到天上去`） |
+| 面板 4：專案設定 | 寬 292px，「名稱」＋「介紹」雙狀態欄；逐加購專案列出（demo 資料同樣沿用 Figma 示意文字：`[S188]享溫馨KTV歡唱無限制`／`[199]路邊吃草`／`[99]去水里在水裡探險`） |
 | 面板欄數不對稱 | 面板 1／2 只有單一狀態欄，面板 3／4 有雙狀態欄（名稱＋介紹），這是刻意設計：房型與加購專案本身有「名稱」「介紹」兩種可翻譯欄位，資料設定／須知與聲明底下每個項目只對應一種可翻譯內容，不是 Figma 疏漏（2026-07-29 使用者確認） |
-| Footer | 單一「關閉」按鈕（深底 `Color/Text/800`），右對齊；純唯讀總覽，無確認／儲存動作 |
+| 4 語言 tab 資料差異 | Figma 只示範了「英文」tab 的完整內容，韓文/日文/德文分頁沒有各自的資料範例。本輪實作 4 個 tab **共用同一份 demo 資料**，切換 tab 只換 active 樣式、不換表格內容；真實後端資料每語言各自獨立，前端這裡純粹是 prototype 限制，非規格判讀 |
+| Footer | 單一「關閉」按鈕（深底 `Color/Text/800`，文字 `Color/Text/100`/`text-text-inverse`），右對齊；純唯讀總覽，無確認／儲存動作 |
 
 ### Layout / RWD
 
 | 區塊 | 規格 |
 |---|---|
 | Shell | 沿用共用 modal header/footer（固定 header/footer，body 可捲動） |
-| 面板排列 | desktop 4 面板橫向並排。tablet／mobile 小尺寸維持橫向排列，容器 `flex-nowrap overflow-x-auto` 橫向 scroll（2026-07-29 使用者確認：內容是 table 形式，比照既有長 table 慣例，不改直式堆疊），依賴瀏覽器原生 scrollbar，不加 fade mask／自訂 scrollbar |
+| 面板排列 | desktop 4 面板橫向並排。tablet／mobile 小尺寸維持橫向排列，容器 `flex-nowrap overflow-x-auto` 橫向 scroll（2026-07-29 使用者確認：內容是 table 形式，比照既有長 table 慣例，不改直式堆疊），依賴瀏覽器原生 scrollbar，不加 fade mask／自訂 scrollbar；跟 `photo-gallery`/`branch-basic-info` 同屬「大型內容 modal」家族，`<640px` 也採同樣的 mobile 全螢幕處理（`modals.css` mobile fullscreen 群組） |
 
 ### Token gaps / unresolved
 
 - 已解決（2026-07-29）：面板標題列／欄位表頭列 bg 對應到新收錄的
   `Color/Table/Column1`（`#dde9fb`）／`Color/Table/Column2`（`#eff4fc`），
   見 `tokens.md` Table 段落 + `base.css` `--color-table-column1` /
-  `--color-table-column2`
+  `--color-table-column2`；2026-07-30 補上 `tailwind-config.js` 的
+  `bg-table-column1` / `bg-table-column2` utility class
 - 語系 tab active 邊框沿用既有 `#f28b45`（`Color/Brand/Brand-400`），已有
   token，不算 gap
+- 2026-07-30 figma-go 重讀時發現「content swap」body 外層節點 JSON 帶
+  `strokes:["#d1d1d1"]`，但 `save_screenshots` 渲染核對後**這個外層 body
+  邊框實際沒有顯示**（同 `feedback_figma_hidden_layer_serialized` 記憶
+  「JSON 有、渲染沒有」原則），實作沒有加這層 body 邊框，只有 4 面板自己
+  的外層 border（`Color/Border/Default`）
+
+### 實作位置（2026-07-30 task 9 落地）
+
+- Markup：`preview/partials/lodging-info-modals.html`
+  `#modalMultilingualStatusBackdrop`
+- 開關：主頁「多語系狀態」按鈕 `data-modal-open="modalMultilingualStatusBackdrop"`，交給共用 `js/modal-controller.js`
+- Tab 切換：`preview/js/lodging-info-modals.js` `initMultilingualStatusModal()`（純 class 切換，無資料重渲染）
+- CSS：`preview/assets/css/modals.css`（`.lodging-ml-*` 系列 + modal-box 948px + mobile fullscreen 註冊），domain 歸屬 modals.css 而非 lodging-info.css，因為這是 modal 內部樣式（見 `specs/page-architecture.md`「CSS 歸屬」：modal 相關樣式一律進 modals.css，不分頁面）
 
 ---
 
@@ -833,7 +848,8 @@ Modal (1140x1134px)
       "檔案格式：JPEG、JPG" / "首張圖片於主頁預覽"
   - 提示列：icons/dots-line + "依編號順序顯示，可拖曳調整排序"
   - 5 張 Card，2 欄排列（548px 寬/卡，20px padding，radius 8，border Color/Neutral/200）
-    - 有圖 card：拖曳把手(icons/dots-line) + "圖片 N" + [僅第 1 張] 主圖 pill
+    - 有圖 card：拖曳把手(icons/dots-line) + "圖片 N" + [僅第 1 張，不論該格
+      有無圖片都顯示，見下方「主圖 pill」規則 2026-07-30 訂正] 主圖 pill
       (bg Color/Bootstrap/components/focus, radius 72) + 280x185 圖片(radius 16) +
       「更換圖片」btn(icons/image-ai-line, border/text Color/MenuItem/Default) +
       「刪除」btn(icons/trash-can, border/text Color/Surface/Status-Negative)
@@ -864,7 +880,7 @@ Modal (1140x1134px)
 | 說明 banner | `最多上傳 5 張圖片`、`建議尺寸：900px * 600px`、`檔案格式：JPEG、JPG`、`首張圖片於主頁預覽` |
 | 提示列 | `依編號順序顯示，可拖曳調整排序` |
 | Card 標題 | `圖片 1` ~ `圖片 5`（依目前排序位置動態渲染，不是固定綁定原始上傳順序） |
-| 主圖 pill | `主圖`；只在目前排序第 1 位的 card **同時有圖片**時才出現（無圖 card 一律無 pill，即使排在第 1 位），拖曳排序後動態跟著圖片移動 |
+| 主圖 pill | `主圖`；**永遠顯示在排序第 1 位的 card，不論該格有沒有圖片**（2026-07-30 使用者訂正，取代 Session 118 當時「只有第 1 格同時有圖片時才顯示」的規則）。理由：如果第 1 格是空的也不顯示，使用者到外層（主頁預覽）看不出「這格還沒選圖」，容易漏設定；永遠顯示才能讓使用者一眼看出排序第 1 位目前有沒有圖片。拖曳排序後 pill 動態跟著「排序第 1 位」這個位置走，不跟著特定照片的身分 |
 | 有圖 card 按鈕 | `更換圖片`、`刪除` |
 | 無圖 card 按鈕 | `上傳圖片` |
 | 無圖 card 佔位文字 | `尚未上傳圖片` |
@@ -889,7 +905,7 @@ Modal (1140x1134px)
 | 開啟 | 點擊 headquarters/分館卡片左側圓形照片觸發器（有圖態含右下角小 icon）開啟 `modalPhotoGallery`；開啟時依該筆資料實際張數渲染對應 card 狀態，無資料的位置一律渲染無圖 card |
 | 拖曳排序 | dots-line 把手支援拖放排序（本輪做完整功能）；排序後即時更新每張 card 的 `圖片 N` 標題與「主圖」pill 歸屬（永遠跟著新的第 1 位）；排序結果為 modal 內 local state，需等按「上傳」才視為送出 |
 | 上傳圖片 / 更換圖片 | click 觸發 `input[type=file]`（accept `image/jpeg`）；選檔後立即以 `URL.createObjectURL` 本地預覽取代該 card 圖片；無圖 card 選檔後立即切換為有圖 card 版型（新增拖曳把手旁的圖片顯示、按鈕從「上傳圖片」變成「更換圖片」+「刪除」）；本地預覽為 prototype 行為，實際上傳/儲存由後端接手 |
-| 刪除 | click 後該 card 從有圖 state 立即切回無圖 state（清除本地預覽），並釋放對應 `URL.createObjectURL` object URL；若刪除的是主圖(第 1 位)，主圖 pill 自動移到新的第 1 張有圖 card；刪除不影響其他 card 排序位置（原地變空） |
+| 刪除 | click 後該 card 從有圖 state 立即切回無圖 state（清除本地預覽），並釋放對應 `URL.createObjectURL` object URL；刪除不影響其他 card 排序位置（原地變空）。主圖 pill 固定顯示在排序第 1 位，刪除第 1 位的圖片後 pill 不會移動、留在原地（第 1 位變成無圖但仍有 pill，提示使用者這格還沒圖），2026-07-30 訂正後不再需要「pill 移到新的第 1 張有圖 card」這個轉移邏輯 |
 | 取消 | 關閉 modal，捨棄本輪所有本地變更（拖曳排序 / 新選檔 / 刪除），下次開啟回到上次「上傳」成功後的狀態 |
 | 上傳（Footer） | 點擊後批次送出本輪所有變更（新排序 + 新增/更換/刪除的圖片），送出後關閉 modal；prototype 階段沒有實際後端 API，行為僅為 local state 送出動作 + 關閉 |
 | 關閉方式 | header close、footer 取消、backdrop、Esc；除「取消」與「上傳」外，其餘關閉方式行為等同取消（捨棄本輪變更） |

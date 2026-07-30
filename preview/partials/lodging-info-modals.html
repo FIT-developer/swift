@@ -389,6 +389,300 @@
   </div>
 </div>
 
+<!-- ====================================
+     Modal - state=multilingual-status (components/modal.md)
+     由頁面右上角「多語系狀態」按鈕開啟；純唯讀總覽，無確認/儲存動作。
+     4 語言 tab 目前共用同一份 demo 資料（Figma 只示範英文 tab 內容，
+     韓文/日文/德文分頁資料未提供，非後端 per-language 差異），
+     tab 切換只換 active 樣式，不換內容。
+==================================== -->
+<div
+  id="modalMultilingualStatusBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalMultilingualStatusTitle"
+>
+  <div class="modal-box mx-3">
+    <!-- Header -->
+    <div
+      class="modal-header-shadow flex flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3 py-3"
+    >
+      <div class="flex flex-col justify-center gap-1">
+        <span
+          id="modalMultilingualStatusTitle"
+          class="text-xl font-semibold text-text-default leading-tight"
+          >多語系狀態</span
+        >
+        <span class="text-base text-text-default leading-tight"
+          >檢查各語系內容是否完成設定</span
+        >
+      </div>
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalMultilingualStatusBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-y-auto bg-white p-3">
+      <!-- 語系 tab：預設選中英文；Figma 未定義預設語系是否跟後端/瀏覽器
+           設定連動，先固定英文 -->
+      <div
+        id="lodgingMultilingualLangTabs"
+        class="flex items-center gap-3 pb-2"
+      >
+        <button
+          type="button"
+          class="member-data-filter-tab is-active"
+          data-lang="en"
+        >
+          英文
+        </button>
+        <button type="button" class="member-data-filter-tab" data-lang="ko">
+          韓文
+        </button>
+        <button type="button" class="member-data-filter-tab" data-lang="ja">
+          日文
+        </button>
+        <button type="button" class="member-data-filter-tab" data-lang="de">
+          德文
+        </button>
+      </div>
+
+      <!-- 狀態圖例 -->
+      <div
+        class="flex items-center justify-end gap-6 py-3 text-base text-text-default"
+      >
+        <span class="flex items-center gap-1">
+          <img src="./assets/icons/check-green.svg" alt="" class="w-6 h-6" />
+          已完成
+        </span>
+        <span class="flex items-center gap-1">
+          <img
+            src="./assets/icons/single-symbol-warning.svg"
+            alt=""
+            class="w-6 h-6"
+          />
+          未設定
+        </span>
+        <span class="flex items-center gap-1">
+          <img src="./assets/icons/dash-16.svg" alt="" class="w-6 h-6" />
+          不適用
+        </span>
+      </div>
+
+      <!-- 4 面板並排，彼此整襯（無 gap），窄寬度時整組橫向 scroll
+           （components/modal.md：內容是 table 形式，不改直式堆疊） -->
+      <div class="lodging-ml-panels-wrap">
+        <div class="lodging-ml-panels">
+          <!-- 面板 1：資料設定（單一狀態欄） -->
+          <div class="lodging-ml-panel lodging-ml-panel-narrow">
+            <div class="lodging-ml-panel-title">資料設定</div>
+            <div class="lodging-ml-panel-header">
+              <span>欄位名稱</span>
+              <span class="lodging-ml-panel-header-status">狀態</span>
+            </div>
+            <div class="lodging-ml-panel-body">
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">飯店名稱</span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">地址</span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">介紹</span>
+                <span class="lodging-ml-row-status"
+                  ><img
+                    src="./assets/icons/single-symbol-warning.svg"
+                    alt="未設定"
+                    class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">設施</span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/dash-16.svg" alt="不適用" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">提醒事項</span>
+                <span class="lodging-ml-row-status"
+                  ><img
+                    src="./assets/icons/single-symbol-warning.svg"
+                    alt="未設定"
+                    class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">交通資訊</span>
+                <span class="lodging-ml-row-status"
+                  ><img
+                    src="./assets/icons/single-symbol-warning.svg"
+                    alt="未設定"
+                    class="w-6 h-6"
+                /></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 面板 2：須知與聲明（單一狀態欄，僅 3 項，Figma demo 本身
+               沒有「團體訂房」第 4 項，跟主頁須知與聲明卡 4 分類不對應，
+               如實照 Figma 呈現） -->
+          <div class="lodging-ml-panel lodging-ml-panel-narrow">
+            <div class="lodging-ml-panel-title">須知與聲明</div>
+            <div class="lodging-ml-panel-header">
+              <span>欄位名稱</span>
+              <span class="lodging-ml-panel-header-status">狀態</span>
+            </div>
+            <div class="lodging-ml-panel-body">
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">訂房須知</span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">成為會員</span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">不可退款</span>
+                <span class="lodging-ml-row-status"
+                  ><img
+                    src="./assets/icons/single-symbol-warning.svg"
+                    alt="未設定"
+                    class="w-6 h-6"
+                /></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 面板 3：房間資料（名稱＋介紹雙狀態欄，逐房型列出） -->
+          <div class="lodging-ml-panel lodging-ml-panel-wide">
+            <div class="lodging-ml-panel-title">房間資料</div>
+            <div class="lodging-ml-panel-header">
+              <span>欄位名稱</span>
+              <span class="flex gap-2">
+                <span class="lodging-ml-panel-header-status">名稱</span>
+                <span class="lodging-ml-panel-header-status">介紹</span>
+              </span>
+            </div>
+            <div class="lodging-ml-panel-body">
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">[SB]國民旅遊雙人房</span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label"
+                  >[SB]國民旅遊多人房（可動）</span
+                >
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label"
+                  >[XY]造飛機造飛機造到天上去</span
+                >
+                <span class="lodging-ml-row-status"
+                  ><img
+                    src="./assets/icons/single-symbol-warning.svg"
+                    alt="未設定"
+                    class="w-6 h-6"
+                /></span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/dash-16.svg" alt="不適用" class="w-6 h-6"
+                /></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 面板 4：專案設定（名稱＋介紹雙狀態欄，逐加購專案列出） -->
+          <div class="lodging-ml-panel lodging-ml-panel-wide">
+            <div class="lodging-ml-panel-title">專案設定</div>
+            <div class="lodging-ml-panel-header">
+              <span>欄位名稱</span>
+              <span class="flex gap-2">
+                <span class="lodging-ml-panel-header-status">名稱</span>
+                <span class="lodging-ml-panel-header-status">介紹</span>
+              </span>
+            </div>
+            <div class="lodging-ml-panel-body">
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label"
+                  >[S188]享溫馨KTV歡唱無限制</span
+                >
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label">[199]路邊吃草</span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/check-green.svg" alt="已完成" class="w-6 h-6"
+                /></span>
+              </div>
+              <div class="lodging-ml-row">
+                <span class="lodging-ml-row-label"
+                  >[99]去水里在水裡探險</span
+                >
+                <span class="lodging-ml-row-status"
+                  ><img src="./assets/icons/dash-16.svg" alt="不適用" class="w-6 h-6"
+                /></span>
+                <span class="lodging-ml-row-status"
+                  ><img
+                    src="./assets/icons/single-symbol-warning.svg"
+                    alt="未設定"
+                    class="w-6 h-6"
+                /></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer：單一「關閉」按鈕，純唯讀總覽無確認/儲存動作 -->
+    <div
+      class="flex h-[58px] flex-shrink-0 items-center justify-end border-t border-border-disabled px-3"
+    >
+      <button
+        type="button"
+        class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+        data-modal="modalMultilingualStatusBackdrop"
+      >
+        關閉
+      </button>
+    </div>
+  </div>
+</div>
+
 <input
   type="file"
   id="lodgingPhotoFileInput"

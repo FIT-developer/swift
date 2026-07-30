@@ -227,6 +227,55 @@ Row 3 續: 原始碼檢視(SunEditor/code)
 
 ---
 
+## 已知落差：placeholder 實作 vs Figma 示意稿（2026-07-30 figma-go 重讀，暫不修正）
+
+使用者對照自己畫的 Figma UI layout（單語言編輯態，node `2129:79591` 內含
+`2129:79594` SunEditor instance），發現目前 task 8 的 textarea 佔位版跟
+示意稿有幾處外觀落差。**本輪只記錄，不修正**：待正式安裝、串接真實
+SunEditor package 時，外觀直接以套件官方預設渲染為準（呼應上方「只用
+CDN 版原生套件，不客製化」），現在這份 placeholder CSS 只是過渡展示，
+不必為了追平示意稿而先做一次可能白工的樣式調整。screenshot 已截圖交叉
+核對過（非只憑 JSON），核對後即刪除暫存檔。
+
+### 落差清單
+
+1. **整個工具列 + 文字內容區共用一個直角外框（目前完全缺漏這層）**：
+   Figma 裡工具列 3 排 icon 跟下方文字內容被同一個外層 frame 包住，這層
+   外框是**直角**（無 cornerRadius），border 顏色 `Color/Neutral/200`
+   (`#d1d1d1`)，padding 上下 12px、左右 6px。目前 `.lodging-suneditor-
+   toolbar` 只是單純 flex 容器，完全沒有這層外框
+2. **工具列跟文字內容區之間是一條分隔線，不是單純留白間距**：Figma 第 3
+   排 icon（對齊/分隔線/引言/連結/清除格式/原始碼）下方有一條橫跨全寬的
+   分隔線，線下方留約 6px 內距文字內容才開始。目前實作工具列跟 textarea
+   之間只是 `.flex.flex-col.gap-4` 帶來的一般 16px 垂直間距，沒有分隔線
+3. **文字內容區本身是直角，不是圓角**：Figma 的內容 Input frame 本身無
+   cornerRadius，border 顏色同樣是 `Color/Neutral/200`。目前
+   `.lodging-suneditor-textarea` 用了 `border-radius: 8px`，跟示意稿不符
+4. **（已正確，對照用）工具列個別按鈕群組本身是圓角**：Figma 每個按鈕
+   群組小容器 `cornerRadius:6`，border 顏色 `Color/Neutral/100`
+   (`#e1e1e0`，即 `Color/Border/Default`)。目前 `.lodging-suneditor-
+   toolbar-group` 已經是 `border-radius:6px` + `var(--color-border-
+   default)`，跟示意稿一致，這項不用改
+
+### 附帶發現（同一次讀取，非 SunEditor 主題，已自行更正）
+
+單語言時固定顯示的「繁體中文」標籤，JSON 裡其 wrapper instance 帶
+`strokes:["#888888"]`，第一次比對誤判成「文字下方有底線」。**重新用
+`save_screenshots` 只截這個 label 節點單獨渲染**，結果是純粗體文字、
+**完全沒有底線**，判定為 JSON 帶了 stroke 屬性但實際渲染沒吃到（同
+start.md「JSON 不等於視覺」的既知陷阱類型，跟隱藏圖層/單邊 stroke 同一
+類：**使用者的原始 UI layout 沒有顯示的東西，即使 JS/JSON 資料裡有，也
+代表是被隱藏掉、不需要做**，見 `[[feedback_figma_json_present_but_hidden]]`）。
+先前版本這裡誤記「文字下方確實有一條底線」，已訂正：**目前實作（純粗體、
+無底線）就是正確的，不用改**。
+
+### 待正式串接時處理
+
+落差 1-3 待正式串接 SunEditor 套件時一併比對調整；落差 4 已確認現況正確
+不用改；附帶發現的底線疑慮已自行更正排除，無待辦事項。
+
+---
+
 ## Typography / Colors
 
 | 元素 | 規格 | Token |

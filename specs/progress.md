@@ -141,14 +141,76 @@ Neutral/75、padding 20，Session 118 讀取時三斷點固定值）不受影響
 Figma frame 佈局性質，不是判定為「堆疊型」故意排除，之後個別碰到這幾頁
 再各自判斷，不要批次套用。
 
+### Task 9 完成：多語系狀態總覽 modal（同輪接續）
+
+`components/modal.md` `state=multilingual-status` 早有完整 Implementation
+contract（Session 之前讀取），本輪開工前先用 `get_node` + `save_screenshots`
+對節點 `2129:81569` 重新核對一次（新元件、非小修，依規則要先驗證），抓到
+2 處跟舊文字記錄不符：
+
+1. **語系 tab active 不是四邊框，是底線樣式**：JSON 對 active tab 的
+   `Texts` instance 回報 `strokes:["#f28b45"]`，一開始以為是四邊框；
+   `save_screenshots` 渲染核對後其實是 `border-bottom` 底線（跟
+   `components/member-data-modal.md` filter tab 同一個 Figma 元件，同節點
+   名 "Frame 606"）。直接複用既有 `.member-data-filter-tab` CSS class，
+   不用另外寫
+2. **body 外層「content swap」節點的 `strokes:["#d1d1d1"]` 沒有實際渲染**：
+   套用本輪稍早訂正的新原則（`feedback_figma_hidden_layer_serialized`：
+   JSON 有、渲染沒有 = 視覺為準，不用做），沒有加這層 body 邊框
+
+新增檔案/改動：
+- `preview/partials/lodging-info-modals.html`：新增
+  `#modalMultilingualStatusBackdrop`（header 標題+副標、語系 tab、狀態
+  圖例、4 面板表格、footer 單一「關閉」按鈕）
+- `preview/js/lodging-info-modals.js`：新增 `initMultilingualStatusModal()`
+  （純 tab active class 切換，4 語言共用同一份 demo 資料，不重渲染內容）
+- `preview/assets/css/modals.css`：新增 `.lodging-ml-*` 系列 class（面板/
+  表頭/列/狀態欄）+ `#modalMultilingualStatusBackdrop .modal-box`
+  948px + 註冊進「大型內容 modal mobile 全螢幕」群組（跟 photo-gallery/
+  branch-info 同一組）
+- `preview/js/tailwind-config.js`：新增 `bg-table-column1` /
+  `bg-table-column2` utility class
+- `preview/lodging-info.html`：`lodgingMultilingualStatusBtn` 補上
+  `data-modal-open="modalMultilingualStatusBackdrop"`
+- `components/modal.md`：訂正上述 2 處 + 補實作位置索引
+
+### 驗證（Task 9）
+
+- 4 lint 全 exit 0；`driver.mjs smoke` 5 頁全 PASS
+- chrome-devtools MCP：開啟/header 關閉/footer 關閉三種方式都測過，
+  console 互動後無新增 error/warn（只有既有 Tailwind CDN 警告）
+- 截圖：1440（桌面 4 面板橫排）/768（`calc(100vw-24px)`，面板橫向
+  scroll）/375（mobile 全螢幕，面板橫向 scroll）皆 self-tested 正常，
+  跟 Figma 截圖比對視覺一致
+- 語言 tab 切換用 eval 驗證：4 個 tab 互斥，僅 1 個 `is-active`
+
+### 使用者驗收 Task 9 時的兩處修正（同輪）
+
+1. **多語系狀態 modal 表格 icon 對齊**：面板內容區（`.lodging-ml-panel-
+   body`）原本用不對稱 padding（左8/右20，本來想幫捲軸預留空間）導致
+   狀態 icon 欄位比表頭「狀態/名稱/介紹」文字整體左移 6-8px。改成跟表頭
+   一致的 12px/12px 對稱 padding，4 個面板的 icon 欄位現在都跟表頭精確
+   對齊（座標量測驗證，4 個面板 header/row 中心點完全一致）。
+2. **照片管理「主圖」pill 規則反轉**：使用者訂正 Session 118 當時「只有
+   排序第1位同時有圖片才顯示 pill」的規則，改回「**永遠顯示在排序第1位，
+   不論該格有沒有圖片**」。理由：無圖時不顯示的話，使用者從外層（主頁
+   預覽）看不出「這格還沒選圖」，容易漏設定；永遠顯示才能一眼看出目前
+   排序第1位有沒有圖。用 chrome-devtools MCP 實際上傳第 2 張圖 + 原生
+   drag 測試過：pill 固定跟著「排序第1位」這個位置走（不是綁定特定
+   照片），拖曳後正確换到新占據第1位的card上，行為驗證通過。
+   已更新 `preview/js/lodging-info-modals.js`（`buildCard` 拿掉
+   `slot.hasImage` 判斷）與 `components/modal.md` 對應 3 處文字
+   （主圖 pill 出現條件、有圖 card 結構註記、刪除行為的 pill 轉移邏輯）。
+
+驗證：4 lint 全 exit 0、`driver.mjs smoke` 5 頁全 PASS、chrome-devtools
+截圖 + 座標量測 + 原生 drag/upload 測試皆 self-tested 通過。
+
 ### 下一步應做
 
-- **Task 9**：多語系狀態總覽 modal（頂部工具列「多語系狀態」按鈕開啟，
-  目前 `lodgingMultilingualStatusBtn` 尚未掛 `data-modal-open`）
-- **Task 10**：全頁驗證（4 lint + smoke test 頁面清單登記 lodging-
-  info.html + 多角度正式 QA 截圖存
+- **Task 10**（最後一個）：全頁驗證（4 lint + smoke test 頁面清單登記
+  lodging-info.html + 多角度正式 QA 截圖存
   `specs/qa-screenshots/session-119/`（或當時實際 session 編號）+
-  更新 progress.md）
+  更新 progress.md，完成後 lodging-info.html 這頁即全部完成）
 
 ---
 
