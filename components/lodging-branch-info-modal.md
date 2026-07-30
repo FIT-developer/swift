@@ -45,7 +45,7 @@ Figma 節點名稱與 header 文字節點內容「資料設定/資料修改」�
 
 | 列 | 左欄 | 右欄 |
 |---|---|---|
-| 1 | 代號（**唯讀**，灰底，系統配號，示例 `4`） | 飯店名稱（Input） |
+| 1 | 代號（**唯讀**，灰底，系統配號，示例 `4`）+ 排序（Input，示例 `1`）並排同欄 | 飯店名稱（Input） |
 | 2 | 英文名稱（Input） | Email（Input） |
 | 3 | 市話（Input） | 傳真（Input） |
 | 4 | 地址（`Location` 元件：縣/市 select + 行政區 select + 郵遞區號顯示 + 街道 Input，沿用 `components/location.md`） | 企業官網（Input） |
@@ -53,15 +53,32 @@ Figma 節點名稱與 header 文字節點內容「資料設定/資料修改」�
 | 6 | 飯店提醒事項文案（同上） | 飯店交通文案（同上） |
 | 7（滿版，不分左右欄） | 飯店設施項目（chip 多選，見下方「飯店設施項目」段） | - |
 
-### 代號欄位（唯讀）
+**Session 118 figma-go 重讀訂正（使用者發現漏欄位+版型誤判）**：
+- 第 1 列左欄原本漏寫「排序」欄位，`get_node` 全樹重讀（node
+  `2129:79343`）確認左欄其實是「代號」+「排序」兩個 mini-field 並排
+  （各自 label 64px + input 101px，兩個 mini-field 之間 gap 24px），不是
+  只有代號一個欄位
+- 原本誤判所有欄位是「label 在上、input 在下」堆疊排列；重讀後確認
+  **除了 4 張文案卡片（飯店介紹/設施/提醒事項/交通）是 label 在上之外，
+  其餘所有欄位（代號/排序/飯店名稱/英文名稱/Email/市話/傳真/地址外層
+  label/企業官網）都是 label 在左、input 在右**：label 固定寬度 64px，
+  label 與 input 間距 12px，label 文字靠左對齊，不置中
+- 「地址」欄位本身是外層 label 在左（跟其他欄位一致），但地址內部的
+  3 個 mini-field（縣/市、行政區、街道）沿用 `components/location.md`
+  既有慣例，各自 label 在上、select/input 在下，這一層不受外層規則
+  影響
 
-| 屬性 | 值 | Token |
+### 代號 / 排序欄位
+
+| 屬性 | 代號 | 排序 |
 |---|---|---|
-| 背景 | `Color/Neutral/100` | `Color/Neutral/100` |
+| 背景 | `Color/Neutral/100` | `Color/Neutral/0`（白，可編輯） |
 | 邊框 | `Color/Neutral/200` | `Color/Neutral/200` |
-| 文字 | `Color/Neutral/400` | `Color/Neutral/400` |
+| 文字 | `Color/Neutral/400` | `Color/Neutral/800` |
+| 唯讀 | 是（系統配號，永久不可編輯） | 否 |
+| Label/Input 寬度 | 64px / 101px（兩者皆固定寬，非滿版 flex-1） | 同左 |
 
-固定唯讀，非 lock-toggle 概念的「暫時 disabled」，不套用 `components/html-conventions.md` 的 lock icon 灰底規則；此欄位永遠不可編輯（系統配號）。
+代號固定唯讀，非 lock-toggle 概念的「暫時 disabled」，不套用 `components/html-conventions.md` 的 lock icon 灰底規則；此欄位永遠不可編輯（系統配號）。排序則是一般可編輯 Input，示例值 `1`。
 
 ### `placeholder` 文字欄位（重要，2026-07-29 使用者拍板）
 

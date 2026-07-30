@@ -197,6 +197,30 @@ Row 3 續: 原始碼檢視(SunEditor/code)
 | 工具列設定 | `buttonList` option 是陣列，可逐項對應本次示意稿讀到的按鈕分組：`['undo','redo']`, `['formatBlock']`, `['bold','underline','italic','strike']`, `['fontColor','hiliteColor']`, `['list','indent','outdent']`, `['align','horizontalRule','blockquote']`, `['link']`, `['removeFormat']`, `['codeView']`；這組排列跟示意稿工具列高度吻合，研判設計稿本身就是照這顆套件的預設工具列畫的 |
 | Plugins | 示意稿讀到的按鈕都屬於 SunEditor 核心內建功能，不需要額外安裝圖片/影片/表格等進階 plugin 套件（這些示意稿都沒出現） |
 | 版本 pin | 待實際串接時查證當下最新穩定版號並鎖定明確版本（不可用 `@latest` 這種浮動版號上生產），避免套件更新造成 UI 或行為無預警改變 |
+
+### 實際串接時的架構原則（2026-07-30 使用者拍板，供 task 8 實作參考）
+
+- **只用 CDN 版原生套件，不客製化**：跟上面「工具列設定」段一致，
+  buttonList 等設定原則上照 SunEditor 官方預設，不額外開發自訂
+  plugin、不改官方預設行為；這是重申既有決策，不是新規則
+- **多顆獨立 instance 的 JS 管理要拆分**：`lodging-info.html` 這頁會有
+  多組各自獨立的 SunEditor（須知與聲明卡 4 分類 x 多語系、分館資料
+  編輯 modal 內 4 張文案卡片 x 多語系，每個都是各自獨立的 editor
+  instance，不共用內容也不共用 DOM）。跟 `preview/js/order-modals.js`
+  當初拆成 `order-edit-modal.js` / `purchase-addon-modal.js` /
+  `member-data-modal.js` / `order-summary-modal.js` + orchestrator
+  的模式一樣（`specs/page-architecture.md` Stage 4），不要把所有
+  SunEditor 初始化邏輯塞進同一個大檔案。實際落地時至少要有：
+  - 一個共用的「建立/掛載單一 SunEditor instance」helper（處理
+    CDN script/css 載入、`SUNEDITOR.create()`、語言 tab 切換時
+    instance 的顯示/隱藏或 destroy/recreate、`getContents`/
+    `setContents` 存取）
+  - 各卡片/modal 各自的呼叫端（須知與聲明卡的分類+語言兩維度狀態、
+    分館資料編輯 modal 的 4 張卡片）分開管理自己的 instance 清單與
+    暫存/儲存邏輯，不要互相耦合
+  - CDN script/css 只需要在有用到 SunEditor 的頁面載入一次（跟
+    `specs/page-architecture.md` CDN dependency matrix 現有慣例
+    一致），不要每個 instance 各自重複載入 CDN 資源
 | 取代 textarea 的實作範圍 | 屆時只需要把本檔「SunEditor instance」段落的 markup 換成 `SUNEDITOR.create()` 掛載結果，多語系 tab 切換、翻譯按鈕、全部儲存/取消的暫存邏輯不需要重寫，只是把每個語言各自對應的 editor instance 換成真正的 SunEditor（目前 textarea 佔位版本一樣是「每個語言一個獨立 instance」） |
 
 ---
