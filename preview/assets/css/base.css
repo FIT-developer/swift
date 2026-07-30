@@ -74,6 +74,8 @@
   --color-accent-float-circle-filled-1: #f2befd;
   --color-accent-float-circle-filled-2: #ffb6b6;
   --color-accent-linear-small-badge:    #d7fffb;
+  --color-accent-linear-function-button-delete:      #f3c2c4;
+  --color-accent-linear-function-button-duplication: #c6ddfe;
 
   /* Color/Table */
   --color-table-column1: #dde9fb;

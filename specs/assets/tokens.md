@@ -196,6 +196,8 @@
 | Color/Accent/float-circle-filled-1 | `#F2BEFD` | POS 入口 hover fill 漸層起點 |
 | Color/Accent/float-circle-filled-2 | `#FFB6B6` | POS 入口 hover fill 漸層終點 |
 | Color/Accent/linear-small-badge | `#D7FFFB` | 小型 badge 點綴色（2026-07-29 新增，尚無對應實作） |
+| Color/Accent/linear-function-button-delete | `#F3C2C4` | 表格列刪除功能按鈕點綴色（2026-07-30 新增，系統設定/房型頁面用，尚無對應實作） |
+| Color/Accent/linear-function-button-duplication | `#C6DDFE` | 表格列複製功能按鈕點綴色（2026-07-30 新增，系統設定/房型頁面用，尚無對應實作） |
 
 ---
 

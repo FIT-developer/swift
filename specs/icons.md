@@ -96,6 +96,7 @@
 | pin | assets/icons/pin.svg | 16×16 | 定位/圖釘 | icons/pin |
 | plus-list | assets/icons/plus-list.svg | 24×24 | 新增清單項目 | icons/plus-list |
 | pos | assets/icons/pos.svg | 24×24 | POS 系統入口 | icons/pos |
+| preview-outline | assets/icons/preview-outline.svg | 24x24 | 查看（房型頁已刪除卡片「查看」按鈕，2026-07-30 新增） | icons/preview-outline |
 | price | assets/icons/price.svg | 24×24 | 價格 | icons/price |
 | print | assets/icons/print.svg | 24x24 | 列印 | icons/print |
 | process | assets/icons/process.svg | 24x24 | 流程/處理中 | icons/process |
@@ -104,7 +105,8 @@
 | ranking | assets/icons/ranking.svg | 20×20 | 排名/排行 | icons/ranking |
 | refund | assets/icons/refund.svg | 24×24 | 退款 | icons/refund |
 | reservations | assets/icons/reservations.svg | 16×16 | 預約/訂房 | icons/reservations |
-| restore | assets/icons/restore.svg | 24x24 | 還原（訂單修改 modal header / [D] 訂房資料） | icons/restore |
+| restore | assets/icons/restore.svg | 24x24 | 還原（訂單修改 modal header / [D] 訂房資料）；房型頁頂部「重整」按鈕語意是重新整理當前頁，不是還原單一項目 | icons/restore |
+| restore-page-outline-rounded | assets/icons/restore-page-outline-rounded.svg | 24x24 | 還原單一項目（房型頁已刪除卡片「還原」按鈕，2026-07-30 新增，語意跟上面 restore 不同，不要混用） | icons/restore-page-outline-rounded |
 | return | assets/icons/return.svg | 16×16 | 返回/退回 | icons/return |
 | right | assets/icons/right.svg | 16×16 | 向右（小箭頭） | icons/right |
 | road | assets/icons/road.svg | 24×24 | 道路/路線 | icons/road |
@@ -224,7 +226,7 @@
 `check`（中性）, `check-green`（成功 🟢）, `failure-red`（錯誤 🔴）, `warning-orange`（警告 🟠）, `info`, `focus`, `prohibited`
 
 ### 操作動作類
-`edit`, `close`, `search`, `download`, `duplicate`, `trash-can`, `submit`, `plus-list`, `outline-plus`, `outline-minus`, `lock`, `unlock`, `switch`, `eye-open`, `eye-close`, `attached-link`, `attached-link-moved`, `eraser`
+`edit`, `close`, `search`, `download`, `duplicate`, `trash-can`, `submit`, `plus-list`, `outline-plus`, `outline-minus`, `lock`, `unlock`, `switch`, `eye-open`, `eye-close`, `attached-link`, `attached-link-moved`, `eraser`, `restore`, `restore-page-outline-rounded`, `preview-outline`
 
 ### 資料 / 內容類
 `document`, `image`, `list`, `chart`, `dashboard`, `calendar`, `clock`, `label`, `order-info`, `tasks-day`, `bulletin`, `message`

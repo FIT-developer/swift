@@ -7,6 +7,114 @@
 
 ---
 
+## Session 120 交接 (2026-07-30)
+
+### 任務：系統設定 -> 房型頁 figma-go read 階段（desktop/tablet~mobile/mobile 三個 RWD frame）
+
+新頁面，目前還在 figma-go 的 Read 階段，尚未寫 `specs/pages/` 或
+`components/` spec，也還沒開始實作。本輪處理 variants 同步、三個斷點 frame
+讀取、icon 盤點同步。
+
+### 本輪改動
+
+1. **Variants 同步**（使用者貼 Figma Variables 匯出 JSON，比對後只有 2 筆
+   真正新增）：`specs/assets/figma-variables.json` + `specs/assets/tokens.md`
+   Accent 表新增 `linear-function-button-delete` (#F3C2C4)、
+   `linear-function-button-duplication` (#C6DDFE)；`preview/assets/css/base.css`
+   對應補 2 個 CSS variable。`lastSyncedAt` 更新為 2026-07-30。
+   `./scripts/lint-tokens.sh` verified 通過。
+2. **讀完 3 個 RWD frame**（各自截圖 + get_selection JSON 交叉核對）：
+   - desktop `2137:101408`（1440x1130）：aside 選單 + topbar breadcrumb
+     chips/function icons + 房型卡片 3 欄 grid（6 張卡）
+   - mobile~tablet `2137:103071`（767x2956）：aside/breadcrumb/function
+     icons 整排消失，topbar 只剩 logo + 選單開關 icon；卡片改單欄滿寬
+   - mobile `2137:103890`（375x3164）：同上但操作列順序反過來（新增/重整
+     按鈕在上，摘要文字在下）；卡片按鈕 3 顆時換行（修改+複製一行,
+     刪除置中另一行）
+   - 房型卡片共同結構：左上角 ribbon 數字、圓形圖片（實照或
+     `to be uploaded` 佔位）、名稱、副標「房價跟隨」、功能按鈕兩態
+     （修改/複製/刪除 或 查看/還原）、統計列（代號/床型/間數/營運方式）
+3. **Icon 盤點同步**（使用者說這版用了新 icon，要求全部讀一次）：跨 3 個
+   frame 收集全部 `icons/*` 實際使用清單，跟 `preview/assets/icons/` +
+   `specs/icons.md` 比對，真正新增只有 2 個：`preview-outline`（查看按鈕）、
+   `restore-page-outline-rounded`（還原按鈕，語意跟既有 `restore` 不同,
+   已在 icons.md 加註不要混用）。SVG 已用 `save_screenshots(SVG)` 匯出到
+   `preview/assets/icons/`，`specs/icons.md` 清單 + 分類索引都補上（含補
+   `restore` 原本漏列在分類索引的舊缺口）。其餘 icon（bulletin/close/
+   cursor/down/download/duplicate/edit/email/image/image-empty/logo/
+   logout/message/operation-system/outline-plus/person-md/restore/right/
+   service/switch/system/trash-can）皆已存在，沿用。topbar 選單開關用的
+   `Folder` instance（雙矩形）比對現有 `folder.svg` 结构一致，非新 icon。
+4. **讀完 3 個 modal**（新增 `2137:101712` / 修改 `2137:104312` / 查看
+   `2137:104757`，各自截圖 + JSON 核對）：修改比新增多 3 個欄位（人數/
+   加人/加床/房數修改 toggle），版面整段重排；營運型態/顯示分類/房價跟隨
+   在修改模式從 Select 變成 disabled Input；房型類別在修改模式從 Select
+   變成白底可編輯 Input。查看 = 修改的全欄位 disabled 版本，兩個文案卡
+   移除「編輯」按鈕，facilities chip 全部統一灰色不保留選中藍色，footer
+   只留一顆「關閉」按鈕（不是取消+儲存）。
+5. **寫入 spec**（本輪完成，figma-go read 階段結束）：
+   - `components/modal.md` 新增 `state=room-type` 段（新增/修改/查看
+     modal 完整規格，含 disabled 判斷規則、欄位差異表、固定文字內容、
+     toggle 沿用既有 `.member-data-switch` pattern）
+   - 新檔 `components/room-type-card.md`（卡片 anatomy、狀態、統計列
+     table 實作規格、圖片點擊開照片管理 modal 的規則）
+   - 新檔 `specs/pages/room-type.md`（頁面佈局、操作列斷點差異、shell
+     沿用規則、modal 開啟入口彙整）
+   - 三份 lint（conventions/fonts/tokens/partials）皆 verified 通過
+
+### 重要決定（使用者拍板）
+
+- ribbon 數字、缺副標的卡片（"嗚啦啦"）：都是佔位/刻意設計，渲染文字對了
+  就好，不用深究真實語意，之後接後端
+- 「僅 住宿類型」旁沒有 toggle/checkbox，純說明文字
+- 「重整」按鈕（icons/restore + 文字「重整」）= 重新整理當前頁，同元件
+  同位置以後不用再問（已寫入記憶 `feedback_refresh_button_semantics`）
+- aside 選單佔位標籤沿用既有規則，不跟 Figma（既有記憶
+  `feedback_menu_list_source`）
+- mobile/tablet 消失的 breadcrumb chips + function icons：沿用既有 shell
+  pattern，不是頁面專屬規格 - 對照 `preview/lodging-info.html` +
+  `preview/partials/topbar.html`/`aside.html` 確認：`#desktopTopRow`
+  只在 `md:flex` 顯示；`<768` 用獨立 mobile top bar（logo +
+  `#mobileMenuBtn` 開 `folder.svg`），chips/function icons 收進 aside
+  抽屜（`mobile-sidebar-header`），三個 Figma frame 的行為完全對得上
+- 統計列（代號/床型/間數/營運方式）決定當 table 做，不分斷點：外層
+  `overflow-x-auto`，`th`/`td` 用 `white-space: nowrap` 讓內容天然撐開觸發
+  橫向捲動，不寫死固定寬度，三個斷點共用同一份 markup/CSS。已對齊
+  `account-permission.html` 的 `.ap-records-table`（CSS 在該檔案
+  head 28-44 行，markup 448-488 行）跟 `order-processing.html` 386 行
+  `.op-table md:min-w-[1080px]` 兩個既有 table 前例，使用者拍板照這個
+  說明先做，做出來再視覺調整（新 scoped class 定案 `.room-type-stat-table`，
+  text-align: center）
+- Modal disabled 規則：白底 = 可編輯，只要容器變色（灰底）就是 disabled，
+  沒有例外；這條規則同時適用於 Input 跟 Select
+- 查看 modal facilities chip 全部 disabled 灰色是刻意設計，不保留選中藍色
+  （查看模式沒有操作權限，不需要區分選中狀態）
+- 查看 modal footer 原本 Figma 貼了取消+儲存兩顆按鈕是使用者貼稿疏漏，
+  拍板改成只留一顆「關閉」按鈕
+- 卡片圓形圖片點擊開啟的照片管理 modal，跟「系統設定 -> 民宿資料」頁共用
+  同一版型（`components/modal.md` `state=photo-gallery`），但 JS 要各自
+  獨立實作，不共用 `lodging-info-modals.js`（使用者明確要求 js 不要混在
+  一起）
+
+### 下一步應做
+
+1. 開始實作 `preview/room-type.html`：頁面 shell（沿用既有 aside/topbar
+   partial）+ 房型卡片列表 + 3 個資料 modal + 照片管理 modal（獨立 JS）
+2. 統計列分隔線顏色（表頭跟值之間）Figma JSON 給的是 `#000000`/`#454545`，
+   實作時要對照渲染圖確認實際 token，不要照 JSON 可疑黑色直接套
+3. 統計列 table 做出來後可能需要視覺微調（使用者拍板先做再看）
+4. 房型頁 3 個 JS module（`room-type.js` / `room-type-modals.js` /
+   `room-type-photo-modal.js`）完成後記得登記進
+   `scripts/lint-partials.py` MANIFEST
+
+### 未解問題
+
+- 「已刪除」狀態卡片是否強制不能有照片，樣本不足（見
+  `components/room-type-card.md`「Figma 未定義」段），實作時先照現有樣本
+  處理，之後有更多樣本再確認
+
+---
+
 ## Session 119 交接 (2026-07-30)
 
 ### 任務：lodging-info.html 實作 task 8 - 須知與聲明卡完整編輯流程
