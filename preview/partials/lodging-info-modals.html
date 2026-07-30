@@ -112,6 +112,283 @@
   </div>
 </div>
 
+<!-- ====================================
+     分館資料編輯 Modal - state=branch-basic-info
+     (components/lodging-branch-info-modal.md)
+     Header 標題依觸發按鈕動態切換「資料修改」/「資料設定」
+     （見 js/lodging-info-modals.js openBranchInfoModal）
+==================================== -->
+<div
+  id="modalBranchInfoBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalBranchInfoTitle"
+>
+  <div class="modal-box mx-3">
+    <!-- Header -->
+    <div
+      class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+    >
+      <span
+        id="modalBranchInfoTitle"
+        class="text-xl font-semibold text-text-default"
+        >資料修改</span
+      >
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalBranchInfoBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-y-auto bg-white p-5">
+      <div class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-6 gap-y-5">
+        <!-- 列 1: 代號(唯讀)+排序（同一欄內並排兩個 mini-field，Session
+             118 補讀才發現漏掉「排序」）/ 飯店名稱
+             label 一律靠左、寬度固定 64px(w-16)、跟 input 間距 12px(gap-3)
+             （Session 118 figma-go 重讀訂正：原本誤植為 label 上下排列） -->
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">代號</label>
+            <input
+              type="text"
+              value="4"
+              readonly
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-border-disabled px-3 py-1.5 text-base text-text-secondary"
+            />
+          </div>
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">排序</label>
+            <input
+              type="text"
+              value="1"
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+            />
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">飯店名稱</label>
+          <input
+            type="text"
+            value="placeholder"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+          />
+        </div>
+
+        <!-- 列 2: 英文名稱 / Email -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">英文名稱</label>
+          <input
+            type="text"
+            value="placeholder"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+          />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">Email</label>
+          <input
+            type="text"
+            value="placeholder"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+          />
+        </div>
+
+        <!-- 列 3: 市話 / 傳真 -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">市話</label>
+          <input
+            type="text"
+            value="placeholder"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+          />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">傳真</label>
+          <input
+            type="text"
+            value="placeholder"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+          />
+        </div>
+
+        <!-- 列 4: 地址（components/location.md，此頁僅國內模式，無國籍切換；
+             外層「地址」label 靠左，內部 3 個 mini-field 各自 label 在上
+             input 在下，跟 location.md 既有慣例一致） / 企業官網 -->
+        <div class="flex items-start gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default pt-1.5">地址</label>
+          <div class="flex flex-col gap-4 flex-1 min-w-0">
+            <div class="flex flex-col gap-2">
+              <label class="text-base text-text-default">縣/市</label>
+              <select
+                class="border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default"
+              >
+                <option>placeholder</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <label class="text-base text-text-default">行政區</label>
+                <span class="text-base text-text-default">placeholder</span>
+              </div>
+              <select
+                class="border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default"
+              >
+                <option>placeholder</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="text-base text-text-default">街道</label>
+              <input
+                type="text"
+                value="placeholder"
+                class="border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">企業官網</label>
+          <input
+            type="text"
+            value="www.google.com.tw"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+          />
+        </div>
+
+        <!-- 列 5: 飯店介紹文案 / 飯店設施文案（空狀態卡片，同
+             components/lodging-branch-suneditor.md 外殼；本輪不接真實
+             SunEditor，只做靜態空狀態顯示） -->
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">飯店介紹文案</label>
+          <div
+            class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">飯店設施文案</label>
+          <div
+            class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 列 6: 飯店提醒事項文案 / 飯店交通文案 -->
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">飯店提醒事項文案</label>
+          <div
+            class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">飯店交通文案</label>
+          <div
+            class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 列 7: 飯店設施項目（chip 多選，滿版；資料/清單皆為後端驅動，
+             這裡是 Figma demo 示例文字，數量與內容不代表實際固定清單） -->
+        <div class="flex flex-col gap-2 min-[640px]:col-span-2">
+          <label class="text-base text-text-default">飯店設施項目</label>
+          <div
+            id="lodgingBranchInfoFacilityChips"
+            class="flex flex-wrap gap-4 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <button
+              type="button"
+              data-facility-selected="true"
+              class="lodging-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer"
+            >
+              設施一
+            </button>
+            <button
+              type="button"
+              data-facility-selected="true"
+              class="lodging-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer"
+            >
+              設施二
+            </button>
+            <button
+              type="button"
+              data-facility-selected="true"
+              class="lodging-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer"
+            >
+              設施三
+            </button>
+            <button
+              type="button"
+              data-facility-selected="false"
+              class="lodging-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer"
+            >
+              設施五六七八九
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div
+      class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 border-t border-border-disabled px-3"
+    >
+      <button
+        type="button"
+        class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+        data-modal="modalBranchInfoBackdrop"
+      >
+        取消
+      </button>
+      <button
+        type="button"
+        id="lodgingBranchInfoSaveBtn"
+        class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+        data-modal="modalBranchInfoBackdrop"
+      >
+        儲存
+      </button>
+    </div>
+  </div>
+</div>
+
 <input
   type="file"
   id="lodgingPhotoFileInput"

@@ -252,4 +252,27 @@ export function initLodgingInfoModals() {
   }
 
   initDragAndDrop();
+  initBranchInfoModal();
+}
+
+// 分館資料編輯 modal（components/lodging-branch-info-modal.md）：內容
+// 完全相同，只有 header 標題依觸發按鈕動態切換「資料修改」/「資料設定」
+function initBranchInfoModal() {
+  var title = document.getElementById("modalBranchInfoTitle");
+  document.querySelectorAll("[data-branch-info-title]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (title) title.textContent = btn.dataset.branchInfoTitle;
+    });
+  });
+
+  // 飯店設施項目 chip 多選（click delegation，沿用既有 pill chip pattern）
+  var chips = document.getElementById("lodgingBranchInfoFacilityChips");
+  if (chips) {
+    chips.addEventListener("click", function (e) {
+      var chip = e.target.closest(".lodging-facility-chip");
+      if (!chip) return;
+      var selected = chip.dataset.facilitySelected === "true";
+      chip.dataset.facilitySelected = selected ? "false" : "true";
+    });
+  }
 }

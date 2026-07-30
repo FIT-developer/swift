@@ -82,6 +82,16 @@
   flex-direction: column;
   overflow: hidden;
 }
+#modalBranchInfoBackdrop .modal-box {
+  /* components/lodging-branch-info-modal.md，desktop 800px 參照，
+     < 1140px 共用上限不封頂 */
+  width: min(calc(100vw - 24px), 800px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 /* 說明 banner 分隔線：>=640 垂直短線、<640 水平短線 */
 .lodging-photo-banner-divider {
   width: 1px;
@@ -631,7 +641,8 @@
   #modalSmsBackdrop,
   #modalOrderSummaryBackdrop,
   #modalOrderEditBackdrop,
-  #modalPhotoGalleryBackdrop {
+  #modalPhotoGalleryBackdrop,
+  #modalBranchInfoBackdrop {
     align-items: stretch;
     justify-content: stretch;
     padding: 0;
@@ -643,7 +654,8 @@
   #modalSmsBackdrop .modal-box,
   #modalOrderSummaryBackdrop .modal-box,
   #modalOrderEditBackdrop .modal-box,
-  #modalPhotoGalleryBackdrop .modal-box {
+  #modalPhotoGalleryBackdrop .modal-box,
+  #modalBranchInfoBackdrop .modal-box {
     width: 100%;
     max-width: 100%;
     max-height: none;
