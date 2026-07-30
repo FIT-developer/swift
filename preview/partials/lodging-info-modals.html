@@ -259,23 +259,13 @@
           />
         </div>
 
-        <!-- 列 5: 飯店介紹文案 / 飯店設施文案（空狀態卡片，同
-             components/lodging-branch-suneditor.md 外殼；本輪不接真實
-             SunEditor，只做靜態空狀態顯示） -->
+        <!-- 列 5: 飯店介紹文案（完整 SunEditor UI，components/lodging-
+             branch-suneditor.md；跟主頁須知與聲明卡差異只有沒有「來源/
+             範本」按鈕，2026-07-30 使用者指定只補這一張，其餘 3 張文案
+             卡片維持靜態空狀態） / 飯店設施文案（維持靜態空狀態） -->
         <div class="flex flex-col gap-2">
           <label class="text-base text-text-default">飯店介紹文案</label>
-          <div
-            class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
-          >
-            <span class="text-base text-text-default">尚未填寫</span>
-            <button
-              type="button"
-              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
-            >
-              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
-              <span>編輯</span>
-            </button>
-          </div>
+          <div id="lodgingBranchIntroCard"></div>
         </div>
         <div class="flex flex-col gap-2">
           <label class="text-base text-text-default">飯店設施文案</label>

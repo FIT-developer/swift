@@ -205,12 +205,107 @@ contract（Session 之前讀取），本輪開工前先用 `get_node` + `save_sc
 驗證：4 lint 全 exit 0、`driver.mjs smoke` 5 頁全 PASS、chrome-devtools
 截圖 + 座標量測 + 原生 drag/upload 測試皆 self-tested 通過。
 
+### Task 10 完成：全頁驗證（lodging-info.html 全部 10 個 task 收尾）
+
+`scripts/smoke-test.mjs` 新增 `lodging-info.html` 頁面登記（先前一直只在
+`APP_CSS_LOADED_CHECK` 的 domain CSS 清單裡出現，頁面本身沒被跑過），
+12 個 checks，涵蓋：
+- 分館列/基本資訊卡渲染數量
+- 須知與聲明卡分類/語言 tabs 數量（row1 單語系 4 分類 tab、row2 多語系
+  3 語言 tab）
+- 照片管理 modal 開關 + 主圖 pill 永遠顯示在空的排序第 1 位
+- 分館資料編輯 modal 開關 + header 標題依觸發按鈕正確切換「資料修改」/
+  「資料設定」
+- 多語系狀態 modal 開關 + 語言 tab 切換互斥
+- 須知與聲明卡完整編輯/儲存/取消 round-trip（輸入內容 -> 儲存 -> 驗證
+  唯讀顯示 -> 再次編輯改別的內容 -> 取消 -> 驗證回復到儲存值，不是改後
+  的內容）
+- 沿用共用 `SHELL_CHECKS`（aside accordion / 收合全部 / mobile drawer）
+  跟 `SESSION_MODAL_CHECKS`（登出 modal 開關 + ESC）
+
+### 驗證（Task 10，全頁最終驗收）
+
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0
+- `node .claude/skills/run-swift/driver.mjs smoke`：**6 頁全 PASS**
+  （`lodging-info.html` 12 checks，含上述互動流程，非僅存在性檢查）
+- 正式 QA 截圖存 `specs/qa-screenshots/session-119/`（8 張）：
+  - `lodging-info-overview-{1440,768,375}.png`：全頁三斷點總覽
+  - `lodging-info-photo-modal-mainpill-1440.png`：照片管理 modal + 主圖
+    pill 在空格的驗收畫面
+  - `lodging-info-branch-info-modal-1440.png`：分館資料編輯 modal
+  - `lodging-info-multilingual-modal-{1440,375}.png`：多語系狀態 modal
+    桌面/手機全螢幕
+  - `lodging-info-notice-edit-multilang-1440.png`：須知與聲明卡多語系
+    編輯態（翻譯按鈕/語言 tabs）
+- 全部截圖肉眼核對跟預期一致，無跑版或缺漏
+
+### Task 10 驗收後追加：分館資料編輯 modal「飯店介紹文案」補上完整 SunEditor UI
+
+使用者驗收時發現分館資料編輯 modal（`state=branch-basic-info`）的 4 張
+文案卡片一直維持靜態空狀態（task 7 範圍），沒有套用
+`components/lodging-branch-suneditor.md` 的完整 SunEditor UI（跟主頁
+須知與聲明卡本應共用同一套規格）。使用者確認**只需要補「飯店介紹文案」
+這一張**，其餘 3 張（設施/提醒事項/交通）維持現狀不動。
+
+新增 `preview/js/lodging-branch-content-card.js`
+（`initLodgingBranchContentCard()`）：跟 `lodging-notice-card.js` 同一套
+語言 tabs/翻譯按鈕/SunEditor 佔位/全部儲存-取消邏輯，複用
+`suneditor-instance.js` / `toast.js`，也直接複用了
+`.lodging-notice-lang-tab` / `.lodging-notice-translate-btn` /
+`.lodging-notice-tooltip(-wrap)` 既有 CSS class 與全域 tooltip hover
+delegation（不用重寫）。**跟須知與聲明卡的唯一差異**：沒有「來源/範本」
+按鈕 -- 這是這個元件的基礎規格本來就沒有的功能（`lodging-branch-
+suneditor.md` 001-007 狀態本身沒有來源按鈕，來源按鈕是 notice-card 額外
+加的），不是拿掉。Demo 語系設為 3 語言（繁中/英/韓），初始空狀態。
+
+修改檔案：
+- `preview/partials/lodging-info-modals.html`：飯店介紹文案卡片內容區
+  改成空容器 `#lodgingBranchIntroCard` 交給 JS render
+- `preview/lodging-info.html`：inline script 補 import + init 呼叫
+- `scripts/lint-partials.py`：MANIFEST 補新 module
+- `scripts/smoke-test.mjs`：`lodging-info.html` 補一項 check（多語言
+  tabs 數量、確認無來源按鈕、edit-save round trip），變成 13 checks
+- `components/lodging-branch-info-modal.md` / `lodging-branch-
+  suneditor.md`：補「實作範圍」說明（只有介紹文案套用，其餘 3 張維持
+  靜態，且注記無來源按鈕是規格本來就沒有，非拿掉）
+
+驗證：4 lint 全 exit 0、`driver.mjs smoke` 6 頁全 PASS（lodging-info.html
+13 checks）、chrome-devtools MCP 手動測試多語言 tab 切換 + 各語言各自
+儲存 + 翻譯按鈕 enabled/disabled + toast，console 無新增錯誤。
+
+### 驗收後再追加：翻譯列左側橘色細線
+
+使用者對照 Figma 發現「從繁中譯為英文」翻譯列左側少了一條橘色細線。
+figma-go 重讀 + `save_screenshots` 像素量測確認：這條線實際只有 **2px
+寬**、`Color/Brand/Brand-200`（`#fad4ae`），是左側細線不是四邊外框（跟
+先前拿掉的「翻譯列四邊外框」是兩件不同的事，不要混淆）。
+
+新增 CSS class `.lodging-notice-translate-row { border-left: 2px solid
+var(--color-brand-200); }`（`preview/assets/css/lodging-info.css`），
+套用到 `preview/js/lodging-notice-card.js` 與
+`preview/js/lodging-branch-content-card.js` 兩處翻譯列（須知與聲明卡 +
+分館資料編輯 modal 飯店介紹文案，兩處共用同一套翻譯列元件）。已更新
+`components/lodging-branch-suneditor.md` 對應規格文字。
+
+驗證：4 lint 全 exit 0、`driver.mjs smoke` 6 頁全 PASS、chrome-devtools
+截圖確認兩處都正確顯示左側細線。
+
+### lodging-info.html 頁面狀態
+
+**task 1-10 全部完成**（Session 118 起跑 task 1-7、Session 119 完成
+task 8-10），加上驗收後追加的「飯店介紹文案」SunEditor UI 補充、翻譯列
+左側細線訂正。這頁的實作、規格訂正、視覺覆核、自動化 smoke coverage、
+正式 QA 截圖皆已收斂，等待使用者最終驗收；若之後有新的視覺/行為回饋，
+沿用本頁既有 `preview/js/lodging-notice-card.js` /
+`lodging-branch-content-card.js` / `lodging-info-modals.js` /
+`suneditor-instance.js` / `toast.js` 模組架構修改，不需要重新拆分。
+
 ### 下一步應做
 
-- **Task 10**（最後一個）：全頁驗證（4 lint + smoke test 頁面清單登記
-  lodging-info.html + 多角度正式 QA 截圖存
-  `specs/qa-screenshots/session-119/`（或當時實際 session 編號）+
-  更新 progress.md，完成後 lodging-info.html 這頁即全部完成）
+- 無待辦（lodging-info.html 頁面本身已完成，含飯店介紹文案補充與翻譯列
+  細線訂正）；下一個工作項目待使用者指派新任務（例如下一頁的 Figma
+  讀取，或既有頁面的其他回饋）
 
 ---
 

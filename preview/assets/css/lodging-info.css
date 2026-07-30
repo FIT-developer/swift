@@ -196,6 +196,15 @@
   border-bottom-color: var(--color-neutral-400);
 }
 
+/* 翻譯列左側橘色細線（2026-07-30 使用者對照 Figma 補上）：save_screenshots
+   量測像素，實際只有 2px 寬、Brand-200 色，不是完整外框（get_node 回報
+   的 strokes 在 Frame 上通常是四邊，這裡實測只有左邊，同 start.md「單邊
+   stroke」陷阱）。不要跟先前拿掉的「整列外框」搞混，那個是四邊框、這個
+   是左側細線，兩者是不同東西。 */
+.lodging-notice-translate-row {
+  border-left: 2px solid var(--color-brand-200);
+}
+
 /* 翻譯按鈕：icon-only（2026-07-30 使用者對照 Figma 訂正：無列外框、
    按鈕本身不是純文字「翻譯」而是 icon）。enabled = Brand-100 底 +
    Brand-300 框；disabled = Brand-100 50% 透明底（color-mix 從 token

@@ -485,6 +485,7 @@
       import { initTopbarModals } from "./js/topbar-modals.js";
       import { initLodgingInfoModals } from "./js/lodging-info-modals.js";
       import { initLodgingNoticeCards } from "./js/lodging-notice-card.js";
+      import { initLodgingBranchContentCard } from "./js/lodging-branch-content-card.js";
 
       await loadPartials();
       // page shell：aside accordion / 收合全部 / mobile drawer
@@ -500,6 +501,9 @@
       // 須知與聲明卡：分類/語言 tabs、SunEditor 佔位、翻譯/來源按鈕、
       // 全部儲存-取消跨維度暫存（task 8，非 modal，獨立於上面 modal 群）
       initLodgingNoticeCards();
+      // 分館資料編輯 modal 內「飯店介紹文案」：語言 tabs、SunEditor 佔位、
+      // 翻譯按鈕（無來源/範本按鈕，跟須知與聲明卡的差異）
+      initLodgingBranchContentCard();
     </script>
   </body>
 </html>

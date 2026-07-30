@@ -165,7 +165,8 @@ function buildTranslateRow(category, lang) {
   var zhContent = (category.edit.draft.zh || "").trim();
   var enabled = zhContent.length > 0;
   var wrap = document.createElement("div");
-  wrap.className = "flex items-center justify-between gap-3";
+  wrap.className =
+    "lodging-notice-translate-row flex items-center justify-between gap-3 pl-3";
   var label = document.createElement("span");
   label.className = "text-base text-text-default";
   label.textContent = "從繁中譯為" + (LANG_LABELS[lang] || lang);

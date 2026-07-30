@@ -539,6 +539,144 @@ const PAGES = [
       ...SESSION_MODAL_CHECKS,
     ],
   },
+  {
+    file: "lodging-info.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalLogoutBackdrop") &&
+      !!document.getElementById("modalPhotoGalleryBackdrop") &&
+      document.querySelectorAll(".lodging-branch-row").length >= 2
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "branch rows and basic-info cards rendered",
+        expr: `
+          (function () {
+            var rows = document.querySelectorAll(".lodging-branch-row");
+            if (rows.length !== 2) return "branch row count: " + rows.length;
+            var cards = document.querySelectorAll(".lodging-branch-card");
+            if (cards.length !== 2) return "basic-info card count: " + cards.length;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "notice card category/language tabs rendered",
+        expr: `
+          (function () {
+            var row1Tabs = document.querySelectorAll('#lodgingNoticeCard-row1 [data-notice-tab]');
+            var row2LangTabs = document.querySelectorAll('#lodgingNoticeCard-row2 [data-notice-lang]');
+            if (row1Tabs.length !== 4) return "row1 category tabs: " + row1Tabs.length;
+            if (row2LangTabs.length !== 3) return "row2 language tabs: " + row2LangTabs.length;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "photo-gallery modal open/close + main-image pill always on slot 1",
+        expr: `
+          (function () {
+            var res = __smoke.modalCheck("#lodgingRow1PhotoTrigger", "modalPhotoGalleryBackdrop");
+            if (res !== true) return res;
+            document.getElementById("lodgingRow2PhotoTrigger").click();
+            var firstCard = document.querySelector('#lodgingPhotoCardGrid [data-slot="0"]');
+            if (!firstCard || !firstCard.querySelector("span.rounded-full"))
+              return "main-image pill missing on empty slot 1";
+            document.querySelector("#modalPhotoGalleryBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "branch-info modal open/close + header title swaps",
+        expr: `
+          (function () {
+            var res = __smoke.modalCheck("#lodgingRow1EditBtn", "modalBranchInfoBackdrop");
+            if (res !== true) return res;
+            var title = document.getElementById("modalBranchInfoTitle");
+            document.getElementById("lodgingRow1EditBtn").click();
+            if (title.textContent !== "資料修改") return "row1 title: " + title.textContent;
+            document.querySelector("#modalBranchInfoBackdrop .modal-close-btn").click();
+            document.getElementById("lodgingRow2EditBtn").click();
+            if (title.textContent !== "資料設定") return "row2 title: " + title.textContent;
+            document.querySelector("#modalBranchInfoBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "multilingual-status modal open/close + language tab toggle",
+        expr: `
+          (function () {
+            var res = __smoke.modalCheck("#lodgingMultilingualStatusBtn", "modalMultilingualStatusBackdrop");
+            if (res !== true) return res;
+            document.getElementById("lodgingMultilingualStatusBtn").click();
+            var koTab = document.querySelector('#lodgingMultilingualLangTabs [data-lang="ko"]');
+            koTab.click();
+            var active = document.querySelectorAll("#lodgingMultilingualLangTabs .is-active");
+            if (active.length !== 1 || active[0].dataset.lang !== "ko")
+              return "language tab toggle failed";
+            document.querySelector("#modalMultilingualStatusBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "notice card edit/save/cancel roundtrip",
+        expr: `
+          (function () {
+            var root = "#lodgingNoticeCard-row1 ";
+            document.querySelector(root + "[data-notice-edit]").click();
+            var ta = document.querySelector(root + ".lodging-suneditor-textarea");
+            if (!ta) return "textarea not found after edit click";
+            ta.value = "smoke-test-content";
+            ta.dispatchEvent(new Event("input", { bubbles: true }));
+            document.querySelector(root + "[data-notice-save]").click();
+            var savedP = document.querySelector(root + "p");
+            if (!savedP || savedP.textContent !== "smoke-test-content")
+              return "save did not persist content";
+            document.querySelector(root + "[data-notice-edit]").click();
+            var ta2 = document.querySelector(root + ".lodging-suneditor-textarea");
+            ta2.value = "should-not-persist";
+            ta2.dispatchEvent(new Event("input", { bubbles: true }));
+            document.querySelector(root + "[data-notice-cancel]").click();
+            var savedP2 = document.querySelector(root + "p");
+            if (!savedP2 || savedP2.textContent !== "smoke-test-content")
+              return "cancel did not revert correctly";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "branch-info modal intro-caption card (multi-lang, no source buttons)",
+        expr: `
+          (function () {
+            document.getElementById("lodgingRow1EditBtn").click();
+            var container = document.getElementById("lodgingBranchIntroCard");
+            container.querySelector("[data-intro-edit]").click();
+            if (container.querySelector("[data-intro-source]"))
+              return "intro-caption card should not have source buttons";
+            var langTabs = container.querySelectorAll("[data-intro-lang]");
+            if (langTabs.length !== 3) return "intro-caption lang tabs: " + langTabs.length;
+            var ta = container.querySelector(".lodging-suneditor-textarea");
+            if (!ta) return "textarea not found after edit click";
+            ta.value = "smoke-intro-content";
+            ta.dispatchEvent(new Event("input", { bubbles: true }));
+            container.querySelector("[data-intro-save]").click();
+            var savedP = container.querySelector("p");
+            if (!savedP || savedP.textContent !== "smoke-intro-content")
+              return "intro-caption save did not persist content";
+            document.querySelector("#modalBranchInfoBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
 ];
 
 // 忽略与頁面品質無關的訊息（favicon 未提供是已知狀態）

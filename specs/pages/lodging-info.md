@@ -5,10 +5,12 @@
 - Mobile~tablet: FRAME `2126:76269`，767x1646
 - Mobile: FRAME `2126:76796`，375x2162
 
-**實作**: 尚未開始（本檔為 spec-only，`preview/lodging-info.html` 尚未產出）
+**實作**: 完成（`preview/lodging-info.html`，Session 118-119，task 1-10
+全部完成；2026-07-30 smoke test 6 頁全 PASS，含本頁 12 項互動檢查）
 **狀態**: 分館卡片區 3 張卡 + 相關 modal / 元件、頁面容器層級（外層 padding、
-卡片間 gap、頂部工具列、3 斷點精確寬度）皆已讀取定案（Session 118，
-2026-07-29）。規格已齊全，可以開始實作 `preview/lodging-info.html`。
+卡片間 gap、頂部工具列、3 斷點精確寬度）、須知與聲明卡完整編輯流程、
+多語系狀態總覽 modal 皆已實作並 self-tested，詳見 `specs/progress.md`
+Session 119 交接。
 
 ---
 

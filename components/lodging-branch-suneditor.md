@@ -13,7 +13,7 @@
 | 007 | 繁中語系為空值時，翻譯按鈕 disabled + tips | `2129:80150` |
 
 **讀取日期**：2026-07-29
-**使用位置**：`components/lodging-branch-info-modal.md` 的 4 張文案卡片（飯店介紹文案 / 飯店設施文案 / 飯店提醒事項文案 / 飯店交通文案），結構與行為完全相同，本檔只用「飯店介紹文案」示意稿讀取，套用到其他 3 張卡片。
+**使用位置**：`components/lodging-branch-info-modal.md` 的 4 張文案卡片（飯店介紹文案 / 飯店設施文案 / 飯店提醒事項文案 / 飯店交通文案），結構與行為完全相同，本檔只用「飯店介紹文案」示意稿讀取。**實作範圍（2026-07-30 使用者指定）**：目前只有「飯店介紹文案」實際套用本檔規格（`preview/js/lodging-branch-content-card.js`），其餘 3 張卡片維持靜態空狀態，待之後有需要再個別補上，屆時直接沿用本檔規格與該檔的實作模式即可。
 
 ---
 
@@ -144,7 +144,9 @@ Row 3 續: 原始碼檢視(SunEditor/code)
 | 繁體中文有內容 | 翻譯按鈕 enabled（bg `Color/Brand/Brand-100`，border `Color/Brand/Brand-300`） |
 | 繁體中文無內容 | 翻譯按鈕 disabled（bg `Color/Brand/Brand-100` 50% 透明，border `Color/Brand/Brand-50`），hover 顯示 tooltip「請先填寫繁體中文」（bg `Color/Neutral/700`，白字，遵循 `start.md` 「Tooltip 視窗自適應」規則，開啟時夾取在螢幕內） |
 
-**翻譯按鈕外觀（2026-07-30 使用者對照 Figma 訂正，取代先前「純文字翻譯 + 列外框」的誤讀）**：按鈕本身是 icon-only（`icons/translation.svg`，無文字，用 `aria-label="翻譯"` 做無障礙標示），不是純文字「翻譯」；「從繁中譯為 [語言]」label 與翻譯按鈕所在的這一列本身**沒有外框**（先前「翻譯按鈕列外框：Brand-200」的記錄有誤，已從 Typography 表移除）。
+**翻譯按鈕外觀（2026-07-30 使用者對照 Figma 訂正，取代先前「純文字翻譯 + 列外框」的誤讀）**：按鈕本身是 icon-only（`icons/translation.svg`，無文字，用 `aria-label="翻譯"` 做無障礙標示），不是純文字「翻譯」；「從繁中譯為 [語言]」label 與翻譯按鈕所在的這一列本身**沒有四邊外框**（先前「翻譯按鈕列外框：Brand-200」的記錄有誤，已從 Typography 表移除）。
+
+**翻譯列左側橘色細線（2026-07-30 使用者再次對照 Figma 補上）**：這一列左側有一條 `Color/Brand/Brand-200`（`#fad4ae`）的細線，`save_screenshots` 實測像素寬度只有 **2px**，不是完整外框（`get_node` 回報的 `strokes` 在 FRAME 節點上通常視為四邊，這裡實測只有左側，屬於 start.md「單邊 stroke」陷阱的又一個案例）。跟上面訂正拿掉的「四邊外框」是兩件不同的事：四邊框已確認拿掉不用做，左側細線是另一個獨立、確實存在的視覺元素，要保留。CSS 實作 `.lodging-notice-translate-row { border-left: 2px solid var(--color-brand-200); }`。
 
 ### 翻譯按鈕點擊行為（本輪，2026-07-29 拍板）
 
@@ -289,6 +291,7 @@ start.md「JSON 不等於視覺」的既知陷阱類型，跟隱藏圖層/單邊
 | 翻譯按鈕 enabled border | - | `Color/Brand/Brand-300` |
 | 翻譯按鈕 disabled bg | 50% 透明 | `Color/Brand/Brand-100` |
 | 翻譯按鈕 disabled border | - | `Color/Brand/Brand-50` |
+| 翻譯列左側細線（2px） | - | `Color/Brand/Brand-200` |
 | Tooltip / Toast bg | - | `Color/Neutral/700` |
 | SunEditor 工具列群組 bg/border | - | `Color/Neutral/0` / `Color/Border/Default` |
 | SunEditor 內容區 border | - | `Color/Neutral/200` |

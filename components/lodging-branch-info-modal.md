@@ -104,6 +104,24 @@ Frame 277 (bg Color/Neutral/75, border Color/Border/Default, radius 12, padding 
 
 **不是 modal**：點擊「編輯」不會開新的巢狀 modal（跟 `start.md` 的「巢狀 modal 規則」不適用於這裡）。SunEditor 只在各自卡片自己的 container 內 inline 展開/切換，不跳出到其他層。本輪不安裝、不串接真實 SunEditor library，用 `<textarea>` 佔位，但完整套件研究、多語系行為規則已在 `components/lodging-branch-suneditor.md` 定案，減少後續真正串接時的返工。
 
+### 實作範圍（2026-07-30 使用者指定）
+
+4 張卡片**只有「飯店介紹文案」補上完整 SunEditor UI**（語言 tabs、
+SunEditor 佔位工具列、翻譯按鈕、全部儲存/取消，見
+`components/lodging-branch-suneditor.md`）；「飯店設施文案」「飯店提醒
+事項文案」「飯店交通文案」維持靜態空狀態顯示（`尚未填寫` + 編輯按鈕，
+點擊不觸發任何行為），待之後有需要再個別補上。
+
+「飯店介紹文案」跟主頁「須知與聲明卡」（`components/lodging-branch-
+notice-card.md`）的差異：**沒有「來源/範本」按鈕**（從系統範本建立/從
+總部範本建立），這是本元件的基礎規格就沒有的功能，不是被拿掉；其餘
+（語言 tabs、翻譯按鈕、SunEditor 佔位、全部儲存/取消跨語言暫存）行為
+完全一致。demo 語系設定為 3 語言（繁中/英/韓），初始皆為空狀態。
+
+實作位置：`preview/js/lodging-branch-content-card.js`
+（`initLodgingBranchContentCard()`），複用 `suneditor-instance.js` /
+`toast.js` 共用 helper，掛載容器為 `#lodgingBranchIntroCard`。
+
 ---
 
 ## 飯店設施項目（chip 多選）
