@@ -89,9 +89,9 @@
 ## 本 session 後續：開始實作 preview/lodging-info.html（task 1-6/10 完成）
 
 spec 定案後同一個 session 內接續開始實作，依「粒度原則」拆成 10 個
-task 逐一做完 + 截圖驗收 + 使用者確認才進下一步。以下是 task 1-6 的
-交接記錄（task 7-10 尚未開始：branch-basic-info 編輯 modal / 須知與聲明
-編輯完整流程 / 多語系狀態 modal / 全頁驗證）。
+task 逐一做完 + 截圖驗收 + 使用者確認才進下一步。以下是 task 1-7 的
+交接記錄（task 8-10 尚未開始：須知與聲明編輯完整流程 / 多語系狀態
+modal / 全頁驗證）。
 
 ### 已完成 task
 1. 頁面骨架：shell partial 組合 + 頁面容器 + 頂部工具列。註冊進
@@ -104,6 +104,10 @@ task 逐一做完 + 截圖驗收 + 使用者確認才進下一步。以下是 ta
    狀態，網域安全示範失效態）- 兩列合起來涵蓋須知與聲明卡的兩種狀態
 6. 照片管理 modal（`state=photo-gallery`）：5 卡 grid、完整拖曳排序/
    上傳/刪除/取消/儲存邏輯（不是純外觀），row1/row2 各自獨立圖片資料
+7. 分館資料編輯 modal（`state=branch-basic-info`）：標題依「修改
+   4-1」/「設定」動態切換「資料修改」/「資料設定」、全部欄位（代號+
+   排序/飯店名稱/英文名稱/Email/市話/傳真/地址(`Location`元件)/企業
+   官網/4 張文案卡片空狀態/飯店設施項目 chip 多選可切換選中態）
 
 ### 過程中發現並修正的問題（供後續 task 參考，避免重複踩雷）
 
@@ -154,28 +158,46 @@ devtools 分頁視窗寬度不夠**，不是 code 問題；另外過程中我自
 84px（而非 185px）高度。**下次若又覺得「置中沒生效」，先確認是不是
 量測時機太早（Tailwind CDN 非同步）或觀察視窗太窄，不要急著改 code。**
 
+**8. 分館資料編輯 modal 欄位漏讀 + 版型誤判（task 7，使用者發現）**：
+一開始沒重讀 Figma、只憑 spec 文字表格實作，結果：(a) 第 1 列左欄漏了
+「排序」欄位，spec 表格只寫「代號」，實際 Figma 是「代號+排序」兩個
+mini-field 並排；(b) 誤判成全部欄位「label 在上、input 在下」堆疊，
+實際除了 4 張文案卡片外，其餘欄位都是「label 固定寬 64px 在左、
+input 在右」。用 `get_node` 重讀整棵樹（node `2129:79343`）才抓到正確
+結構，已更新 `components/lodging-branch-info-modal.md`。**教訓：這類
+「有明確 spec 文字表格」的欄位，仍然可能是表格本身寫漏/寫錯，不能因為
+spec 已經有文字描述就跳過重新核對實際 pixel 結構，尤其是欄位排列方向
+這種一眼看不出來的細節。**
+
+**9. 代號+排序固定寬度在手機版溢出（task 7，自己抓到）**：原本用
+`w-[101px]` 固定寬度模擬 Figma 桌面量到的 101px，在 375px 手機版會
+把整列擠出 modal 邊界被裁切。改用 `flex-1 min-w-0` 彈性寬度後修好，
+兩個 mini-field 平分可用空間。**跟 Session 118 稍早的 RWD 教訓同一個
+根因類別：桌面像素量到的固定寬度，不能直接當作所有斷點的固定值，
+窄螢幕一定要換算成彈性寬度或重新驗證。**
+
 ### 驗證
 - `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
   `lint-partials.sh` 全 exit 0（過程中也順手修正了
   `scripts/lint-conventions.py` 對 `@container (min-width:...)` 誤判成
   「未 gate 的 min-width」的 false positive）
 - 截圖：`specs/qa-screenshots/session-118/` 下大量截圖，含 8+ 個寬度
-  （320~1440）的 RWD 掃描
+  （320~1440）的 RWD 掃描，以及 task 7 分館資料編輯 modal 的 1440/700/375
+  三斷點截圖（`branch-info-modal-*.png` / `branch-info-modal-fixed-*.png`）
+- 無 console 錯誤（task 6/7 皆用 headless Chrome eval 檢查過）
 - 尚未跑 `scripts/smoke-test.mjs` 的完整頁面清單登記（該 script 的
   APP_CSS_LOADED_CHECK 已補上 `lodging-info.css`，但 lodging-info.html
   本身尚未加進 smoke test 的頁面清單，留給 task 10）
 
-### 下一步應做
-- **Task 7 尚未動工**（只讀完 `components/lodging-branch-info-modal.md`
-  完整內容，還沒寫任何 HTML/CSS/JS）：branch-basic-info 編輯 modal，
-  由分館卡「修改 4-1」/「設定」pill 按鈕開啟。內容是 2 欄 grid 表單
-  （代號唯讀/飯店名稱/英文名稱/Email/市話/傳真/地址(`components/location.md`
-  Location 元件)/企業官網/4 張文案卡片(空狀態靜態顯示即可,不接真
-  SunEditor)/飯店設施項目 chip 多選），詳細欄位規格見該檔「Body 欄位」
-  表。RWD：桌面/平板 2 欄並排（純等比縮窄）、手機單欄堆疊。開始前記得
-  也讀一下 `components/location.md`（本 session 尚未讀入 context）
-- Task 8：須知與聲明卡完整編輯流程（SunEditor + 分類 tab 切換 + 來源
-  按鈕 + 多語系），這是剩餘 task 裡最複雜的一個
+### 下一步應做（下一個 session 從這裡接續，task 1-7 皆已完成）
+- **Task 8**（下一步，剩餘 task 裡最複雜的一個）：須知與聲明卡完整
+  編輯流程 - SunEditor 工具列外殼（本輪仍不裝真 SunEditor library，
+  textarea 佔位即可）+ 分類 tab 切換 + 來源按鈕（從系統範本/從總部範本
+  建立）+ 多語系 tabs + 翻譯按鈕 + 跨分類/跨語言本地暫存邏輯。開始前
+  務必先讀 `components/lodging-branch-suneditor.md`「實際串接時的架構
+  原則」段（2026-07-30 使用者拍板：CDN-only 不客製化 + JS 要拆分成
+  共用 instance helper + 各卡片/modal 各自的呼叫端，比照
+  `preview/js/order-modals.js` 的 4 模組拆法，不要塞進一個大檔案）
 - Task 9：多語系狀態總覽 modal（頂部工具列按鈕開啟）
 - Task 10：全頁驗證（4 lint + smoke test 頁面登記 + 多角度截圖 + 更新
   progress.md）
@@ -190,10 +212,15 @@ devtools 分頁視窗寬度不夠**，不是 code 問題；另外過程中我自
   （使用者指定沿用 `landing.html`「日營收」按鈕的 `attached-link`
   default/hover pattern），非腦補，已記錄在
   `components/lodging-branch-basic-card.md`
+- 分館資料編輯 modal 欄位排列：label 固定寬 64px 在左、input 在右
+  （文案卡片例外，label 在上），這是全 modal 通用版型，不是個別欄位
+  各自的設計，task 8 若有新欄位要沿用同一套版型
+- SunEditor 只用 CDN UMD 版、不客製化；多顆獨立 instance 的 JS 要拆成
+  共用 helper + 各自呼叫端，比照 `order-modals.js` 4 模組拆法（見
+  `components/lodging-branch-suneditor.md`「實際串接時的架構原則」）
 
 ### 未解問題
-- 無（本輪範圍內的問題都已解決；task 7-10 待後續 session 或本 session
-  接續處理）
+- 無（本輪範圍內的問題都已解決；task 8-10 待下一個 session 接續處理）
 - （spec 定案階段遺留，非阻塞）範本示意文字內容、部分分類有資料部分
   無資料的示意圖，皆屬次要項目，已在 spec 內明確標記不影響實作
 
