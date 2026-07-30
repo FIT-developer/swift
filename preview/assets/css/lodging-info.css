@@ -179,3 +179,124 @@
   color: var(--color-neutral-800);
   border: 1px solid var(--color-neutral-200);
 }
+
+/* ------------------------------------------------------------------
+   須知與聲明卡（task 8，components/lodging-branch-notice-card.md +
+   components/lodging-branch-suneditor.md）：語言 tab / 翻譯按鈕 /
+   tooltip / SunEditor 佔位工具列 / toast
+   ------------------------------------------------------------------ */
+
+/* 語言 tab（繁體中文/英文/韓文）：底線 active 樣式，跟 folder-tab（分類）
+   是不同的 pill 幾何規則，不可混用 */
+.lodging-notice-lang-tab {
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.lodging-notice-lang-tab.is-active {
+  border-bottom-color: var(--color-neutral-400);
+}
+
+/* 翻譯按鈕：icon-only（2026-07-30 使用者對照 Figma 訂正：無列外框、
+   按鈕本身不是純文字「翻譯」而是 icon）。enabled = Brand-100 底 +
+   Brand-300 框；disabled = Brand-100 50% 透明底（color-mix 從 token
+   混透明，非硬編碼 hex）+ Brand-50 框 */
+.lodging-notice-translate-btn {
+  background: var(--color-brand-100);
+  border: 1px solid var(--color-brand-300);
+  color: var(--color-neutral-800);
+}
+.lodging-notice-translate-btn:disabled {
+  background: color-mix(in srgb, var(--color-brand-100) 50%, transparent);
+  border-color: var(--color-brand-50);
+  color: var(--color-neutral-800);
+}
+
+/* Tooltip（hover 觸發、非常駐）：bg Neutral/700，白字，錨在觸發元素左緣，
+   開啟時用 marginLeft 夾取（js/lodging-notice-card.js clampTooltip，
+   基準 documentElement.clientWidth，同 start.md「Tooltip 視窗自適應」） */
+.lodging-notice-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  white-space: nowrap;
+  background: var(--color-neutral-700);
+  color: var(--color-neutral-0);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: var(--font-size-sm);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  pointer-events: none;
+}
+.lodging-notice-tooltip.is-visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* SunEditor 佔位工具列（不安裝真實套件，見 components/lodging-branch-
+   suneditor.md）：按鈕群組各自獨立小容器，群組間 flex-wrap 因應變窄 */
+.lodging-suneditor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lodging-suneditor-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-neutral-0);
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+.lodging-suneditor-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 4px;
+  background: transparent;
+  cursor: not-allowed;
+}
+.lodging-suneditor-textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: var(--font-size-base);
+  color: var(--color-neutral-800);
+  outline: none;
+}
+.lodging-suneditor-textarea:focus {
+  border-color: var(--color-border-focus);
+}
+
+/* Toast（最小可用版本，components/lodging-branch-suneditor.md「Toast
+   元件」）：bg Neutral/700，白字，畫面下方置中短暫顯示 */
+.lodging-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%) translateY(8px);
+  z-index: 200;
+  background: var(--color-neutral-700);
+  color: var(--color-neutral-0);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: var(--font-size-base);
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  pointer-events: none;
+}
+.lodging-toast.is-visible {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

@@ -42,7 +42,7 @@ Frame 277 (bg Color/Neutral/75, border Color/Border/Default, radius 12, padding 
 
 ```
 Frame 277
-- "繁體中文" 標籤（單語言時固定顯示，樣式等同多語系版的 active tab：文字 Color/Neutral/800 + 底線）
+- "繁體中文" 標籤（單語言時固定顯示，文字 Color/Neutral/800 + 粗體；2026-07-30 使用者對照 Figma 訂正，取代先前誤記的「同 active tab 樣式 + 底線」）
 - SunEditor instance（見下方「SunEditor 工具列」段）
 - 卡片內建 Footer："取消" / "儲存"
 ```
@@ -140,9 +140,11 @@ Row 3 續: 原始碼檢視(SunEditor/code)
 | 條件 | 行為 |
 |---|---|
 | 目前 active tab = 繁體中文 | **完全不顯示翻譯按鈕**（不是 disabled，是整個隱藏）。理由：「從繁中翻譯成繁中」不是可執行行為，disabled 會讓使用者誤以為缺少某個條件 |
-| 目前 active tab = 其他語言（英文/韓文/...） | 顯示翻譯按鈕，文案固定「從繁中譯為 [目前語言]」 |
+| 目前 active tab = 其他語言（英文/韓文/...） | 顯示「從繁中譯為 [目前語言]」純文字 label（無外框）+ 翻譯按鈕，兩者同一列 |
 | 繁體中文有內容 | 翻譯按鈕 enabled（bg `Color/Brand/Brand-100`，border `Color/Brand/Brand-300`） |
 | 繁體中文無內容 | 翻譯按鈕 disabled（bg `Color/Brand/Brand-100` 50% 透明，border `Color/Brand/Brand-50`），hover 顯示 tooltip「請先填寫繁體中文」（bg `Color/Neutral/700`，白字，遵循 `start.md` 「Tooltip 視窗自適應」規則，開啟時夾取在螢幕內） |
+
+**翻譯按鈕外觀（2026-07-30 使用者對照 Figma 訂正，取代先前「純文字翻譯 + 列外框」的誤讀）**：按鈕本身是 icon-only（`icons/translation.svg`，無文字，用 `aria-label="翻譯"` 做無障礙標示），不是純文字「翻譯」；「從繁中譯為 [語言]」label 與翻譯按鈕所在的這一列本身**沒有外框**（先前「翻譯按鈕列外框：Brand-200」的記錄有誤，已從 Typography 表移除）。
 
 ### 翻譯按鈕點擊行為（本輪，2026-07-29 拍板）
 
@@ -232,12 +234,12 @@ Row 3 續: 原始碼檢視(SunEditor/code)
 | 語言 tab active 文字 | 16px Regular | `Color/Neutral/800` |
 | 語言 tab inactive 文字 | 16px Regular | `Color/Neutral/400` |
 | 語言 tab active 底線 | - | `Color/Neutral/400` |
+| "繁體中文" 固定標籤（單語言） | 16px SemiBold（粗體） | `Color/Neutral/800` |
 | 已儲存內容標籤 | 16px Regular | `Color/Brand/Brand-400` |
-| 翻譯按鈕 enabled bg | - | `Color/Brand/Brand-100` |
+| 翻譯按鈕（icon-only，`icons/translation.svg`） enabled bg | - | `Color/Brand/Brand-100` |
 | 翻譯按鈕 enabled border | - | `Color/Brand/Brand-300` |
 | 翻譯按鈕 disabled bg | 50% 透明 | `Color/Brand/Brand-100` |
 | 翻譯按鈕 disabled border | - | `Color/Brand/Brand-50` |
-| 翻譯按鈕列外框 | - | `Color/Brand/Brand-200` |
 | Tooltip / Toast bg | - | `Color/Neutral/700` |
 | SunEditor 工具列群組 bg/border | - | `Color/Neutral/0` / `Color/Border/Default` |
 | SunEditor 內容區 border | - | `Color/Neutral/200` |

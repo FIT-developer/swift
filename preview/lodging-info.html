@@ -16,10 +16,13 @@
   <body data-page="民宿資料">
     <div
       id="rootWrap"
-      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto p-3"
+      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto md:p-3"
     >
-      <!-- Mobile top bar (page shell; desktop top row is partials/topbar.html) -->
-      <div class="flex items-center justify-between md:hidden">
+      <!-- Mobile top bar：分館列白底卡片彼此整襯（跟 account-permission
+           同一判定，見 specs/page-architecture.md「Mobile/tablet 外層
+           shell padding」），<768 rootWrap padding 歸零改由這裡自帶
+           px-3 pt-3（對應 Figma top12/left12/right12/bottom0） -->
+      <div class="flex items-center justify-between px-3 pt-3 md:hidden">
         <a href="./landing.html" aria-label="回今日總覽">
           <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
         </a>
@@ -211,68 +214,20 @@
                   </section>
 
                   <!-- 卡 2: 須知與聲明卡（components/lodging-branch-notice-card.md）
-                       本身有獨立底色(Neutral/75)+邊框(Neutral/300)，非透明 -->
+                       本身有獨立底色(Neutral/75)+邊框(Neutral/300)，非透明；
+                       分類 tab + 內容區完全由 js/lodging-notice-card.js
+                       render()（task 8，單語系 demo：全分類空狀態） -->
                   <section
                     class="flex-1 min-w-0 flex flex-col gap-4 rounded-xl border border-border-focus bg-surface-hover p-4"
                   >
                     <h2 class="text-xl font-semibold text-text-default">
                       須知與聲明
                     </h2>
-                    <div class="flex flex-col">
-                      <!-- 分類 folder-tab（specs/html-conventions.md）：
-                           選中=白底+z-10+-mb-px 蓋住內容區上緣；未選中=
-                           Neutral/200 底+mt-1 略低，堆疊感；本階段先靜態
-                           顯示，切換行為留給 task 8 -->
-                      <div class="flex items-end gap-4 overflow-x-auto overflow-y-hidden">
-                        <button
-                          type="button"
-                          class="relative z-10 -mb-px shrink-0 whitespace-nowrap rounded-t-xl border border-border-default bg-white px-5 py-2.5 text-base text-text-default"
-                        >
-                          訂房
-                        </button>
-                        <button
-                          type="button"
-                          class="mt-1 shrink-0 whitespace-nowrap rounded-t-xl border border-border-default bg-border-disabled px-5 py-2.5 text-base text-text-default"
-                        >
-                          成為會員
-                        </button>
-                        <button
-                          type="button"
-                          class="mt-1 shrink-0 whitespace-nowrap rounded-t-xl border border-border-default bg-border-disabled px-5 py-2.5 text-base text-text-default"
-                        >
-                          團體訂房
-                        </button>
-                        <button
-                          type="button"
-                          class="mt-1 shrink-0 whitespace-nowrap rounded-t-xl border border-border-default bg-border-disabled px-5 py-2.5 text-base text-text-default"
-                        >
-                          不退款聲明
-                        </button>
-                      </div>
-                      <!-- 分類內容區：空狀態（001），matches 目前 Figma demo
-                           資料（全部分館分類皆未填寫） -->
-                      <div
-                        class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-white p-5"
-                      >
-                        <span
-                          class="w-full rounded-md bg-white px-3 py-1.5 text-center text-base text-text-default"
-                        >
-                          尚未填寫
-                        </span>
-                        <button
-                          type="button"
-                          id="lodgingRow1NoticeEditBtn"
-                          class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
-                        >
-                          <img
-                            src="./assets/icons/edit.svg"
-                            alt=""
-                            class="w-6 h-6"
-                          />
-                          <span>編輯</span>
-                        </button>
-                      </div>
-                    </div>
+                    <div
+                      data-notice-row="row1"
+                      id="lodgingNoticeCard-row1"
+                      class="flex flex-col"
+                    ></div>
                   </section>
 
                   <!-- 卡 3: 網域安全卡（components/lodging-branch-domain-security-card.md）
@@ -445,63 +400,21 @@
                     </div>
                   </section>
 
-                  <!-- 卡 2: 須知與聲明卡（示範"已儲存內容"狀態 006，見
-                       components/lodging-branch-notice-card.md） -->
+                  <!-- 卡 2: 須知與聲明卡（多語系 demo：訂房分類繁中已儲存/
+                       英韓未填寫，示範語言 tabs + 翻譯按鈕 enabled/disabled，
+                       見 components/lodging-branch-notice-card.md 006 +
+                       components/lodging-branch-suneditor.md 004-007） -->
                   <section
                     class="flex-1 min-w-0 flex flex-col gap-4 rounded-xl border border-border-focus bg-surface-hover p-4"
                   >
                     <h2 class="text-xl font-semibold text-text-default">
                       須知與聲明
                     </h2>
-                    <div class="flex flex-col">
-                      <div class="flex items-end gap-4 overflow-x-auto overflow-y-hidden">
-                        <button
-                          type="button"
-                          class="relative z-10 -mb-px shrink-0 whitespace-nowrap rounded-t-xl border border-border-default bg-white px-5 py-2.5 text-base text-text-default"
-                        >
-                          訂房
-                        </button>
-                        <button
-                          type="button"
-                          class="mt-1 shrink-0 whitespace-nowrap rounded-t-xl border border-border-default bg-border-disabled px-5 py-2.5 text-base text-text-default"
-                        >
-                          成為會員
-                        </button>
-                        <button
-                          type="button"
-                          class="mt-1 shrink-0 whitespace-nowrap rounded-t-xl border border-border-default bg-border-disabled px-5 py-2.5 text-base text-text-default"
-                        >
-                          團體訂房
-                        </button>
-                        <button
-                          type="button"
-                          class="mt-1 shrink-0 whitespace-nowrap rounded-t-xl border border-border-default bg-border-disabled px-5 py-2.5 text-base text-text-default"
-                        >
-                          不退款聲明
-                        </button>
-                      </div>
-                      <!-- 分類內容區：已儲存內容狀態（006） -->
-                      <div
-                        class="flex flex-col gap-3 rounded-xl border border-border-default bg-white p-5"
-                      >
-                        <span class="text-base text-brand-400">已儲存內容</span>
-                        <p class="text-base text-text-default">
-                          入住前請再次確認訂房日期、房型、入住人數及取消規定，並攜帶身分證件辦理登記。若有停車、加床、嬰兒用品或特殊飲食需求，建議事先聯繫飯店。入住後請留意退房時間、早餐地點、館內設施開放時段及客房安全，離房時記得關閉電器並妥善保管貴重物品。
-                        </p>
-                        <button
-                          type="button"
-                          id="lodgingRow2NoticeEditBtn"
-                          class="mx-auto inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
-                        >
-                          <img
-                            src="./assets/icons/edit.svg"
-                            alt=""
-                            class="w-6 h-6"
-                          />
-                          <span>編輯</span>
-                        </button>
-                      </div>
-                    </div>
+                    <div
+                      data-notice-row="row2"
+                      id="lodgingNoticeCard-row2"
+                      class="flex flex-col"
+                    ></div>
                   </section>
 
                   <!-- 卡 3: 網域安全卡（失效態） -->
@@ -571,6 +484,7 @@
       import { createModalController } from "./js/modal-controller.js";
       import { initTopbarModals } from "./js/topbar-modals.js";
       import { initLodgingInfoModals } from "./js/lodging-info-modals.js";
+      import { initLodgingNoticeCards } from "./js/lodging-notice-card.js";
 
       await loadPartials();
       // page shell：aside accordion / 收合全部 / mobile drawer
@@ -583,6 +497,9 @@
       initTopbarModals();
       // 照片管理 modal：row1/row2 各自獨立圖片資料、拖曳排序、上傳/刪除
       initLodgingInfoModals();
+      // 須知與聲明卡：分類/語言 tabs、SunEditor 佔位、翻譯/來源按鈕、
+      // 全部儲存-取消跨維度暫存（task 8，非 modal，獨立於上面 modal 群）
+      initLodgingNoticeCards();
     </script>
   </body>
 </html>

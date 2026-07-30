@@ -7,6 +7,151 @@
 
 ---
 
+## Session 119 交接 (2026-07-30)
+
+### 任務：lodging-info.html 實作 task 8 - 須知與聲明卡完整編輯流程
+
+延續 Session 118 交接的 task 1-7，本輪完成 task 8（剩餘 task 裡最複雜的
+一個）。開工前先讀過 `components/lodging-branch-suneditor.md`「實際串接
+時的架構原則」段確認拍板內容才動手。
+
+### 本輪改動
+
+1. 新增 `preview/js/suneditor-instance.js`：共用「建立/掛載單一 SunEditor
+   placeholder instance」helper，`mountSunEditorPlaceholder(container,
+   {value, placeholder, onInput})` -> `{getValue, setValue, destroy,
+   focus}`。內建 SunEditor 官方預設工具列 9 個按鈕群組（依 spec icon
+   清單），本輪按鈕全部裝飾用不接行為，只有 textarea 本身可輸入。之後
+   真正串接 SunEditor 時只需把 mount 內部換成 `SUNEDITOR.create()`，
+   呼叫端介面不用改。
+2. 新增 `preview/js/toast.js`：最小可用 toast（`showToast(message)`），
+   bg Neutral/700 白字，2.5 秒自動消失，目前只有翻譯按鈕使用，之後其他
+   頁面需要可直接複用。
+3. 新增 `preview/js/lodging-notice-card.js`：須知與聲明卡完整狀態機，
+   涵蓋 `components/lodging-branch-notice-card.md` 001-006 + `lodging-
+   branch-suneditor.md` 001-007 全部狀態：
+   - 分類 tab（訂房/成為會員/團體訂房/不退款聲明）x 語言（依 row 各自
+     啟用語系數）兩維度 state，DOM 完全由 `render()` 重建（同照片管理
+     modal 的 render pattern），HTML 只留容器 id
+     `lodgingNoticeCard-{rowKey}`
+   - 來源按鈕（僅 zh tab 顯示，直接覆蓋不跳確認）+ 左側色條提示
+   - 翻譯按鈕（僅非 zh tab 顯示，依 zh 草稿內容 enabled/disabled）+
+     disabled 時 hover tooltip（沿用 start.md「Tooltip 視窗自適應」
+     clamp 邏輯，marginLeft + documentElement.clientWidth 基準）+ 點擊
+     顯示 toast、內容不變
+   - 跨分類、跨語言本地暫存：每個分類各自獨立 `edit` session（含
+     draft），切換分類/語言 tab 不遺失未儲存內容；「取消」捨棄整個
+     session 回復到上次儲存值；單語言「儲存」/多語言「全部儲存」一次
+     寫入該分類所有語系
+   - Demo 資料：row1（headquarters）示範單語系全空狀態；row2（分館）
+     訂房分類示範多語系（繁中已儲存/英韓未填寫），涵蓋 tabs 顯示、翻譯
+     按鈕 enabled（英韓，因為 zh 有內容）情境；其餘 3 分類维持全空
+4. 修改 `preview/lodging-info.html`：row1/row2 須知與聲明卡的分類 tab
+   列 + 內容區靜態 markup 移除，改成單一空容器交給
+   `initLodgingNoticeCards()` render；inline module script 補 import
+5. 修改 `preview/assets/css/lodging-info.css`：新增語言 tab 底線 active
+   樣式、翻譯按鈕 enabled/disabled（disabled 用
+   `color-mix(in srgb, var(--color-brand-100) 50%, transparent)`
+   模擬「Brand-100 50% 透明」，非硬編碼 hex/rgba）、tooltip、SunEditor
+   佔位工具列/textarea、toast 共 8 個新 class 區塊
+6. `scripts/lint-partials.py` MANIFEST 補上 `lodging-info.html` 新增的
+   `./js/lodging-notice-card.js` import 順序項目
+
+### 首版產出後的視覺訂正（同輪，使用者對照 Figma 即時糾錯）
+
+首版完成並截圖驗收後，使用者對照 Figma 指出 4 處跟原始 spec 文字記錄不符
+的視覺細節，已修正並回寫對應 component spec（`lodging-branch-suneditor.md`
+`lodging-branch-notice-card.md`）：
+
+1. 「內容來自[來源]範本，儲存後為本館自訂」色條提示，跟「取消/儲存」
+   Footer 是**同一列**（左提示右按鈕），不是提示獨立一行在 Footer 上方。
+   footer 用 `flex-wrap` 因應窄卡片：放不下時按鈕整組換到下一行，不擠壓
+   按鈕文字換行
+2. 單語言時固定顯示的「繁體中文」標籤是**粗體**（先前 spec 誤記「同
+   active tab 樣式 + 底線」，已訂正並移除底線描述）
+3. 翻譯按鈕本身**沒有列外框**（先前 spec 誤記「翻譯按鈕列外框 Brand-200」
+   已從 Typography 表移除），「從繁中譯為[語言]」label 是純文字
+4. 翻譯按鈕是 **icon-only**（`icons/translation.svg` + `aria-label`
+   無障礙標示），不是純文字「翻譯」
+
+### 驗證
+
+- `./scripts/lint-conventions.sh` / `lint-fonts.sh` / `lint-tokens.sh` /
+  `lint-partials.sh` 全 exit 0
+- `node .claude/skills/run-swift/driver.mjs smoke`：5 頁全 PASS
+  （lodging-info.html 本身仍未登記進 smoke 頁面清單，維持 task 10 範圍）
+- 用 driver `eval`/`shot` + chrome-devtools MCP 逐項函式測試（非僅截圖
+  肉眼）：分類 tab 切換、語言 tab 切換（view/edit 兩種模式）、編輯進入/
+  取消（回復儲存值）/儲存（單語言與多語言全部儲存）、來源按鈕（載入
+  範本內容 + hint bar 文字）、翻譯按鈕 enabled/disabled 判斷、翻譯點擊
+  -> toast 顯示且內容不變、tooltip hover 顯示 + clamp 邏輯（用
+  `Object.defineProperty` 模擬窄視窗驗證 marginLeft 位移方向正確）、
+  跨分類 mid-edit 暫存不遺失（訂房分類編輯中途切到團體訂房再切回，草稿
+  仍在）
+- chrome-devtools MCP 檢查 console：互動序列後只有既有 Tailwind CDN
+  production 警告與網站既存的 favicon.ico 404（跟本輪改動無關），無新增
+  error/warn
+- 截圖：1440 桌面（row1 編輯態含來源按鈕/工具列、row2 多語系英文 tab
+  編輯態）、375 手機（版面堆疊 + 編輯態工具列 flex-wrap 換行）皆
+  self-tested 正常，未落地存檔到 `specs/qa-screenshots/`（僅開發中核對
+  用途，非正式 QA 截圖批次，待 task 10 全頁驗證時再一併產出）
+
+### 重要決定
+
+- 系統範本/總部範本示意文字沿用同一組固定文案套用到 4 個分類（spec
+  本身標記內容不影響規格判讀），非 Figma 來源，純 demo placeholder
+- 「來源提示 hint 何時消失」spec 未明定細節：本輪實作為切換語言 tab 或
+  結束編輯 session（儲存/取消）時清除，重新進 zh tab 才會再顯示（除非
+  再次點來源按鈕）；如果之後這點有唯一定義的 Figma 依據要回來核對調整
+- 分館資料編輯 modal 內 4 張文案卡片（飯店介紹/設施/提醒/交通）**不在
+  本輪範圍**，維持 task 7 完成的靜態空狀態；`suneditor-instance.js` /
+  `toast.js` 之後接上那 4 張卡時可直接複用，不需要重寫
+
+### 未解問題
+
+- 無（task 8 範圍內功能與規格已核對一致）
+
+### 外層 shell padding 規則訂正 + lodging-info.html 套用（同輪）
+
+使用者指出 mobile/tablet 外層 padding 移除、mobile top bar 自帶 `px-3
+pt-3` 這件事在 lodging-info.html 上「失效」。查證後這不是 regression：
+Session 112（account-permission）當時把這個改動記錄成「本頁專屬調整，不
+是全站頁殼慣例」，其他頁（含後來新增的 lodging-info）從未套用過。
+
+跟使用者對齊後訂正判準（已寫入 `specs/page-architecture.md`「Mobile/
+tablet 外層 shell padding」新節，取代 Session 112 那則容易被誤讀成「二選
+一」的舊表述）：**不是全站規則、也不是單頁 hack，是依當時讀取的 Figma
+frame 佈局性質逐頁判斷**：上下多 section 堆疊型（section 間本身需要呼吸
+空間）保留 `rootWrap p-3`；多 card 彼此整襯型（card 間貼齊、card 自己的
+border/bg 就是視覺邊界，如 account-permission 跟 lodging-info 的分館列白
+底卡片）則 mobile/tablet 移除外層 padding、mobile top bar 自帶 12px。
+
+**本輪套用**：`preview/lodging-info.html` `#rootWrap` 改 `md:p-3`
+（`<768` 歸零），mobile top bar 那一行加 `px-3 pt-3`，跟
+account-permission 實作方式一致；`<main>` 內既有的「content」容器（bg
+Neutral/75、padding 20，Session 118 讀取時三斷點固定值）不受影響、原樣
+保留。
+
+驗證：375/768/1440 三寬度截圖確認 mobile 外層貼齊螢幕邊緣、top bar 保留
+12px 左/上 padding，768 以上（`md:`）恢復原本 12px shell padding 與桌面版
+外觀不變；4 lint + `driver.mjs smoke`（5 頁）全過。
+
+**未套用範圍**：landing / room-booking / order-processing / system-basic
+四頁維持 `rootWrap p-3` 不動，這幾頁尚未依這次訂正的判準重新檢視過
+Figma frame 佈局性質，不是判定為「堆疊型」故意排除，之後個別碰到這幾頁
+再各自判斷，不要批次套用。
+
+### 下一步應做
+
+- **Task 9**：多語系狀態總覽 modal（頂部工具列「多語系狀態」按鈕開啟，
+  目前 `lodgingMultilingualStatusBtn` 尚未掛 `data-modal-open`）
+- **Task 10**：全頁驗證（4 lint + smoke test 頁面清單登記 lodging-
+  info.html + 多角度正式 QA 截圖存
+  `specs/qa-screenshots/session-119/`（或當時實際 session 編號）+
+  更新 progress.md）
+
+---
+
 ## Session 118 交接 (2026-07-29)
 
 ### 任務: 系統設定 -> 民宿資料頁面容器層級 figma-go 補讀 + 補一個遺漏的

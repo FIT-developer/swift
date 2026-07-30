@@ -76,6 +76,34 @@ preview/
 </html>
 ```
 
+## Mobile/tablet 外層 shell padding（依 Figma frame 判斷，2026-07-30 訂正）
+
+`#rootWrap` 外層 padding 在 `<768` 是否移除、mobile top bar（logo+menu 那
+一行）是否自帶 `px-3 pt-3`，**不是全站固定規則，也不是單頁 hack**，而是
+每頁依當時讀取的 Figma frame/section 佈局性質各自判斷：
+
+| Figma frame 性質 | 外層 shell padding 處理 |
+|---|---|
+| 上下多 section 堆疊型（section 之間本身需要呼吸空間） | 保留 `rootWrap p-3` 不動，mobile top bar 不用額外 padding |
+| 多 card 彼此整襯型（card 間貼齊、無額外留白，card 自己的 border/bg 就是視覺邊界） | `rootWrap` 改 `md:p-3`（`<768` 歸零），mobile top bar 加 `px-3 pt-3`（對應 Figma 量到的 top12/left12/right12/bottom0），省下的空間讓給內容 |
+
+**已判定案例**：
+- `account-permission.html`（Session 112, 2026-07-28）：多 card 整襯型，已套用移除
+- `lodging-info.html`（2026-07-30）：分館列白底卡片整襯型，已套用移除
+- `landing.html` / `room-booking.html` / `order-processing.html` /
+  `system-basic.html`：維持 `rootWrap p-3` 不動（尚未依此準則個別重新
+  判斷；之後若這幾頁的 Figma frame 也是整襯型，再各自評估調整，不要
+  批次套用）
+
+**為什麼不是機器可判定的規則**：這是讀 Figma frame 的佈局性質判斷，不是
+字元集/命名模式/數值範圍這類可以 grep/diff 的規則，只能留在 spec + review，
+不進 `scripts/lint-conventions.sh`（呼應 start.md「新規則寫入時的兩個必做
+動作」段的「評估機器可判定性」）。
+
+（Session 112 當時記錄成「account-permission 本頁專屬調整，不是全站頁殼
+慣例」，這句話本身沒有錯，但容易被誤讀成「其他頁一律不用」；本節訂正為
+「依 Figma frame 判斷」這個更準確的判準，取代原本二選一的表述。）
+
 ## Partial 載入機制
 
 - `js/partials.js` 提供 `loadPartials(root?)`：掃描 `[data-partial]`，

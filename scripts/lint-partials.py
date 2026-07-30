@@ -122,6 +122,7 @@ MANIFEST = {
             './js/modal-controller.js',
             './js/topbar-modals.js',
             './js/lodging-info-modals.js',
+            './js/lodging-notice-card.js',
         ],
     },
 }
