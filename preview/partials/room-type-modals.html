@@ -1,0 +1,593 @@
+<!-- 房型頁專屬 modal（specs/pages/room-type.md）：新增/修改/查看三個資料 modal
+     （components/modal.md state=room-type）+ 照片管理 modal（版型沿用
+     state=photo-gallery，但另建 id，JS 獨立不共用 lodging-info-modals.js）。
+     內部行為由 js/room-type-modals.js + js/room-type-photo-modal.js 綁定。 -->
+
+<!-- ====================================
+     Modal（新增）- state=room-type / 新增
+==================================== -->
+<div
+  id="modalRoomTypeNewBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalRoomTypeNewTitle"
+>
+  <div class="modal-box mx-3">
+    <div
+      class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+    >
+      <span id="modalRoomTypeNewTitle" class="text-xl font-semibold text-text-default"
+        >資料新增</span
+      >
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalRoomTypeNewBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-y-auto bg-white p-5">
+      <div class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5">
+        <!-- Row1: 房間編號(disabled)+排序 | 房間名稱 -->
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">房間編號</label>
+            <input type="text" value="4" disabled
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          </div>
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">排序</label>
+            <input type="text" value="1"
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間名稱</label>
+          <input type="text" value="placeholder"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        </div>
+
+        <!-- Row2: 房間代號 | 營運型態 -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間代號</label>
+          <input type="text" value="TW"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">營運型態</label>
+          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
+            <option>住宿</option>
+            <option>非住宿</option>
+          </select>
+        </div>
+
+        <!-- Row3: 床舖型態 | 房型類別 -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">床舖型態</label>
+          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
+            <option>兩大床</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房型類別</label>
+          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
+            <option>兩大床</option>
+          </select>
+        </div>
+
+        <!-- Row4: 顯示分類 | 房價跟隨 -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">顯示分類</label>
+          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
+            <option>不分類</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房價跟隨</label>
+          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
+            <option>跟隨</option>
+          </select>
+        </div>
+
+        <!-- Row5: 銷售單位 | 房間數 -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">銷售單位</label>
+          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
+            <option>使用飯店預設（間）</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間數</label>
+          <input type="text" value="14"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        </div>
+
+        <!-- Row6: 參考價格 | 網路訂購 toggle -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">參考價格</label>
+          <input type="text" value="2000"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <label class="text-base text-text-default">網路訂購</label>
+          <span class="member-data-switch shrink-0">
+            <input type="checkbox" />
+            <span class="member-data-switch-track"></span>
+            <span class="member-data-switch-knob"></span>
+          </span>
+        </div>
+
+        <!-- 房間介紹文案 / 房間名稱文案 -->
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">房間介紹文案</label>
+          <div id="roomTypeNewIntroCard"></div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">房間名稱文案</label>
+          <div id="roomTypeNewNameCard"></div>
+        </div>
+
+        <!-- 房間設施項目 -->
+        <div class="flex flex-col gap-2 min-[640px]:col-span-2">
+          <label class="text-base text-text-default">房間設施項目</label>
+          <div
+            id="roomTypeNewFacilityChips"
+            class="flex flex-wrap gap-4 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <button type="button" data-facility-selected="true" class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer">設施一</button>
+            <button type="button" data-facility-selected="false" class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer">設施二</button>
+            <button type="button" data-facility-selected="true" class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer">設施三</button>
+            <button type="button" data-facility-selected="false" class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer">設施五六七八九</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 border-t border-border-disabled px-3">
+      <button type="button" class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80" data-modal="modalRoomTypeNewBackdrop">取消</button>
+      <button type="button" class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80" data-modal="modalRoomTypeNewBackdrop">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     Modal（修改）- state=room-type / 修改
+==================================== -->
+<div
+  id="modalRoomTypeEditBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalRoomTypeEditTitle"
+>
+  <div class="modal-box mx-3">
+    <div
+      class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+    >
+      <span id="modalRoomTypeEditTitle" class="text-xl font-semibold text-text-default"
+        >資料修改</span
+      >
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalRoomTypeEditBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-y-auto bg-white p-5">
+      <div class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5">
+        <!-- Row1: 房間編號(disabled)+排序 | 房間名稱 -->
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">房間編號</label>
+            <input type="text" value="4" disabled
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          </div>
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">排序</label>
+            <input type="text" value="1"
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間名稱</label>
+          <input type="text" value="placeholder"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        </div>
+
+        <!-- Row2: 房間代號 | 營運型態(disabled) -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間代號</label>
+          <input type="text" value="TW"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">營運型態</label>
+          <input type="text" value="住宿/非住宿" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+
+        <!-- Row3: 床舖型態 | 房型類別+人數 -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">床舖型態</label>
+          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
+            <option>兩大床</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">房型類別</label>
+            <input type="text" value="四人房"
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+          </div>
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">人數</label>
+            <input type="text" value="4"
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+          </div>
+        </div>
+
+        <!-- Row4: 加人+加床 | 銷售單位 -->
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">加人</label>
+            <input type="text" value="1"
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+          </div>
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">加床</label>
+            <input type="text" value="4"
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">銷售單位</label>
+          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
+            <option>使用飯店預設（間）</option>
+          </select>
+        </div>
+
+        <!-- Row5: 房間數 | 參考價格 -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間數</label>
+          <input type="text" value="14"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">參考價格</label>
+          <input type="text" value="2000"
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        </div>
+
+        <!-- Row6: 房數修改 toggle | 網路訂購 toggle -->
+        <div class="flex items-center justify-between gap-3">
+          <label class="text-base text-text-default">房數修改</label>
+          <span class="member-data-switch shrink-0">
+            <input type="checkbox" />
+            <span class="member-data-switch-track"></span>
+            <span class="member-data-switch-knob"></span>
+          </span>
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <label class="text-base text-text-default">網路訂購</label>
+          <span class="member-data-switch shrink-0">
+            <input type="checkbox" />
+            <span class="member-data-switch-track"></span>
+            <span class="member-data-switch-knob"></span>
+          </span>
+        </div>
+
+        <!-- Row7: 顯示分類(disabled) | 房價跟隨(disabled) -->
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">顯示分類</label>
+          <input type="text" value="無啟用" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房價跟隨</label>
+          <input type="text" value="啟用" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+
+        <!-- 房間介紹文案 / 房間名稱文案 -->
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">房間介紹文案</label>
+          <div id="roomTypeEditIntroCard"></div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">房間名稱文案</label>
+          <div id="roomTypeEditNameCard"></div>
+        </div>
+
+        <!-- 房間設施項目 -->
+        <div class="flex flex-col gap-2 min-[640px]:col-span-2">
+          <label class="text-base text-text-default">房間設施項目</label>
+          <div
+            id="roomTypeEditFacilityChips"
+            class="flex flex-wrap gap-4 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <button type="button" data-facility-selected="true" class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer">設施一</button>
+            <button type="button" data-facility-selected="false" class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer">設施二</button>
+            <button type="button" data-facility-selected="true" class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer">設施三</button>
+            <button type="button" data-facility-selected="false" class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-pointer">設施五六七八九</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 border-t border-border-disabled px-3">
+      <button type="button" class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80" data-modal="modalRoomTypeEditBackdrop">取消</button>
+      <button type="button" class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80" data-modal="modalRoomTypeEditBackdrop">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     Modal（查看）- state=room-type / 查看
+     全欄位 disabled，無編輯按鈕，facilities 全灰，footer 只有「關閉」
+==================================== -->
+<div
+  id="modalRoomTypeViewBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalRoomTypeViewTitle"
+>
+  <div class="modal-box mx-3">
+    <div
+      class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+    >
+      <span id="modalRoomTypeViewTitle" class="text-xl font-semibold text-text-default"
+        >資料查看</span
+      >
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalRoomTypeViewBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-y-auto bg-white p-5">
+      <div class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5">
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">房間編號</label>
+            <input type="text" value="4" disabled
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          </div>
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">排序</label>
+            <input type="text" value="1" disabled
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間名稱</label>
+          <input type="text" value="placeholder" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間代號</label>
+          <input type="text" value="TW" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">營運型態</label>
+          <input type="text" value="住宿/非住宿" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">床舖型態</label>
+          <select disabled class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-border-disabled px-3 py-1.5 text-base text-text-default">
+            <option>兩大床</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">房型類別</label>
+            <input type="text" value="四人房" disabled
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          </div>
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">人數</label>
+            <input type="text" value="4" disabled
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">加人</label>
+            <input type="text" value="1" disabled
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          </div>
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <label class="w-16 shrink-0 text-base text-text-default">加床</label>
+            <input type="text" value="4" disabled
+              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">銷售單位</label>
+          <select disabled class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-border-disabled px-3 py-1.5 text-base text-text-default">
+            <option>使用飯店預設（間）</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房間數</label>
+          <input type="text" value="14" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">參考價格</label>
+          <input type="text" value="2000" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+
+        <div class="flex items-center justify-between gap-3">
+          <label class="text-base text-text-default">房數修改</label>
+          <span class="member-data-switch shrink-0" aria-disabled="true">
+            <input type="checkbox" disabled />
+            <span class="member-data-switch-track"></span>
+            <span class="member-data-switch-knob"></span>
+          </span>
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <label class="text-base text-text-default">網路訂購</label>
+          <span class="member-data-switch shrink-0" aria-disabled="true">
+            <input type="checkbox" disabled />
+            <span class="member-data-switch-track"></span>
+            <span class="member-data-switch-knob"></span>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">顯示分類</label>
+          <input type="text" value="無啟用" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="w-16 shrink-0 text-base text-text-default">房價跟隨</label>
+          <input type="text" value="啟用" disabled
+            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        </div>
+
+        <!-- 房間介紹文案：查看模式示範已儲存內容，無編輯按鈕；
+             已儲存內容態靠左對齊（2026-07-31 使用者截圖覆核訂正，跟
+             「尚未填寫」空狀態的置中不同） -->
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">房間介紹文案</label>
+          <div class="flex flex-col items-start gap-3 rounded-xl border border-border-default bg-surface-hover p-5">
+            <span class="text-base text-brand-400">已儲存內容</span>
+            <p class="text-base text-text-default text-left">
+              設定房間名稱、代號、房型、床型、間數、定價、顯示分類與營運方式，並可上傳房間照片、補充設備與房價限制。完成後，系統將依設定內容顯示於訂房頁面，方便旅客快速了解房型資訊並進行預訂。
+            </p>
+          </div>
+        </div>
+        <!-- 房間名稱文案：查看模式維持空狀態，無編輯按鈕 -->
+        <div class="flex flex-col gap-2">
+          <label class="text-base text-text-default">房間名稱文案</label>
+          <div class="flex flex-col items-center gap-3 rounded-xl border border-border-default bg-surface-hover p-5">
+            <span class="text-base text-text-default">尚未填寫</span>
+          </div>
+        </div>
+
+        <!-- 房間設施項目：全部 disabled 灰色，不保留選中藍色 -->
+        <div class="flex flex-col gap-2 min-[640px]:col-span-2">
+          <label class="text-base text-text-default">房間設施項目</label>
+          <div class="flex flex-wrap gap-4 rounded-xl border border-border-default bg-surface-hover p-5">
+            <button type="button" disabled class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-not-allowed">設施一</button>
+            <button type="button" disabled class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-not-allowed">設施二</button>
+            <button type="button" disabled class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-not-allowed">設施三</button>
+            <button type="button" disabled class="room-type-facility-chip rounded-full px-4 py-2.5 text-base cursor-not-allowed">設施五六七八九</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex h-[58px] flex-shrink-0 items-center justify-end border-t border-border-disabled px-3">
+      <button type="button" class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80" data-modal="modalRoomTypeViewBackdrop">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     Modal（照片）- state=photo-gallery 版型沿用
+     房型頁另建 id，不共用「系統設定 -> 民宿資料」頁的
+     modalPhotoGalleryBackdrop instance；JS 見 js/room-type-photo-modal.js
+==================================== -->
+<div
+  id="modalRoomTypePhotoGalleryBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalRoomTypePhotoGalleryTitle"
+>
+  <div class="modal-box mx-3">
+    <div
+      class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+    >
+      <div class="flex flex-col justify-center">
+        <span
+          id="modalRoomTypePhotoGalleryTitle"
+          class="text-xl font-semibold text-text-default leading-tight"
+          >照片管理</span
+        >
+        <span class="text-base text-text-default leading-tight">demo</span>
+      </div>
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalRoomTypePhotoGalleryBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="lodging-photo-modal-body min-h-0 flex-1 overflow-y-auto bg-white p-5">
+      <div
+        class="flex flex-col gap-2 min-[640px]:flex-row min-[640px]:items-center min-[640px]:gap-0 rounded-lg bg-bootstrap-focus-background p-2"
+      >
+        <div class="flex items-start gap-2 min-[640px]:items-center">
+          <img src="./assets/icons/info.svg" alt="" class="w-6 h-6 shrink-0 text-accent-float-circle-mixed-2" />
+          <span class="text-base text-text-default">最多上傳 5 張圖片</span>
+        </div>
+        <span class="lodging-photo-banner-divider hidden min-[640px]:block"></span>
+        <span class="lodging-photo-banner-divider-h min-[640px]:hidden"></span>
+        <span class="text-base text-text-default min-[640px]:px-6">建議尺寸：900px * 600px</span>
+        <span class="lodging-photo-banner-divider hidden min-[640px]:block"></span>
+        <span class="lodging-photo-banner-divider-h min-[640px]:hidden"></span>
+        <span class="text-base text-text-default min-[640px]:px-6">檔案格式：JPEG、JPG</span>
+        <span class="lodging-photo-banner-divider hidden min-[640px]:block"></span>
+        <span class="lodging-photo-banner-divider-h min-[640px]:hidden"></span>
+        <span class="text-base text-text-default min-[640px]:px-6">首張圖片於主頁預覽</span>
+      </div>
+
+      <div class="flex items-center gap-2 mt-4 mb-4">
+        <img src="./assets/icons/dots-line.svg" alt="" class="w-6 h-6" />
+        <span class="text-base text-text-default">依編號順序顯示，可拖曳調整排序</span>
+      </div>
+
+      <div id="roomTypePhotoCardGrid" class="lodging-photo-card-grid"></div>
+    </div>
+
+    <div class="flex h-[58px] flex-shrink-0 items-center justify-between border-t border-border-disabled px-3">
+      <div class="flex items-center gap-2 text-base text-text-default">
+        <img src="./assets/icons/security.svg" alt="" class="w-6 h-6" />
+        <span>儲存後生效</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+          data-modal="modalRoomTypePhotoGalleryBackdrop"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          id="roomTypePhotoUploadBtn"
+          class="inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+        >
+          上傳
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="roomTypePhotoFileInput" accept="image/jpeg" class="hidden" />

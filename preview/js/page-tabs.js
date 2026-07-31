@@ -14,6 +14,7 @@ var TAB_PAGES = {
   "system-basic.html": "系統基本",
   "account-permission.html": "帳號及權限",
   "lodging-info.html": "民宿資料",
+  "room-type.html": "房型",
 };
 
 function readTabs() {

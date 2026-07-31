@@ -256,7 +256,8 @@ const APP_CSS_LOADED_CHECK = {
         "room-booking.css",
         "order-processing.css",
         "system-basic.css",
-        "lodging-info.css"
+        "lodging-info.css",
+        "room-type.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -669,6 +670,154 @@ const PAGES = [
             if (!savedP || savedP.textContent !== "smoke-intro-content")
               return "intro-caption save did not persist content";
             document.querySelector("#modalBranchInfoBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
+  {
+    file: "room-type.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalLogoutBackdrop") &&
+      !!document.getElementById("modalRoomTypeNewBackdrop") &&
+      document.querySelectorAll("#roomTypeCardList .room-type-card").length === 2
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "啟用/停用 filter tab shows correct card subset (2 active + 4 deleted, 6 total)",
+        expr: `
+          (function () {
+            var activeCards = document.querySelectorAll("#roomTypeCardList .room-type-card");
+            if (activeCards.length !== 2) return "default (啟用 tab) card count: " + activeCards.length;
+            var modify = document.querySelectorAll(".room-type-btn-modify").length;
+            if (modify !== 2) return "啟用 tab modify-button count: " + modify;
+
+            var deletedTab = document.querySelector('[data-status-filter="deleted"]');
+            deletedTab.click();
+            var deletedCards = document.querySelectorAll("#roomTypeCardList .room-type-card");
+            if (deletedCards.length !== 4) return "停用 tab card count: " + deletedCards.length;
+            var view = document.querySelectorAll(".room-type-btn-view").length;
+            if (view !== 4) return "停用 tab view-button count: " + view;
+            if (!deletedTab.classList.contains("is-active")) return "停用 tab did not get is-active";
+
+            var activeTab = document.querySelector('[data-status-filter="active"]');
+            activeTab.click();
+            var backToActive = document.querySelectorAll("#roomTypeCardList .room-type-card");
+            if (backToActive.length !== 2) return "switching back to 啟用 tab card count: " + backToActive.length;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "empty filter shows correct placeholder message (figma-go node 2139:105859)",
+        expr: `
+          (function () {
+            // 啟用 tab 淨空：把兩張啟用中的卡都停用
+            document.querySelector('[data-card-action="disable"][data-card-id="room-1"]').click();
+            document.querySelector('[data-card-action="disable"][data-card-id="room-2"]').click();
+            var list = document.getElementById("roomTypeCardList");
+            if (list.textContent.trim() !== "沒有任何啟用中的卡片")
+              return "啟用 tab empty message: " + JSON.stringify(list.textContent.trim());
+
+            // 停用 tab 淨空：把全部 6 張都啟用回去
+            document.querySelector('[data-status-filter="deleted"]').click();
+            ["room-1", "room-2", "room-3", "room-4", "room-5", "room-6"].forEach(function (id) {
+              var btn = document.querySelector('[data-card-action="enable"][data-card-id="' + id + '"]');
+              if (btn) btn.click();
+            });
+            if (list.textContent.trim() !== "沒有任何停用中的卡片")
+              return "停用 tab empty message: " + JSON.stringify(list.textContent.trim());
+
+            // 還原成原始 6 卡資料狀態（room-1/2 啟用中，其餘停用），
+            // 不用 location.reload()（會打斷同一個 page session 後續 check）；
+            // 這 4 張目前全是「啟用」狀態，要先切到啟用 tab 才找得到它們的
+            // disable 按鈕（它們此刻不會出現在停用 tab 底下）
+            document.querySelector('[data-status-filter="active"]').click();
+            ["room-3", "room-4", "room-5", "room-6"].forEach(function (id) {
+              var btn = document.querySelector('[data-card-action="disable"][data-card-id="' + id + '"]');
+              if (btn) btn.click();
+            });
+            var restored = document.querySelectorAll("#roomTypeCardList .room-type-card");
+            if (restored.length !== 2) return "restore after empty-state test, 啟用 tab count: " + restored.length;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "disable/enable toggle moves card between filter tabs (state + ribbon follow along)",
+        expr: `
+          (function () {
+            // 這個 check 開始時預期在「啟用」tab（上一個 check 結束時切回去的狀態）
+            var disableBtn = document.querySelector('[data-card-action="disable"][data-card-id="room-1"]');
+            if (!disableBtn) return "room-1 disable button not found (啟用 tab)";
+            disableBtn.click();
+            // 啟用 tab 底下 room-1 停用後應該從目前篩選結果消失（不是原地換按鈕）
+            if (document.querySelector('[data-card-id="room-1"]')) return "room-1 still visible under 啟用 tab after disable";
+            if (document.querySelectorAll("#roomTypeCardList .room-type-card").length !== 1)
+              return "啟用 tab count after disabling room-1: " + document.querySelectorAll("#roomTypeCardList .room-type-card").length;
+
+            document.querySelector('[data-status-filter="deleted"]').click();
+            var enableBtn = document.querySelector('[data-card-action="enable"][data-card-id="room-1"]');
+            if (!enableBtn) return "room-1 not found under 停用 tab after disable";
+            enableBtn.click();
+            if (document.querySelector('[data-card-id="room-1"]')) return "room-1 still visible under 停用 tab after enable";
+
+            document.querySelector('[data-status-filter="active"]').click();
+            var restored = document.querySelectorAll("#roomTypeCardList .room-type-card");
+            if (restored.length !== 2) return "啟用 tab count after restoring room-1: " + restored.length;
+            if (!document.querySelector('[data-card-id="room-1"]')) return "room-1 did not come back under 啟用 tab";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "new/edit/view data modal open/close",
+        expr: `
+          (function () {
+            // 修改 trigger 只在啟用 tab 出現，查看 trigger 只在停用 tab 出現，
+            // 兩者互斥於同一個篩選結果，測試需要切換 tab 才能各自找到觸發器
+            var a = __smoke.modalCheck('[data-modal-open="modalRoomTypeNewBackdrop"]', "modalRoomTypeNewBackdrop");
+            if (a !== true) return "new: " + a;
+            var b = __smoke.modalCheck('[data-modal-open="modalRoomTypeEditBackdrop"]', "modalRoomTypeEditBackdrop");
+            if (b !== true) return "edit: " + b;
+            document.querySelector('[data-status-filter="deleted"]').click();
+            var c = __smoke.modalCheck('[data-modal-open="modalRoomTypeViewBackdrop"]', "modalRoomTypeViewBackdrop");
+            if (c !== true) return "view: " + c;
+            document.querySelector('[data-status-filter="active"]').click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "facility chip toggle (new modal)",
+        expr: `
+          (function () {
+            document.querySelector('[data-modal-open="modalRoomTypeNewBackdrop"]').click();
+            var chip = document.querySelector("#roomTypeNewFacilityChips .room-type-facility-chip");
+            var before = chip.dataset.facilitySelected;
+            chip.click();
+            if (chip.dataset.facilitySelected === before) return "chip state did not toggle";
+            document.querySelector("#modalRoomTypeNewBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "photo-gallery modal open/close (independent per card)",
+        expr: `
+          (function () {
+            var res = __smoke.modalCheck('[data-room-type-photo-trigger="room-1"]', "modalRoomTypePhotoGalleryBackdrop");
+            if (res !== true) return res;
+            document.querySelector('[data-room-type-photo-trigger="room-2"]').click();
+            var grid = document.getElementById("roomTypePhotoCardGrid");
+            if (!grid || grid.children.length !== 5) return "photo grid slot count: " + (grid && grid.children.length);
+            document.querySelector("#modalRoomTypePhotoGalleryBackdrop .modal-close-btn").click();
             return true;
           })()
         `,

@@ -1,0 +1,73 @@
+/* Room-type page styles - 系統設定 -> 房型頁專用
+   (specs/pages/room-type.md, components/room-type-card.md) */
+
+/* 房型卡片功能按鈕（修改/複製/刪除/查看/還原）：get_selection 對這 5 顆
+   pill 按鈕只回報 border stroke 色值，完全沒有 fills key - 漸層 fill 被
+   靜默省略（start.md「JSON 不等於視覺」已知陷阱，同 lodging-info.css
+   .lodging-branch-edit-btn 案例）。SVG export 覆核（2026-07-31）確認 5
+   顆按鈕背景都是白（下）-> 對應色（上）的垂直漸層。 */
+.room-type-btn-modify {
+  background: linear-gradient(to top, var(--color-neutral-0), var(--color-brand-200));
+}
+.room-type-btn-duplicate {
+  background: linear-gradient(
+    to top,
+    var(--color-neutral-0),
+    var(--color-accent-linear-function-button-duplication)
+  );
+}
+.room-type-btn-delete {
+  background: linear-gradient(
+    to top,
+    var(--color-neutral-0),
+    var(--color-accent-linear-function-button-delete)
+  );
+}
+.room-type-btn-view {
+  background: linear-gradient(to top, var(--color-neutral-0), var(--color-neutral-200));
+}
+.room-type-btn-restore {
+  background: linear-gradient(
+    to top,
+    var(--color-neutral-0),
+    var(--color-accent-light-green)
+  );
+}
+
+/* Ribbon（左上角三角形色塊）：同上，fills 被省略，SVG 覆核確認是白 ->
+   Color/Brand/Brand-100 的水平漸層（靠外側寬邊色深，往尖角褪成白），且
+   跟卡片邊緣有 8px 邊距（Figma bounds x:8,y:8，不是貼齊 0,0）、遠角本身
+   帶 cornerRadius 8。2026-07-31 使用者覆核訂正：改用 get_screenshot(SVG)
+   讀到的精確 path 畫 inline SVG（js/room-type.js buildRibbon），不用
+   clip-path 三角形近似 - clip-path 沒辦法還原 Figma 的圓角尖端，SVG path
+   可以精確帶入。本檔只保留卡片外層 position:relative 讓 ribbon 8px 絕對
+   定位有基準（見 room-type.js .room-type-card 用 Tailwind relative）。 */
+
+/* 房間設施項目 chip（新增/修改/查看 modal 共用）：選中/未選中兩態，跟
+   lodging-info.css .lodging-facility-chip 同一套規則（Pill chip button
+   幾何 + MenuItem 藍選中），房型頁另建 scoped class 維持 CSS 也各自獨立。 */
+.room-type-facility-chip[data-facility-selected="true"] {
+  background: var(--color-menuitem-default);
+  color: var(--color-neutral-0);
+  border: 1px solid var(--color-menuitem-default);
+}
+.room-type-facility-chip[data-facility-selected="false"] {
+  background: var(--color-neutral-0);
+  color: var(--color-neutral-800);
+  border: 1px solid var(--color-neutral-200);
+}
+.room-type-facility-chip[disabled] {
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-0);
+  border: 1px solid var(--color-neutral-200);
+  cursor: not-allowed;
+}
+
+/* 統計列 table（specs/pages/room-type.md、room-type-card.md「統計列」段拍板）：
+   text-align 置中、th/td white-space nowrap 讓內容天生撐開觸發橫向捲動，
+   不寫死固定寬度。 */
+.room-type-stat-table th,
+.room-type-stat-table td {
+  white-space: nowrap;
+  text-align: center;
+}

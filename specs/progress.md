@@ -7,6 +7,284 @@
 
 ---
 
+## Session 121 五度補充：篩選結果為空狀態文案 (2026-07-31)
+
+### 任務：figma-go 讀「啟用/停用篩選無資料」的空狀態
+
+### 本輪改動
+
+1. **figma-go 讀取**：node `2139:105859`（Frame 427319059），卡片列表位置
+   在篩選無資料時改顯示一行文字，20px、`Color/Neutral/800`、靠左，上下
+   各 24px padding。文案「沒有任何啟用中的卡片」（啟用 tab 空）；使用者
+   訊息直接給了「停用」版本文案「沒有任何停用中的卡片」，Figma 節點本身
+   只示範了啟用版（同一元件替換文字，未另外進 Figma 核對停用版，文案
+   直接採用使用者訊息原文）
+2. **實作**：`preview/js/room-type.js` `renderCardList()` 篩選後陣列為空
+   時提早 return，插入 `EMPTY_FILTER_MESSAGE[currentStatusFilter]` 文字
+   （`col-span-full` 撐滿 grid 寬度，避免被擠在第一欄）
+3. **smoke test**：新增「empty filter shows correct placeholder message」
+   check，手動把兩個 tab 都清空驗證文案，再手動把 6 張卡復原成初始狀態
+   （不用 `location.reload()`，會打斷同一個 page session 後續 check）；
+   12 checks 全過
+4. **spec**：`specs/pages/room-type.md`「啟用/停用狀態篩選」段落下新增
+   「篩選結果為空狀態」子段
+
+### 驗證
+
+- 手動在 console 把兩個 tab 都清空過，1440px 截圖跟 Figma 節點視覺一致；
+  `node scripts/smoke-test.mjs`（room-type.html 12 checks）+ 四項 lint 全過
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 121 四度補充：房型頁新增「啟用/停用」狀態篩選 tab (2026-07-31)
+
+### 任務：figma-go 讀新 UI 元件（狀態篩選 tab）+ 實作
+
+### 本輪改動
+
+1. **figma-go 讀取**：node `2139:105271`（Frame 653，120x38，位於操作列跟
+   卡片列表之間，x:0 靠左），2 個文字 tab：「啟用」（weight 600 + 底線
+   `stroke #f28b45`）/「停用」（weight 400 無底線）。比對後確認完全等同
+   既有 `.member-data-filter-tab` / `.is-active` pattern（底線 active，
+   `border-bottom-color: Brand-400`），不需要新 CSS
+2. **實作**：`preview/room-type.html` 新增 `#roomTypeStatusFilter`（2 顆
+   `.member-data-filter-tab` 按鈕，靠左，預設「啟用」選中）；
+   `preview/js/room-type.js` 新增 `currentStatusFilter` + `initStatusFilterTabs()`，
+   `renderCardList()` 改成先 filter `ROOM_TYPE_CARDS`（依 `card.state` 當下值）
+   再渲染，不是渲染全部 6 張再用 CSS 隱藏
+3. **跟既有停用/啟用互動串接**：篩選依據卡片「當下」狀態，卡片本身的
+   停用/啟用按鈕改變 state 後，若不再符合目前 tab 會立刻從列表消失
+   （例如在「啟用」tab 把某卡停用，該卡立刻不見；切到「停用」tab 才看得到）
+4. **smoke test 更新**：`scripts/smoke-test.mjs` room-type.html 的
+   `readyExpr` 改成預設只有 2 張卡（啟用 tab 預設值，不是 6 張）；新增
+   「啟用/停用 filter tab 顯示正確子集」check；「disable/enable toggle」
+   check 改寫成驗證卡片會在兩個 tab 之間移動（先前假設 toggle 只換按鈕組，
+   沒考慮到現在會連動篩選把卡片整個移出列表）；「new/edit/view modal」
+   check 補上切到「停用」tab 才能找到查看 modal 觸發器（查看按鈕只在
+   停用態卡片上）。11 checks 全過
+5. **spec 更新**：`specs/pages/room-type.md` 新增「啟用/停用狀態篩選」段，
+   同時訂正檔頭已過期的「尚未開始/待實作」狀態說明（其實已完成好幾輪
+   實作+迭代）
+
+### 驗證
+
+- `node scripts/smoke-test.mjs`（7 頁，room-type.html 11 checks）+ 四項
+  lint 全過；1440px 截圖驗證兩個 tab 切換都渲染正確子集且按鈕組正確
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 121 三度補充：房型卡片「刪除/還原」改「停用/啟用」+ 新增互動 (2026-07-31)
+
+### 任務：figma-go 讀 2 個新 icon + 房型卡片術語變更
+
+### 本輪改動
+
+1. **新增 2 個 icon**（figma-go 讀取，node `2139:105141` icons/suspend-outline
+   暫停符號、`2139:105147` icons/video-play 播放符號），匯出到
+   `preview/assets/icons/`，登記進 `specs/icons.md`（含分類索引、icon 計數
+   116->118）
+2. **房型卡片術語變更（使用者拍板）**：狀態「使用中」->「啟用中」、
+   「已刪除」->「已停用」；按鈕「刪除」->「停用」（icon 換
+   `icons/suspend-outline`）、「還原」->「啟用」（icon 換 `icons/video-play`）。
+   icon 與文字顏色從紅/綠改純黑 `#000000`；按鈕邊框與漸層終點色**不變**
+   （停用維持粉 `#F3C2C4`，啟用維持綠 `#BBF7D0`）
+3. **新增停用/啟用互動行為**（使用者明確要求，之前這兩顆按鈕是靜態的）：
+   點「停用」卡片切到已停用（查看/啟用 + 灰階 ribbon）；點「啟用」切回
+   啟用中（修改/複製/停用 + 橘階 ribbon）。純前端 in-memory 狀態，
+   `preview/js/room-type.js` `initCardActionToggle()` delegated click ->
+   改 `ROOM_TYPE_CARDS` 對應 card 的 `state` -> `renderCardList()` 整份重繪
+4. **修正回歸 bug**：`room-type-photo-modal.js` 原本用
+   `document.querySelectorAll("[data-room-type-photo-trigger]").forEach(...)`
+   逐一 bind click，卡片重繪後新節點沒有這個 listener，照片 modal 會失效。
+   改成 document 級 delegated click（`e.target.closest(...)`），重繪後仍正常
+5. **spec 更新**：`components/room-type-card.md`（狀態/按鈕/顏色全面改名，
+   新增「停用/啟用互動」段）、`specs/pages/room-type.md`（重整按鈕語意
+   對照更新、清掉一則已解決的舊「Figma未定義」項目）、`specs/icons.md`
+   （2 個新 icon 補實際用途）
+6. **驗證**：`node scripts/smoke-test.mjs` 新增「disable/enable toggle 切換
+   按鈕組」check（11 checks，含手動驗證重繪後照片 modal 仍正常），四項 lint
+   全過
+
+### 重要決定
+
+- 按鈕邊框/漸層色刻意保留（停用=粉、啟用=綠），只有 icon+文字變黑，
+  是使用者明確拍板的設計，不是我方推測
+- 停用/啟用切換是純前端 demo 狀態（不接後端），刷新頁面會重置回初始 6 卡
+  資料（`ROOM_TYPE_CARDS` 陣列的初始值），這是預期行為
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 121 交接 (2026-07-31)
+
+### 任務：房型頁 - 補齊卡片列表 6 卡完整資料 + 開始 preview/room-type.html 實作
+
+Session 120 寫入 `components/room-type-card.md` 時只記錄了 6 張樣本卡中的 4 張
+（四人房/賽亞人房/賽亞人房1/嗚啦啦），另外 2 張（#4 亞歷山大、#6 嘿吼嘿吼）的文字
+內容在寫檔階段遺漏，沒有留下任何草稿或暫存紀錄（git history 也只有一個 commit）。
+本輪 Figma 重連後，重讀 desktop 卡片 grid（`2136:98793`）補齊完整 6 卡資料。
+
+### 本輪改動
+
+1. **補齊 `components/room-type-card.md` 6 卡完整資料表**：node ID 列表改成含
+   ribbon / 狀態 / 照片 / 副標 / 統計列四欄值的完整表格，取代原本只記 4 張的清單。
+   確認：6 張裡 2 張使用中（四人房/賽亞人房）、4 張已刪除（賽亞人房1/亞歷山大/
+   嗚啦啦/嘿吼嘿吼）；2 張有照片（四人房/嗚啦啦）、4 張無照片。嗚啦啦（已刪除+
+   有照片）再次驗證 2026-07-31 稍早拍板的「已刪除只是從使用中移除，不是真的刪
+   資料」規則。
+2. **釐清「已刪除卡片是否可以有照片」**（本次對話稍早，figma 未重連前）：使用者
+   拍板已刪除語意 = 從使用中移除，非真的刪除資料，既有照片等資料不受影響；
+   已寫入 `components/room-type-card.md`「概述」段，「Figma 未定義」段對應項目
+   已清空。
+
+### 重要決定
+
+- Figma 讀取遺漏的教訓：下次 figma-go read 多張同類卡片/列表項目時，讀完當下
+  就要逐一核對「已讀 N 張中的第幾張」再寫 spec，不能只挑幾個代表樣本就假設涵蓋
+  全部，尤其該次讀取時使用者已明確告知是「6 張卡各自不同佈局」
+
+### 下一步應做
+
+1. 開始實作 `preview/room-type.html`：頁面 shell（沿用既有 aside/topbar partial，
+   aside 房型項目要從 inactive 佔位改真實連結 `./room-type.html`）+ 完整 6 卡片
+   列表（用上表資料，不省略任何一張）+ 3 個資料 modal（新增/修改/查看）+ 照片
+   管理 modal（獨立 JS，比照 `lodging-info-modals.js` pattern 但不共用檔案/state）
+2. 統計列分隔線顏色要用渲染圖核對，不直接信 JSON 的 `#000000`/`#454545`
+3. 新增頁面需登記：`js/page-tabs.js` TAB_PAGES、`scripts/lint-partials.py`
+   MANIFEST（partials: aside/topbar/session-modals/topbar-modals/
+   room-type-modals；modules: partials.js/page-shell.js/page-tabs.js/
+   modal-controller.js/topbar-modals.js/room-type-modals.js/
+   room-type-photo-modal.js）、`app.css` 加 `room-type.css` import
+4. Modal 版面：3 個房型資料 modal（新增/修改/查看）採獨立 modal block（不是
+   share 一顆動態切換），desktop max-width 800px（`modals.css` 仿
+   `#modalBranchInfoBackdrop` 800px pattern）；照片管理 modal 沿用
+   `state=photo-gallery` 版型但另建 `#modalRoomTypePhotoGalleryBackdrop`
+   （不可重用 `modalPhotoGalleryBackdrop` id，避免跟民宿資料頁的既有慣例混淆：
+   房型頁是獨立 document，id 不會碰撞，但沿用同 id 容易誤讓人以為兩頁共用
+   同一顆 modal instance）
+5. 房間介紹文案／房間名稱文案 caption 卡：modal.md 未定義多語言 tab，比照
+   `lodging-branch-content-card.js` 但拿掉語言 tab / 翻譯列（單語言版），新增/
+   修改預設「尚未填寫」+ 編輯按鈕開 SunEditor placeholder；查看模式移除編輯
+   按鈕，房間介紹文案改示範已儲存內容（固定文字見 `components/modal.md`
+   state=room-type「固定文字內容」表），房間名稱文案維持空狀態
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 121 再補充：嗚啦啦卡片統計列對齊修正 (2026-07-31)
+
+使用者截圖覆核發現：無副標的「嗚啦啦」卡片統計列（table）沒有貼齊卡片底部，
+跟同一列其他卡片沒對齊。追查後發現先前記錄「無副標卡片變矮 446px->412px」是
+錯的（`get_screenshot` 逐張像素量測，6 張卡總高度完全一致，皆 446px）。
+
+**修正**：`preview/js/room-type.js` `buildCard()` 把「分隔線 + 統計列」包成
+`bottomSection`（`flex flex-col gap-4 mt-auto`），靠 flex `mt-auto` 把它推到
+卡片底部；卡片列表容器本身是 CSS grid，同一列卡片預設互相 stretch 等高，
+這是 `mt-auto` 有多餘高度可吸收的前提。`components/room-type-card.md`「副標
+缺失」段已訂正（標記 446px 統一 + mt-auto 實作方式，刪除錯誤的 412px 記錄）。
+1440/768 兩個斷點截圖驗證：同一列卡片的統計列已對齊，`node scripts/
+smoke-test.mjs` 與四項 lint 全數重跑通過。
+
+---
+
+## Session 121 補充：room-type.html 實作完成 (2026-07-31)
+
+### 本輪改動（延續上面 Session 121 交接）
+
+1. **重掃 3 個 modal（新增/修改/查看）**：跟 Session 120 寫入 `components/modal.md`
+   的紀錄逐欄位/逐顏色核對，完全一致，無落差，只補一句「disabled Input =
+   Neutral/100（非 Select 的 Neutral/200）」的元件類型澄清
+2. **發現並修正 JSON 不等於視覺 landmine（房型卡片按鈕 + ribbon）**：
+   修改/複製/刪除/查看/還原 5 顆 pill 按鈕與左上角 ribbon 三角色塊的
+   `get_selection`/`get_node` 完全沒有 `fills` 欄位（只有 `strokes`），
+   照 JSON 字面會誤判成白底+純色邊框；改用 `save_screenshots(SVG)` 讀
+   `<defs><linearGradient>` 才發現全部是白->對應色的漸層背景。`components/
+   room-type-card.md` Token/顏色表已更正，5 個漸層色標全部已有既有 token
+   （`Brand-100`/`Brand-200`/`linear-function-button-duplication`/
+   `linear-function-button-delete`/`light-green`/`Border/Default`），
+   不需新增。同時訂正「刪除」按鈕文字色（先前誤記 `Border/Plugin-Invalid`，
+   實際是 `Surface/Status-Negative #E12129`；`Plugin-Invalid` 是 icon vector
+   色）
+3. **實作 `preview/room-type.html`**：頁面 shell（沿用 aside/topbar/
+   session-modals/topbar-modals partial）+ 操作列（摘要文字 + 新增/重整
+   按鈕，mobile 順序反轉）+ 6 張房型卡片完整渲染（`js/room-type.js`
+   data-driven render，資料來自 `components/room-type-card.md` 完整 6 卡表）
+4. **新增 `preview/js/room-type.js`**：卡片列表渲染（ribbon SVG、圓形照片
+   trigger、功能按鈕列、統計列 table）+ 重整按鈕（`location.reload()`）。
+   Ribbon 用 inline SVG 帶入 Figma 精確 path（`get_screenshot(SVG)` 匯出結果）
+   還原圓角尖端，不用 clip-path 近似；8px 卡片邊距用 wrapper `top-2 left-2`
+   還原（Figma bounds x:8,y:8，非貼齊 0,0，這是使用者截圖覆核發現的第二個
+   落差）。Ribbon 漸層終點色跟卡片狀態連動：使用中（有「修改」按鈕）=
+   `Brand-100` 淡橘，已刪除（有「查看」按鈕）= `Neutral-100` 淡灰（使用者
+   訂正，SVG 覆核節點 `2137:101205` 已刪除卡片確認）
+5. **新增 `preview/partials/room-type-modals.html`**：新增/修改/查看 3 個
+   資料 modal（獨立 modal block，不共用動態切換）+ 照片管理 modal（版型
+   沿用 `state=photo-gallery`，id 改成 `modalRoomTypePhotoGalleryBackdrop`
+   不跟民宿資料頁共用 instance）
+6. **新增 `preview/js/room-type-modals.js`**：房間介紹文案/房間名稱文案
+   單語言版 caption card（modal.md 沒有語言 tab 維度，跟
+   `lodging-branch-content-card.js` 3 語言版不同，獨立實作不 import）+
+   facility chip 選中切換
+7. **新增 `preview/js/room-type-photo-modal.js`**：比照
+   `lodging-info-modals.js` pattern，依卡片 id（room-1~room-6）各自獨立
+   5 張圖片 slot 狀態，JS 完全獨立不 import 民宿資料頁檔案
+8. **CSS**：新增 `preview/assets/css/room-type.css`（按鈕漸層、facility chip
+   選中態、統計列 table 樣式），登記進 `app.css` import 清單；`modals.css`
+   新增 3 個資料 modal（800px，仿 `modalBranchInfoBackdrop`）+ 照片管理
+   modal（1140px）的 `.modal-box` 寬度規則 + mobile fullscreen 群組
+9. **頁面登記**：`partials/aside.html` 房型項目改真實連結、
+   `js/page-tabs.js` TAB_PAGES 加 `room-type.html`、
+   `scripts/lint-partials.py` MANIFEST 加 room-type.html 條目、
+   `scripts/smoke-test.mjs` APP_CSS_LOADED_CHECK 加 `room-type.css` +
+   新增 room-type.html 頁面 entry（10 項 check：6 卡渲染、
+   active/deleted 按鈕數量、3 個資料 modal 開關、facility chip 切換、
+   照片 modal 開關+獨立 slot 驗證）
+10. **RWD 斷點澄清（使用者拍板）**：`components/room-type-card.md` 只定義
+    767px 單欄跟 1440px 3 欄兩個斷點，768-1280px 中間帶（aside 已切桌面版
+    但寬度不夠 3 欄）沒有 Figma 依據；問過使用者後，使用者實測目前
+    `md:grid-cols-2 xl:grid-cols-3` 過渡效果可接受，維持現狀不改
+
+### 驗證（self-tested，pending 使用者最終驗收）
+
+- [x] **Token 檢查**：顏色全部引用 tokens.md 既有 token（無新增 hex）；
+  漸層色標見上方「本輪改動」第 2 點
+- [x] **Icon 檢查**：全部從 `preview/assets/icons/` 引用，無自畫 SVG
+  （ribbon 用 inline SVG 但是精確複製 Figma path，非自創圖形）
+- [x] **RWD 檢查**：375/768/1440 三個斷點截圖驗證 - mobile 卡片單欄 +
+    按鈕換行（修改+複製一行/刪除置中另一行）+ 操作列順序反轉；768 aside
+    桌面版 + 2 欄卡片（使用者拍板接受）；1440 3 欄 grid + 桌面操作列
+- [x] **Font-size 檢查**：無 `text-[10px]` 等 < 12px 寫法
+- [x] **min-width mobile-safe 檢查**：無 fixed `min-w-[Npx]` 未加 `md:` 前綴
+- [x] **Lint 自檢**：`lint-fonts.sh`/`lint-conventions.sh`/`lint-partials.sh`/
+  `lint-tokens.sh` 全數 exit 0
+- [x] **Browser smoke test**：`node scripts/smoke-test.mjs` 7 頁全過
+  （room-type.html 10 checks，含 6 卡渲染、3 資料 modal 開關、facility
+  chip 切換、照片 modal 獨立 slot）
+- [x] **狀態完整性**：使用中/已刪除按鈕組、disabled 欄位、chip 選中態、
+  toggle 開關態、查看模式全disabled+關閉按鈕，全部依 modal.md/
+  room-type-card.md 規格實作，人工截圖 + click 測試核對過
+- [x] **文字內容**：6 張卡文字、modal 固定文字內容跟 Figma 一致
+
+### 未解問題
+
+（無）
+
+---
+
 ## Session 120 交接 (2026-07-30)
 
 ### 任務：系統設定 -> 房型頁 figma-go read 階段（desktop/tablet~mobile/mobile 三個 RWD frame）

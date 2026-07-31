@@ -92,6 +92,28 @@
   flex-direction: column;
   overflow: hidden;
 }
+#modalRoomTypeNewBackdrop .modal-box,
+#modalRoomTypeEditBackdrop .modal-box,
+#modalRoomTypeViewBackdrop .modal-box {
+  /* components/modal.md state=room-type，Figma 800px 參照，< 1140px 共用
+     上限不封頂 */
+  width: min(calc(100vw - 24px), 800px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modalRoomTypePhotoGalleryBackdrop .modal-box {
+  /* components/modal.md state=photo-gallery 版型沿用，房型頁另建 id
+     不共用民宿資料頁 modalPhotoGalleryBackdrop instance */
+  width: min(calc(100vw - 24px), 1140px);
+  max-height: calc(100vh - 24px);  /* fallback */
+  max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 #modalMultilingualStatusBackdrop .modal-box {
   /* components/modal.md state=multilingual-status，Figma 948px 參照，
      < 1140px 共用上限不封頂 */
@@ -736,7 +758,11 @@
   #modalOrderEditBackdrop,
   #modalPhotoGalleryBackdrop,
   #modalBranchInfoBackdrop,
-  #modalMultilingualStatusBackdrop {
+  #modalMultilingualStatusBackdrop,
+  #modalRoomTypeNewBackdrop,
+  #modalRoomTypeEditBackdrop,
+  #modalRoomTypeViewBackdrop,
+  #modalRoomTypePhotoGalleryBackdrop {
     align-items: stretch;
     justify-content: stretch;
     padding: 0;
@@ -750,7 +776,11 @@
   #modalOrderEditBackdrop .modal-box,
   #modalPhotoGalleryBackdrop .modal-box,
   #modalBranchInfoBackdrop .modal-box,
-  #modalMultilingualStatusBackdrop .modal-box {
+  #modalMultilingualStatusBackdrop .modal-box,
+  #modalRoomTypeNewBackdrop .modal-box,
+  #modalRoomTypeEditBackdrop .modal-box,
+  #modalRoomTypeViewBackdrop .modal-box,
+  #modalRoomTypePhotoGalleryBackdrop .modal-box {
     width: 100%;
     max-width: 100%;
     max-height: none;

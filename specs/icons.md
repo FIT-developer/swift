@@ -116,6 +116,7 @@
 | single-symbol-warning | assets/icons/single-symbol-warning.svg | 24x24 | 警告（單一符號，語意橙）見色彩語意表 | icons/single-symbol-warning |
 | star | assets/icons/star.svg | 20x20 | 星號/收藏 | icons/star |
 | submit | assets/icons/submit.svg | 15×16 | 送出 ⚠️ fill #2178CF（藍色，建議改 currentColor） | icons/submit |
+| suspend-outline | assets/icons/suspend-outline.svg | 24x24 | 停用（房型卡片「停用」按鈕，2026-07-31 新增，取代原 trash-can；純黑線稿，見 components/room-type-card.md） | icons/suspend-outline |
 | switch | assets/icons/switch.svg | 24×24 | 切換帳號 | icons/switch |
 | system | assets/icons/system.svg | 24×24 | 系統設定（齒輪造型） | icons/system |
 | tasks-day | assets/icons/tasks-day.svg | 24×24 | 每日任務 | icons/tasks-day |
@@ -131,6 +132,7 @@
 | up-and-down | assets/icons/up-and-down.svg | 16×16 | 雙向排序 | icons/up-and-down |
 | upload | assets/icons/upload.svg | 24x24 | 上傳 | icons/upload |
 | upload-outline | assets/icons/upload-outline.svg | 24x24 | 上傳（外框樣式） | icons/upload-outline |
+| video-play | assets/icons/video-play.svg | 24x24 | 啟用（房型卡片「啟用」按鈕，2026-07-31 新增，取代原 restore-page-outline-rounded；純黑線稿，見 components/room-type-card.md） | icons/video-play |
 | warning-orange | assets/icons/warning-orange.svg | 24×24 | 警告 🟠 fill #E05216 | icons/warning |
 | yes | assets/icons/yes.svg | 20x20 | 確認/勾選（黑勾） | icons/yes |
 
@@ -226,7 +228,7 @@
 `check`（中性）, `check-green`（成功 🟢）, `failure-red`（錯誤 🔴）, `warning-orange`（警告 🟠）, `info`, `focus`, `prohibited`
 
 ### 操作動作類
-`edit`, `close`, `search`, `download`, `duplicate`, `trash-can`, `submit`, `plus-list`, `outline-plus`, `outline-minus`, `lock`, `unlock`, `switch`, `eye-open`, `eye-close`, `attached-link`, `attached-link-moved`, `eraser`, `restore`, `restore-page-outline-rounded`, `preview-outline`
+`edit`, `close`, `search`, `download`, `duplicate`, `trash-can`, `submit`, `plus-list`, `outline-plus`, `outline-minus`, `lock`, `unlock`, `switch`, `eye-open`, `eye-close`, `attached-link`, `attached-link-moved`, `eraser`, `restore`, `restore-page-outline-rounded`, `preview-outline`, `suspend-outline`, `video-play`
 
 ### 資料 / 內容類
 `document`, `image`, `list`, `chart`, `dashboard`, `calendar`, `clock`, `label`, `order-info`, `tasks-day`, `bulletin`, `message`
@@ -320,4 +322,4 @@
 
 ---
 
-*Generated from Figma components page - 116 一般 icon + 12 menu-list icon(各 fill/none-fill 兩檔) + 17 SunEditor + 2 ckeditor icon exported(`~~none~~` 未匯出不計) - Updated 2026-07-29*
+*Generated from Figma components page - 118 一般 icon + 12 menu-list icon(各 fill/none-fill 兩檔) + 17 SunEditor + 2 ckeditor icon exported(`~~none~~` 未匯出不計) - Updated 2026-07-31*

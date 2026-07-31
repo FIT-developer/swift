@@ -126,6 +126,25 @@ MANIFEST = {
             './js/lodging-branch-content-card.js',
         ],
     },
+    'room-type.html': {
+        'partials': [
+            'aside',
+            'topbar',
+            'session-modals',
+            'topbar-modals',
+            'room-type-modals',
+        ],
+        'modules': [
+            './js/partials.js',
+            './js/page-shell.js',
+            './js/page-tabs.js',
+            './js/modal-controller.js',
+            './js/topbar-modals.js',
+            './js/room-type.js',
+            './js/room-type-modals.js',
+            './js/room-type-photo-modal.js',
+        ],
+    },
 }
 
 # 舊單元件 preview（無 partial 架構），僅豁免不檢查；

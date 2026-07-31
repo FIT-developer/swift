@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 房型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body data-page="房型">
+    <div
+      id="rootWrap"
+      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto p-3"
+    >
+      <!-- Mobile top bar (page shell; desktop top row is partials/topbar.html) -->
+      <div class="flex items-center justify-between md:hidden">
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
+        <button
+          id="mobileMenuBtn"
+          class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="w-6 h-5" alt="選單" />
+        </button>
+      </div>
+
+      <div id="bodyArea" class="flex flex-col md:flex-row gap-3 flex-1 min-w-0">
+        <div data-partial="aside"></div>
+
+        <div id="mainColumn" class="flex-1 flex flex-col min-w-0 gap-3">
+          <div data-partial="topbar"></div>
+
+          <main class="flex-1 flex flex-col min-w-0 w-full">
+            <!-- 頁面內容（specs/pages/room-type.md）
+                 外層容器 Neutral/75 底 + border + radius 12 + padding 20 -->
+            <div
+              class="flex-1 flex flex-col gap-6 rounded-xl border border-border-disabled bg-surface-hover p-5"
+            >
+              <!-- 操作列：desktop/tablet(>=768) 摘要在左、按鈕在右同一列；
+                   mobile(<768) 按鈕置中在上、摘要在下，順序反過來 -->
+              <div class="flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4">
+                <p class="flex-1 min-w-0 text-base text-text-default text-center md:text-left">
+                  住宿：<span class="text-brand-400">2</span>　非住宿：<span class="text-brand-400">0</span
+                  ><br class="md:hidden" />
+                  僅 <span class="text-brand-400">住宿類型</span> 作用於「房間預定」，並計算住房率
+                </p>
+                <div class="flex shrink-0 items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    data-modal-open="modalRoomTypeNewBackdrop"
+                    class="flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer hover:opacity-80"
+                  >
+                    <img src="./assets/icons/outline-plus.svg" alt="" class="w-6 h-6" />
+                    <span>新增</span>
+                  </button>
+                  <button
+                    id="roomTypeReloadBtn"
+                    type="button"
+                    class="flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer hover:opacity-80"
+                  >
+                    <img src="./assets/icons/restore.svg" alt="" class="w-6 h-6" />
+                    <span>重整</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 啟用/停用狀態篩選 tab（figma-go 2026-07-31 新增，node 2139:105271）：
+                   沿用既有 .member-data-filter-tab 底線 active pattern（無框、
+                   font-weight 600 + border-bottom Brand-400），靠左對齊，不置中 -->
+              <div class="flex flex-nowrap items-center gap-4" id="roomTypeStatusFilter">
+                <button type="button" class="member-data-filter-tab is-active" data-status-filter="active">啟用</button>
+                <button type="button" class="member-data-filter-tab" data-status-filter="deleted">停用</button>
+              </div>
+
+              <!-- 房型卡片列表：desktop 3 欄 grid / mobile~tablet、mobile 單欄滿寬，
+                   由 js/room-type.js 渲染完整 6 張卡（components/room-type-card.md），
+                   依上方啟用/停用 tab 篩選目前只顯示對應狀態的卡片 -->
+              <div
+                id="roomTypeCardList"
+                class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+              ></div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="mobileSidebarBackdrop"
+      class="mobile-sidebar-backdrop md:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <!-- 確定登出（aside 觸發，全站共用） -->
+    <div data-partial="session-modals"></div>
+    <!-- topbar 系統商公告/會員安全管理（三頁共用） -->
+    <div data-partial="topbar-modals"></div>
+    <!-- 房型頁專屬：新增/修改/查看資料 modal + 照片管理 modal -->
+    <div data-partial="room-type-modals"></div>
+
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
+      import { createModalController } from "./js/modal-controller.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
+      import { initRoomType } from "./js/room-type.js";
+      import { initRoomTypeModals } from "./js/room-type-modals.js";
+      import { initRoomTypePhotoModal } from "./js/room-type-photo-modal.js";
+
+      await loadPartials();
+      initPageShell();
+      initPageTabs();
+      createModalController();
+      initTopbarModals();
+      // 頁面卡片列表渲染 + 重整按鈕
+      initRoomType();
+      // 新增/修改 modal：facility chip 切換、caption 編輯流程
+      initRoomTypeModals();
+      // 照片管理 modal：依卡片 id 各自獨立圖片狀態
+      initRoomTypePhotoModal();
+    </script>
+  </body>
+</html>

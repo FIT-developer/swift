@@ -7,8 +7,9 @@
 - Modal（新增/修改/查看）：`2137:101712` / `2137:104312` / `2137:104757`，
   見 `components/modal.md` `state=room-type` 段
 
-**實作**：尚未開始（本輪只完成 spec）
-**狀態**：2026-07-30 spec 初版，待實作
+**實作**：`preview/room-type.html` 已完成（shell + 6 卡片列表 + 3 個資料 modal
++ 照片管理 modal + 啟用/停用狀態篩選 tab + 卡片停用/啟用互動）
+**狀態**：2026-07-31，持續迭代中（見 `specs/progress.md` Session 121 各段交接）
 
 ---
 
@@ -19,9 +20,10 @@
 2. 「嗚啦啦」卡缺少「房價跟隨」副標是刻意設計，不是內容缺漏
 3. 「僅 住宿類型」旁沒有 toggle/checkbox，是純說明文字
 4. 頁面右上角「重整」按鈕（`icons/restore` + 文字「重整」）= 重新整理當前頁，
-   跟卡片內「還原」（`icons/restore-page-outline-rounded`）語意不同，不要混用；
-   已記錄在使用者長期記憶 `feedback_refresh_button_semantics`，之後同元件同位置
-   不用再問
+   跟卡片內「啟用」按鈕（`icons/video-play`，2026-07-31 由「還原」/
+   `icons/restore-page-outline-rounded` 改名+換圖示，見
+   `components/room-type-card.md`）語意不同，不要混用；已記錄在使用者長期
+   記憶 `feedback_refresh_button_semantics`，之後同元件同位置不用再問
 5. aside 選單佔位標籤（主項目一~六、前台作業/房間預訂/子項目二三）沿用既有實作，
    不跟 Figma；沿用既有規則 `feedback_menu_list_source`
 6. mobile/tablet 消失的 breadcrumb chips + 頂部 function icons，沿用既有 shell
@@ -60,18 +62,54 @@
 - 容器內直排：
   1. 摘要/篩選列 + 操作按鈕列（見下方「操作列」，desktop/tablet 跟 mobile
      的元素順序不同）
-  2. 房型卡片列表（規格見 `components/room-type-card.md`）
+  2. 啟用/停用狀態篩選 tab（見下方「啟用/停用狀態篩選」）
+  3. 房型卡片列表（規格見 `components/room-type-card.md`）
 
 ### 操作列
 
 | 斷點 | 排列 |
 |---|---|
 | Desktop / Mobile~tablet（`>=768`） | 摘要文字（住宿:82 非住宿:0 + 僅住宿類型說明）在左，「+ 新增」「重整」按鈕在右，同一列 |
-| Mobile（`<768`） | 順序反過來：「+ 新增」「重整」按鈕置中在上，摘要文字在下，各自獨立一列 |
+| Mobile（`<768`） | 順序反過來：「+ 新增」「重整」按鈕靠右在上，摘要文字在下，各自獨立一列
+（2026-07-31 使用者訂正：按鈕是靠右對齊，不是置中） |
 
 摘要文字內容：「住宿：{n}」「非住宿：{n}」（數字橘色 `Color/Brand/Brand-400`）+
 「僅 [住宿類型（橘字強調）] 作用於「房間預定」，並計算住房率」，純說明文字，
 沒有互動控制項（見使用者確認事項 3）。
+
+### 啟用/停用狀態篩選（2026-07-31 figma-go 新增，node `2139:105271`）
+
+卡片列表上方、操作列下方，一組左對齊的 2 顆文字 tab：「啟用」/「停用」。
+
+- **視覺**：沿用既有 `.member-data-filter-tab` / `.is-active` pattern
+  （底線 active，`font-weight: 600` + `border-bottom-color: Brand-400`，
+  無框、無底色），不新增 CSS class；SVG 覆核 Figma 節點確認底線色正是
+  `#F28B45`（`Color/Brand/Brand-400`），跟既有 token 一致
+- **對齊**：靠左，不置中、不撐滿寬度（跟操作列文字/按鈕的排列邏輯無關，
+  是獨立一列）
+- **預設**：「啟用」為預設選中（Figma 節點 `啟用` 文字 weight 600、`停用`
+  weight 400，前者才有底線）
+- **行為**：切換 tab 即時篩選卡片列表，只顯示對應狀態的卡片；篩選依據是
+  卡片「當下」的狀態（不是初始值）- 卡片本身的停用/啟用按鈕會改變其
+  `state`，若因此不再符合目前選中的 tab，卡片會立刻從篩選結果消失
+  （例如在「啟用」tab 下把某張卡停用，該卡立刻不見；切到「停用」tab 才會
+  看到它）
+- 實作：`preview/room-type.html` `#roomTypeStatusFilter` + `preview/js/
+  room-type.js` `initStatusFilterTabs()` / `currentStatusFilter` /
+  `renderCardList()` 篩選邏輯
+
+#### 篩選結果為空狀態（2026-07-31 figma-go 新增，node `2139:105859`）
+
+任一 tab 篩選後若沒有符合的卡片，卡片列表位置改顯示一行提示文字，取代
+整個卡片 grid（不是卡片 grid 空白一片）：
+
+- 「啟用」tab 無資料：「沒有任何啟用中的卡片」
+- 「停用」tab 無資料：「沒有任何停用中的卡片」
+- 樣式：20px（`text-xl`）、`Color/Neutral/800`、靠左對齊，上下各 24px
+  padding（`py-6`），跟 Figma 節點量測一致
+- 實作：`js/room-type.js` `EMPTY_FILTER_MESSAGE` + `renderCardList()`
+  於篩選結果為空陣列時提早 return，插入這行文字取代卡片渲染；文字容器
+  用 `col-span-full` 撐滿 grid 寬度（避免只佔第一欄）
 
 ### 房型卡片列表
 
@@ -79,6 +117,9 @@
 - Mobile~tablet / Mobile：單欄滿寬堆疊
 - 卡片本身規格（anatomy、狀態、RWD 細節、圖片點擊行為、統計列 table 實作）見
   獨立檔 `components/room-type-card.md`
+- 列表永遠只渲染符合目前篩選 tab 的子集（2 張啟用中 / 4 張已停用），不是
+  一次渲染全部 6 張再用 CSS 隱藏 - 篩選切換時整份重新渲染
+  （`renderCardList()`）
 
 ---
 
@@ -106,7 +147,5 @@
 
 ## Figma 未定義 / 待確認
 
-- 「已刪除」狀態卡片是否強制不能有照片，樣本不足，見
-  `components/room-type-card.md`「Figma 未定義」段
 - 本次 Figma 未提供這 3 個 modal 的窄版單獨 frame，窄 viewport 下的兩欄 row
   版面调整見 `components/modal.md` `state=room-type` 段「Layout / RWD」
