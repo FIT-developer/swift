@@ -90,6 +90,9 @@ preview/
 **已判定案例**：
 - `account-permission.html`（Session 112, 2026-07-28）：多 card 整襯型，已套用移除
 - `lodging-info.html`（2026-07-30）：分館列白底卡片整襯型，已套用移除
+- `room-type.html`（2026-07-31）：房型卡片整襯型，content 在 mobile 應滿版
+  貼齊左右（使用者截圖覆核指出初版誤用了無條件 `rootWrap p-3`，導致
+  content 外面多包一層 12px padding），已套用移除
 - `landing.html` / `room-booking.html` / `order-processing.html` /
   `system-basic.html`：維持 `rootWrap p-3` 不動（尚未依此準則個別重新
   判斷；之後若這幾頁的 Figma frame 也是整襯型，再各自評估調整，不要

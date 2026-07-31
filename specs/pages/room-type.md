@@ -2,10 +2,27 @@
 
 **Figma 來源**：
 - Desktop：FRAME `2137:101408`「房型資料 desktop 0730」1440x1130
-- Mobile~tablet：FRAME `2137:103071`「房型資料 mobile ~ tablet 0730」767x2956
-- Mobile：FRAME `2137:103890`「房型資料 mobile 0731」375x3164
+- Mobile~tablet：FRAME `2140:106747`「房型資料 mobile ~ tablet 0731」
+  767x2974（2026-07-31 使用者修正版，取代舊 `2137:103071`；見下方「content
+  單層結構」訂正說明）
+- Mobile：FRAME `2140:106898`「房型資料 mobile 0731」375x3182（同一次修正，
+  取代舊 `2137:103890`）
 - Modal（新增/修改/查看）：`2137:101712` / `2137:104312` / `2137:104757`，
   見 `components/modal.md` `state=room-type` 段
+
+### content 單層結構訂正（2026-07-31 使用者訂正）
+
+使用者發現舊版 mobile~tablet / mobile 這兩個 Figma frame 的 `content`
+不小心多包了一層（兩層 `content` 疊在一起），導致畫面多一塊底色（`Color/
+Neutral/75` 淡藍白底色因為兩層疊加而看起來像多一圈邊框/色塊）。已在
+Figma 修正為單層 `content`（frame 直接子節點只有「頂部 logo/選單列」+
+一個 `content`，不再巢狀）。
+
+**實作面確認**：`preview/room-type.html` 目前結構本來就只有一層內容容器
+（`<main>` 內單一個 `rounded-xl border ... bg-surface-hover` 的 div），
+沒有巢狀兩層的問題，這次 Figma 修正不需要改動任何程式碼，純粹是 Figma
+來源檔本身的訂正 + 對應 node ID/尺寸更新（見上方來源列表與
+`components/room-type-card.md` RWD 表）。
 
 **實作**：`preview/room-type.html` 已完成（shell + 6 卡片列表 + 3 個資料 modal
 + 照片管理 modal + 啟用/停用狀態篩選 tab + 卡片停用/啟用互動）
@@ -54,6 +71,12 @@
   `body[data-page="房型資料"]`
 - mobile（`<768`）：logo + drawer 收合鈕（既有 shell 行為），breadcrumb chips
   跟 function icons 收進 aside 抽屜，見上方使用者確認事項 6
+- **mobile 外層 shell padding（2026-07-31 使用者截圖覆核訂正）**：房型頁是
+  `specs/page-architecture.md`「Mobile/tablet 外層 shell padding」表的
+  「多 card 彼此整襯型」- `#rootWrap` 用 `md:p-3`（`<768` 歸零），mobile
+  top bar 自帶 `px-3 pt-3`（對應 Figma top12/left12/right12/bottom0）。
+  content 本身在 mobile 要滿版貼齊左右，不能讓 `rootWrap` 無條件 `p-3`
+  在 content 外面多包一層 12px；初版誤用無條件 `p-3`，已修正
 
 ### Content
 

@@ -16,10 +16,13 @@
   <body data-page="房型">
     <div
       id="rootWrap"
-      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto p-3"
+      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto md:p-3"
     >
-      <!-- Mobile top bar (page shell; desktop top row is partials/topbar.html) -->
-      <div class="flex items-center justify-between md:hidden">
+      <!-- Mobile top bar：房型卡片整襯型（見 specs/page-architecture.md
+           「Mobile/tablet 外層 shell padding」），<768 rootWrap padding
+           歸零改由這裡自帶 px-3 pt-3（對應 Figma top12/left12/right12/
+           bottom0），content 本身在 mobile 滿版貼齊左右 -->
+      <div class="flex items-center justify-between px-3 pt-3 md:hidden">
         <a href="./landing.html" aria-label="回今日總覽">
           <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
         </a>

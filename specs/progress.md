@@ -7,6 +7,72 @@
 
 ---
 
+## Session 121 九度補充：mobile 外層 shell padding 修正 (2026-07-31)
+
+使用者截圖覆核指出上一輪的「content 單層」訂正還不夠：`preview/
+room-type.html` 的 `#rootWrap` 用了無條件 `p-3`，導致 mobile 版 content
+外面多包一層 12px padding（content 應該滿版貼齊左右），mobile top bar
+（logo/選單 icon）應該是自帶 `px-3 pt-3` 內距，不是靠外層 wrapper 給。
+
+### 本輪改動
+
+1. **根因**：房型頁屬於 `specs/page-architecture.md`「多 card 彼此整襯型」
+   （跟 `lodging-info.html`/`account-permission.html` 同一類），應該用
+   `rootWrap md:p-3` + mobile top bar 自帶 `px-3 pt-3`，先前落地時漏看
+   這條既有規則，誤用了無條件 `p-3`
+2. **修正**：`preview/room-type.html` `#rootWrap` 改 `md:p-3`；mobile top
+   bar 那個 div 加 `px-3 pt-3`
+3. **spec 更新**：`specs/page-architecture.md`「已判定案例」補上
+   `room-type.html`；`specs/pages/room-type.md`「Shell」段新增這條 mobile
+   padding 規則說明
+
+### 驗證
+
+- 375px 截圖確認 content 滿版貼齊左右、top bar 自帶內距；1440px 截圖確認
+  desktop 版沒有受影響；`node scripts/smoke-test.mjs`（7 頁，room-type.html
+  13 checks）+ conventions lint 都過
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 121 八度補充：mobile~tablet/mobile frame content 單層訂正 (2026-07-31)
+
+### 任務：figma-go 讀使用者修正過的 mobile~tablet/mobile frame
+
+使用者發現自己原本的 Figma frame `content` 誤包兩層，導致畫面多一塊底色，
+已在 Figma 端修正成單層 `content`，並要我重讀 + 補 spec + 視需要實作。
+
+### 本輪改動
+
+1. **figma-go 讀取**：新 frame `2140:106747`「房型資料 mobile ~ tablet
+   0731」767x2974（取代舊 `2137:103071` 767x2956）、`2140:106898`「房型
+   資料 mobile 0731」375x3182（取代舊 `2137:103890` 375x3164）。兩個都
+   確認只有一層 `content`（直接子節點 = 頂部 logo/選單列 + 一個
+   `content`），文字內容（啟用/停用 tab、數量後綴、6 卡片、按鈕列）都
+   跟目前 desktop 版一致，沒有額外差異
+2. **實作面確認（無需改動程式碼）**：`preview/room-type.html` 本來就只有
+   一層內容容器（`<main>` 內單一個 `bg-surface-hover` div），沒有巢狀
+   兩層的問題；767px 截圖覆核畫面正常，沒有多餘底色區塊
+3. **spec 更新**：`specs/pages/room-type.md` 檔頭 Figma 來源改成新 node
+   ID/尺寸 + 新增「content 單層結構訂正」說明段；
+   `components/room-type-card.md` RWD 表同步更新 node ID/尺寸（卡片寬度
+   數值也順便訂正：mobile~tablet 687px->727px、mobile 295px->335px，
+   舊數字來自更早期的 frame 版本，跟目前 frame 實測值不符）
+
+### 驗證
+
+- 767px 截圖確認單層 content、無多餘底色；`./scripts/lint-conventions.sh`
+  通過。未動到程式碼，未重跑 smoke test（純文件變更）
+
+### 未解問題
+
+（無）
+
+---
+
 ## Session 121 七度補充：啟用/停用 tab 加動態數量後綴 (2026-07-31)
 
 ### 任務：figma-go 讀 tab button 數量後綴設計 + 實作動態統計
