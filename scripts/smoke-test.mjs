@@ -715,6 +715,28 @@ const PAGES = [
         `,
       },
       {
+        name: "tab count suffix reflects live data (figma-go node 2140:106117)",
+        expr: `
+          (function () {
+            var activeCount = document.getElementById("roomTypeActiveCount");
+            var deletedCount = document.getElementById("roomTypeDeletedCount");
+            if (activeCount.textContent !== "（2）") return "initial active count text: " + activeCount.textContent;
+            if (deletedCount.textContent !== "（4）") return "initial deleted count text: " + deletedCount.textContent;
+
+            document.querySelector('[data-card-action="disable"][data-card-id="room-1"]').click();
+            if (activeCount.textContent !== "（1）") return "active count after disabling room-1: " + activeCount.textContent;
+            if (deletedCount.textContent !== "（5）") return "deleted count after disabling room-1: " + deletedCount.textContent;
+
+            document.querySelector('[data-status-filter="deleted"]').click();
+            document.querySelector('[data-card-action="enable"][data-card-id="room-1"]').click();
+            document.querySelector('[data-status-filter="active"]').click();
+            if (activeCount.textContent !== "（2）") return "active count after restoring room-1: " + activeCount.textContent;
+            if (deletedCount.textContent !== "（4）") return "deleted count after restoring room-1: " + deletedCount.textContent;
+            return true;
+          })()
+        `,
+      },
+      {
         name: "empty filter shows correct placeholder message (figma-go node 2139:105859)",
         expr: `
           (function () {

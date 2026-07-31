@@ -7,6 +7,55 @@
 
 ---
 
+## Session 121 七度補充：啟用/停用 tab 加動態數量後綴 (2026-07-31)
+
+### 任務：figma-go 讀 tab button 數量後綴設計 + 實作動態統計
+
+### 本輪改動
+
+1. **figma-go 讀取**：node `2140:106117`（Frame 653 更新版），兩個 tab
+   文案變成「啟用（2）」「停用（8）」，全形括號。screenshot 覆核（不只信
+   JSON）確認：只有「啟用」label 本身 weight 600 + 底線，數量後綴
+   「（2）」「（8）」兩個都是 weight 400，即使在 active 的「啟用」tab 上
+   也不跟著粗體
+2. **實作**：`preview/room-type.html` 兩個 tab 各自加一個 `<span
+   class="font-normal">` 承載數量（`#roomTypeActiveCount` /
+   `#roomTypeDeletedCount`），`font-normal` 蓋掉 active tab 從
+   `.is-active` 繼承來的粗體。`preview/js/room-type.js` 新增
+   `updateStatusFilterCounts()`，在 `renderCardList()` 每次呼叫時重新
+   統計 `ROOM_TYPE_CARDS` 當下 active/deleted 數量並寫入這兩個 span -
+   數字動態反映真實資料，不是照抄 Figma demo 的「2」「8」
+3. **smoke test**：新增「tab count suffix reflects live data」check，
+   驗證初始值（2）（4）、停用一張卡後變（1）（5）、還原後變回
+   （2）（4）；13 checks 全過
+4. **spec**：`specs/pages/room-type.md`「啟用/停用狀態篩選」段落下新增
+   「數量後綴」子段
+
+### 驗證
+
+- console 手動觸發 disable/enable 驗證數字即時更新；`node scripts/
+  smoke-test.mjs`（room-type.html 13 checks）+ 兩項 lint 過
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 121 六度補充：文件澄清（「複製」按鈕無行為是刻意設計） (2026-07-31)
+
+使用者針對 UI/UX review 澄清：「複製」按鈕沒有點擊行為不是漏做，是要交給
+後端處理的邏輯（複製房型資料、產生新編號等），前端 prototype 階段不應該
+自己模擬。已在 `components/room-type-card.md`「功能按鈕 disabled 判斷規則」
+段落下補一小節記錄這個決定，避免之後被誤判成待修 bug。無程式碼變更。
+
+同時使用者重申一個既有共識（已內化在 start.md 決策原則，這裡僅記錄對話
+脈絡）：不會要求在 Figma 沒給的地方自行加東西 - 前一輪討論的「tab 旁加
+卡片數量」因此先擱置（見上一則交接），等使用者想清楚呈現方式或補了
+Figma 稿再繼續。
+
+---
+
 ## Session 121 五度補充：篩選結果為空狀態文案 (2026-07-31)
 
 ### 任務：figma-go 讀「啟用/停用篩選無資料」的空狀態

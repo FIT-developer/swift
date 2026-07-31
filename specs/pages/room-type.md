@@ -98,6 +98,24 @@
   room-type.js` `initStatusFilterTabs()` / `currentStatusFilter` /
   `renderCardList()` 篩選邏輯
 
+#### 數量後綴（2026-07-31 figma-go 新增，node `2140:106117`）
+
+每個 tab 文字後面加一組全形括號數量，如「啟用（2）」「停用（4）」：
+
+- Figma 示範文案是「啟用（2）」「停用（8）」（2+8=10，跟目前 6 卡樣本
+  對不上）- 這是 Figma 佔位數字，不是要求前端寫死顯示這兩個數字；使用者
+  明確要求「動態統計數量」，數字必須即時反映 `ROOM_TYPE_CARDS` 當下真實
+  分布，不是照抄 Figma demo 值
+- **字重**：數量後綴固定 `font-weight: 400`，即使在目前選中（active，
+  label 本身 600 粗體）的 tab 上，後綴數字也不跟著變粗 - 這是從 Figma
+  節點覆核出來的細節（`啟用` label 跟 `（2）` 後綴是兩個獨立 text
+  instance，字重不同），不是隨意假設
+- **即時更新**：卡片透過停用/啟用按鈕切換狀態時，兩個 tab 的數量後綴要
+  立刻反映最新統計，不是只在頁面載入時算一次
+- 實作：`js/room-type.js` `updateStatusFilterCounts()`，在
+  `renderCardList()` 內每次呼叫都重新計算並寫入
+  `#roomTypeActiveCount` / `#roomTypeDeletedCount` 兩個 span
+
 #### 篩選結果為空狀態（2026-07-31 figma-go 新增，node `2139:105859`）
 
 任一 tab 篩選後若沒有符合的卡片，卡片列表位置改顯示一行提示文字，取代

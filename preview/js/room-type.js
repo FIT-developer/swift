@@ -246,9 +246,22 @@ const EMPTY_FILTER_MESSAGE = {
   deleted: "沒有任何停用中的卡片",
 };
 
+// tab 數量後綴（figma-go node 2140:106117，文案「啟用（2）」「停用（8）」）：
+// 全形括號，隨 ROOM_TYPE_CARDS 當下狀態動態統計，每次 renderCardList() 都
+// 重新計算，卡片停用/啟用切換後立刻反映最新數字，不是 Figma 示範的固定值。
+function updateStatusFilterCounts() {
+  const activeCount = ROOM_TYPE_CARDS.filter((card) => card.state === "active").length;
+  const deletedCount = ROOM_TYPE_CARDS.filter((card) => card.state === "deleted").length;
+  const activeEl = document.getElementById("roomTypeActiveCount");
+  const deletedEl = document.getElementById("roomTypeDeletedCount");
+  if (activeEl) activeEl.textContent = "（" + activeCount + "）";
+  if (deletedEl) deletedEl.textContent = "（" + deletedCount + "）";
+}
+
 function renderCardList() {
   const list = document.getElementById("roomTypeCardList");
   if (!list) return;
+  updateStatusFilterCounts();
   list.innerHTML = "";
   const filtered = ROOM_TYPE_CARDS.filter((card) => card.state === currentStatusFilter);
   if (filtered.length === 0) {

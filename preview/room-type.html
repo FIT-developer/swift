@@ -72,12 +72,19 @@
                 </div>
               </div>
 
-              <!-- 啟用/停用狀態篩選 tab（figma-go 2026-07-31 新增，node 2139:105271）：
+              <!-- 啟用/停用狀態篩選 tab（figma-go 2026-07-31 新增，node 2139:105271；
+                   數量後綴 2026-07-31 figma-go node 2140:106117 新增）：
                    沿用既有 .member-data-filter-tab 底線 active pattern（無框、
-                   font-weight 600 + border-bottom Brand-400），靠左對齊，不置中 -->
+                   font-weight 600 + border-bottom Brand-400），靠左對齊，不置中。
+                   數量後綴（全形括號）固定 font-weight 400，即使在 active tab 上
+                   也不跟著變粗（Figma 節點覆核確認：label 粗體、後綴數字不跟著粗） -->
               <div class="flex flex-nowrap items-center gap-4" id="roomTypeStatusFilter">
-                <button type="button" class="member-data-filter-tab is-active" data-status-filter="active">啟用</button>
-                <button type="button" class="member-data-filter-tab" data-status-filter="deleted">停用</button>
+                <button type="button" class="member-data-filter-tab is-active" data-status-filter="active">
+                  啟用<span class="font-normal" id="roomTypeActiveCount"></span>
+                </button>
+                <button type="button" class="member-data-filter-tab" data-status-filter="deleted">
+                  停用<span class="font-normal" id="roomTypeDeletedCount"></span>
+                </button>
               </div>
 
               <!-- 房型卡片列表：desktop 3 欄 grid / mobile~tablet、mobile 單欄滿寬，
