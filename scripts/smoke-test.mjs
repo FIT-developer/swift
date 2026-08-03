@@ -348,6 +348,45 @@ const PAGES = [
         expr: `document.querySelectorAll(".op-status-pill").length > 0 || "no .op-status-pill rows"`,
       },
       {
+        name: "order status pill text and triangle keep fixed spacing",
+        expr: `
+          (function () {
+            var triangleSpacingRaw = getComputedStyle(document.documentElement)
+              .getPropertyValue("--spacing-12");
+            var expected = parseFloat(triangleSpacingRaw) || 12;
+            var failures = Array.from(document.querySelectorAll(".op-status-pill"))
+              .map(function (pill, index) {
+                var text = pill.querySelector(".op-status-pill-text");
+                var triangle = pill.querySelector(".op-status-pill-triangle");
+                if (!text || !triangle) return "pill " + (index + 1) + " missing text/triangle";
+                var textRect = text.getBoundingClientRect();
+                var triangleRect = triangle.getBoundingClientRect();
+                var measured = triangleRect.left - textRect.right;
+                var triangleStyle = getComputedStyle(triangle);
+                var textStyle = getComputedStyle(text);
+                var margin = parseFloat(triangleStyle.marginLeft) || 0;
+                var triangleWidth = triangle.getBoundingClientRect().width;
+                if (Math.abs(margin - expected) > 0.5) {
+                  return "pill " + (index + 1) + " margin-left " + margin;
+                }
+                if (textStyle.flexShrink !== "0") {
+                  return "pill " + (index + 1) + " text flex-shrink " + textStyle.flexShrink;
+                }
+                if (triangleStyle.flexShrink !== "0" || Math.abs(triangleWidth - 16) > 0.5) {
+                  return "pill " + (index + 1) + " triangle size/shrink " +
+                    triangleWidth.toFixed(2) + "/" + triangleStyle.flexShrink;
+                }
+                if (measured < expected - 0.5) {
+                  return "pill " + (index + 1) + " measured gap " + measured.toFixed(2);
+                }
+                return null;
+              })
+              .filter(Boolean);
+            return failures.length ? failures.join("; ") : true;
+          })()
+        `,
+      },
+      {
         name: "order-edit shell + modal partial mounted",
         expr: `
           (document.getElementById("modalOrderEditBackdrop") &&

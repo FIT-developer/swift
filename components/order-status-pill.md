@@ -30,6 +30,7 @@
 | 文字色 | 近白 | `Color/Text/50`（`#f6f6f6`） |
 | Triangle icon 色 | 白 | - |
 | 內部順序 | 色點 -> 訂單編號文字 -> `icons/triangle`（dropdown 箭頭） | - |
+| 內部固定間距 | 色點和文字之間固定 `Spacing/6`；文字和 triangle 之間固定 `Spacing/12`。三者皆不可因 mobile/tablet 表格橫向捲動或欄寬壓縮而互相咬到；triangle icon 固定 16x16 且不可 flex shrink | `Spacing/6`, `Spacing/12` |
 
 ### 狀態色點（`Color/Dots/*` token，2026-07-03 Figma Variables 同步後確認）
 

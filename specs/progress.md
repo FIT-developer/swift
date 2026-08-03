@@ -7,6 +7,114 @@
 
 ---
 
+## Session 122 二度補充：order status pill mobile/tablet triangle 間距加硬 (2026-08-03)
+
+使用者截圖覆核指出：上一輪修正後，mobile ~ tablet 尺寸的訂單處理 table 內
+訂單編號 dropdown pill 仍看起來像文字和倒三角擠在一起。
+
+### 本輪處理
+
+1. **遠端確認**：GitHub Pages 實際路徑
+   `https://3qberlin.github.io/swift/preview/assets/css/order-processing.css`
+   已含上一輪 `gap: 0` / triangle `margin-left: var(--spacing-6)` 等 CSS，
+   所以問題不是單純沒有推上去；`/swift/assets/...` 和 root
+   `/order-processing.html` 回 404，使用者畫面應是 `/swift/preview/...`
+2. **根因修正**：上一輪文字到 triangle 仍是 `Spacing/6`，視覺上接近舊版
+   flex `gap: 6px`，不足以解決使用者截圖中的「擠」；本輪把文字到 triangle
+   固定間距加大到 `Spacing/12`
+3. **抗壓縮處理**：`.op-status-pill` 增加 `flex: 0 0 auto` 與
+   `min-width: max-content`；`.op-status-pill-triangle` 改成
+   `flex: 0 0 16px`、`inline-size/block-size: 16px`、`max-width: 16px`、
+   `object-fit: contain`，避免 mobile/tablet table 欄寬壓縮時把 icon 壓成窄片
+4. **spec/test 同步**：`components/order-status-pill.md` 內部固定間距更新為
+   dot -> text `Spacing/6`、text -> triangle `Spacing/12`；
+   `scripts/smoke-test.mjs` 的回歸檢查同步改驗證 12px margin、triangle 16px
+   寬度與不可 shrink
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`order-processing.html` 9 checks 通過
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 122 補充：order status pill 文字與 triangle 固定間距 (2026-08-03)
+
+使用者補充說明：最後一個改動的目標是訂單管理 > 訂單處理頁最下方
+table 內的訂單編號 dropdown button；mobile ~ tablet 尺寸時，訂單編號文字
+和倒三角 icon 會擠在一起，需要固定間距，讓所有尺寸一致。
+
+### 本輪處理
+
+1. **spec 補強**：`components/order-status-pill.md` Pill 視覺規格新增
+   「內部固定間距」：狀態 dot 和文字之間、文字和 triangle 之間都固定
+   `Spacing/6`
+2. **CSS 修正**：`preview/assets/css/order-processing.css` 不再依賴整顆 pill 的
+   flex `gap`；改成 dot `margin-right: var(--spacing-6)`、triangle
+   `margin-left: var(--spacing-6)`，並讓文字 `flex: 0 0 auto`，避免表格在
+   mobile/tablet 橫向捲動或欄寬壓縮時咬到 triangle
+3. **回歸測試**：`scripts/smoke-test.mjs` 新增檢查，量測所有
+   `.op-status-pill` 的文字右緣到 triangle 左緣距離，並驗證 triangle margin
+   與文字 flex-shrink
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`order-processing.html` 9 checks 通過
+- 曾嘗試用臨時 headless Chrome 腳本做 375/768 viewport 專項量測，但該臨時
+  probe 在啟動 DevTools endpoint 前退出；正式 smoke runner 可正常啟動 Chrome
+  並通過新增的 DOM rect spacing 檢查
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 122：覆核最後 commit 並收斂 order pill dropdown spacing diff (2026-08-03)
+
+使用者要求檢查最後一個 git commit `0a82608 Fix order pill dropdown spacing`，
+並依 progress/spec 重新處理，必要時捨棄 commit 重新來過。
+
+### 本輪處理
+
+1. **commit 覆核**：最後 commit 只改 `preview/assets/css/order-processing.css`，
+   意圖是修正訂單處理頁「訂單編號」pill 與下拉選單 spacing；但原 diff 同時
+   混入多處無關空行與 gradient 排版重排
+2. **重新對照 spec**：`components/order-status-pill.md` 定義 pill 內部順序、
+   padding、desktop dropdown 136x44 / mobile offcanvas x44；現有選單項目 padding
+   已符合規格，不需再改下拉選單本身
+3. **CSS 收斂**：保留真正相關的 pill 修正：
+   `.op-status-pill { white-space: nowrap; }`、
+   `.op-status-pill-text { line-height: 1; }`、
+   `.op-status-pill-triangle { flex-shrink: 0; display: block; }`；
+   其餘格式 churn 還原
+4. **commit 處理**：不需要 `git reset --hard` 或捨棄整個 commit；採用 amend 方式
+   讓最後 commit 內容收斂成最小有效 diff
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`order-processing.html` 8 checks 通過
+- `git diff HEAD~1 -- preview/assets/css/order-processing.css` 只剩 pill nowrap /
+  line-height / triangle shrink 修正
+
+### 未解問題
+
+（無）
+
+---
+
 ## Session 121 九度補充：mobile 外層 shell padding 修正 (2026-07-31)
 
 使用者截圖覆核指出上一輪的「content 單層」訂正還不夠：`preview/
