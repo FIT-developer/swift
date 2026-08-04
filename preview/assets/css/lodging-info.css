@@ -181,6 +181,23 @@
   border: 1px solid var(--color-neutral-200);
 }
 
+/* 分館資料編輯 modal - 4 張文案卡同列拉齊。飯店介紹文案有語言 tabs，
+   自然高度會高於其他靜態空狀態卡；同一列的卡片需填滿 grid row，避免
+   右欄飯店設施文案出現短卡。 */
+.lodging-branch-caption-field {
+  min-height: 0;
+}
+.lodging-branch-caption-field > #lodgingBranchIntroCard,
+.lodging-branch-caption-field > .lodging-branch-caption-card {
+  flex: 1 1 auto;
+}
+.lodging-branch-caption-card {
+  height: 100%;
+}
+.lodging-branch-static-caption-card {
+  justify-content: center;
+}
+
 /* ------------------------------------------------------------------
    須知與聲明卡（task 8，components/lodging-branch-notice-card.md +
    components/lodging-branch-suneditor.md）：語言 tab / 翻譯按鈕 /

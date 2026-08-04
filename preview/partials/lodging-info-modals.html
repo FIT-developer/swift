@@ -197,9 +197,9 @@
           />
         </div>
 
-        <!-- 列 3: 市話 / 傳真 -->
+        <!-- 列 3: 聯絡電話 / 傳真 -->
         <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">市話</label>
+          <label class="w-16 shrink-0 text-base text-text-default">聯絡電話</label>
           <input
             type="text"
             value="placeholder"
@@ -263,14 +263,15 @@
              branch-suneditor.md；跟主頁須知與聲明卡差異只有沒有「來源/
              範本」按鈕，2026-07-30 使用者指定只補這一張，其餘 3 張文案
              卡片維持靜態空狀態） / 飯店設施文案（維持靜態空狀態） -->
-        <div class="flex flex-col gap-2">
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
           <label class="text-base text-text-default">飯店介紹文案</label>
           <div id="lodgingBranchIntroCard"></div>
         </div>
-        <div class="flex flex-col gap-2">
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
           <label class="text-base text-text-default">飯店設施文案</label>
           <div
-            class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+            data-branch-caption-card="facilities"
+            class="lodging-branch-caption-card lodging-branch-static-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
           >
             <span class="text-base text-text-default">尚未填寫</span>
             <button
@@ -284,10 +285,11 @@
         </div>
 
         <!-- 列 6: 飯店提醒事項文案 / 飯店交通文案 -->
-        <div class="flex flex-col gap-2">
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
           <label class="text-base text-text-default">飯店提醒事項文案</label>
           <div
-            class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+            data-branch-caption-card="reminder"
+            class="lodging-branch-caption-card lodging-branch-static-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
           >
             <span class="text-base text-text-default">尚未填寫</span>
             <button
@@ -299,10 +301,11 @@
             </button>
           </div>
         </div>
-        <div class="flex flex-col gap-2">
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
           <label class="text-base text-text-default">飯店交通文案</label>
           <div
-            class="flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+            data-branch-caption-card="traffic"
+            class="lodging-branch-caption-card lodging-branch-static-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
           >
             <span class="text-base text-text-default">尚未填寫</span>
             <button
@@ -315,13 +318,102 @@
           </div>
         </div>
 
-        <!-- 列 7: 飯店設施項目（chip 多選，滿版；資料/清單皆為後端驅動，
-             這裡是 Figma demo 示例文字，數量與內容不代表實際固定清單） -->
-        <div class="flex flex-col gap-2 min-[640px]:col-span-2">
+        <!-- 列 7: 飯店名稱 / 聯絡電話（2026-08-04 Figma 新增；目前只補
+             靜態空狀態，不回退既有飯店介紹文案多語系功能） -->
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
+          <label class="text-base text-text-default">飯店名稱</label>
+          <div
+            data-branch-caption-card="hotel-name"
+            class="lodging-branch-caption-card lodging-branch-static-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
+          <label class="text-base text-text-default">聯絡電話</label>
+          <div
+            data-branch-caption-card="contact-phone"
+            class="lodging-branch-caption-card lodging-branch-static-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 列 8: 服務傳真 / 地址 -->
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
+          <label class="text-base text-text-default">服務傳真</label>
+          <div
+            data-branch-caption-card="service-fax"
+            class="lodging-branch-caption-card lodging-branch-static-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
+          <label class="flex items-center gap-2 text-base text-text-default">
+            <span>地址</span>
+            <img src="./assets/icons/postoffice.svg" alt="" class="h-6 w-6" />
+          </label>
+          <div
+            data-branch-caption-card="address"
+            class="lodging-branch-caption-card lodging-branch-static-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 列 9: 入住時間 / 飯店設施項目（2026-08-04 改右欄 card；
+             chip 文字與既有 selected 狀態維持不動） -->
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
+          <label class="text-base text-text-default">入住時間</label>
+          <div
+            data-branch-caption-card="check-in-time"
+            class="lodging-branch-caption-card lodging-branch-static-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5"
+          >
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer"
+            >
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+        <div class="lodging-branch-caption-field flex flex-col gap-2">
           <label class="text-base text-text-default">飯店設施項目</label>
           <div
             id="lodgingBranchInfoFacilityChips"
-            class="flex flex-wrap gap-4 rounded-xl border border-border-default bg-surface-hover p-5"
+            data-branch-caption-card="facility-items"
+            class="lodging-branch-caption-card flex flex-wrap content-start gap-4 rounded-xl border border-border-default bg-surface-hover p-5"
           >
             <button
               type="button"

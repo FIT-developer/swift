@@ -118,8 +118,9 @@ function render() {
   container.innerHTML = "";
   var isMulti = LANGUAGES.length > 1;
   var area = document.createElement("div");
+  area.dataset.branchCaptionCard = "intro";
   area.className =
-    "flex flex-col gap-4 rounded-xl border border-border-default bg-surface-hover p-5";
+    "lodging-branch-caption-card flex flex-col gap-4 rounded-xl border border-border-default bg-surface-hover p-5";
 
   if (state.edit) {
     var lang = state.edit.activeLang;
@@ -152,7 +153,7 @@ function render() {
   if (isMulti) area.appendChild(buildLangTabs(activeLang));
 
   area.className =
-    "flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5";
+    "lodging-branch-caption-card flex flex-col items-center gap-5 rounded-xl border border-border-default bg-surface-hover p-5";
   if (entry.status === "saved") {
     var tag = document.createElement("span");
     tag.className = "text-base text-brand-400";

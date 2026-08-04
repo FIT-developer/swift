@@ -84,6 +84,7 @@
 | night | assets/icons/night.svg | 24×24 | 夜晚/夜數 | icons/night |
 | ~~none~~ | *(未匯出)* | — | 空狀態佔位符（無可見圖層） | icons/none |
 | office | assets/icons/office.svg | 24x24 | 辦公室/分館 | icons/office |
+| postoffice | assets/icons/postoffice.svg | 24x24 | 郵局/地址標記（民宿資料 modal） | icons/postoffice |
 | operation-system | assets/icons/operation-system.svg | 24×24 | 作業系統/系統操作（方形+圓形設計） | icons/operation-system |
 | order | assets/icons/order.svg | 24x24 | 訂單（訂單處理下拉選單「訂單」） | icons/order |
 | order-info | assets/icons/order-info.svg | 24×24 | 訂單資訊 | icons/order-info |

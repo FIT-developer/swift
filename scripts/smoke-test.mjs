@@ -638,6 +638,10 @@ const PAGES = [
             var title = document.getElementById("modalBranchInfoTitle");
             document.getElementById("lodgingRow1EditBtn").click();
             if (title.textContent !== "資料修改") return "row1 title: " + title.textContent;
+            if (!document.getElementById("modalBranchInfoBackdrop").textContent.includes("聯絡電話"))
+              return "branch info phone label missing";
+            if (document.getElementById("modalBranchInfoBackdrop").textContent.includes("市話"))
+              return "branch info old phone label still present";
             document.querySelector("#modalBranchInfoBackdrop .modal-close-btn").click();
             document.getElementById("lodgingRow2EditBtn").click();
             if (title.textContent !== "資料設定") return "row2 title: " + title.textContent;
@@ -685,6 +689,54 @@ const PAGES = [
             var savedP2 = document.querySelector(root + "p");
             if (!savedP2 || savedP2.textContent !== "smoke-test-content")
               return "cancel did not revert correctly";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "branch-info modal caption cards stretch within grid row",
+        expr: `
+          (function () {
+            document.getElementById("lodgingRow1EditBtn").click();
+            var intro = document.querySelector('[data-branch-caption-card="intro"]');
+            var facilities = document.querySelector('[data-branch-caption-card="facilities"]');
+            if (!intro || !facilities) return "caption cards missing";
+            var introRect = intro.getBoundingClientRect();
+            var facilitiesRect = facilities.getBoundingClientRect();
+            var sameRow = Math.abs(introRect.top - facilitiesRect.top) < 2;
+            if (sameRow && Math.abs(introRect.height - facilitiesRect.height) > 1)
+              return "same-row caption height mismatch: " + introRect.height + " / " + facilitiesRect.height;
+            var facilitiesStyle = getComputedStyle(facilities);
+            if (sameRow && facilitiesStyle.justifyContent !== "center")
+              return "static caption card should center empty state vertically";
+            document.querySelector("#modalBranchInfoBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "branch-info modal new caption cards + facility card placement",
+        expr: `
+          (function () {
+            document.getElementById("lodgingRow1EditBtn").click();
+            var required = ["hotel-name", "contact-phone", "service-fax", "address", "check-in-time", "facility-items"];
+            for (var i = 0; i < required.length; i += 1) {
+              if (!document.querySelector('[data-branch-caption-card="' + required[i] + '"]'))
+                return "caption card missing: " + required[i];
+            }
+            var checkIn = document.querySelector('[data-branch-caption-card="check-in-time"]');
+            var facility = document.querySelector('[data-branch-caption-card="facility-items"]');
+            var checkInRect = checkIn.getBoundingClientRect();
+            var facilityRect = facility.getBoundingClientRect();
+            if (Math.abs(checkInRect.top - facilityRect.top) < 2 && facilityRect.left <= checkInRect.left)
+              return "facility card should be right column";
+            var chips = Array.from(document.querySelectorAll("#lodgingBranchInfoFacilityChips .lodging-facility-chip"));
+            var chipText = chips.map(function (chip) { return chip.textContent.trim(); }).join("|");
+            if (chipText !== "設施一|設施二|設施三|設施五六七八九")
+              return "facility chips changed: " + chipText;
+            var states = chips.map(function (chip) { return chip.dataset.facilitySelected; }).join("|");
+            if (states !== "true|true|true|false") return "facility chip states changed: " + states;
+            document.querySelector("#modalBranchInfoBackdrop .modal-close-btn").click();
             return true;
           })()
         `,

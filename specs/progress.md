@@ -7,6 +7,173 @@
 
 ---
 
+## Session 126 補充：postoffice icon 改用正式 component 匯出 (2026-08-04)
+
+使用者補充開啟 Figma selection 給正式 icon。
+
+### 本輪改動
+
+1. **Figma 讀取**：selection 為 `2146:107308`「icons/postoffice」component，
+   24x24，子節點 `2146:107306`「postoffice」
+2. **icon 替換**：`preview/assets/icons/postoffice.svg` 由先前 modal instance
+   內匯出的暫用版本，改為正式 `icons/postoffice` component 匯出版本
+3. **既有引用不變**：`specs/icons.md` 的 `postoffice` 登記與
+   `preview/partials/lodging-info-modals.html` 地址標題旁引用維持同一路徑
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`lodging-info.html` 15 checks 通過
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 126：lodging-info 分館資料 modal 0804 新欄位讀取與新增 (2026-08-04)
+
+使用者要求 figma-go 讀取新版民宿資料「修改 / 設定」modal，列出差異後確認：
+已完成功能不要動，只新增新版多出的區塊；飯店設施項目改右欄 card，但內容
+與原本 selected 狀態維持不變。
+
+### Figma 讀取
+
+- Selection：`2146:107443`「Modal（有分資料設定與資料修改）0804」
+- 內層 modal instance：`2146:107515`，modal 寬 800，內容高 2218
+- 截圖：`specs/qa-screenshots/session-126/figma-branch-info-modal-0804.png`
+- 標題規則沿用使用者確認：實作只顯示「資料修改」或「資料設定」其中一個，
+  不顯示 Figma 示意文字「資料設定/資料修改」
+
+### 本輪改動
+
+1. **spec 同步**：`components/lodging-branch-info-modal.md` 新增 current Figma
+   source `2146:107443`，欄位表新增第 7-9 列：
+   飯店名稱 / 聯絡電話、服務傳真 / 地址、入住時間 / 飯店設施項目
+2. **HTML 實作**：`preview/partials/lodging-info-modals.html` 新增 5 張靜態
+   空狀態文案 card（飯店名稱、聯絡電話、服務傳真、地址、入住時間）；
+   「飯店介紹文案」既有多語系 JS card 未回退
+3. **設施項目位置**：飯店設施項目由原本滿版列改為第 9 列右欄 card；
+   chip 文字與 selected 狀態維持原本內容：
+   `設施一|設施二|設施三|設施五六七八九`，
+   `true|true|true|false`
+4. **icon 資產**：從 Figma `icons/postoffice` 匯出
+   `preview/assets/icons/postoffice.svg`，並登記 `specs/icons.md`
+5. **回歸測試**：`scripts/smoke-test.mjs` 新增檢查，驗證新增 card 存在、
+   飯店設施項目位於入住時間右欄、chip 內容與 selected 狀態未變
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`lodging-info.html` 15 checks 通過
+- Desktop 1440 截圖與 rect probe：
+  - 飯店設施項目與入住時間 same row，left 729 > 341，兩者高度 150 / 150
+  - 截圖：`specs/qa-screenshots/session-126/lodging-branch-info-new-fields-1440.png`
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 125：lodging-info 分館資料 modal 文案卡同列高度拉齊 (2026-08-04)
+
+使用者截圖覆核指出：系統設定 -> 民宿資料頁，分館/企業卡片下方「修改」
+與「設定」按鈕開啟的分館資料 modal 中，「飯店設施文案」card 沒有垂直
+填滿，與左欄「飯店介紹文案」高度不一致。
+
+### 本輪改動
+
+1. **規格補強**：`components/lodging-branch-info-modal.md`「文案卡片」段新增
+   同列高度行為：同一列左右兩張文案卡需填滿 grid row；靜態空狀態內容
+   在拉伸後的 card 內垂直置中
+2. **HTML/CSS 修正**：`preview/partials/lodging-info-modals.html` 四個文案
+   欄位加上共同 class / 測試錨點；`preview/assets/css/lodging-info.css`
+   新增 `.lodging-branch-caption-*` 規則，讓同列 card 可被 grid row 拉齊，
+   靜態空狀態卡 `justify-content: center`
+3. **JS 同步**：`preview/js/lodging-branch-content-card.js` 產生的飯店介紹
+   文案 card 改用同一個 `.lodging-branch-caption-card` class，避免 JS card
+   和靜態 HTML card 分叉
+4. **回歸測試**：`scripts/smoke-test.mjs` 新增 branch-info modal caption
+   cards stretch 檢查，量測同列「飯店介紹文案」與「飯店設施文案」card
+   rect 高度
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`lodging-info.html` 14 checks 通過
+- 臨時 CDP viewport probe + 截圖：
+  - 1440x1000：飯店介紹文案 / 飯店設施文案 same row，高度 178 / 178，diff 0
+  - 768x1000：飯店介紹文案 / 飯店設施文案 same row，高度 178 / 178，diff 0
+  - 375x900：單欄堆疊，不強制等高；截圖確認 card 不重疊
+  - 截圖位置：`specs/qa-screenshots/session-125/lodging-caption-{desktop-1440,tablet-768,mobile-375}.png`
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 124：lodging-info 分館資料 modal 電話欄位改名 (2026-08-04)
+
+使用者要求：系統設定 -> 民宿資料頁，兩個企業卡片中的「修改」與「設定」
+按鈕展開的 modal，原本欄位文字「市話」改為「聯絡電話」。
+
+### 本輪改動
+
+1. **component spec 同步**：`components/lodging-branch-info-modal.md` 內
+   `state=branch-basic-info` 欄位清單、RWD 單欄欄位順序、placeholder
+   欄位說明，全數由「市話」改為「聯絡電話」
+2. **HTML 實作**：`preview/partials/lodging-info-modals.html` 分館資料
+   modal 第 3 列左欄 label 改為「聯絡電話」；修改/設定兩個入口共用此
+   modal body，所以兩者同步生效
+3. **回歸測試**：`scripts/smoke-test.mjs` 的 branch-info modal 檢查新增
+   「聯絡電話」存在且舊文字「市話」不出現在 modal textContent 的斷言
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`lodging-info.html` 13 checks 通過
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 123：system-basic 預設加購訂金規則選項新增 (2026-08-04)
+
+使用者要求：系統基本 -> 預設加購訂金規則 select 目前有「含加購」與
+「不含加購」，需再新增「含加購依%數」項目。
+
+### 本輪改動
+
+1. **spec 同步**：`specs/pages/system-basic.md`「預設加購訂金規則」段落改為
+   明確列出 select 選項，保留預設值「不含加購」
+2. **HTML 實作**：`preview/system-basic.html` 對應 select 新增第三個
+   `<option>含加購依%數</option>`
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`system-basic.html` 8 checks 通過
+
+### 未解問題
+
+（無）
+
+---
+
 ## Session 122 二度補充：order status pill mobile/tablet triangle 間距加硬 (2026-08-03)
 
 使用者截圖覆核指出：上一輪修正後，mobile ~ tablet 尺寸的訂單處理 table 內
