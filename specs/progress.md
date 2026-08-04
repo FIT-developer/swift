@@ -7,6 +7,34 @@
 
 ---
 
+## Session 127：lodging-info 分館資料 modal 傳真文字調整 (2026-08-04)
+
+使用者要求將分館資料 modal 的傳真欄位改為較短名稱，純文字異動後直接
+commit & push。
+
+### 本輪改動
+
+1. **HTML 文案**：`preview/partials/lodging-info-modals.html` 的分館資料 modal
+   傳真欄位 label 改為「傳真」
+2. **spec 同步**：`components/lodging-branch-info-modal.md` 對應欄位表與文案
+   card 清單同步改名
+3. **歷史進度一致性**：本檔 Session 126 的新增欄位描述同步改為「傳真」，
+   避免後續交接沿用舊文字
+
+### 驗證
+
+- 舊傳真欄位名全 repo 搜尋：無結果
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`lodging-info.html` 15 checks 通過
+
+### 未解問題
+
+（無）
+
+---
+
 ## Session 126 補充：postoffice icon 改用正式 component 匯出 (2026-08-04)
 
 使用者補充開啟 Figma selection 給正式 icon。
@@ -51,9 +79,9 @@
 
 1. **spec 同步**：`components/lodging-branch-info-modal.md` 新增 current Figma
    source `2146:107443`，欄位表新增第 7-9 列：
-   飯店名稱 / 聯絡電話、服務傳真 / 地址、入住時間 / 飯店設施項目
+   飯店名稱 / 聯絡電話、傳真 / 地址、入住時間 / 飯店設施項目
 2. **HTML 實作**：`preview/partials/lodging-info-modals.html` 新增 5 張靜態
-   空狀態文案 card（飯店名稱、聯絡電話、服務傳真、地址、入住時間）；
+   空狀態文案 card（飯店名稱、聯絡電話、傳真、地址、入住時間）；
    「飯店介紹文案」既有多語系 JS card 未回退
 3. **設施項目位置**：飯店設施項目由原本滿版列改為第 9 列右欄 card；
    chip 文字與 selected 狀態維持原本內容：
