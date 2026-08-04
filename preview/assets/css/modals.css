@@ -298,6 +298,17 @@
 .member-data-switch input:checked ~ .member-data-switch-knob {
   transform: translateX(36px);
 }
+.member-data-switch[aria-disabled="true"],
+.member-data-switch:has(input:disabled) {
+  cursor: not-allowed;
+}
+.member-data-switch input:disabled {
+  cursor: not-allowed;
+}
+.member-data-switch[aria-disabled="true"] .member-data-switch-track,
+.member-data-switch input:disabled ~ .member-data-switch-track {
+  background: var(--color-switch-off-track);
+}
 
 /* -- member-data Title chip (calcY pill - used in 訂房記錄 summary chips) -- */
 .member-data-title-chip {

@@ -908,6 +908,111 @@ const PAGES = [
         `,
       },
       {
+        name: "room count change reveals inventory toggle (new/edit)",
+        expr: `
+          (function () {
+            function check(triggerSel, modalId) {
+              document.querySelector(triggerSel).click();
+              var modal = document.getElementById(modalId);
+              var input = modal.querySelector("[data-room-count-input]");
+              var delta = modal.querySelector("[data-room-count-delta]");
+              var inventoryRow = modal.querySelector("[data-room-inventory-row]");
+              var inventoryToggle = modal.querySelector("[data-room-inventory-toggle]");
+              var inventoryHint = modal.querySelector("[data-room-inventory-hint]");
+              var networkRow = modal.querySelector("[data-room-network-row]");
+              if (!input || input.type !== "number") return modalId + " room count input type";
+              if (input.value !== "14") return modalId + " initial room count: " + input.value;
+              if (!delta.classList.contains("hidden")) return modalId + " delta should start hidden";
+              if (!inventoryRow.classList.contains("hidden"))
+                return modalId + " inventory row should start hidden";
+
+              input.value = "15";
+              input.dispatchEvent(new Event("input", { bubbles: true }));
+              if (delta.textContent.trim() !== "增加 1 間")
+                return modalId + " increase delta: " + delta.textContent.trim();
+              if (inventoryRow.classList.contains("hidden"))
+                return modalId + " inventory row did not show";
+              if (!networkRow.classList.contains("is-room-count-changed"))
+                return modalId + " network row did not span";
+              if (!input.classList.contains("is-room-count-changed"))
+                return modalId + " input did not get changed state";
+              if (inventoryHint.textContent.trim() !== "不更新房型庫存")
+                return modalId + " closure hint: " + inventoryHint.textContent.trim();
+
+              inventoryToggle.click();
+              if (inventoryHint.textContent.trim() !== "同步更新房型庫存，至 2027-09-11")
+                return modalId + " active hint: " + inventoryHint.textContent.trim();
+              if (!inventoryHint.classList.contains("text-brand-500"))
+                return modalId + " active hint color class missing";
+
+              input.value = "11";
+              input.dispatchEvent(new Event("input", { bubbles: true }));
+              if (delta.textContent.trim() !== "減少 3 間")
+                return modalId + " decrease delta: " + delta.textContent.trim();
+
+              input.value = "14";
+              input.dispatchEvent(new Event("input", { bubbles: true }));
+              if (!delta.classList.contains("hidden")) return modalId + " delta did not hide";
+              if (!inventoryRow.classList.contains("hidden"))
+                return modalId + " inventory row did not hide";
+              if (inventoryToggle.checked) return modalId + " inventory toggle did not reset";
+              modal.querySelector(".modal-close-btn").click();
+              return true;
+            }
+
+            var newResult = check(
+              '[data-modal-open="modalRoomTypeNewBackdrop"]',
+              "modalRoomTypeNewBackdrop",
+            );
+            if (newResult !== true) return newResult;
+            var editResult = check(
+              '[data-modal-open="modalRoomTypeEditBackdrop"]',
+              "modalRoomTypeEditBackdrop",
+            );
+            if (editResult !== true) return editResult;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "view modal uses disabled room inventory active state",
+        expr: `
+          (function () {
+            document.querySelector('[data-status-filter="deleted"]').click();
+            document.querySelector('[data-modal-open="modalRoomTypeViewBackdrop"]').click();
+            var modal = document.getElementById("modalRoomTypeViewBackdrop");
+            var input = modal.querySelector("[data-room-count-input]");
+            var delta = modal.querySelector("[data-room-count-delta]");
+            var inventoryRow = modal.querySelector("[data-room-inventory-row]");
+            var inventoryToggle = modal.querySelector("[data-room-inventory-toggle]");
+            var inventoryHint = modal.querySelector("[data-room-inventory-hint]");
+            var networkRow = modal.querySelector("[data-room-network-row]");
+            var disabledSwitch = inventoryToggle && inventoryToggle.closest(".member-data-switch");
+            var track = disabledSwitch && disabledSwitch.querySelector(".member-data-switch-track");
+            if (!input || input.type !== "number" || !input.disabled)
+              return "view room count input disabled/type mismatch";
+            if (input.value !== "15") return "view room count value: " + input.value;
+            if (delta.textContent.trim() !== "增加 1 間")
+              return "view delta: " + delta.textContent.trim();
+            if (inventoryRow.classList.contains("hidden")) return "view inventory row hidden";
+            if (!inventoryToggle.checked || !inventoryToggle.disabled)
+              return "view inventory toggle checked/disabled mismatch";
+            if (inventoryHint.textContent.trim() !== "同步更新房型庫存，至 2027-09-11")
+              return "view inventory hint: " + inventoryHint.textContent.trim();
+            if (inventoryHint.classList.contains("text-brand-500"))
+              return "view inventory hint should not use active brand class";
+            if (!networkRow.classList.contains("is-room-count-changed"))
+              return "view network row did not span";
+            var trackColor = getComputedStyle(track).backgroundColor;
+            if (trackColor === "rgb(52, 199, 89)")
+              return "view disabled checked toggle should not be green";
+            modal.querySelector(".modal-close-btn").click();
+            document.querySelector('[data-status-filter="active"]').click();
+            return true;
+          })()
+        `,
+      },
+      {
         name: "facility chip toggle (new modal)",
         expr: `
           (function () {

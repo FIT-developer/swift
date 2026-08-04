@@ -250,6 +250,10 @@ selector），會由「後出現於 stylesheet 的規則」勝出 - Tailwind Pla
 - CSS scoped class：`.member-data-switch` / `.member-data-switch-track` / `.member-data-switch-knob`
 - 結構：`<span class="member-data-switch"><input type="checkbox"><span class="member-data-switch-track"></span><span class="member-data-switch-knob"></span></span>`
 - on track 色 `--color-accent-green` / off track 色 `--color-switch-off-track` / knob `--color-neutral-0`
+- disabled variant（Figma `Toggle - Switch` `type=disabled`, `991:12452`,
+  2026-08-04 confirmed）：`input disabled` 或外層
+  `aria-disabled="true"`；track 維持 `--color-switch-off-track`，knob 維持
+  enabled 規則的位置（checked disabled 在右側），不整顆降低 opacity
 - 來源：`components/member-data-modal.md`（會員資料 modal 常用會員、訂閱電子報）
 
 ### 密碼欄 eye toggle（Figma 單態示意 = 完整互動）

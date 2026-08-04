@@ -7,8 +7,9 @@
   單層結構」訂正說明）
 - Mobile：FRAME `2140:106898`「房型資料 mobile 0731」375x3182（同一次修正，
   取代舊 `2137:103890`）
-- Modal（新增/修改/查看）：`2137:101712` / `2137:104312` / `2137:104757`，
-  見 `components/modal.md` `state=room-type` 段
+- Modal（新增/修改/查看）：2026-08-04 current source 見
+  `components/modal.md` `state=room-type` 段；涵蓋新增 / 修改 / 查看各 3 個
+  房間數狀態 frame
 
 ### content 單層結構訂正（2026-07-31 使用者訂正）
 

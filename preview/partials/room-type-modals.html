@@ -31,7 +31,11 @@
     </div>
 
     <div class="min-h-0 flex-1 overflow-y-auto bg-white p-5">
-      <div class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5">
+      <div
+        class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5"
+        data-room-count-scope
+        data-room-count-default="14"
+      >
         <!-- Row1: 房間編號(disabled)+排序 | 房間名稱 -->
         <div class="flex items-center gap-6">
           <div class="flex items-center gap-3 flex-1 min-w-0">
@@ -79,40 +83,34 @@
           </select>
         </div>
 
-        <!-- Row4: 顯示分類 | 房價跟隨 -->
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">顯示分類</label>
-          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
-            <option>不分類</option>
-          </select>
+        <!-- Row4: 房間數 | 房數修改（房間數異動時顯示） -->
+        <div class="flex items-start gap-3">
+          <div class="w-16 shrink-0">
+            <label class="block text-base text-text-default">房間數</label>
+            <span class="hidden text-xs text-text-default" data-room-count-delta></span>
+          </div>
+          <input
+            type="number"
+            value="14"
+            min="0"
+            data-room-count-input
+            class="rt-room-count-input flex-1 min-w-0 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus"
+          />
         </div>
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">房價跟隨</label>
-          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
-            <option>跟隨</option>
-          </select>
+        <div class="hidden items-center justify-between gap-3" data-room-inventory-row>
+          <div class="flex flex-col gap-1">
+            <label class="text-base text-text-default">房數修改</label>
+            <span class="text-xs text-text-default" data-room-inventory-hint>不更新房型庫存</span>
+          </div>
+          <span class="member-data-switch shrink-0">
+            <input type="checkbox" data-room-inventory-toggle />
+            <span class="member-data-switch-track"></span>
+            <span class="member-data-switch-knob"></span>
+          </span>
         </div>
 
-        <!-- Row5: 銷售單位 | 房間數 -->
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">銷售單位</label>
-          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
-            <option>使用飯店預設（間）</option>
-          </select>
-        </div>
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">房間數</label>
-          <input type="text" value="14"
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
-        </div>
-
-        <!-- Row6: 參考價格 | 網路訂購 toggle -->
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">參考價格</label>
-          <input type="text" value="2000"
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
-        </div>
-        <div class="flex items-center justify-between gap-3">
+        <!-- Row5: 網路訂購 toggle -->
+        <div class="rt-network-row flex items-center justify-between gap-3" data-room-network-row>
           <label class="text-base text-text-default">網路訂購</label>
           <span class="member-data-switch shrink-0">
             <input type="checkbox" />
@@ -182,7 +180,11 @@
     </div>
 
     <div class="min-h-0 flex-1 overflow-y-auto bg-white p-5">
-      <div class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5">
+      <div
+        class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5"
+        data-room-count-scope
+        data-room-count-default="14"
+      >
         <!-- Row1: 房間編號(disabled)+排序 | 房間名稱 -->
         <div class="flex items-center gap-6">
           <div class="flex items-center gap-3 flex-1 min-w-0">
@@ -234,66 +236,40 @@
           </div>
         </div>
 
-        <!-- Row4: 加人+加床 | 銷售單位 -->
-        <div class="flex items-center gap-6">
-          <div class="flex items-center gap-3 flex-1 min-w-0">
-            <label class="w-16 shrink-0 text-base text-text-default">加人</label>
-            <input type="text" value="1"
-              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+        <!-- Row4: 房間數 | 房數修改（房間數異動時顯示） -->
+        <div class="flex items-start gap-3">
+          <div class="w-16 shrink-0">
+            <label class="block text-base text-text-default">房間數</label>
+            <span class="hidden text-xs text-text-default" data-room-count-delta></span>
           </div>
-          <div class="flex items-center gap-3 flex-1 min-w-0">
-            <label class="w-16 shrink-0 text-base text-text-default">加床</label>
-            <input type="text" value="4"
-              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
+          <input
+            type="number"
+            value="14"
+            min="0"
+            data-room-count-input
+            class="rt-room-count-input flex-1 min-w-0 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus"
+          />
+        </div>
+        <div class="hidden items-center justify-between gap-3" data-room-inventory-row>
+          <div class="flex flex-col gap-1">
+            <label class="text-base text-text-default">房數修改</label>
+            <span class="text-xs text-text-default" data-room-inventory-hint>不更新房型庫存</span>
           </div>
-        </div>
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">銷售單位</label>
-          <select class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-default">
-            <option>使用飯店預設（間）</option>
-          </select>
-        </div>
-
-        <!-- Row5: 房間數 | 參考價格 -->
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">房間數</label>
-          <input type="text" value="14"
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
-        </div>
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">參考價格</label>
-          <input type="text" value="2000"
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-white px-3 py-1.5 text-base text-text-secondary outline-none focus:border-border-focus" />
-        </div>
-
-        <!-- Row6: 房數修改 toggle | 網路訂購 toggle -->
-        <div class="flex items-center justify-between gap-3">
-          <label class="text-base text-text-default">房數修改</label>
           <span class="member-data-switch shrink-0">
-            <input type="checkbox" />
+            <input type="checkbox" data-room-inventory-toggle />
             <span class="member-data-switch-track"></span>
             <span class="member-data-switch-knob"></span>
           </span>
         </div>
-        <div class="flex items-center justify-between gap-3">
+
+        <!-- Row5: 網路訂購 toggle -->
+        <div class="rt-network-row flex items-center justify-between gap-3" data-room-network-row>
           <label class="text-base text-text-default">網路訂購</label>
           <span class="member-data-switch shrink-0">
             <input type="checkbox" />
             <span class="member-data-switch-track"></span>
             <span class="member-data-switch-knob"></span>
           </span>
-        </div>
-
-        <!-- Row7: 顯示分類(disabled) | 房價跟隨(disabled) -->
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">顯示分類</label>
-          <input type="text" value="無啟用" disabled
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
-        </div>
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">房價跟隨</label>
-          <input type="text" value="啟用" disabled
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
         </div>
 
         <!-- 房間介紹文案 / 房間名稱文案 -->
@@ -358,7 +334,12 @@
     </div>
 
     <div class="min-h-0 flex-1 overflow-y-auto bg-white p-5">
-      <div class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5">
+      <div
+        class="grid grid-cols-1 min-[640px]:grid-cols-2 gap-x-5 gap-y-5"
+        data-room-count-scope
+        data-room-count-default="14"
+        data-room-count-readonly
+      >
         <div class="flex items-center gap-6">
           <div class="flex items-center gap-3 flex-1 min-w-0">
             <label class="w-16 shrink-0 text-base text-text-default">房間編號</label>
@@ -407,62 +388,38 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-6">
-          <div class="flex items-center gap-3 flex-1 min-w-0">
-            <label class="w-16 shrink-0 text-base text-text-default">加人</label>
-            <input type="text" value="1" disabled
-              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+        <div class="flex items-start gap-3">
+          <div class="w-16 shrink-0">
+            <label class="block text-base text-text-default">房間數</label>
+            <span class="text-xs text-text-default" data-room-count-delta>增加 1 間</span>
           </div>
-          <div class="flex items-center gap-3 flex-1 min-w-0">
-            <label class="w-16 shrink-0 text-base text-text-default">加床</label>
-            <input type="text" value="4" disabled
-              class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
+          <input
+            type="number"
+            value="15"
+            min="0"
+            disabled
+            data-room-count-input
+            class="rt-room-count-input flex-1 min-w-0 rounded-[6px] border border-border-disabled bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary"
+          />
+        </div>
+        <div class="flex items-center justify-between gap-3" data-room-inventory-row>
+          <div class="flex flex-col gap-1">
+            <label class="text-base text-text-default">房數修改</label>
+            <span class="text-xs text-text-default" data-room-inventory-hint>同步更新房型庫存，至 2027-09-11</span>
           </div>
-        </div>
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">銷售單位</label>
-          <select disabled class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-border-disabled px-3 py-1.5 text-base text-text-default">
-            <option>使用飯店預設（間）</option>
-          </select>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">房間數</label>
-          <input type="text" value="14" disabled
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
-        </div>
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">參考價格</label>
-          <input type="text" value="2000" disabled
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
-        </div>
-
-        <div class="flex items-center justify-between gap-3">
-          <label class="text-base text-text-default">房數修改</label>
           <span class="member-data-switch shrink-0" aria-disabled="true">
-            <input type="checkbox" disabled />
+            <input type="checkbox" checked disabled data-room-inventory-toggle />
             <span class="member-data-switch-track"></span>
             <span class="member-data-switch-knob"></span>
           </span>
         </div>
-        <div class="flex items-center justify-between gap-3">
+        <div class="rt-network-row is-room-count-changed flex items-center justify-between gap-3" data-room-network-row>
           <label class="text-base text-text-default">網路訂購</label>
           <span class="member-data-switch shrink-0" aria-disabled="true">
             <input type="checkbox" disabled />
             <span class="member-data-switch-track"></span>
             <span class="member-data-switch-knob"></span>
           </span>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">顯示分類</label>
-          <input type="text" value="無啟用" disabled
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
-        </div>
-        <div class="flex items-center gap-3">
-          <label class="w-16 shrink-0 text-base text-text-default">房價跟隨</label>
-          <input type="text" value="啟用" disabled
-            class="flex-1 min-w-0 border border-border-disabled rounded-[6px] bg-[var(--color-neutral-100)] px-3 py-1.5 text-base text-text-secondary" />
         </div>
 
         <!-- 房間介紹文案：查看模式示範已儲存內容，無編輯按鈕；

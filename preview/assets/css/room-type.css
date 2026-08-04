@@ -63,6 +63,18 @@
   cursor: not-allowed;
 }
 
+/* 房型資料 modal 的房間數異動態：新增/修改以 brand 色提示，查看模式只保留
+   disabled toggle 與已儲存文字狀態。 */
+.rt-room-count-input.is-room-count-changed {
+  border-color: var(--color-brand-500);
+}
+.rt-room-count-input.is-room-count-changed:focus {
+  border-color: var(--color-brand-500);
+}
+.rt-network-row.is-room-count-changed {
+  grid-column: 1 / -1;
+}
+
 /* 統計列 table（specs/pages/room-type.md、room-type-card.md「統計列」段拍板）：
    text-align 置中、th/td white-space nowrap 讓內容天生撐開觸發橫向捲動，
    不寫死固定寬度。 */

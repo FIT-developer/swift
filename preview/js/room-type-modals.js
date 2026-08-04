@@ -4,6 +4,10 @@
 // 不 import 該檔案 - 兩頁 JS 各自獨立，2026-07-30 使用者明確要求）。
 import { mountSunEditorPlaceholder } from "./suneditor-instance.js";
 
+const ROOM_COUNT_BASELINE = 14;
+const ROOM_INVENTORY_HINT_OFF = "不更新房型庫存";
+const ROOM_INVENTORY_HINT_ON = "同步更新房型庫存，至 2027-09-11";
+
 function emptyCaptionState() {
   return { saved: { status: "empty", content: "" }, edit: null };
 }
@@ -119,9 +123,63 @@ function initFacilityChips(containerId) {
   });
 }
 
+function formatRoomCountDelta(diff) {
+  if (diff > 0) return `增加 ${diff} 間`;
+  if (diff < 0) return `減少 ${Math.abs(diff)} 間`;
+  return "";
+}
+
+function initRoomCountScope(scope) {
+  const input = scope.querySelector("[data-room-count-input]");
+  const delta = scope.querySelector("[data-room-count-delta]");
+  const inventoryRow = scope.querySelector("[data-room-inventory-row]");
+  const inventoryToggle = scope.querySelector("[data-room-inventory-toggle]");
+  const inventoryHint = scope.querySelector("[data-room-inventory-hint]");
+  const networkRow = scope.querySelector("[data-room-network-row]");
+  const baseline = Number(scope.dataset.roomCountDefault || ROOM_COUNT_BASELINE);
+  const readonly = scope.hasAttribute("data-room-count-readonly");
+
+  function syncInventoryHint() {
+    if (!inventoryHint || !inventoryToggle) return;
+    const active = inventoryToggle.checked;
+    inventoryHint.textContent = active ? ROOM_INVENTORY_HINT_ON : ROOM_INVENTORY_HINT_OFF;
+    inventoryHint.classList.toggle("text-brand-500", active && !readonly);
+    inventoryHint.classList.toggle("text-text-default", !active || readonly);
+  }
+
+  function syncRoomCount() {
+    if (!input || !delta || !inventoryRow || !networkRow) return;
+    const value = Number(input.value);
+    const diff = Number.isFinite(value) ? value - baseline : 0;
+    const changed = diff !== 0;
+
+    delta.textContent = formatRoomCountDelta(diff);
+    delta.classList.toggle("hidden", !changed);
+    inventoryRow.classList.toggle("hidden", !changed);
+    inventoryRow.classList.toggle("flex", changed);
+    networkRow.classList.toggle("is-room-count-changed", changed);
+
+    if (!readonly) {
+      input.classList.toggle("is-room-count-changed", changed);
+      if (!changed && inventoryToggle) inventoryToggle.checked = false;
+    }
+
+    syncInventoryHint();
+  }
+
+  if (inventoryToggle && !readonly) {
+    inventoryToggle.addEventListener("change", syncInventoryHint);
+  }
+  if (input && !readonly) {
+    input.addEventListener("input", syncRoomCount);
+  }
+  syncRoomCount();
+}
+
 export function initRoomTypeModals() {
   ["roomTypeNewIntroCard", "roomTypeNewNameCard", "roomTypeEditIntroCard", "roomTypeEditNameCard"].forEach(
     initCaptionCard,
   );
   ["roomTypeNewFacilityChips", "roomTypeEditFacilityChips"].forEach(initFacilityChips);
+  document.querySelectorAll("[data-room-count-scope]").forEach(initRoomCountScope);
 }

@@ -7,6 +7,86 @@
 
 ---
 
+## Session 129：room-type 資料 modal 0804 房間數互動與欄位收斂 (2026-08-04)
+
+使用者以 figma-go 分批讀取房型頁「新增 / 修改 / 查看」modal 0804 版本，
+確認後要求先寫入 spec 再開始 coding。
+
+### Figma 讀取
+
+- 新增：`2147:109387` / `2147:109674` / `2147:110051`
+  「Modal（新增）0804-1/2/3」
+- 修改：`2147:110305` / `2147:110306` / `2147:110307`
+  「Modal（資料修改）0804-1/2/3」
+- 查看：`2147:110598` / `2147:110904` / `2147:111139`
+  「Modal（僅查看）0804-1/2/3」
+- 截圖：`specs/qa-screenshots/session-129/room-type-{new,edit,view}-modal-0804-*.png`
+
+### 本輪改動
+
+1. **spec 同步**：`components/modal.md` 的 `state=room-type` 改為 0804 confirmed
+   source，記錄三個房間數狀態、差異文案、房數修改 toggle 與查看 disabled
+   active 規則；`specs/pages/room-type.md` 更新 modal source pointer
+2. **HTML 欄位收斂**：`preview/partials/room-type-modals.html` 移除舊版欄位：
+   顯示分類、房價跟隨、銷售單位、參考價格、加人、加床；新增 / 修改改為
+   房間數 number input + 條件式房數修改區塊
+3. **互動行為**：`preview/js/room-type-modals.js` 新增房間數 baseline 14 邏輯；
+   改成非 14 時顯示 `增加 n 間` / `減少 n 間`，展開房數修改，active 時提示
+   改為 `同步更新房型庫存，至 2027-09-11`
+4. **查看狀態**：查看 modal 使用 disabled number input、disabled active toggle，
+   提示文字維持一般深色，不套新增 / 修改的橘色 active hint
+5. **回歸測試**：`scripts/smoke-test.mjs` 新增 room count 互動與查看 disabled
+   active toggle 檢查
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過，`room-type.html` 15 checks 通過
+
+### 未解問題
+
+（無）
+
+---
+
+## Session 128：toggle switch 新增 disabled 狀態 (2026-08-04)
+
+使用者以 figma-go 指示讀取 toggle button，確認後新增 disabled 狀態按鈕。
+
+### Figma 讀取
+
+- Selection：`991:12452`「Toggle - Switch」component set
+- Page：`components`
+- Size：104 x 164
+- Variants：`type=closure`、`type=open`、`type=disabled`
+- 截圖：`specs/qa-screenshots/session-128/toggle-switch-component-set.png`
+
+### 本輪改動
+
+1. **spec 同步**：`specs/html-conventions.md` 的 iOS-style toggle switch
+   pattern 補上 disabled variant 規則
+2. **共用 CSS**：`preview/assets/css/modals.css` 補上
+   `.member-data-switch` disabled 視覺，track 維持灰色，checked disabled 的
+   knob 維持右側，不整顆降低 opacity
+3. **preview**：`preview/toggle.html` 新增 Disabled 範例按鈕，並避免 disabled
+   按鈕被 click handler 切換
+
+### 驗證
+
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- `node scripts/smoke-test.mjs`：7 頁通過
+- `curl -I http://127.0.0.1:8000/toggle.html`：HTTP 200
+
+### 未解問題
+
+（無）
+
+---
+
 ## Session 127：lodging-info 分館資料 modal 傳真文字調整 (2026-08-04)
 
 使用者要求將分館資料 modal 的傳真欄位改為較短名稱，純文字異動後直接

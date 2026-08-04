@@ -934,14 +934,27 @@ Modal (1140x1134px)
 房型卡片的「+ 新增」按鈕（新增）、「修改」按鈕（修改）、「查看」按鈕（查看）觸發。
 **共用元件**：跟其他 modal 一樣沿用 `Modal（有分資料設定與資料修改 title）`，
 header + content slot + footer slot 結構不變。
-**Figma Node ID**：新增 `2137:101712`（820x1147）／修改 `2137:104312`（820x1191）／
-查看 `2137:104757`（820x1191）。內層 modal instance 皆為 800px 寬（低於共用
-1140px cap，直接採 800px 當 desktop max-width，不需封頂）。
-**讀取日期**：2026-07-30。
+**Current Figma Node ID（2026-08-04 confirmed）**：
+- 新增：`2147:109387` / `2147:109674` / `2147:110051`
+  （`Modal（新增）0804-1/2/3`）
+- 修改：`2147:110305` / `2147:110306` / `2147:110307`
+  （`Modal（資料修改）0804-1/2/3`）
+- 查看：`2147:110598` / `2147:110904` / `2147:111139`
+  （`Modal（僅查看）0804-1/2/3`）
 
-三個 modal 欄位高度重疊：修改／查看兩者欄位結構完全相同（查看 = 修改的
-全欄位 disabled 版本），新增則欄位組成與版面配置都不同，分開列出結構；
-查看只列與修改的差異，不重複整份結構圖。
+三組 modal 都提供三個房間數狀態：
+
+| 狀態 | 房間數 | 房數修改區塊 | 房數修改 toggle | 提示 |
+|---|---:|---|---|---|
+| `0804-1` | 14 | 隱藏 | 不顯示 | 無 |
+| `0804-2` | 15 | 顯示 | closure | `不更新房型庫存` |
+| `0804-3` | 15 | 顯示 | active | `同步更新房型庫存，至 2027-09-11` |
+
+`14` 是 prototype baseline。新增／修改模式使用 number input；當值不等於 14
+時，label 下方顯示差異文案：
+- 大於 14：`增加 {value - 14} 間`
+- 小於 14：`減少 {14 - value} 間`
+- 回到 14：隱藏差異文案與房數修改整組，並把房數修改 toggle reset closure
 
 ### disabled 判斷規則（2026-07-30 使用者拍板）
 
@@ -961,9 +974,10 @@ Modal（desktop reference 800px content）
 - Row1: 房間編號(101px, disabled, 值"4") + 排序(101px, 值"1")  |  房間名稱(302px, 值"placeholder")
 - Row2: 房間代號(302px, 值"TW")                                 |  營運型態 Select(302px, 值"住宿")
 - Row3: 床舖型態 Select(302px, 值"兩大床")                       |  房型類別 Select(302px, 值"兩大床")
-- Row4: 顯示分類 Select(302px, 值"不分類")                       |  房價跟隨 Select(302px, 值"跟隨")
-- Row5: 銷售單位 Select(302px, 值"使用飯店預設（間）")            |  房間數(302px, 值"14")
-- Row6: 參考價格(302px, 值"2000")                               |  網路訂購 toggle（預設關）
+- Row4:
+  - default: 房間數 number input(302px, 值"14")                  |  網路訂購 toggle（預設關）
+  - changed: 房間數 number input(302px, 值"15" + 差異文案)       |  房數修改 toggle + hint
+- Row5 changed only: 網路訂購 toggle（預設關；full row）
 - 房間介紹文案 card（"尚未填寫" + icons/edit "編輯" 按鈕）          |  房間名稱文案 card（同左，"尚未填寫" + "編輯" 按鈕）
 - 房間設施項目: 4 顆 chip（設施一[選中]／設施二／設施三[選中]／設施五六七八九）
 Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
@@ -977,10 +991,10 @@ Modal（desktop reference 800px content，比新增多 3 個欄位，版面整�
 - Row1: 房間編號(101px, disabled, 值"4") + 排序(101px, 值"1")  |  房間名稱(302px, 值"placeholder")
 - Row2: 房間代號(302px, 值"TW")                                 |  營運型態(302px, disabled, 值"住宿/非住宿")
 - Row3: 床舖型態 Select(302px, 值"兩大床")                       |  房型類別(101px, 值"四人房") + 人數(101px, 值"4")
-- Row4: 加人(101px, 值"1") + 加床(101px, 值"4")                  |  銷售單位 Select(302px, 值"使用飯店預設（間）")
-- Row5: 房間數(302px, 值"14")                                   |  參考價格(302px, 值"2000")
-- Row6: 房數修改 toggle（預設關）                                |  網路訂購 toggle（預設關）
-- Row7: 顯示分類(302px, disabled, 值"無啟用")                    |  房價跟隨(302px, disabled, 值"啟用")
+- Row4:
+  - default: 房間數 number input(302px, 值"14")                  |  網路訂購 toggle（預設關）
+  - changed: 房間數 number input(302px, 值"15" + 差異文案)       |  房數修改 toggle + hint
+- Row5 changed only: 網路訂購 toggle（預設關；full row）
 - 房間介紹文案 card（"尚未填寫" + icons/edit "編輯" 按鈕）          |  房間名稱文案 card（同左，"尚未填寫" + "編輯" 按鈕）
 - 房間設施項目: 4 顆 chip（設施一[選中]／設施二／設施三[選中]／設施五六七八九）
 Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
@@ -988,15 +1002,16 @@ Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
 
 ### 查看（`資料查看`）與修改的差異
 
-查看的欄位結構、欄位順序、Row1-7 內容跟「修改」完全一致，差異只有：
+查看的欄位結構、欄位順序跟「修改」完全一致，差異只有：
 
 | 項目 | 修改 | 查看 |
 |---|---|---|
-| 全部欄位（含 Select：床舖型態／銷售單位） | 對應欄位可編輯（白底）或 disabled（灰底），依上方結構圖標示 | **全部欄位一律 disabled**（Input 用 `Color/Neutral/100`，Select 用 `Color/Neutral/200`），沒有任何可編輯欄位 |
+| 全部欄位（含 Select：床舖型態） | 對應欄位可編輯（白底）或 disabled（灰底），依上方結構圖標示 | **全部欄位一律 disabled**（Input 用 `Color/Neutral/100`，Select 用 `Color/Neutral/200`），沒有任何可編輯欄位 |
 | 房間介紹文案 card | 空狀態「尚未填寫」+ `icons/edit` "編輯" 按鈕 | **移除「編輯」按鈕**；示範內容改為已儲存狀態：橘字（`Color/Brand/Brand-400`）"已儲存內容" + 說明文字段落（見下方固定文字內容） |
 | 房間名稱文案 card | 空狀態「尚未填寫」+ "編輯" 按鈕 | 同樣**移除「編輯」按鈕**，內容維持「尚未填寫」空狀態 |
 | 房間設施項目 chip | 設施一／設施三選中（藍底 `Color/MenuItem/Default`），設施二／設施五六七八九未選中（白底） | 4 顆 chip **全部統一 disabled 灰色**（`Color/Neutral/200`），不保留選中藍色 |
 | Footer | 取消（`Color/Neutral/200`） + 儲存（`Color/Neutral/800`） | **只有一顆「關閉」按鈕**（`Color/Neutral/800`，樣式沿用原「儲存」按鈕的深色），沒有取消/儲存兩顆並存（2026-07-30 使用者拍板：Figma 原稿留了取消+儲存是貼稿疏漏，實際只要關閉） |
+| 房間數與房數修改 | 可編輯；不等於 14 時使用橘色 input border 與可操作 toggle | 全部 disabled；不使用橘色 input border；房數修改 active 時用 disabled active toggle（灰 track + knob 右側） |
 
 ### 固定文字內容
 
@@ -1009,21 +1024,17 @@ Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
 | 營運型態 | Select 值 `住宿` | disabled 值 `住宿/非住宿` |
 | 床舖型態 | Select 值 `兩大床` | 同新增（維持 Select，可編輯） |
 | 房型類別 | Select 值 `兩大床` | Input 值 `四人房`（白底可編輯，修改模式起改成文字欄位，不再是下拉選） |
-| 人數 / 加人 / 加床 | 無此欄位 | `4` / `1` / `4` |
-| 顯示分類 | Select 值 `不分類` | disabled 值 `無啟用` |
-| 房價跟隨 | Select 值 `跟隨` | disabled 值 `啟用` |
-| 銷售單位 | Select 值 `使用飯店預設（間）` | 同新增 |
+| 人數 | 無此欄位 | `4` |
 | 房間數 | `14` | 同新增 |
-| 參考價格 | `2000` | 同新增 |
-| 房數修改（toggle） | 無此欄位 | 預設關 |
+| 房數修改（toggle） | 只在房間數不等於 14 時顯示 | 同新增（查看模式 disabled） |
 | 網路訂購（toggle） | 預設關 | 預設關 |
 | 房間介紹文案 | 空狀態「尚未填寫」 | 查看模式示範已填內容：「已儲存內容」（橘字）+「設定房間名稱、代號、房型、床型、間數、定價、顯示分類與營運方式，並可上傳房間照片、補充設備與房價限制。完成後，系統將依設定內容顯示於訂房頁面，方便旅客快速了解房型資訊並進行預訂。」 |
 | 房間名稱文案 | 空狀態「尚未填寫」 | 查看模式維持空狀態「尚未填寫」 |
 | 房間設施項目 | `設施一`[選中] `設施二` `設施三`[選中] `設施五六七八九` | 同新增（查看模式全部 disabled 灰色，內容文字不變） |
 
-> 「營運型態：住宿/非住宿」「顯示分類：無啟用」「房價跟隨：啟用」這幾個
-> disabled 值文字照 Figma 字面直接使用，不是新增模式那組選項值的延伸，
-> 之後由後端依實際條件渲染真實內容（2026-07-30 使用者拍板，不用深究語意）。
+> 「營運型態：住宿/非住宿」disabled 值文字照 Figma 字面直接使用，不是
+> 新增模式那組選項值的延伸，之後由後端依實際條件渲染真實內容（2026-07-30
+> 使用者拍板，不用深究語意）。
 > 「設施五六七八九」是 Figma 佔位文字（合併第 5-9 個設施），不是真的缺
 > 「設施四」，比照既有佔位文字慣例處理。
 
@@ -1036,7 +1047,7 @@ Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
 | Modal height | content 高於 viewport 時，header/footer 固定，body 垂直 scroll（沿用全站共用 Interaction 規則） |
 | 房間介紹文案／房間名稱文案 card | 378px 寬，`Color/Neutral/75` 底 + `Color/Neutral/100` 邊框，radius 12；沿用既有 caption editor 規格（`components/lodging-branch-suneditor.md`／`lodging-notice-card.js` 已有的 placeholder + 編輯按鈕 pattern，可直接參考） |
 | 房間設施項目 chip 群組 | 沿用 `specs/html-conventions.md` 既有 pill chip 規格；4 顆 chip 目前一列排得下，不需要 `overflow-x-auto`，但若之後設施項目變多導致換行/溢出，比照 chip 橫向 scroll 慣例處理 |
-| Mobile / tablet | 沿用共用「viewport 小於 max-width 時 `calc(100vw - 24px)`；mobile 滿版」規則；本次 Figma 未提供這 3 個 modal 的窄版單獨 frame，兩欄 row 在窄 viewport 下改單欄堆疊，兩個窄欄位（房間編號+排序、房型類別+人數、加人+加床）維持並排不拆欄（欄位本身夠窄） |
+| Mobile / tablet | 沿用共用「viewport 小於 max-width 時 `calc(100vw - 24px)`；mobile 滿版」規則；本次 Figma 未提供這 3 個 modal 的窄版單獨 frame，兩欄 row 在窄 viewport 下改單欄堆疊，兩個窄欄位（房間編號+排序、房型類別+人數）維持並排不拆欄（欄位本身夠窄） |
 
 ### Toggle switch 規格
 
@@ -1046,7 +1057,9 @@ Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
 - on track：`--color-accent-green`
 - off track：`--color-switch-off-track`（對應 Figma `#3c3c434d`，已確認同值，非新增）
 - knob：`--color-neutral-0`
-- 新增／修改模式預設皆為關閉（Figma 兩個 toggle 都是 off 態）
+- 新增／修改模式預設皆為關閉
+- 查看模式 toggle 一律 disabled；active disabled 使用 `type=disabled` 視覺：
+  track 維持 `--color-switch-off-track`，knob 在右側，不顯示綠色
 
 ### Typography / Colors
 
@@ -1059,6 +1072,9 @@ Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
 | disabled Input 底色 | `Color/Neutral/100` | `Color/Neutral/100` |
 | disabled Select／chip 底色 | `Color/Neutral/200` | `Color/Neutral/200` |
 | 房間設施 chip 選中底色 | `Color/MenuItem/Default` | `Color/MenuItem/Default` |
+| 房間數變動 input border | `Color/Brand/Brand-500` | `Color/Brand/Brand-500` |
+| 房數修改 active hint（新增/修改） | 12px Regular | `Color/Brand/Brand-500` |
+| 房數修改 closure hint | 12px Regular | `Color/Text/800` |
 | 查看模式「已儲存內容」文字 | 16px Regular | `Color/Brand/Brand-400` |
 | Footer 儲存／關閉按鈕 bg | `Color/Neutral/800` | `Color/Neutral/800` |
 | Footer 取消按鈕 bg | `Color/Neutral/200` | `Color/Neutral/200` |
@@ -1072,7 +1088,8 @@ Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
 | 儲存（新增/修改） | prototype 階段點擊後關閉 modal，尚未接後端 API |
 | 房間介紹文案／房間名稱文案「編輯」 | 開啟 caption 編輯流程，沿用 `lodging-notice-card.js` 已有的 SunEditor placeholder pattern；查看模式無此按鈕，不可編輯 |
 | 房間設施項目 chip | 新增/修改模式可點擊切換選中/未選中；查看模式 disabled 不可點擊 |
-| 房數修改／網路訂購 toggle | 新增/修改模式可點擊切換 on/off；查看模式 disabled 不可點擊 |
+| 房數修改 toggle | 新增/修改模式可點擊切換 on/off；僅房間數不等於 14 時顯示；查看模式 disabled 不可點擊 |
+| 網路訂購 toggle | 新增/修改模式可點擊切換 on/off；查看模式 disabled 不可點擊 |
 
 ---
 
