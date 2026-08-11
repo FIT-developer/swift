@@ -807,6 +807,11 @@ const PAGES = [
               return "product row 3 management buttons missing";
             if (categoryRows[0].querySelectorAll("[data-pa-row-action]").length < 3)
               return "category management buttons missing";
+            var firstCategoryCells = categoryRows[0].children;
+            if (firstCategoryCells[3].querySelector('img[src$="home.svg"]'))
+              return "category lodging home icon should not be in name cell";
+            if (!firstCategoryCells[4].querySelector('img[src$="home.svg"]'))
+              return "category lodging home icon should be in type cell";
             if (document.querySelector("[data-pa-row-id='product-2'][data-pa-row-action='project']"))
               return "project button should not show without thumbtack state";
             if (!document.querySelector("[data-pa-row-id='product-4'][data-pa-row-action='project']"))

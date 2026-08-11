@@ -701,10 +701,10 @@ function renderCategoryRow(row, order) {
     row.branch +
     "</td>" +
     "<td>" +
-    renderCategoryName(row) +
+    row.name +
     "</td>" +
     "<td>" +
-    row.type +
+    renderCategoryType(row) +
     "</td>" +
     "<td>" +
     (row.id === "category-1"
@@ -748,8 +748,8 @@ function renderCategoryLabel(row) {
   return '<span class="inline-flex items-center gap-2">' + row.categoryName + icon + "</span>";
 }
 
-function renderCategoryName(row) {
-  return '<span class="inline-flex items-center gap-2">' + row.name + (row.lodging ? renderLegendIcon("home") : "") + "</span>";
+function renderCategoryType(row) {
+  return '<span class="inline-flex items-center justify-center gap-2">' + row.type + (row.lodging ? renderLegendIcon("home") : "") + "</span>";
 }
 
 function renderLegendIcon(type) {

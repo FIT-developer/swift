@@ -7,6 +7,53 @@
 
 ---
 
+## Session 147：加購商品類別設定 home icon 欄位歸屬修正 (2026-08-11)
+
+使用者要求依 Figma `類別設定` frame 修正 category table：住宿加購的
+`icons/home` 應跟在 `型態` 欄 `商品` 後方，而不是接在 `品名` 後方。此 table
+共用於分頁 1 / 2 / 3 與停用狀態，因此改 render 來源即可覆蓋多個狀態。
+
+### Figma 讀取
+
+- Current page: `components`
+- Selection count: 1
+- Frame: `2183:129503` `Accordion 11`
+- Title: `類別設定`
+- Table columns: `順序` / `代號` / `館別` / `品名` / `型態` / `設定數量` /
+  `排序` / `管理`
+- Contract:
+  - `品名` 欄只放品名文字，例如 `餐飲服務`
+  - `型態` 欄放 `商品`，住宿加購 row 的 `icons/home` 跟在此欄後方
+  - 與產品設定 table 對齊：產品的住宿 icon 跟在 `類別` 欄，不接在商品名稱後方
+
+### 本輪改動
+
+1. `preview/js/purchase-addon.js`：
+   - category row 的 `品名` 欄改為只 render `row.name`
+   - 新增 / 改用 `renderCategoryType(row)`，住宿加購 row 在 `型態` 欄渲染
+     `row.type + icons/home`
+2. `preview/purchase-addon.html`：
+   - 同步靜態 fallback markup，避免 category table 初始 HTML 仍把 home icon
+     放在 `品名` 欄
+3. `specs/pages/purchase-addon.md`：
+   - Category Table spec 改為 `品名` 無 icon、`型態` 欄接住宿加購 home icon
+4. `scripts/smoke-test.mjs`：
+   - regression 補測第一筆 category row：`品名` 欄不得有 `home.svg`，
+     `型態` 欄必須有 `home.svg`
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `purchase-addon.html` 13 checks 通過
+- 視覺 QA 截圖輸出到 ignored 目錄：
+  `specs/qa-screenshots/session-147/`
+  - `purchase-addon-category-home-type-1440.png`
+
 ## Session 146：加購商品造飛機專案 chips 篩選 (2026-08-11)
 
 使用者在 Figma 補充「專案設定」modal 中 `類別條件 = 造飛機專案`
