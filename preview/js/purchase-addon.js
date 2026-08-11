@@ -3,6 +3,15 @@
 // tab 依當下 state 即時計數，停用/啟用會把資料移到另一個 tab。
 const PAGE_SIZE = 5;
 const PHOTO_SLOT_COUNT = 5;
+const PROJECT_ITEMS = [
+  { id: "999", label: "[999] 飛天六人滿意", tags: ["網", "企"] },
+  { id: "419", label: "[419] 不可告人優惠", tags: [] },
+  { id: "123", label: "[123] 劍湖山吃到飽", tags: [] },
+  { id: "443", label: "[443] 大利大吉", tags: ["註"] },
+  { id: "89", label: "[89] 地勤很辛苦", tags: [] },
+  { id: "09", label: "[09] 空姐滿班", tags: [] },
+];
+const FLIGHT_PROJECT_ITEM_IDS = ["999", "89", "09"];
 
 const productRows = [
   product("product-1", "22", true, "房費折抵", "沖帳", "58888", "active", {
@@ -88,6 +97,13 @@ let currentPhotoKey = null;
 let activePhotoSlotIndex = null;
 let pendingObjectUrls = [];
 let dragSourceIndex = null;
+let projectModalState = {
+  rowId: null,
+  mode: "none",
+  condition: "all",
+  selectionMode: "all",
+  selectedIds: new Set(PROJECT_ITEMS.map(function (item) { return item.id; })),
+};
 
 productRows.forEach(function (row) {
   photoSavedByProduct[row.id] = row.hasPhoto
@@ -106,6 +122,7 @@ export function initPurchaseAddon() {
   initTableActions();
   initModalTitles();
   initPublishSchedule();
+  initProjectModal();
   initPhotoModal();
   renderAllTables();
 }
@@ -254,6 +271,7 @@ function initModalTitles() {
   document.addEventListener("click", function (event) {
     var trigger = event.target.closest("[data-pa-modal-mode]");
     if (!trigger) return;
+    if (trigger.dataset.modalOpen !== "modalPurchaseAddonDataBackdrop") return;
     var title = document.getElementById("paDataModalTitle");
     if (!title) return;
     var mode = trigger.dataset.paModalMode;
@@ -368,6 +386,141 @@ function openPublishSchedulePanel() {
 function closePublishSchedulePanel() {
   var panel = document.querySelector("[data-pa-publish-panel]");
   if (panel) panel.classList.add("hidden");
+}
+
+function initProjectModal() {
+  document.addEventListener("click", function (event) {
+    var trigger = event.target.closest("[data-pa-row-action='project']");
+    if (!trigger) return;
+    var row = productRows.find(function (item) {
+      return item.id === trigger.dataset.paRowId;
+    });
+    if (!row) return;
+    openProjectModal(row);
+  });
+  document.addEventListener("click", function (event) {
+    if (event.target.closest("[data-pa-project-select-all]")) {
+      setProjectSelection(true);
+      renderProjectModal();
+    }
+    if (event.target.closest("[data-pa-project-clear-all]")) {
+      setProjectSelection(false);
+      renderProjectModal();
+    }
+  });
+
+  var modeSelect = document.querySelector("[data-pa-project-mode]");
+  if (modeSelect) {
+    modeSelect.addEventListener("change", function () {
+      projectModalState.mode = modeSelect.value;
+      renderProjectModal();
+    });
+  }
+  var conditionSelect = document.querySelector("[data-pa-project-condition]");
+  if (conditionSelect) {
+    conditionSelect.addEventListener("change", function () {
+      projectModalState.condition = conditionSelect.value;
+      renderProjectModal();
+    });
+  }
+
+  var list = document.querySelector("[data-pa-project-list]");
+  if (list) {
+    list.addEventListener("click", function (event) {
+      var chip = event.target.closest("[data-pa-project-chip]");
+      if (!chip) return;
+      var id = chip.dataset.paProjectChip;
+      if (projectModalState.selectedIds.has(id)) projectModalState.selectedIds.delete(id);
+      else projectModalState.selectedIds.add(id);
+      syncProjectSelectionMode();
+      renderProjectModal();
+    });
+  }
+}
+
+function openProjectModal(row) {
+  var code = document.querySelector("[data-pa-project-code]");
+  var name = document.querySelector("[data-pa-project-name]");
+  if (code) code.value = row.code;
+  if (name) name.value = row.name;
+  projectModalState.rowId = row.id;
+  projectModalState.mode = "none";
+  projectModalState.condition = "all";
+  projectModalState.selectionMode = "all";
+  projectModalState.selectedIds = new Set(PROJECT_ITEMS.map(function (item) { return item.id; }));
+  renderProjectModal();
+}
+
+function renderProjectModal() {
+  var modeSelect = document.querySelector("[data-pa-project-mode]");
+  var conditionRow = document.querySelector("[data-pa-project-condition-row]");
+  var conditionField = document.querySelector("[data-pa-project-condition-field]");
+  var conditionSelect = document.querySelector("[data-pa-project-condition]");
+  var actions = document.querySelector("[data-pa-project-list-actions]");
+  var list = document.querySelector("[data-pa-project-list]");
+  if (modeSelect) modeSelect.value = projectModalState.mode;
+  if (conditionSelect) conditionSelect.value = projectModalState.condition;
+  if (conditionRow) conditionRow.classList.toggle("is-unlimited", projectModalState.mode === "none");
+  if (conditionField) conditionField.classList.toggle("hidden", projectModalState.mode === "none");
+  syncProjectSelectionMode();
+  if (actions) {
+    actions.innerHTML =
+      '<button type="button" class="pa-project-mini-action' +
+      (projectModalState.selectionMode === "all" ? " is-filled" : "") +
+      '" data-pa-project-select-all>全選</button>' +
+      '<button type="button" class="pa-project-mini-action' +
+      (projectModalState.selectionMode === "none" ? " is-filled" : "") +
+      '" data-pa-project-clear-all>取消全選</button>';
+  }
+  if (!list) return;
+  list.innerHTML = visibleProjectItems().map(function (item) {
+    var selected = projectModalState.selectedIds.has(item.id);
+    return (
+      '<button type="button" class="pa-project-chip' +
+      (selected ? " is-selected" : "") +
+      '" data-pa-project-chip="' +
+      item.id +
+      '">' +
+      '<span class="pa-project-chip-label">' +
+      '<span>' +
+      item.label +
+      "</span>" +
+      item.tags.map(function (tag) {
+        return '<span class="pa-project-tag">' + tag + "</span>";
+      }).join("") +
+      "</span>" +
+      "</button>"
+    );
+  }).join("");
+}
+
+function visibleProjectItems() {
+  if (projectModalState.mode === "none" || projectModalState.condition !== "flight") return PROJECT_ITEMS;
+  return PROJECT_ITEMS.filter(function (item) {
+    return FLIGHT_PROJECT_ITEM_IDS.includes(item.id);
+  });
+}
+
+function setProjectSelection(selected) {
+  PROJECT_ITEMS.forEach(function (item) {
+    if (selected) projectModalState.selectedIds.add(item.id);
+    else projectModalState.selectedIds.delete(item.id);
+  });
+  syncProjectSelectionMode();
+}
+
+function syncProjectSelectionMode() {
+  var visibleItems = visibleProjectItems();
+  var selectedVisibleCount = visibleItems.filter(function (item) {
+    return projectModalState.selectedIds.has(item.id);
+  }).length;
+  if (selectedVisibleCount === visibleItems.length) {
+    projectModalState.selectionMode = "all";
+  } else if (selectedVisibleCount === 0) {
+    projectModalState.selectionMode = "none";
+  } else {
+    projectModalState.selectionMode = "custom";
+  }
 }
 
 function setStatusActive(kind, filter) {
@@ -621,7 +774,7 @@ function renderActionButtons(kind, row) {
     actionBtn(kind, row, "modify", "edit", "修改", "modalPurchaseAddonDataBackdrop") +
     actionBtn(kind, row, "duplicate", "duplicate", "複製") +
     (kind === "product" && hasProjectState(row)
-      ? actionBtn(kind, row, "project", "projects", "專案", "modalPurchaseAddonDataBackdrop")
+      ? actionBtn(kind, row, "project", "projects", "專案", "modalPurchaseAddonProjectBackdrop")
       : "") +
     actionBtn(kind, row, "disable", "suspend-outline", "停用") +
     "</div>"

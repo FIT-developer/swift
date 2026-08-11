@@ -7,6 +7,228 @@
 
 ---
 
+## Session 146：加購商品造飛機專案 chips 篩選 (2026-08-11)
+
+使用者在 Figma 補充「專案設定」modal 中 `類別條件 = 造飛機專案`
+時，專案 chips 暫定只有三個；`全選` / `取消全選` / chip selected
+active 狀態維持目前 JS 邏輯，不依示意稿另外改狀態。
+
+### Figma 讀取
+
+- Current page: `components`
+- Selection count: 1
+- Frame: `2178:126955` `Modal（專案設定）`
+- 示意狀態：
+  - `專案分類 = 限定`
+  - `類別條件 = 造飛機專案`
+  - `專案清單列表` 顯示 `[999] 飛天六人滿意` + `網` / `企` badge、
+    `[89] 地勤很辛苦`、`[09] 空姐滿班`
+
+### 本輪改動
+
+1. `preview/js/purchase-addon.js`：
+   - 新增 `FLIGHT_PROJECT_ITEM_IDS = ["999", "89", "09"]`
+   - `renderProjectModal()` 改用 `visibleProjectItems()`
+   - `類別條件 = flight` 時只渲染三個可見 chips
+   - `專案分類 = 不限` 時不套用 hidden `類別條件 = flight` 的篩選，恢復
+     顯示全部 6 個 chips
+   - `全選` / `取消全選` 按鈕操作仍沿用完整 6 筆 demo 專案；active state
+     改以目前可見 chips selected count 判斷，避免 `造飛機專案` 可見 3 顆全選
+     時 `全選` 沒有 active
+2. `specs/pages/purchase-addon.md`：
+   - Project Modal spec 補記 `造飛機專案` 暫定三個 chips 與 state 不重置規則
+3. `scripts/smoke-test.mjs`：
+   - regression 補測切到 `限定` + `造飛機專案` 後只顯示三個 chips
+   - 補測切 condition 不重置 `全選` active state
+   - 補測切回 `不限` 後恢復 6 個 chips
+   - 補測手動選中 `造飛機專案` 可見三個 chips 後 `全選` active
+   - 補測 hidden condition 仍是 `造飛機專案` 時切 `專案分類 = 不限` 會顯示
+     6 個 chips
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `purchase-addon.html` 13 checks 通過
+- 視覺 QA 截圖輸出到 ignored 目錄：
+  `specs/qa-screenshots/session-146/`
+  - `purchase-addon-project-flight-1080.png`
+  - `purchase-addon-project-flight-manual-all-1080.png`
+  - `purchase-addon-project-unlimited-after-flight-1080.png`
+
+## Session 145：加購商品專案設定 chips 單點狀態同步 (2026-08-11)
+
+使用者要求「專案設定」modal 開啟時 `專案分類` 預設為 `不限`，
+且在 `全選` / `取消全選` 任一 active 狀態下，下面 chips 仍可個別點擊；
+chips 的 selected 數量必須反向影響兩個 label button 的 active 狀態。
+
+### 本輪改動
+
+1. `preview/js/purchase-addon.js`：
+   - project modal 初始 state 改為 `mode = none`
+   - open modal 時固定帶入 `不限`、`類別條件 = 不限`、`全選` active、
+     6 個 chips selected
+   - chip click 在 `不限` / `限定` 都可個別切換 selected
+   - 新增 selected count 判斷：
+     - selected 數量等於全部：`全選` active
+     - selected 數量為 0：`取消全選` active
+     - selected 數量介於中間：兩者都 inactive
+2. `preview/partials/purchase-addon-modals.html`：
+   - 靜態 markup 預設同步為 `專案分類 = 不限`、`全選` active
+3. `scripts/smoke-test.mjs`：
+   - regression 補測預設 `不限` 時隱藏類別條件
+   - 補測 `全選` active 後單點 chip 會取消 active 並保留 5 個 selected
+   - 補測 `取消全選` active 後單點 chip 會取消 active 並保留 1 個 selected
+   - 補測切換 `類別條件` 不重置目前 chips 狀態
+4. `specs/pages/purchase-addon.md`：
+   - Project Modal spec 補明 chips 可單點，且單點後依 selected count 同步
+     `全選` / `取消全選` active 狀態
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `purchase-addon.html` 13 checks 通過
+- 視覺 QA 截圖輸出到 ignored 目錄：
+  `specs/qa-screenshots/session-145/`
+  - `purchase-addon-project-default-unlimited-1080.png`
+  - `purchase-addon-project-chip-custom-1080.png`
+
+## Session 144：加購商品專案分類不限隱藏類別條件修正 (2026-08-11)
+
+使用者澄清 Session 143 的口述只是補充原 frame 互動，原本
+`專案分類 = 不限` 時下方 `類別條件` 不顯示的邏輯仍不變。
+
+### 本輪改動
+
+1. `preview/js/purchase-addon.js`：
+   - `專案分類` 切到 `不限` 時，`類別條件` row 恢復 hidden
+   - 隱藏類別條件時不重置 `全選` / `取消全選` 與 chips selected state
+2. `scripts/smoke-test.mjs`：
+   - project modal regression 補測 `專案分類 = 不限` 時類別條件 hidden
+   - 同時確認切換到不限後仍保留全選 active 與 6 個 chips selected
+3. `specs/pages/purchase-addon.md`：
+   - 補記 `專案分類 = 不限` 時 `類別條件` 不顯示
+   - 將 `類別條件` 切換不重置 state 的規則限定在類別條件可見時
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `purchase-addon.html` 13 checks 通過
+- 視覺 QA 截圖輸出到 ignored 目錄：
+  `specs/qa-screenshots/session-143/`
+  - `purchase-addon-project-unlimited-hide-condition-1080.png`
+
+## Session 143：加購商品專案設定 modal select 與全選狀態修正 (2026-08-11)
+
+使用者確認專案設定 modal 的互動規則：專案分類只保留 `限定` / `不限`，
+類別條件只保留 `不限` / `造飛機專案` 且 default 為 `不限`；類別條件切換
+不得重置 `全選` / `取消全選` 與 chips selected 狀態。
+
+### 本輪改動
+
+1. `preview/partials/purchase-addon-modals.html`：
+   - `專案分類` options 改為 `限定` / `不限`
+   - `類別條件` options 改為 `不限` / `造飛機專案`，default `不限`
+2. `preview/js/purchase-addon.js`：
+   - project modal state 拆成 `mode`、`condition`、`selectionMode`、
+     `selectedIds`
+   - modal 初始開啟時 `全選` active，全部 chips selected
+   - `全選` / `取消全選` 改為單選 active 狀態
+   - 切換 `類別條件` 只更新 condition，不重置 chips selection
+   - 手動切 chip 後依選取數量同步 selection mode：all / none / custom
+3. `scripts/smoke-test.mjs` / `specs/pages/purchase-addon.md`：
+   - smoke 補測 options 數量、類別條件 default、全選 active、chips all
+     selected、condition change 不重置 all / none state
+   - page spec 同步本輪正式互動規則
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `purchase-addon.html` 13 checks 通過
+- 視覺 QA 截圖輸出到 ignored 目錄：
+  `specs/qa-screenshots/session-142/`
+  - `purchase-addon-project-modal-state-1080.png`
+
+## Session 142：加購商品專案設定 modal 修正 (2026-08-11)
+
+使用者指出「專案設定」按鈕目前誤植成其他 modal，要求重新 `figma-go`
+讀取四個 frame 並完成實作。
+
+### Figma 讀取
+
+- 目前 selection count: 4
+- Current page: `components`
+- Frame:
+  - `2178:125444` `Modal（專案設定）`
+  - `2178:126644` `Modal（專案設定）`
+  - `2178:126779` `Modal（專案設定）`
+  - `2178:126955` `Modal（專案設定）`
+- Contract:
+  - modal title 為 `專案設定`
+  - body 上方有 `產品代號` disabled input、`品名` disabled input
+  - `專案分類` select 有 `不限` / `限定` / `非限定`
+  - `限定` / `非限定` 狀態顯示 `類別條件` select，default `造飛機專案`
+  - `不限` 狀態隱藏類別條件並顯示 `已全選`
+  - `專案清單列表` 使用淡藍底 panel 與專案 chips，demo 專案包含
+    `[999] 飛天六人滿意`、`[419] 不可告人優惠`、`[123] 劍湖山吃到飽`、
+    `[443] 大利大吉`、`[89] 地勤很辛苦`、`[09] 空姐滿班`
+
+### 本輪改動
+
+1. `preview/partials/purchase-addon-modals.html`：
+   - 新增獨立 `modalPurchaseAddonProjectBackdrop`
+   - footer 維持取消 / 儲存，header 為 `專案設定`
+2. `preview/assets/css/purchase-addon.css`：
+   - 新增 project modal 800px layout、左 label / 右 control row、專案列表
+     panel、全選控制、project chips 與 status tags
+   - `<640px` project modal 納入滿版規則
+   - 修正 selected chip 使用 `--color-menuitem-default`，避免誤用不存在的
+     `--color-menu`
+3. `preview/js/purchase-addon.js`：
+   - 「專案」按鈕改開 `modalPurchaseAddonProjectBackdrop`
+   - 依產品 row 的 `limited` / `nonLimited` 初始化 `專案分類`
+   - `專案分類` 切到 `不限` 時隱藏類別條件並標示已全選
+   - project chips、全選、取消全選可在 modal 內切換 demo state
+   - data modal title handler 限定只處理 `modalPurchaseAddonDataBackdrop`
+4. `scripts/smoke-test.mjs` / `specs/pages/purchase-addon.md`：
+   - smoke 補測 project modal id、title、產品代號 / 品名、限定狀態、
+     類別條件顯示 / 隱藏、6 個 project chips、selected chip 藍底
+   - mobile 滿版 regression 納入 project modal
+   - page spec 補正式 Project Modal 規格，移除先前「暫開共用資料 modal」
+     的過渡描述
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `purchase-addon.html` 13 checks 通過
+- 視覺 QA 截圖輸出到 ignored 目錄：
+  `specs/qa-screenshots/session-142/`
+  - `purchase-addon-project-modal-1080.png`
+
 ## Session 141：加購商品類別 table outline 內縮修正 (2026-08-11)
 
 使用者要求類別設定下方 table 若內容未填滿橫向空間，外層 outline

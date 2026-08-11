@@ -414,6 +414,157 @@
   color: var(--color-text-100);
 }
 
+#modalPurchaseAddonProjectBackdrop .modal-box {
+  width: min(calc(100vw - 24px), 800px);
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pa-project-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.pa-project-field {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.pa-project-control {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  background: var(--color-neutral-0);
+  padding: 6px 12px;
+  color: var(--color-text-800);
+  font-size: var(--font-size-base);
+  outline: none;
+}
+
+.pa-project-control:disabled {
+  background: var(--color-neutral-100);
+  color: var(--color-text-secondary);
+}
+
+.pa-project-condition-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.pa-project-condition-row.is-unlimited {
+  grid-template-columns: 1fr;
+}
+
+.pa-project-condition-row.is-unlimited .pa-project-field {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
+
+.pa-project-list-block {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pa-project-list-head {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+}
+
+.pa-project-list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.pa-project-mini-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  border: 1px solid var(--color-menuitem-default);
+  border-radius: 4px;
+  background: var(--color-neutral-0);
+  padding: 2px 6px;
+  color: var(--color-menuitem-default);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+}
+
+.pa-project-mini-action.is-filled,
+.pa-project-mini-action.is-static {
+  background: var(--color-menuitem-default);
+  color: var(--color-neutral-0);
+}
+
+.pa-project-mini-action.is-static {
+  cursor: default;
+}
+
+.pa-project-list-panel {
+  min-height: 287px;
+  border: 1px solid var(--color-neutral-100);
+  border-radius: 12px;
+  background: var(--color-modal-hover);
+  padding: 20px;
+}
+
+.pa-project-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
+
+.pa-project-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 20px;
+  background: var(--color-neutral-0);
+  padding: 8px 12px;
+  color: var(--color-text-800);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+}
+
+.pa-project-chip.is-selected {
+  border-color: var(--color-menuitem-default);
+  background: var(--color-menuitem-default);
+  color: var(--color-neutral-0);
+}
+
+.pa-project-chip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pa-project-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  min-height: 26px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-size: var(--font-size-base);
+}
+
 .pa-publish-panel {
   width: 100%;
   border: 1px solid var(--color-neutral-200);
@@ -510,10 +661,25 @@
   .pa-publish-date-row > .text-base {
     align-self: center;
   }
+  .pa-project-modal-grid,
+  .pa-project-condition-row {
+    grid-template-columns: 1fr;
+  }
+  .pa-project-list-head {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .pa-project-list-actions {
+    gap: 8px;
+  }
+  .pa-project-list-panel {
+    min-height: 240px;
+  }
 }
 
 @media (max-width: 639px) {
   #modalPurchaseAddonDataBackdrop,
+  #modalPurchaseAddonProjectBackdrop,
   #modalPurchaseAddonPhotoGalleryBackdrop {
     align-items: stretch;
     justify-content: stretch;
@@ -521,6 +687,7 @@
   }
 
   #modalPurchaseAddonDataBackdrop .modal-box,
+  #modalPurchaseAddonProjectBackdrop .modal-box,
   #modalPurchaseAddonPhotoGalleryBackdrop .modal-box {
     width: 100%;
     max-width: 100%;

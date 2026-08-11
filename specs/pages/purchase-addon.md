@@ -160,6 +160,29 @@ Table 行為:
 - 上架 panel 小尺寸 `<768px`：設定開放日期的起日 / 迄日上下排列，`~` 置中，避免兩個日期控制橫向擠壓
 - 查看模式：資料內容全部 disabled，包含 input / select / 上架 toggle / 文案編輯按鈕；footer 儲存隱藏，取消文案改「關閉」，且按鈕使用房型查看 modal 同款黑底反白樣式
 
+### Project Modal
+
+產品設定「專案」modal:
+
+- Trigger: 只在產品 row 有 `thumbtack` 或 `thumbtack-slash` 狀態時顯示「專案」按鈕；click 開啟 `modalPurchaseAddonProjectBackdrop`
+- Header: `專案設定` + `icons/close`
+- Modal size: desktop 800px 寬、568px 高視覺；小尺寸 `<640px` 滿版，與其他加購商品 modal 一致
+- Body:
+  - 第一列兩欄：`產品代號` disabled input、`品名` disabled input
+  - 第二列：
+    - `專案分類` select，選項只有 `限定` / `不限`，default `不限`
+    - `類別條件` select，選項只有 `不限` / `造飛機專案`，default `不限`
+    - `專案分類` 為 `不限` 時，`類別條件` 不顯示
+  - `專案清單列表`：
+    - modal 初始狀態為 `全選` active，`取消全選` inactive，專案 chip 全部 selected
+    - `專案分類 = 限定` 且 `類別條件 = 造飛機專案` 時，列表暫定只顯示 `[999] 飛天六人滿意` + `網` / `企` badge、`[89] 地勤很辛苦`、`[09] 空姐滿班`
+    - `專案分類 = 不限` 時，即使隱藏中的 `類別條件` value 仍是 `造飛機專案`，列表也要恢復顯示全部 6 個 demo chips
+    - `全選` / `取消全選` 為單選 active 狀態，active 判斷以目前可見 chips 為準；點 `全選` 時全部 demo chips selected，點 `取消全選` 時全部 demo chips unselected
+    - 不論 `全選` 或 `取消全選` active，chips 仍可個別點擊切換 selected；當目前可見 chips selected 數量不再是全部或 0，`全選` / `取消全選` active 都要取消
+    - `類別條件` 可見時，切換 `類別條件` 不會重置 `全選` / `取消全選` 與 chips selected 狀態
+    - Demo 專案: `[999] 飛天六人滿意` + `網` / `企` badge、`[419] 不可告人優惠`、`[123] 劍湖山吃到飽`、`[443] 大利大吉` + `註` badge、`[89] 地勤很辛苦`、`[09] 空姐滿班`
+- Footer: 取消 / 儲存
+
 ## 類別設定
 
 ### Controls
@@ -196,7 +219,7 @@ Table 行為:
 - 照片管理: 點產品表格「照片管理」縮圖 / 空圖示開啟 `modalPurchaseAddonPhotoGalleryBackdrop`
 - 停用 / 啟用: 同房型頁，以前端 in-memory state 切換 row 狀態，row 會從目前 tab 消失並出現在另一個 tab，count 即時更新
 - 複製 / 查詢: Figma 未定義本輪行為，保留 button 樣式，不改資料
-- 專案: 只在產品 row 有 `thumbtack` 或 `thumbtack-slash` 狀態時顯示；點擊需有互動，不可無反應。現階段先開啟共用資料 modal 並顯示 `產品專案`，待專案專用 modal layout 補圖後再拆分
+- 專案: 只在產品 row 有 `thumbtack` 或 `thumbtack-slash` 狀態時顯示；點擊開啟 `modalPurchaseAddonProjectBackdrop`，不可誤用產品資料 modal
 - mobile: 商品分類列 input + select 同列，select 文字需 truncation；清除 / 查詢置中；管理 pill buttons 不可因容器擠壓變形
 
 ## 產出驗證重點

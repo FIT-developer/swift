@@ -1,6 +1,7 @@
 <!-- 加購商品頁專屬 modal（preview/purchase-addon.html）
      - 資料 modal: 新增 / 修改 / 查看共用外殼，產品新增內容對齊 2026-08-11
        使用者補圖。
+     - 專案 modal: 產品表格限定 / 非限定專案按鈕使用的專案設定 modal。
      - 照片 modal: 沿用 room-type photo-gallery 版型，但 id 與 JS state 獨立。 -->
 
 <div
@@ -194,6 +195,121 @@
         class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
         data-modal="modalPurchaseAddonDataBackdrop"
         data-pa-data-save
+      >
+        儲存
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  id="modalPurchaseAddonProjectBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="paProjectModalTitle"
+>
+  <div class="modal-box mx-3">
+    <div
+      class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+    >
+      <span
+        id="paProjectModalTitle"
+        class="text-xl font-semibold text-text-default leading-tight"
+        >專案設定</span
+      >
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalPurchaseAddonProjectBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="pa-project-modal-body min-h-0 flex-1 overflow-y-auto bg-white p-3">
+      <div class="pa-project-modal-grid">
+        <label class="pa-project-field text-base text-text-default">
+          <span>產品代號</span>
+          <input
+            type="text"
+            value="12"
+            disabled
+            class="pa-project-control"
+            data-pa-project-code
+          />
+        </label>
+
+        <label class="pa-project-field text-base text-text-default">
+          <span>品名</span>
+          <input
+            type="text"
+            value="房費折抵"
+            disabled
+            class="pa-project-control"
+            data-pa-project-name
+          />
+        </label>
+
+        <div class="pa-project-condition-row" data-pa-project-condition-row>
+          <label class="pa-project-field text-base text-text-default">
+            <span>專案分類</span>
+            <select class="pa-project-control" data-pa-project-mode>
+              <option value="limited">限定</option>
+              <option value="none" selected>不限</option>
+            </select>
+          </label>
+
+          <label class="pa-project-field text-base text-text-default" data-pa-project-condition-field>
+            <span>類別條件</span>
+            <select class="pa-project-control" data-pa-project-condition>
+              <option value="all">不限</option>
+              <option value="flight">造飛機專案</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="pa-project-list-block">
+          <div class="pa-project-list-head">
+            <span class="text-base text-text-default">專案清單列表</span>
+            <div class="pa-project-list-actions" data-pa-project-list-actions>
+              <button
+                type="button"
+                class="pa-project-mini-action is-filled"
+                data-pa-project-select-all
+              >
+                全選
+              </button>
+              <button
+                type="button"
+                class="pa-project-mini-action"
+                data-pa-project-clear-all
+              >
+                取消全選
+              </button>
+            </div>
+          </div>
+
+          <div class="pa-project-list-panel">
+            <div class="pa-project-chip-grid" data-pa-project-list></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 border-t border-border-disabled px-3">
+      <button
+        type="button"
+        class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+        data-modal="modalPurchaseAddonProjectBackdrop"
+      >
+        取消
+      </button>
+      <button
+        type="button"
+        class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+        data-modal="modalPurchaseAddonProjectBackdrop"
       >
         儲存
       </button>

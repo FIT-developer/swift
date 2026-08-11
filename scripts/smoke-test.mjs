@@ -777,6 +777,7 @@ const PAGES = [
       !!document.getElementById("sidebar") &&
       !!document.getElementById("modalLogoutBackdrop") &&
       !!document.getElementById("modalPurchaseAddonDataBackdrop") &&
+      !!document.getElementById("modalPurchaseAddonProjectBackdrop") &&
       !!document.getElementById("modalPurchaseAddonPhotoGalleryBackdrop") &&
       document.querySelectorAll("[data-pa-table-body='product'] tr").length === 14 &&
       document.querySelectorAll("[data-pa-table-body='category'] tr").length === 14
@@ -966,11 +967,115 @@ const PAGES = [
             document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn[data-modal='modalPurchaseAddonDataBackdrop']").click();
 
             document.querySelector('[data-pa-row-action="project"][data-pa-row-id="product-4"]').click();
-            if (!document.getElementById("modalPurchaseAddonDataBackdrop").classList.contains("open"))
+            var projectModal = document.getElementById("modalPurchaseAddonProjectBackdrop");
+            if (!projectModal.classList.contains("open"))
               return "project button did not open modal";
-            if (document.getElementById("paDataModalTitle").textContent.trim() !== "產品專案")
-              return "project modal title mismatch: " + document.getElementById("paDataModalTitle").textContent.trim();
-            document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn[data-modal='modalPurchaseAddonDataBackdrop']").click();
+            if (document.getElementById("modalPurchaseAddonDataBackdrop").classList.contains("open"))
+              return "project button should not open data modal";
+            if (document.getElementById("paProjectModalTitle").textContent.trim() !== "專案設定")
+              return "project modal title mismatch: " + document.getElementById("paProjectModalTitle").textContent.trim();
+            if (projectModal.querySelector("[data-pa-project-code]").value !== "66")
+              return "project code mismatch";
+            if (projectModal.querySelector("[data-pa-project-name]").value !== "花瓶")
+              return "project name mismatch";
+            var projectMode = projectModal.querySelector("[data-pa-project-mode]");
+            var projectCondition = projectModal.querySelector("[data-pa-project-condition]");
+            if (projectMode.options.length !== 2)
+              return "project mode option count: " + projectMode.options.length;
+            if (projectCondition.options.length !== 2)
+              return "project condition option count: " + projectCondition.options.length;
+            if (projectMode.value !== "none")
+              return "project mode should start unlimited";
+            if (!projectModal.querySelector("[data-pa-project-condition-field]").classList.contains("hidden"))
+              return "project condition should start hidden for unlimited mode";
+            if (projectCondition.value !== "all")
+              return "project condition should default all";
+            if (projectModal.querySelectorAll("[data-pa-project-chip]").length !== 6)
+              return "project chip count mismatch";
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 6)
+              return "project chips should start all selected";
+            var projectActions = projectModal.querySelectorAll(".pa-project-mini-action");
+            if (!projectActions[0].classList.contains("is-filled") || projectActions[1].classList.contains("is-filled"))
+              return "project all action should start active";
+            var selectedProjectChip = projectModal.querySelector("[data-pa-project-chip].is-selected");
+            var menuSample = document.createElement("span");
+            menuSample.style.background = "var(--color-menuitem-default)";
+            document.body.appendChild(menuSample);
+            var expectedMenuBg = getComputedStyle(menuSample).backgroundColor;
+            menuSample.remove();
+            if (!selectedProjectChip || getComputedStyle(selectedProjectChip).backgroundColor !== expectedMenuBg)
+              return "selected project chip should use menu blue";
+            selectedProjectChip.click();
+            projectActions = projectModal.querySelectorAll(".pa-project-mini-action");
+            if (projectActions[0].classList.contains("is-filled") || projectActions[1].classList.contains("is-filled"))
+              return "project chip click should clear all/none active after all state";
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 5)
+              return "project chip click should toggle selected in unlimited mode";
+            projectModal.querySelector("[data-pa-project-select-all]").click();
+            projectMode.value = "limited";
+            projectMode.dispatchEvent(new Event("change", { bubbles: true }));
+            if (projectModal.querySelector("[data-pa-project-condition-field]").classList.contains("hidden"))
+              return "project condition should show for limited mode";
+            projectCondition.value = "flight";
+            projectCondition.dispatchEvent(new Event("change", { bubbles: true }));
+            var flightProjectChips = Array.from(projectModal.querySelectorAll("[data-pa-project-chip]"));
+            var flightProjectLabels = flightProjectChips.map(function (chip) { return chip.textContent.trim(); }).join("|");
+            if (flightProjectChips.length !== 3)
+              return "flight project should show 3 chips";
+            if (flightProjectLabels !== "[999] 飛天六人滿意網企|[89] 地勤很辛苦|[09] 空姐滿班")
+              return "flight project chip labels mismatch: " + flightProjectLabels;
+            projectActions = projectModal.querySelectorAll(".pa-project-mini-action");
+            if (!projectActions[0].classList.contains("is-filled") || projectActions[1].classList.contains("is-filled"))
+              return "project condition change should preserve all active state";
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 3)
+              return "flight project condition should preserve visible selected chips";
+            projectModal.querySelector("[data-pa-project-clear-all]").click();
+            projectActions = projectModal.querySelectorAll(".pa-project-mini-action");
+            if (projectActions[0].classList.contains("is-filled") || !projectActions[1].classList.contains("is-filled"))
+              return "project clear action should become active";
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 0)
+              return "project clear action should deselect chips";
+            projectModal.querySelector("[data-pa-project-chip]").click();
+            projectActions = projectModal.querySelectorAll(".pa-project-mini-action");
+            if (projectActions[0].classList.contains("is-filled") || projectActions[1].classList.contains("is-filled"))
+              return "project chip click should clear all/none active after none state";
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 1)
+              return "project chip click should toggle selected after clear";
+            ["89", "09"].forEach(function (id) {
+              projectModal.querySelector('[data-pa-project-chip="' + id + '"]').click();
+            });
+            projectActions = projectModal.querySelectorAll(".pa-project-mini-action");
+            if (!projectActions[0].classList.contains("is-filled") || projectActions[1].classList.contains("is-filled"))
+              return "flight visible chips all selected should activate all action";
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 3)
+              return "flight visible chips all selected count mismatch";
+            projectMode.value = "none";
+            projectMode.dispatchEvent(new Event("change", { bubbles: true }));
+            if (projectModal.querySelectorAll("[data-pa-project-chip]").length !== 6)
+              return "project mode unlimited should ignore hidden flight condition";
+            projectMode.value = "limited";
+            projectMode.dispatchEvent(new Event("change", { bubbles: true }));
+            projectModal.querySelector("[data-pa-project-clear-all]").click();
+            projectCondition.value = "all";
+            projectCondition.dispatchEvent(new Event("change", { bubbles: true }));
+            if (projectModal.querySelectorAll("[data-pa-project-chip]").length !== 6)
+              return "project all condition should restore 6 chips";
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 0)
+              return "project condition change should preserve cleared chips";
+            projectModal.querySelector("[data-pa-project-select-all]").click();
+            projectActions = projectModal.querySelectorAll(".pa-project-mini-action");
+            if (!projectActions[0].classList.contains("is-filled") || projectActions[1].classList.contains("is-filled"))
+              return "project all action should become active";
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 6)
+              return "project all action should select chips";
+            projectMode.value = "none";
+            projectMode.dispatchEvent(new Event("change", { bubbles: true }));
+            if (!projectModal.querySelector("[data-pa-project-condition-field]").classList.contains("hidden"))
+              return "project condition should hide when project mode unlimited";
+            projectActions = projectModal.querySelectorAll(".pa-project-mini-action");
+            if (!projectActions[0].classList.contains("is-filled") || projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 6)
+              return "project mode unlimited should preserve all selected";
+            document.querySelector("#modalPurchaseAddonProjectBackdrop .modal-close-btn[data-modal='modalPurchaseAddonProjectBackdrop']").click();
 
             document.querySelector("[data-pa-status-tabs='product'] [data-pa-status-filter='deleted']").click();
             document.querySelector('[data-pa-modal-mode="view"][data-pa-row-id="product-15"]').click();
@@ -1053,6 +1158,8 @@ const PAGES = [
               return "mobile publish second date should be below first date";
             }
             document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn").click();
+            var project = checkModal('[data-pa-row-action="project"][data-pa-row-id="product-4"]', "modalPurchaseAddonProjectBackdrop");
+            if (project !== true) return project;
             var photo = checkModal('[data-pa-photo-trigger="product-1"]', "modalPurchaseAddonPhotoGalleryBackdrop");
             if (photo !== true) return photo;
             return true;
