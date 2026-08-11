@@ -145,6 +145,23 @@ MANIFEST = {
             './js/room-type-photo-modal.js',
         ],
     },
+    'purchase-addon.html': {
+        'partials': [
+            'aside',
+            'topbar',
+            'session-modals',
+            'topbar-modals',
+            'purchase-addon-modals',
+        ],
+        'modules': [
+            './js/partials.js',
+            './js/page-shell.js',
+            './js/page-tabs.js',
+            './js/purchase-addon.js',
+            './js/modal-controller.js',
+            './js/topbar-modals.js',
+        ],
+    },
 }
 
 # 舊單元件 preview（無 partial 架構），僅豁免不檢查；

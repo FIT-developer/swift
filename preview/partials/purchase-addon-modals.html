@@ -1,0 +1,285 @@
+<!-- 加購商品頁專屬 modal（preview/purchase-addon.html）
+     - 資料 modal: 新增 / 修改 / 查看共用外殼，產品新增內容對齊 2026-08-11
+       使用者補圖。
+     - 照片 modal: 沿用 room-type photo-gallery 版型，但 id 與 JS state 獨立。 -->
+
+<div
+  id="modalPurchaseAddonDataBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="paDataModalTitle"
+>
+  <div class="modal-box mx-3">
+    <div
+      class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+    >
+      <span
+        id="paDataModalTitle"
+        class="text-xl font-semibold text-text-default leading-tight"
+        >產品新增</span
+      >
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalPurchaseAddonDataBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="min-h-0 flex-1 overflow-y-auto bg-white p-4" data-pa-data-body>
+      <div class="pa-data-modal-grid">
+        <label class="pa-data-modal-field text-base text-text-default">
+          <span>類別</span>
+          <select class="pa-data-modal-control" data-pa-data-field>
+            <option>[888]沖帳</option>
+            <option>[889]餐飲服務</option>
+            <option>[890]特別費</option>
+          </select>
+        </label>
+
+        <div class="pa-data-modal-field text-base text-text-default">
+          <span>產品描述</span>
+          <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-base text-text-default">
+            <span>住宿加購</span>
+            <span>線上隨單加購</span>
+          </div>
+        </div>
+
+        <label class="pa-data-modal-field text-base text-text-default">
+          <span>產品編號</span>
+          <input
+            type="text"
+            value="12"
+            disabled
+            class="pa-data-modal-control"
+            data-pa-data-field
+            data-pa-always-disabled
+          />
+        </label>
+
+        <label class="pa-data-modal-field text-base text-text-default">
+          <span>品名</span>
+          <input type="text" value="房費折抵" class="pa-data-modal-control" data-pa-data-field />
+        </label>
+
+        <label class="pa-data-modal-field text-base text-text-default">
+          <span>
+            定價
+            <span class="pa-data-modal-hint">填0為免費</span>
+          </span>
+          <input type="number" value="2000" class="pa-data-modal-control" data-pa-data-field />
+        </label>
+
+        <label class="pa-data-modal-field text-base text-text-default">
+          <span>排序</span>
+          <input type="number" value="14" class="pa-data-modal-control" data-pa-data-field />
+        </label>
+
+        <label class="pa-data-modal-field text-base text-text-default">
+          <span>
+            數量限制
+            <span class="pa-data-modal-hint">訂購上限/筆</span>
+          </span>
+          <input type="number" value="2000" class="pa-data-modal-control" data-pa-data-field />
+        </label>
+
+        <div class="pa-data-modal-field text-base text-text-default">
+          <span>上架</span>
+          <div class="pa-data-modal-toggle-row">
+            <div class="pa-publish-toggle-line">
+              <span class="sr-only">上架狀態</span>
+              <span class="member-data-switch shrink-0" data-pa-publish-switch>
+                <input type="checkbox" data-pa-publish-toggle data-pa-data-field />
+                <span class="member-data-switch-track"></span>
+                <span class="member-data-switch-knob"></span>
+              </span>
+            </div>
+            <div class="pa-publish-panel hidden" data-pa-publish-panel>
+              <div class="pa-publish-panel-title">設定開放日期</div>
+              <div class="pa-publish-date-row">
+                <span class="pa-publish-date-control">
+                  <input type="text" value="2026-02-10" data-pa-publish-start-date />
+                  <img src="./assets/icons/calendar.svg" alt="" class="h-5 w-5" />
+                </span>
+                <span class="text-base text-text-default">~</span>
+                <span class="pa-publish-date-control">
+                  <input type="text" value="2026-03-11" data-pa-publish-end-date />
+                  <img src="./assets/icons/calendar.svg" alt="" class="h-5 w-5" />
+                </span>
+              </div>
+              <div class="pa-publish-time-head">
+                <span>設定開放時段</span>
+                <span class="member-data-switch shrink-0" data-pa-publish-time-switch>
+                  <input type="checkbox" data-pa-publish-time-toggle checked />
+                  <span class="member-data-switch-track"></span>
+                  <span class="member-data-switch-knob"></span>
+                </span>
+              </div>
+              <div class="pa-publish-time-row">
+                <select class="pa-data-modal-control" data-pa-publish-start-hour>
+                  <option selected>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                  <option>11</option>
+                  <option>12</option>
+                </select>
+                <span class="text-base text-text-default">~</span>
+                <select class="pa-data-modal-control" data-pa-publish-end-hour>
+                  <option>12</option>
+                  <option>13</option>
+                  <option>14</option>
+                  <option>15</option>
+                  <option>16</option>
+                  <option>17</option>
+                  <option>18</option>
+                  <option>19</option>
+                  <option>20</option>
+                  <option>21</option>
+                  <option>22</option>
+                  <option>23</option>
+                  <option selected>24</option>
+                </select>
+                <span class="text-base text-text-default">時</span>
+              </div>
+              <p class="pa-publish-note">時間範圍：1～24。關閉開關時，為全天開放。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <label class="text-base text-text-default">產品介紹文案</label>
+          <div class="pa-data-modal-copy-card">
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button type="button" class="pa-data-modal-edit-btn" data-pa-disable-on-view>
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <label class="text-base text-text-default">品名文案</label>
+          <div class="pa-data-modal-copy-card">
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button type="button" class="pa-data-modal-edit-btn" data-pa-disable-on-view>
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex h-[58px] flex-shrink-0 items-center justify-end gap-2 border-t border-border-disabled px-3">
+      <button
+        type="button"
+        class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+        data-modal="modalPurchaseAddonDataBackdrop"
+        data-pa-data-cancel
+      >
+        取消
+      </button>
+      <button
+        type="button"
+        class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+        data-modal="modalPurchaseAddonDataBackdrop"
+        data-pa-data-save
+      >
+        儲存
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  id="modalPurchaseAddonPhotoGalleryBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalPurchaseAddonPhotoGalleryTitle"
+>
+  <div class="modal-box mx-3">
+    <div
+      class="modal-header-shadow flex h-[51px] flex-shrink-0 items-center justify-between border-b border-text-placeholder px-3"
+    >
+      <div class="flex flex-col justify-center">
+        <span
+          id="modalPurchaseAddonPhotoGalleryTitle"
+          class="text-xl font-semibold text-text-default leading-tight"
+          >照片管理</span
+        >
+        <span class="text-base text-text-default leading-tight">demo</span>
+      </div>
+      <button
+        type="button"
+        class="modal-close-btn flex h-6 w-6 cursor-pointer items-center justify-center opacity-70 hover:opacity-100"
+        data-modal="modalPurchaseAddonPhotoGalleryBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div class="lodging-photo-modal-body min-h-0 flex-1 overflow-y-auto bg-white p-5">
+      <div
+        class="flex flex-col gap-2 min-[640px]:flex-row min-[640px]:items-center min-[640px]:gap-0 rounded-lg bg-bootstrap-focus-background p-2"
+      >
+        <div class="flex items-start gap-2 min-[640px]:items-center">
+          <img src="./assets/icons/info.svg" alt="" class="w-6 h-6 shrink-0" />
+          <span class="text-base text-text-default">最多上傳 5 張圖片</span>
+        </div>
+        <span class="lodging-photo-banner-divider hidden min-[640px]:block"></span>
+        <span class="lodging-photo-banner-divider-h min-[640px]:hidden"></span>
+        <span class="text-base text-text-default min-[640px]:px-6">建議尺寸：900px * 600px</span>
+        <span class="lodging-photo-banner-divider hidden min-[640px]:block"></span>
+        <span class="lodging-photo-banner-divider-h min-[640px]:hidden"></span>
+        <span class="text-base text-text-default min-[640px]:px-6">檔案格式：JPEG、JPG</span>
+        <span class="lodging-photo-banner-divider hidden min-[640px]:block"></span>
+        <span class="lodging-photo-banner-divider-h min-[640px]:hidden"></span>
+        <span class="text-base text-text-default min-[640px]:px-6">首張圖片於主頁預覽</span>
+      </div>
+
+      <div class="flex items-center gap-2 mt-4 mb-4">
+        <img src="./assets/icons/dots-line.svg" alt="" class="w-6 h-6" />
+        <span class="text-base text-text-default">依編號順序顯示，可拖曳調整排序</span>
+      </div>
+
+      <div id="purchaseAddonPhotoCardGrid" class="lodging-photo-card-grid"></div>
+    </div>
+
+    <div class="flex h-[58px] flex-shrink-0 items-center justify-between border-t border-border-disabled px-3">
+      <div class="flex items-center gap-2 text-base text-text-default">
+        <img src="./assets/icons/security.svg" alt="" class="w-6 h-6" />
+        <span>儲存後生效</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          class="modal-close-btn inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-default hover:opacity-80"
+          data-modal="modalPurchaseAddonPhotoGalleryBackdrop"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          id="purchaseAddonPhotoUploadBtn"
+          class="inline-flex h-[34px] items-center justify-center rounded-md border border-border-disabled bg-text-default px-3 py-1.5 text-base text-text-inverse hover:opacity-80"
+        >
+          上傳
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="purchaseAddonPhotoFileInput" accept="image/jpeg" class="hidden" />

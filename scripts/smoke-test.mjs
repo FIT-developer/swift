@@ -228,7 +228,7 @@ const SHELL_CHECKS = [
   { name: "mobile drawer opens and closes", expr: "__smoke.drawerCheck()" },
 ];
 
-// app.css 是 6 個分域檔（shell/dashboard/modals/room-booking/order-processing/system-basic）
+// app.css 是分域 CSS 檔（shell/dashboard/modals/room-booking/order-processing/system-basic 等）
 // 的 @import entrypoint。Session 90 教訓：斷頭註解（兩個 /* 沒有任何 */）會讓
 // 整份檔案含全部 @import 被吞進同一個未閉合註解，document.styleSheets 裡的
 // app.css 會是空的（cssRules.length === 0），但這個失效狀態不會拋 JS 例外、
@@ -237,7 +237,7 @@ const SHELL_CHECKS = [
 // 此檢查直接驗證瀏覽器實際解析出的 CSSOM：app.css 必須依序 import 固定
 // domain CSS 檔（順序即 page-architecture.md 記錄的 cascade 順序，
 // shell -> dashboard -> modals -> room-booking -> order-processing ->
-// system-basic），且
+// system-basic -> 後續頁面 domain），且
 // 每個 domain 檔自己的 cssRules.length > 0。少 import、多 import、順序錯、
 // 重複 import 都判定失敗（陣列不完全相等即 fail，一次覆蓋四種錯法）。
 //
@@ -257,7 +257,8 @@ const APP_CSS_LOADED_CHECK = {
         "order-processing.css",
         "system-basic.css",
         "lodging-info.css",
-        "room-type.css"
+        "room-type.css",
+        "purchase-addon.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -770,6 +771,320 @@ const PAGES = [
     ],
   },
   {
+    file: "purchase-addon.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalLogoutBackdrop") &&
+      !!document.getElementById("modalPurchaseAddonDataBackdrop") &&
+      !!document.getElementById("modalPurchaseAddonPhotoGalleryBackdrop") &&
+      document.querySelectorAll("[data-pa-table-body='product'] tr").length === 14 &&
+      document.querySelectorAll("[data-pa-table-body='category'] tr").length === 14
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "purchase-addon sections, tabs, legends, and rows rendered",
+        viewport: { width: 1440, height: 1000 },
+        expr: `
+          (function () {
+            var sections = document.querySelectorAll("[data-pa-section]");
+            if (sections.length !== 2) return "section count: " + sections.length;
+            var activeTypeTabs = document.querySelectorAll("[data-pa-type-tabs] .pa-type-tab.is-active");
+            if (activeTypeTabs.length !== 2) return "active type tab count: " + activeTypeTabs.length;
+            var productRows = document.querySelectorAll("[data-pa-table-body='product'] tr");
+            var categoryRows = document.querySelectorAll("[data-pa-table-body='category'] tr");
+            if (productRows.length !== 14) return "product row count: " + productRows.length;
+            if (categoryRows.length !== 14) return "category row count: " + categoryRows.length;
+            var legends = document.querySelectorAll(".pa-legend-icon img");
+            if (legends.length < 6) return "legend icon count: " + legends.length;
+            if (!document.querySelector(".pa-icon-thumbtack-filled"))
+              return "filled limited-project icon missing";
+            if (productRows[1].querySelectorAll("[data-pa-row-action]").length < 3)
+              return "product row 2 management buttons missing";
+            if (productRows[2].querySelectorAll("[data-pa-row-action]").length < 3)
+              return "product row 3 management buttons missing";
+            if (categoryRows[0].querySelectorAll("[data-pa-row-action]").length < 3)
+              return "category management buttons missing";
+            if (document.querySelector("[data-pa-row-id='product-2'][data-pa-row-action='project']"))
+              return "project button should not show without thumbtack state";
+            if (!document.querySelector("[data-pa-row-id='product-4'][data-pa-row-action='project']"))
+              return "limited project button missing";
+            if (!document.querySelector("[data-pa-row-id='product-5'][data-pa-row-action='project']"))
+              return "non-limited project button missing";
+            var categoryShell = document.querySelector(".pa-category-table-shell");
+            var categoryParent = categoryShell && categoryShell.parentElement;
+            var productShell = document.querySelector(".pa-product-table").closest(".pa-table-shell");
+            if (!categoryShell || !categoryParent || !productShell)
+              return "table shell missing";
+            var categoryShellWidth = categoryShell.getBoundingClientRect().width;
+            var categoryParentWidth = categoryParent.getBoundingClientRect().width;
+            if (!(categoryShellWidth < categoryParentWidth - 16))
+              return "category outline should shrink: " + categoryShellWidth + "/" + categoryParentWidth;
+            var productShellWidth = productShell.getBoundingClientRect().width;
+            var productParentWidth = productShell.parentElement.getBoundingClientRect().width;
+            if (Math.abs(productShellWidth - productParentWidth) > 2)
+              return "product outline should remain full width";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "purchase-addon controls toggle active states and clear inputs",
+        expr: `
+          (function () {
+            var firstTabs = document.querySelector("[data-pa-type-tabs]");
+            var secondType = firstTabs.querySelectorAll(".pa-type-tab")[1];
+            secondType.click();
+            if (!secondType.classList.contains("is-active")) return "type tab did not activate";
+            if (firstTabs.querySelectorAll(".pa-type-tab.is-active").length !== 1)
+              return "type tab active count changed incorrectly";
+
+            var quick = document.querySelector("[data-pa-quick-filters]");
+            var backendOnly = quick.querySelectorAll(".pa-quick-chip")[2];
+            backendOnly.click();
+            if (!backendOnly.classList.contains("is-active")) return "quick chip did not activate";
+
+            var category = document.getElementById("paProductCategoryText");
+            var name = document.getElementById("paProductName");
+            name.value = "abc";
+            document.querySelector("[data-pa-clear]").click();
+            if (category.value !== "" || name.value !== "")
+              return "clear did not empty inputs: " + category.value + "/" + name.value;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "purchase-addon display toggle switches all rows to pagination",
+        expr: `
+          (function () {
+            var button = document.querySelector("[data-pa-display-button='product']");
+            var icon = document.querySelector("[data-pa-display-icon='product']");
+            var label = document.querySelector("[data-pa-display-label='product']");
+            if (button.getAttribute("aria-pressed") !== "true")
+              return "product display should start all";
+            if (!/all-pages\\.svg$/.test(icon.src)) return "initial icon: " + icon.src;
+            if (label.textContent.trim() !== "全部顯示（14 筆）")
+              return "initial display label: " + label.textContent.trim();
+            button.click();
+            var rows = document.querySelectorAll("[data-pa-table-body='product'] tr");
+            if (label.textContent.trim() !== "分頁（3 頁 / 14 筆）")
+              return "paged display label: " + label.textContent.trim();
+            if (button.getAttribute("aria-pressed") !== "false")
+              return "paged aria-pressed should be false";
+            if (!/split-page\\.svg$/.test(icon.src)) return "paged icon: " + icon.src;
+            if (rows.length !== 5) return "paged row count: " + rows.length;
+            var pagination = document.querySelector("[data-pa-pagination='product']");
+            var current = pagination.querySelector(".pa-page-current");
+            var nav = pagination.querySelectorAll(".pa-page-nav");
+            if (!current || current.textContent.trim() !== "1")
+              return "initial current page missing";
+            if (nav.length !== 2) return "pagination nav count: " + nav.length;
+            if (!nav[0].disabled) return "prev should start disabled";
+            if (nav[1].disabled) return "next should start enabled";
+            if (parseFloat(getComputedStyle(nav[1]).borderTopLeftRadius) < 18)
+              return "pagination nav should be fully rounded";
+            if (getComputedStyle(nav[1]).backgroundColor === getComputedStyle(document.documentElement).getPropertyValue("--color-neutral-200").trim())
+              return "pagination nav should not use neutral gray";
+            nav[1].click();
+            current = pagination.querySelector(".pa-page-current");
+            nav = pagination.querySelectorAll(".pa-page-nav");
+            if (!current || current.textContent.trim() !== "2")
+              return "next page did not update current page";
+            if (nav[0].disabled || nav[1].disabled)
+              return "middle page nav should both be enabled";
+            button.click();
+            if (!/all-pages\\.svg$/.test(icon.src)) return "restored icon: " + icon.src;
+            if (document.querySelectorAll("[data-pa-table-body='product'] tr").length !== 14)
+              return "all rows did not restore";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "purchase-addon status counts update after disable/enable",
+        expr: `
+          (function () {
+            var activeCount = document.querySelector("[data-pa-active-count='product']");
+            var deletedCount = document.querySelector("[data-pa-deleted-count='product']");
+            if (activeCount.textContent !== "（14）") return "initial active count: " + activeCount.textContent;
+            if (deletedCount.textContent !== "（5）") return "initial deleted count: " + deletedCount.textContent;
+            document.querySelector("[data-pa-row-action='disable'][data-pa-row-id='product-1']").click();
+            if (activeCount.textContent !== "（13）") return "active after disable: " + activeCount.textContent;
+            if (deletedCount.textContent !== "（6）") return "deleted after disable: " + deletedCount.textContent;
+            document.querySelector("[data-pa-status-filter='deleted'][data-pa-kind='product'], [data-pa-status-tabs='product'] [data-pa-status-filter='deleted']").click();
+            document.querySelector("[data-pa-row-action='enable'][data-pa-row-id='product-1']").click();
+            document.querySelector("[data-pa-status-tabs='product'] [data-pa-status-filter='active']").click();
+            if (activeCount.textContent !== "（14）") return "active after enable: " + activeCount.textContent;
+            if (deletedCount.textContent !== "（5）") return "deleted after enable: " + deletedCount.textContent;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "purchase-addon data and photo modals open/close",
+        expr: `
+          (function () {
+            var add = __smoke.modalCheck('[data-pa-modal-mode="new"][data-pa-kind="product"]', "modalPurchaseAddonDataBackdrop");
+            if (add !== true) return "new: " + add;
+            document.querySelector('[data-pa-modal-mode="new"][data-pa-kind="product"]').click();
+            var modalText = document.getElementById("modalPurchaseAddonDataBackdrop").textContent;
+            var required = ["產品新增", "類別", "[888]沖帳", "產品描述", "住宿加購", "線上隨單加購", "產品編號", "品名", "定價", "填0為免費", "數量限制", "訂購上限/筆", "產品介紹文案", "品名文案"];
+            for (var i = 0; i < required.length; i += 1) {
+              if (modalText.indexOf(required[i]) === -1) return "data modal missing: " + required[i];
+            }
+            if (document.querySelectorAll("#modalPurchaseAddonDataBackdrop .pa-data-modal-copy-card").length !== 2)
+              return "data modal copy card count mismatch";
+            var categoryField = document.querySelector("#modalPurchaseAddonDataBackdrop .pa-data-modal-field");
+            var categoryLabel = categoryField && categoryField.children[0];
+            var categoryControl = categoryField && categoryField.querySelector(".pa-data-modal-control");
+            if (!categoryLabel || !categoryControl) return "data modal category field missing";
+            var labelCenter = categoryLabel.getBoundingClientRect().top + categoryLabel.getBoundingClientRect().height / 2;
+            var controlCenter = categoryControl.getBoundingClientRect().top + categoryControl.getBoundingClientRect().height / 2;
+            if (Math.abs(labelCenter - controlCenter) > 2)
+              return "data modal label/control vertical center mismatch";
+            document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn").click();
+            var edit = __smoke.modalCheck('[data-pa-modal-mode="edit"][data-pa-row-id="product-1"]', "modalPurchaseAddonDataBackdrop");
+            if (edit !== true) return "edit: " + edit;
+            document.querySelector('[data-pa-modal-mode="edit"][data-pa-row-id="product-1"]').click();
+            var publishToggle = document.querySelector("#modalPurchaseAddonDataBackdrop [data-pa-publish-toggle]");
+            publishToggle.click();
+            var publishPanel = document.querySelector("#modalPurchaseAddonDataBackdrop [data-pa-publish-panel]");
+            if (!publishPanel || publishPanel.classList.contains("hidden"))
+              return "publish schedule panel did not open";
+            if (getComputedStyle(publishPanel).position === "absolute")
+              return "publish panel should be inline, not floating";
+            if (!publishPanel.querySelector("[data-pa-publish-start-date]") || !publishPanel.querySelector("[data-pa-publish-end-date]"))
+              return "publish panel range dates missing";
+            if (!publishPanel.querySelector("[data-pa-publish-start-hour]") || !publishPanel.querySelector("[data-pa-publish-end-hour]"))
+              return "publish panel range hours missing";
+            if (publishPanel.textContent.indexOf("設定開放日期") === -1 || publishPanel.textContent.indexOf("設定開放時段") === -1)
+              return "publish panel labels missing";
+            if (publishPanel.textContent.indexOf("上架設定") !== -1 || publishPanel.textContent.indexOf("取消") !== -1 || publishPanel.textContent.indexOf("儲存") !== -1)
+              return "publish panel contains old popup copy";
+            document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn[data-modal='modalPurchaseAddonDataBackdrop']").click();
+
+            document.querySelector('[data-pa-row-action="project"][data-pa-row-id="product-4"]').click();
+            if (!document.getElementById("modalPurchaseAddonDataBackdrop").classList.contains("open"))
+              return "project button did not open modal";
+            if (document.getElementById("paDataModalTitle").textContent.trim() !== "產品專案")
+              return "project modal title mismatch: " + document.getElementById("paDataModalTitle").textContent.trim();
+            document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn[data-modal='modalPurchaseAddonDataBackdrop']").click();
+
+            document.querySelector("[data-pa-status-tabs='product'] [data-pa-status-filter='deleted']").click();
+            document.querySelector('[data-pa-modal-mode="view"][data-pa-row-id="product-15"]').click();
+            var dataModal = document.getElementById("modalPurchaseAddonDataBackdrop");
+            var readonlyFields = Array.from(dataModal.querySelectorAll("[data-pa-data-field]"));
+            if (!readonlyFields.length || readonlyFields.some(function (field) { return !field.disabled; }))
+              return "view modal fields should be disabled";
+            if (!dataModal.querySelector("[data-pa-data-save]").classList.contains("hidden"))
+              return "view modal save should be hidden";
+            var viewCloseBtn = dataModal.querySelector("[data-pa-data-cancel]");
+            if (viewCloseBtn.textContent.trim() !== "關閉")
+              return "view modal footer should say close";
+            var sample = document.createElement("span");
+            sample.style.background = "var(--color-text-800)";
+            document.body.appendChild(sample);
+            var expectedCloseBg = getComputedStyle(sample).backgroundColor;
+            sample.remove();
+            if (getComputedStyle(viewCloseBtn).backgroundColor !== expectedCloseBg)
+              return "view modal close button should use dark room-type color";
+            document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn[data-modal='modalPurchaseAddonDataBackdrop']").click();
+            document.querySelector("[data-pa-status-tabs='product'] [data-pa-status-filter='active']").click();
+
+            var photo = __smoke.modalCheck('[data-pa-photo-trigger="product-1"]', "modalPurchaseAddonPhotoGalleryBackdrop");
+            if (photo !== true) return "photo: " + photo;
+            document.querySelector('[data-pa-photo-trigger="product-2"]').click();
+            var grid = document.getElementById("purchaseAddonPhotoCardGrid");
+            if (!grid || grid.children.length !== 5)
+              return "photo grid slot count: " + (grid && grid.children.length);
+            document.querySelector("#modalPurchaseAddonPhotoGalleryBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "purchase-addon modals are fullscreen on mobile",
+        viewport: { width: 375, height: 812, mobile: true },
+        expr: `
+          (function () {
+            function checkModal(triggerSel, modalId) {
+              var trigger = document.querySelector(triggerSel);
+              var modal = document.getElementById(modalId);
+              if (!trigger || !modal) return "missing mobile modal target: " + modalId;
+              trigger.click();
+              var box = modal.querySelector(".modal-box");
+              var rect = box.getBoundingClientRect();
+              if (Math.abs(rect.left) > 1 || Math.abs(rect.top) > 1)
+                return modalId + " should start at viewport origin: " + rect.left + "/" + rect.top;
+              if (Math.abs(rect.width - window.innerWidth) > 1)
+                return modalId + " width not fullscreen: " + rect.width + "/" + window.innerWidth;
+              if (Math.abs(rect.height - window.innerHeight) > 1)
+                return modalId + " height not fullscreen: " + rect.height + "/" + window.innerHeight;
+              if (getComputedStyle(box).borderRadius !== "0px")
+                return modalId + " border radius should be 0";
+              modal.querySelector(".modal-close-btn").click();
+              return true;
+            }
+            var data = checkModal('[data-pa-modal-mode="new"][data-pa-kind="product"]', "modalPurchaseAddonDataBackdrop");
+            if (data !== true) return data;
+            document.querySelector('[data-pa-modal-mode="new"][data-pa-kind="product"]').click();
+            var mobilePublishToggle = document.querySelector("#modalPurchaseAddonDataBackdrop [data-pa-publish-toggle]");
+            var mobilePublishPanel = document.querySelector("#modalPurchaseAddonDataBackdrop [data-pa-publish-panel]");
+            if (!mobilePublishToggle.checked) mobilePublishToggle.click();
+            if (mobilePublishPanel.classList.contains("hidden")) mobilePublishToggle.click();
+            if (mobilePublishPanel.classList.contains("hidden")) mobilePublishToggle.click();
+            var dateControls = Array.from(document.querySelectorAll(
+              "#modalPurchaseAddonDataBackdrop .pa-publish-date-control",
+            ));
+            if (dateControls.length !== 2) {
+              document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn").click();
+              return "mobile publish date controls count: " + dateControls.length;
+            }
+            var firstDateRect = dateControls[0].getBoundingClientRect();
+            var secondDateRect = dateControls[1].getBoundingClientRect();
+            if (Math.abs(firstDateRect.top - secondDateRect.top) < 2) {
+              document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn").click();
+              return "mobile publish date controls should stack vertically";
+            }
+            if (secondDateRect.top <= firstDateRect.bottom) {
+              document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn").click();
+              return "mobile publish second date should be below first date";
+            }
+            document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn").click();
+            var photo = checkModal('[data-pa-photo-trigger="product-1"]', "modalPurchaseAddonPhotoGalleryBackdrop");
+            if (photo !== true) return photo;
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "purchase-addon section collapse toggles body",
+        expr: `
+          (function () {
+            var section = document.querySelector("[data-pa-section]");
+            var btn = section.querySelector("[data-pa-section-toggle]");
+            var body = section.querySelector(".pa-section-body");
+            var firstHeader = document.querySelector("[data-pa-table-body='product']")
+              .closest("table")
+              .querySelector("th:nth-child(2)");
+            if (getComputedStyle(firstHeader).textAlign !== "center")
+              return "table header should be centered";
+            if (body.classList.contains("pa-hidden")) return "body should start open";
+            btn.click();
+            if (!body.classList.contains("pa-hidden")) return "body did not close";
+            btn.click();
+            if (body.classList.contains("pa-hidden")) return "body did not reopen";
+            return true;
+          })()
+        `,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
+  {
     file: "room-type.html",
     readyExpr: `
       !document.querySelector("[data-partial]") &&
@@ -1112,10 +1427,26 @@ async function testPage(cdp, baseUrl, page, consoleErrors) {
 
   for (const check of page.checks) {
     try {
+      if (check.viewport) {
+        await cdp.send(
+          "Emulation.setDeviceMetricsOverride",
+          {
+            width: check.viewport.width,
+            height: check.viewport.height,
+            deviceScaleFactor: 1,
+            mobile: !!check.viewport.mobile,
+          },
+          sessionId,
+        );
+      }
       const result = await evaluate(cdp, sessionId, check.expr);
       if (result !== true) failures.push(check.name + ": " + result);
     } catch (err) {
       failures.push(check.name + ": " + err.message);
+    } finally {
+      if (check.viewport) {
+        await cdp.send("Emulation.clearDeviceMetricsOverride", {}, sessionId);
+      }
     }
   }
 

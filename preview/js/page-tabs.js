@@ -15,6 +15,7 @@ var TAB_PAGES = {
   "account-permission.html": "帳號及權限",
   "lodging-info.html": "民宿資料",
   "room-type.html": "房型",
+  "purchase-addon.html": "加購商品",
 };
 
 function readTabs() {

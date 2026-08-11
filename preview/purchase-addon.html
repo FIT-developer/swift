@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 加購商品</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body data-page="加購商品">
+    <div
+      id="rootWrap"
+      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto md:p-3"
+    >
+      <!-- Mobile top bar: 加購商品頁在 <768 為整襯型頁殼，content 滿版貼齊左右。 -->
+      <div class="flex items-center justify-between px-3 pt-3 md:hidden">
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
+        <button
+          id="mobileMenuBtn"
+          class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="w-6 h-5" alt="選單" />
+        </button>
+      </div>
+
+      <div id="bodyArea" class="flex flex-col md:flex-row gap-3 flex-1 min-w-0">
+        <div data-partial="aside"></div>
+
+        <div id="mainColumn" class="flex-1 flex flex-col min-w-0 gap-3">
+          <div data-partial="topbar"></div>
+
+          <main class="flex-1 flex flex-col min-w-0 w-full">
+            <div class="flex flex-col gap-3">
+              <!-- 產品設定 -->
+              <section
+                class="rounded-xl border border-border-disabled bg-surface-hover p-5"
+                data-pa-section
+              >
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between gap-3 border-0 bg-transparent p-0 text-left cursor-pointer"
+                  data-pa-section-toggle
+                  aria-expanded="true"
+                >
+                  <h1 class="text-xl font-semibold text-text-default">產品設定</h1>
+                  <img
+                    src="./assets/icons/down.svg"
+                    alt=""
+                    class="pa-section-toggle-icon w-6 h-6 shrink-0"
+                  />
+                </button>
+
+                <div class="pa-section-body mt-4">
+                  <div class="rounded-xl bg-white p-3">
+                    <div class="flex justify-end gap-3 mb-3">
+                      <button
+                        type="button"
+                        data-modal-open="modalPurchaseAddonDataBackdrop"
+                        data-pa-modal-mode="new"
+                        data-pa-kind="product"
+                        class="flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer hover:opacity-80"
+                      >
+                        <img
+                          src="./assets/icons/outline-plus.svg"
+                          alt=""
+                          class="w-6 h-6"
+                        />
+                        <span>新增</span>
+                      </button>
+                      <button
+                        type="button"
+                        data-pa-reload
+                        class="flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer hover:opacity-80"
+                      >
+                        <img
+                          src="./assets/icons/restore.svg"
+                          alt=""
+                          class="w-6 h-6"
+                        />
+                        <span>重整</span>
+                      </button>
+                    </div>
+
+                    <div class="overflow-x-auto pl-3" data-pa-type-tabs>
+                      <div class="flex w-max gap-4">
+                        <button type="button" class="pa-type-tab is-active">
+                          所有商品
+                        </button>
+                        <button type="button" class="pa-type-tab">住宿加購</button>
+                        <button type="button" class="pa-type-tab">其他商品</button>
+                      </div>
+                    </div>
+
+                    <div
+                      class="rounded-xl border border-border-disabled p-5"
+                      data-pa-filter-panel
+                    >
+                      <div class="flex flex-col gap-4">
+                        <div
+                          class="grid grid-cols-1 lg:grid-cols-[auto_minmax(360px,1fr)_auto_minmax(260px,1fr)] gap-3 lg:items-center"
+                        >
+                          <label
+                            for="paProductCategoryText"
+                            class="text-base text-text-default whitespace-nowrap"
+                            >商品分類</label
+                          >
+                          <div class="grid grid-cols-2 min-w-0">
+                            <input
+                              id="paProductCategoryText"
+                              type="text"
+                              value="輸入分類文字"
+                              class="min-w-0 border border-border-disabled rounded-l-[6px] px-3 py-1.5 bg-white text-base text-text-default outline-none focus:border-border-focus"
+                            />
+                            <select
+                              class="pa-select-truncate min-w-0 border border-l-0 border-border-disabled rounded-r-[6px] px-3 py-1.5 bg-white text-base text-text-default outline-none focus:border-border-focus"
+                              aria-label="商品分類下拉選單"
+                            >
+                              <option>下拉選單（1）</option>
+                            </select>
+                          </div>
+
+                          <label
+                            for="paProductName"
+                            class="text-base text-text-default whitespace-nowrap"
+                            >商品名稱</label
+                          >
+                          <input
+                            id="paProductName"
+                            type="text"
+                            placeholder="placeholder"
+                            class="min-w-0 border border-border-disabled rounded-[6px] px-3 py-1.5 bg-white text-base text-text-default outline-none focus:border-border-focus"
+                          />
+                        </div>
+
+                        <div class="flex flex-nowrap items-center gap-4" data-pa-status-tabs="product">
+                          <button
+                            type="button"
+                            class="member-data-filter-tab is-active"
+                            data-pa-status-filter="active"
+                          >
+                            啟用<span class="font-normal" data-pa-active-count="product"></span>
+                          </button>
+                          <button
+                            type="button"
+                            class="member-data-filter-tab"
+                            data-pa-status-filter="deleted"
+                          >
+                            停用<span class="font-normal" data-pa-deleted-count="product"></span>
+                          </button>
+                        </div>
+
+                        <div
+                          class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+                        >
+                          <div
+                            class="flex flex-wrap items-center gap-3"
+                            data-pa-quick-filters
+                          >
+                            <button type="button" class="pa-quick-chip is-active">
+                              全部
+                            </button>
+                            <button type="button" class="pa-quick-chip">
+                              線上隨單加購
+                            </button>
+                            <button type="button" class="pa-quick-chip">
+                              僅後台加購
+                            </button>
+                          </div>
+                          <div class="pa-query-actions flex items-center gap-2">
+                            <button
+                              type="button"
+                              data-pa-clear
+                              class="inline-flex items-center justify-center h-[34px] px-3 rounded-[6px] border border-border-disabled bg-border-disabled text-base text-text-default cursor-pointer"
+                            >
+                              清除
+                            </button>
+                            <button
+                              type="button"
+                              class="inline-flex items-center justify-center h-[34px] px-3 rounded-[6px] border border-border-disabled bg-text-default text-base text-text-inverse cursor-pointer"
+                            >
+                              查詢
+                            </button>
+                          </div>
+                        </div>
+
+                        <div
+                          class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
+                        >
+                          <button
+                            type="button"
+                            class="pa-display-toggle"
+                            data-pa-display-button="product"
+                            aria-pressed="true"
+                          >
+                            <img
+                              src="./assets/icons/all-pages.svg"
+                              alt=""
+                              class="w-6 h-6"
+                              data-pa-display-icon="product"
+                            />
+                            <span data-pa-display-label="product">全部顯示（14 筆）</span>
+                          </button>
+                          <div class="flex flex-wrap items-center gap-x-8 gap-y-3">
+                            <span class="inline-flex items-center gap-2 text-base text-text-default">
+                              <span class="pa-legend-icon">
+                                <span class="pa-icon-thumbtack-filled" aria-hidden="true"></span>
+                              </span>
+                              限定專案
+                            </span>
+                            <span class="inline-flex items-center gap-2 text-base text-text-default">
+                              <span class="pa-legend-icon">
+                                <img
+                                  src="./assets/icons/thumbtack-slash.svg"
+                                  alt=""
+                                  class="w-5 h-5"
+                                />
+                              </span>
+                              非限定專案
+                            </span>
+                            <span class="inline-flex items-center gap-2 text-base text-text-default">
+                              <span class="pa-legend-icon">
+                                <img
+                                  src="./assets/icons/home.svg"
+                                  alt=""
+                                  class="w-5 h-5"
+                                />
+                              </span>
+                              住宿加購
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="pa-table-shell">
+                          <table class="pa-data-table pa-product-table">
+                            <colgroup>
+                              <col class="w-[58px]" />
+                              <col class="w-[72px]" />
+                              <col class="w-[120px]" />
+                              <col class="w-[170px]" />
+                              <col class="w-[140px]" />
+                              <col class="w-[110px]" />
+                              <col class="w-[70px]" />
+                              <col class="w-[70px]" />
+                              <col class="w-[230px]" />
+                            </colgroup>
+                            <thead>
+                              <tr>
+                                <th class="pa-seq-cell">順序</th>
+                                <th class="text-left">編號</th>
+                                <th class="text-left">照片管理</th>
+                                <th class="text-left">品名</th>
+                                <th class="text-left">類別</th>
+                                <th class="text-left">定價</th>
+                                <th class="text-left">排序</th>
+                                <th class="text-left">上架</th>
+                                <th class="text-center">管理</th>
+                              </tr>
+                            </thead>
+                            <tbody data-pa-table-body="product">
+                              <tr>
+                                <td class="pa-seq-cell">1</td>
+                                <td>22</td>
+                                <td>
+                                  <span
+                                    class="pa-photo-thumb pa-sample-photo-hotel"
+                                    aria-hidden="true"
+                                  ></span>
+                                </td>
+                                <td>房費折抵</td>
+                                <td>沖帳</td>
+                                <td>58888</td>
+                                <td>1</td>
+                                <td>
+                                  <img
+                                    src="./assets/icons/check-green.svg"
+                                    alt=""
+                                    class="w-6 h-6"
+                                  />
+                                </td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="pa-seq-cell">2</td>
+                                <td>33</td>
+                                <td>
+                                  <span class="pa-photo-thumb pa-photo-empty">
+                                    <img
+                                      src="./assets/icons/image-empty.svg"
+                                      alt=""
+                                    />
+                                  </span>
+                                </td>
+                                <td>退寵物入住保證金</td>
+                                <td>特別費</td>
+                                <td>78888</td>
+                                <td>1</td>
+                                <td></td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="pa-seq-cell">3</td>
+                                <td>44</td>
+                                <td>
+                                  <span
+                                    class="pa-photo-thumb pa-sample-photo-food"
+                                    aria-hidden="true"
+                                  ></span>
+                                </td>
+                                <td>火鍋</td>
+                                <td>
+                                  <span class="inline-flex items-center gap-2">
+                                    嗚啦啦
+                                    <span class="pa-legend-icon">
+                                      <img src="./assets/icons/home.svg" alt="" class="w-5 h-5" />
+                                    </span>
+                                  </span>
+                                </td>
+                                <td>555</td>
+                                <td>1</td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                              <tr>
+                                <td class="pa-seq-cell">4</td>
+                                <td>66</td>
+                                <td>
+                                  <span class="pa-photo-thumb pa-photo-empty">
+                                    <img
+                                      src="./assets/icons/image-empty.svg"
+                                      alt=""
+                                    />
+                                  </span>
+                                </td>
+                                <td>花瓶</td>
+                                <td>
+                                  <span class="inline-flex items-center gap-2">
+                                    餐飲類
+                                    <span class="pa-legend-icon">
+                                      <img src="./assets/icons/thumbtack.svg" alt="" class="w-5 h-5" />
+                                    </span>
+                                  </span>
+                                </td>
+                                <td>-100000</td>
+                                <td>1</td>
+                                <td></td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-project">
+                                      <img src="./assets/icons/projects.svg" alt="" class="w-5 h-5" />
+                                      <span>專案</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="pa-seq-cell">5</td>
+                                <td>1999</td>
+                                <td>
+                                  <span class="pa-photo-thumb pa-photo-empty">
+                                    <img
+                                      src="./assets/icons/image-empty.svg"
+                                      alt=""
+                                    />
+                                  </span>
+                                </td>
+                                <td>金紙</td>
+                                <td>
+                                  <span class="inline-flex items-center gap-2">
+                                    餐飲服務
+                                    <span class="pa-legend-icon">
+                                      <img src="./assets/icons/thumbtack-slash.svg" alt="" class="w-5 h-5" />
+                                    </span>
+                                  </span>
+                                </td>
+                                <td>89898989</td>
+                                <td>1</td>
+                                <td></td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-project">
+                                      <img src="./assets/icons/projects.svg" alt="" class="w-5 h-5" />
+                                      <span>專案</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div data-pa-pagination="product"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 類別設定 -->
+              <section
+                class="rounded-xl border border-border-disabled bg-surface-hover p-5"
+                data-pa-section
+              >
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between gap-3 border-0 bg-transparent p-0 text-left cursor-pointer"
+                  data-pa-section-toggle
+                  aria-expanded="true"
+                >
+                  <h2 class="text-xl font-semibold text-text-default">類別設定</h2>
+                  <img
+                    src="./assets/icons/down.svg"
+                    alt=""
+                    class="pa-section-toggle-icon w-6 h-6 shrink-0"
+                  />
+                </button>
+
+                <div class="pa-section-body mt-4">
+                  <div class="rounded-xl bg-white p-3">
+                    <div class="flex justify-end gap-3 mb-3">
+                      <button
+                        type="button"
+                        data-modal-open="modalPurchaseAddonDataBackdrop"
+                        data-pa-modal-mode="new"
+                        data-pa-kind="category"
+                        class="flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer hover:opacity-80"
+                      >
+                        <img
+                          src="./assets/icons/outline-plus.svg"
+                          alt=""
+                          class="w-6 h-6"
+                        />
+                        <span>新增</span>
+                      </button>
+                      <button
+                        type="button"
+                        data-pa-reload
+                        class="flex shrink-0 items-center gap-2 h-[42px] px-4 rounded-full border border-border-disabled bg-white text-base text-text-default cursor-pointer hover:opacity-80"
+                      >
+                        <img
+                          src="./assets/icons/restore.svg"
+                          alt=""
+                          class="w-6 h-6"
+                        />
+                        <span>重整</span>
+                      </button>
+                    </div>
+
+                    <div class="overflow-x-auto pl-3" data-pa-type-tabs>
+                      <div class="flex w-max gap-4">
+                        <button type="button" class="pa-type-tab is-active">
+                          所有商品
+                        </button>
+                        <button type="button" class="pa-type-tab">住宿加購</button>
+                        <button type="button" class="pa-type-tab">其他商品</button>
+                      </div>
+                    </div>
+
+                    <div class="rounded-xl border border-border-disabled p-5">
+                      <div class="flex flex-col gap-4">
+                        <div class="flex flex-nowrap items-center gap-4" data-pa-status-tabs="category">
+                          <button
+                            type="button"
+                            class="member-data-filter-tab is-active"
+                            data-pa-status-filter="active"
+                          >
+                            啟用<span class="font-normal" data-pa-active-count="category"></span>
+                          </button>
+                          <button
+                            type="button"
+                            class="member-data-filter-tab"
+                            data-pa-status-filter="deleted"
+                          >
+                            停用<span class="font-normal" data-pa-deleted-count="category"></span>
+                          </button>
+                        </div>
+
+                        <div
+                          class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+                        >
+                          <button
+                            type="button"
+                            class="pa-display-toggle"
+                            data-pa-display-button="category"
+                            aria-pressed="true"
+                          >
+                            <img
+                              src="./assets/icons/all-pages.svg"
+                              alt=""
+                              class="w-6 h-6"
+                              data-pa-display-icon="category"
+                            />
+                            <span data-pa-display-label="category">全部顯示（14 筆）</span>
+                          </button>
+                          <span class="inline-flex items-center gap-2 text-base text-text-default">
+                            <span class="pa-legend-icon">
+                              <img
+                                src="./assets/icons/home.svg"
+                                alt=""
+                                class="w-5 h-5"
+                              />
+                            </span>
+                            住宿加購
+                          </span>
+                        </div>
+
+                        <div class="pa-table-shell pa-category-table-shell">
+                          <table class="pa-data-table pa-category-table">
+                            <colgroup>
+                              <col class="w-[58px]" />
+                              <col class="w-[70px]" />
+                              <col class="w-[85px]" />
+                              <col class="w-[150px]" />
+                              <col class="w-[90px]" />
+                              <col class="w-[110px]" />
+                              <col class="w-[70px]" />
+                              <col class="w-[190px]" />
+                            </colgroup>
+                            <thead>
+                              <tr>
+                                <th class="pa-seq-cell">順序</th>
+                                <th class="text-left">代號</th>
+                                <th class="text-left">館別</th>
+                                <th class="text-left">品名</th>
+                                <th class="text-left">型態</th>
+                                <th class="text-left">設定數量</th>
+                                <th class="text-left">排序</th>
+                                <th class="text-center">管理</th>
+                              </tr>
+                            </thead>
+                            <tbody data-pa-table-body="category">
+                              <tr>
+                                <td class="pa-seq-cell">1</td>
+                                <td>22</td>
+                                <td>總部</td>
+                                <td>
+                                  <span class="inline-flex items-center gap-2">
+                                    餐飲服務
+                                    <span class="pa-legend-icon">
+                                      <img src="./assets/icons/home.svg" alt="" class="w-5 h-5" />
+                                    </span>
+                                  </span>
+                                </td>
+                                <td>商品</td>
+                                <td>
+                                  <a
+                                    href="#"
+                                    class="text-menu no-underline"
+                                    aria-label="設定數量 21"
+                                    >21</a
+                                  >
+                                </td>
+                                <td>1</td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="pa-seq-cell">2</td>
+                                <td>33</td>
+                                <td>本館</td>
+                                <td>音樂服務</td>
+                                <td>商品</td>
+                                <td>5</td>
+                                <td>1</td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="pa-seq-cell">3</td>
+                                <td>44</td>
+                                <td>本館</td>
+                                <td>三加餐宵夜</td>
+                                <td>商品</td>
+                                <td>99</td>
+                                <td>1</td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="pa-seq-cell">4</td>
+                                <td>66</td>
+                                <td>總部</td>
+                                <td>大聯盟贊助</td>
+                                <td>商品</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="pa-seq-cell">5</td>
+                                <td>1999</td>
+                                <td>總部</td>
+                                <td>PEACE</td>
+                                <td>商品</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>
+                                  <div class="pa-table-actions">
+                                    <button type="button" class="pa-row-btn pa-row-btn-modify">
+                                      <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+                                      <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-disable">
+                                      <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
+                                      <span>停用</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div data-pa-pagination="category"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="mobileSidebarBackdrop"
+      class="mobile-sidebar-backdrop md:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <!-- 確定登出（aside 觸發，全站共用） -->
+    <div data-partial="session-modals"></div>
+    <!-- topbar 系統商公告/會員安全管理（共用） -->
+    <div data-partial="topbar-modals"></div>
+    <!-- 加購商品頁專屬：新增/修改/查看資料 modal + 照片管理 modal -->
+    <div data-partial="purchase-addon-modals"></div>
+
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
+      import { initPurchaseAddon } from "./js/purchase-addon.js";
+      import { createModalController } from "./js/modal-controller.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
+
+      await loadPartials();
+      initPageShell();
+      initPageTabs();
+      initPurchaseAddon();
+      createModalController();
+      initTopbarModals();
+    </script>
+  </body>
+</html>
