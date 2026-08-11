@@ -504,6 +504,12 @@
   cursor: pointer;
 }
 
+.pa-project-mini-action:disabled,
+.pa-project-chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
 .pa-project-mini-action.is-filled,
 .pa-project-mini-action.is-static {
   background: var(--color-menuitem-default);
@@ -545,6 +551,11 @@
   border-color: var(--color-menuitem-default);
   background: var(--color-menuitem-default);
   color: var(--color-neutral-0);
+}
+
+.pa-project-modal-readonly [data-pa-project-save]:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .pa-project-chip-label {

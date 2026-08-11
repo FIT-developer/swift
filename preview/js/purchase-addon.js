@@ -44,11 +44,15 @@ const productRows = [
   }),
   product("product-13", "2008", false, "按摩券", "休閒", "2200", "active"),
   product("product-14", "2009", true, "客房佈置", "禮品", "3500", "active"),
-  product("product-15", "3001", false, "舊版餐券", "餐飲服務", "100", "deleted"),
+  product("product-15", "3001", false, "舊版餐券", "餐飲服務", "100", "deleted", {
+    limited: true,
+  }),
   product("product-16", "3002", false, "舊版停車費", "停車", "100", "deleted"),
   product("product-17", "3003", true, "舊版花束", "禮品", "900", "deleted"),
   product("product-18", "3004", false, "舊版接駁", "交通", "1200", "deleted"),
-  product("product-19", "3005", false, "舊版折抵", "沖帳", "500", "deleted"),
+  product("product-19", "3005", false, "舊版折抵", "沖帳", "500", "deleted", {
+    nonLimited: true,
+  }),
 ];
 
 const categoryRows = [
@@ -102,6 +106,7 @@ let projectModalState = {
   mode: "none",
   condition: "all",
   selectionMode: "all",
+  readonly: false,
   selectedIds: new Set(PROJECT_ITEMS.map(function (item) { return item.id; })),
 };
 
@@ -400,10 +405,12 @@ function initProjectModal() {
   });
   document.addEventListener("click", function (event) {
     if (event.target.closest("[data-pa-project-select-all]")) {
+      if (projectModalState.readonly) return;
       setProjectSelection(true);
       renderProjectModal();
     }
     if (event.target.closest("[data-pa-project-clear-all]")) {
+      if (projectModalState.readonly) return;
       setProjectSelection(false);
       renderProjectModal();
     }
@@ -412,6 +419,10 @@ function initProjectModal() {
   var modeSelect = document.querySelector("[data-pa-project-mode]");
   if (modeSelect) {
     modeSelect.addEventListener("change", function () {
+      if (projectModalState.readonly) {
+        renderProjectModal();
+        return;
+      }
       projectModalState.mode = modeSelect.value;
       renderProjectModal();
     });
@@ -419,6 +430,10 @@ function initProjectModal() {
   var conditionSelect = document.querySelector("[data-pa-project-condition]");
   if (conditionSelect) {
     conditionSelect.addEventListener("change", function () {
+      if (projectModalState.readonly) {
+        renderProjectModal();
+        return;
+      }
       projectModalState.condition = conditionSelect.value;
       renderProjectModal();
     });
@@ -429,6 +444,7 @@ function initProjectModal() {
     list.addEventListener("click", function (event) {
       var chip = event.target.closest("[data-pa-project-chip]");
       if (!chip) return;
+      if (projectModalState.readonly) return;
       var id = chip.dataset.paProjectChip;
       if (projectModalState.selectedIds.has(id)) projectModalState.selectedIds.delete(id);
       else projectModalState.selectedIds.add(id);
@@ -447,6 +463,7 @@ function openProjectModal(row) {
   projectModalState.mode = "none";
   projectModalState.condition = "all";
   projectModalState.selectionMode = "all";
+  projectModalState.readonly = row.state === "deleted";
   projectModalState.selectedIds = new Set(PROJECT_ITEMS.map(function (item) { return item.id; }));
   renderProjectModal();
 }
@@ -458,27 +475,46 @@ function renderProjectModal() {
   var conditionSelect = document.querySelector("[data-pa-project-condition]");
   var actions = document.querySelector("[data-pa-project-list-actions]");
   var list = document.querySelector("[data-pa-project-list]");
+  var modalBox = document.querySelector("#modalPurchaseAddonProjectBackdrop .modal-box");
+  var cancelButton = document.querySelector("[data-pa-project-cancel]");
+  var saveButton = document.querySelector("[data-pa-project-save]");
   if (modeSelect) modeSelect.value = projectModalState.mode;
+  if (modeSelect) modeSelect.disabled = projectModalState.readonly;
   if (conditionSelect) conditionSelect.value = projectModalState.condition;
+  if (conditionSelect) conditionSelect.disabled = projectModalState.readonly;
+  if (modalBox) modalBox.classList.toggle("pa-project-modal-readonly", projectModalState.readonly);
+  if (cancelButton) cancelButton.textContent = projectModalState.readonly ? "關閉" : "取消";
+  if (saveButton) {
+    saveButton.disabled = projectModalState.readonly;
+    saveButton.classList.toggle("hidden", projectModalState.readonly);
+  }
   if (conditionRow) conditionRow.classList.toggle("is-unlimited", projectModalState.mode === "none");
   if (conditionField) conditionField.classList.toggle("hidden", projectModalState.mode === "none");
   syncProjectSelectionMode();
   if (actions) {
+    var disabledAttr = projectModalState.readonly ? ' disabled aria-disabled="true"' : "";
     actions.innerHTML =
       '<button type="button" class="pa-project-mini-action' +
       (projectModalState.selectionMode === "all" ? " is-filled" : "") +
-      '" data-pa-project-select-all>全選</button>' +
+      '"' +
+      disabledAttr +
+      " data-pa-project-select-all>全選</button>" +
       '<button type="button" class="pa-project-mini-action' +
       (projectModalState.selectionMode === "none" ? " is-filled" : "") +
-      '" data-pa-project-clear-all>取消全選</button>';
+      '"' +
+      disabledAttr +
+      " data-pa-project-clear-all>取消全選</button>";
   }
   if (!list) return;
+  var chipDisabledAttr = projectModalState.readonly ? ' disabled aria-disabled="true"' : "";
   list.innerHTML = visibleProjectItems().map(function (item) {
     var selected = projectModalState.selectedIds.has(item.id);
     return (
       '<button type="button" class="pa-project-chip' +
       (selected ? " is-selected" : "") +
-      '" data-pa-project-chip="' +
+      '"' +
+      chipDisabledAttr +
+      ' data-pa-project-chip="' +
       item.id +
       '">' +
       '<span class="pa-project-chip-label">' +
@@ -765,6 +801,9 @@ function renderActionButtons(kind, row) {
     return (
       '<div class="pa-table-actions">' +
       actionBtn(kind, row, "view", "preview-outline", "查看", "modalPurchaseAddonDataBackdrop") +
+      (kind === "product" && hasProjectState(row)
+        ? actionBtn(kind, row, "project", "projects", "專案", "modalPurchaseAddonProjectBackdrop")
+        : "") +
       actionBtn(kind, row, "enable", "video-play", "啟用") +
       "</div>"
     );

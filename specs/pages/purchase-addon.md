@@ -164,7 +164,7 @@ Table 行為:
 
 產品設定「專案」modal:
 
-- Trigger: 只在產品 row 有 `thumbtack` 或 `thumbtack-slash` 狀態時顯示「專案」按鈕；click 開啟 `modalPurchaseAddonProjectBackdrop`
+- Trigger: 只在產品 row 有 `thumbtack` 或 `thumbtack-slash` 狀態時顯示「專案」按鈕，與 row 是啟用或停用無關；click 開啟 `modalPurchaseAddonProjectBackdrop`
 - Header: `專案設定` + `icons/close`
 - Modal size: desktop 800px 寬、568px 高視覺；小尺寸 `<640px` 滿版，與其他加購商品 modal 一致
 - Body:
@@ -182,6 +182,11 @@ Table 行為:
     - `類別條件` 可見時，切換 `類別條件` 不會重置 `全選` / `取消全選` 與 chips selected 狀態
     - Demo 專案: `[999] 飛天六人滿意` + `網` / `企` badge、`[419] 不可告人優惠`、`[123] 劍湖山吃到飽`、`[443] 大利大吉` + `註` badge、`[89] 地勤很辛苦`、`[09] 空姐滿班`
 - Footer: 取消 / 儲存
+- 停用 row 開啟 project modal 時：
+  - modal 仍正常開啟並帶入該 row 的產品代號 / 品名
+  - `專案分類`、`類別條件`、`全選`、`取消全選`、project chips 全部 disabled
+  - Footer 只顯示一個「關閉」按鈕；`儲存` 隱藏
+  - 「關閉」/ close icon 仍可關閉 modal
 
 ## 類別設定
 
@@ -219,7 +224,7 @@ Table 行為:
 - 照片管理: 點產品表格「照片管理」縮圖 / 空圖示開啟 `modalPurchaseAddonPhotoGalleryBackdrop`
 - 停用 / 啟用: 同房型頁，以前端 in-memory state 切換 row 狀態，row 會從目前 tab 消失並出現在另一個 tab，count 即時更新
 - 複製 / 查詢: Figma 未定義本輪行為，保留 button 樣式，不改資料
-- 專案: 只在產品 row 有 `thumbtack` 或 `thumbtack-slash` 狀態時顯示；點擊開啟 `modalPurchaseAddonProjectBackdrop`，不可誤用產品資料 modal
+- 專案: 只在產品 row 有 `thumbtack` 或 `thumbtack-slash` 狀態時顯示，啟用 / 停用狀態都一樣顯示；點擊開啟 `modalPurchaseAddonProjectBackdrop`，不可誤用產品資料 modal；停用 row 開啟後 modal 內容進 readonly
 - mobile: 商品分類列 input + select 同列，select 文字需 truncation；清除 / 查詢置中；管理 pill buttons 不可因容器擠壓變形
 
 ## 產出驗證重點

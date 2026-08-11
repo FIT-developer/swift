@@ -7,6 +7,58 @@
 
 ---
 
+## Session 148：加購商品停用專案按鈕與 readonly modal (2026-08-11)
+
+使用者澄清產品設定 table 的「專案」按鈕顯示條件只跟產品是否有
+`限定` / `非限定` 標籤有關，與啟用 / 停用狀態無關；停用 row 也要可開啟
+project modal，但 modal 內容需 locked / disabled 不可操作。
+
+### 本輪改動
+
+1. `preview/js/purchase-addon.js`：
+   - 停用 demo 產品補上 project state：
+     - `product-15` `舊版餐券` -> `limited`
+     - `product-19` `舊版折抵` -> `nonLimited`
+   - `renderActionButtons()` 停用 row 分支也依 `hasProjectState(row)` 顯示
+     「專案」按鈕，並開啟 `modalPurchaseAddonProjectBackdrop`
+   - project modal state 新增 `readonly`
+   - 停用 row 開啟 project modal 時：
+     - `專案分類` / `類別條件` disabled
+     - `全選` / `取消全選` disabled
+     - project chips disabled
+     - footer 只顯示一個「關閉」按鈕，`儲存` 隱藏
+     - click / change handler 對 readonly state 直接 return，不改 selection state
+2. `preview/partials/purchase-addon-modals.html`：
+   - project modal 儲存按鈕補 `data-pa-project-save`
+3. `preview/assets/css/purchase-addon.css`：
+   - project modal readonly controls 加 disabled cursor / opacity
+4. `specs/pages/purchase-addon.md`：
+   - 補記「專案」按鈕顯示與啟用 / 停用無關
+   - 補記停用 row 開啟 project modal 後內容 disabled
+5. `scripts/smoke-test.mjs`：
+   - regression 補測停用 tab：
+     - limited deleted row 有「專案」按鈕
+     - 無 project state 的 deleted row 沒有「專案」按鈕
+     - deleted project modal 可開啟並帶入產品代號 / 品名
+     - select / list actions / chips 都 disabled
+     - footer 顯示「關閉」且 `儲存` 隱藏
+     - readonly chips click 不改 selected state
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `purchase-addon.html` 13 checks 通過
+- 視覺 QA 截圖輸出到 ignored 目錄：
+  `specs/qa-screenshots/session-148/`
+  - `purchase-addon-deleted-project-button-1440.png`
+  - `purchase-addon-deleted-project-readonly-modal-1080.png`（已更新為 footer 只顯示
+    `關閉`）
+
 ## Session 147：加購商品類別設定 home icon 欄位歸屬修正 (2026-08-11)
 
 使用者要求依 Figma `類別設定` frame 修正 category table：住宿加購的

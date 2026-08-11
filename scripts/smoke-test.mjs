@@ -1083,6 +1083,33 @@ const PAGES = [
             document.querySelector("#modalPurchaseAddonProjectBackdrop .modal-close-btn[data-modal='modalPurchaseAddonProjectBackdrop']").click();
 
             document.querySelector("[data-pa-status-tabs='product'] [data-pa-status-filter='deleted']").click();
+            if (!document.querySelector("[data-pa-row-id='product-15'][data-pa-row-action='project']"))
+              return "deleted limited product should show project button";
+            if (document.querySelector("[data-pa-row-id='product-16'][data-pa-row-action='project']"))
+              return "deleted product without project state should not show project button";
+            document.querySelector("[data-pa-row-id='product-15'][data-pa-row-action='project']").click();
+            if (!projectModal.classList.contains("open"))
+              return "deleted product project button should open modal";
+            if (projectModal.querySelector("[data-pa-project-code]").value !== "3001")
+              return "deleted project code mismatch";
+            if (projectModal.querySelector("[data-pa-project-name]").value !== "舊版餐券")
+              return "deleted project name mismatch";
+            if (!projectMode.disabled || !projectCondition.disabled)
+              return "deleted project selects should be disabled";
+            if (!projectModal.querySelector("[data-pa-project-select-all]").disabled)
+              return "deleted project all action should be disabled";
+            if (!projectModal.querySelector("[data-pa-project-clear-all]").disabled)
+              return "deleted project clear action should be disabled";
+            if (Array.from(projectModal.querySelectorAll("[data-pa-project-chip]")).some(function (chip) { return !chip.disabled; }))
+              return "deleted project chips should be disabled";
+            if (projectModal.querySelector("[data-pa-project-cancel]").textContent.trim() !== "關閉")
+              return "deleted project footer should say close";
+            if (!projectModal.querySelector("[data-pa-project-save]").classList.contains("hidden"))
+              return "deleted project save should be hidden";
+            projectModal.querySelector("[data-pa-project-chip]").click();
+            if (projectModal.querySelectorAll("[data-pa-project-chip].is-selected").length !== 6)
+              return "deleted project chip click should not change selection";
+            document.querySelector("#modalPurchaseAddonProjectBackdrop .modal-close-btn[data-modal='modalPurchaseAddonProjectBackdrop']").click();
             document.querySelector('[data-pa-modal-mode="view"][data-pa-row-id="product-15"]').click();
             var dataModal = document.getElementById("modalPurchaseAddonDataBackdrop");
             var readonlyFields = Array.from(dataModal.querySelectorAll("[data-pa-data-field]"));
