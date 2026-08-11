@@ -7,6 +7,33 @@
 
 ---
 
+## Session 130：GitHub Pages root demo redirect (2026-08-11)
+
+使用者將 repo 推送到新 GitHub 帳號 `FIT-developer/swift`，GitHub Pages 顯示
+deploy 成功但 root URL 尚未出現產品畫面。檢查後確認 Pages source 為
+`main / (root)`，而專案入口實際位於 `preview/landing.html`。
+
+### 本輪改動
+
+1. **GitHub Pages 入口**：新增 repo root `index.html`，使用 meta refresh 與
+   `window.location.replace` 導向 `./preview/landing.html`
+2. **既有 preview 不變**：未修改 `preview/landing.html` 或其他 preview asset；
+   目前 demo root 只作為 GitHub Pages 的入口橋接
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0
+- 本機檢查 root `index.html` 含 meta refresh、canonical link、fallback link
+  與 JS `window.location.replace("./preview/landing.html")`
+
+### 未解問題
+
+- 若未來希望 `https://fit-developer.github.io/swift/` 不顯示 `/preview/` 路徑，
+  需另行規劃正式發布目錄或 GitHub Pages source。
+
 ## Session 129：room-type 資料 modal 0804 房間數互動與欄位收斂 (2026-08-04)
 
 使用者以 figma-go 分批讀取房型頁「新增 / 修改 / 查看」modal 0804 版本，
