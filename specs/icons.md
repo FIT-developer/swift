@@ -15,6 +15,7 @@
 |---|---|---|---|---|
 | advertisement | assets/icons/advertisement.svg | 24×24 | 廣告/促銷 | icons/advertisement |
 | ai | assets/icons/ai.svg | 24×24 | AI 功能 | icons/ai |
+| all-pages | assets/icons/all-pages.svg | 24x24 | 全部頁面 | icons/all-pages |
 | archive | assets/icons/archive.svg | 24x24 | 歸檔/封存 | icons/archive |
 | arrow-down-drop | assets/icons/arrow-down-drop.svg | 24×24 | 下拉箭頭（含底色） | icons/arrow-down-drop |
 | arrow-drop-up | assets/icons/arrow-drop-up.svg | 24×23 | 上拉箭頭（含底色） | icons/arrow-drop-up |
@@ -102,6 +103,7 @@
 | print | assets/icons/print.svg | 24x24 | 列印 | icons/print |
 | process | assets/icons/process.svg | 24x24 | 流程/處理中 | icons/process |
 | prohibited | assets/icons/prohibited.svg | 24×24 | 禁止/不可用 | icons/prohibited |
+| projects | assets/icons/projects.svg | 20x20 | 專案 / 項目 | icons/projects |
 | purchase-item | assets/icons/purchase-item.svg | 24×24 | 採購項目 | icons/purchase-item |
 | ranking | assets/icons/ranking.svg | 20×20 | 排名/排行 | icons/ranking |
 | refund | assets/icons/refund.svg | 24×24 | 退款 | icons/refund |
@@ -115,6 +117,7 @@
 | security | assets/icons/security.svg | 24x24 | 安全性/權限保護 | icons/security |
 | service | assets/icons/service.svg | 24×24 | 客服 | icons/service |
 | single-symbol-warning | assets/icons/single-symbol-warning.svg | 24x24 | 警告（單一符號，語意橙）見色彩語意表 | icons/single-symbol-warning |
+| split-page | assets/icons/split-page.svg | 24x25 | 分頁 / 拆分頁面 | icons/split-page |
 | star | assets/icons/star.svg | 20x20 | 星號/收藏 | icons/star |
 | submit | assets/icons/submit.svg | 15×16 | 送出 ⚠️ fill #2178CF（藍色，建議改 currentColor） | icons/submit |
 | suspend-outline | assets/icons/suspend-outline.svg | 24x24 | 停用（房型卡片「停用」按鈕，2026-07-31 新增，取代原 trash-can；純黑線稿，見 components/room-type-card.md） | icons/suspend-outline |
@@ -122,6 +125,7 @@
 | system | assets/icons/system.svg | 24×24 | 系統設定（齒輪造型） | icons/system |
 | tasks-day | assets/icons/tasks-day.svg | 24×24 | 每日任務 | icons/tasks-day |
 | thumbtack | assets/icons/thumbtack.svg | 20x20 | 圖釘/釘選 | icons/thumbtack |
+| thumbtack-slash | assets/icons/thumbtack-slash.svg | 20x20 | 取消釘選 | icons/thumbtack-slash |
 | transit | assets/icons/transit.svg | 25×25 | 交通轉乘 | icons/transit |
 | translation | assets/icons/translation.svg | 24x24 | 翻譯/語系 | icons/translation |
 | trash-can | assets/icons/trash-can.svg | 24×24 | 刪除 🔴 stroke #D90000 | icons/trash-can |
@@ -229,10 +233,10 @@
 `check`（中性）, `check-green`（成功 🟢）, `failure-red`（錯誤 🔴）, `warning-orange`（警告 🟠）, `info`, `focus`, `prohibited`
 
 ### 操作動作類
-`edit`, `close`, `search`, `download`, `duplicate`, `trash-can`, `submit`, `plus-list`, `outline-plus`, `outline-minus`, `lock`, `unlock`, `switch`, `eye-open`, `eye-close`, `attached-link`, `attached-link-moved`, `eraser`, `restore`, `restore-page-outline-rounded`, `preview-outline`, `suspend-outline`, `video-play`
+`edit`, `close`, `search`, `download`, `duplicate`, `trash-can`, `submit`, `plus-list`, `outline-plus`, `outline-minus`, `lock`, `unlock`, `switch`, `eye-open`, `eye-close`, `attached-link`, `attached-link-moved`, `eraser`, `restore`, `restore-page-outline-rounded`, `preview-outline`, `suspend-outline`, `video-play`, `thumbtack-slash`
 
 ### 資料 / 內容類
-`document`, `image`, `list`, `chart`, `dashboard`, `calendar`, `clock`, `label`, `order-info`, `tasks-day`, `bulletin`, `message`
+`document`, `image`, `list`, `chart`, `dashboard`, `calendar`, `clock`, `label`, `order-info`, `tasks-day`, `bulletin`, `message`, `all-pages`, `projects`, `split-page`
 
 ### 財務 / 交易類
 `price`, `dollar`, `deposit`, `refund`, `payment-limited-time`, `cart`, `purchase-item`, `ranking`, `trend-up-red`, `trend-down-green`
@@ -279,6 +283,10 @@
 | `submit.svg` | `fill="#2178CF"` 藍色硬寫 | 由 CSS context 控制，改 `currentColor` |
 | `attached-link-moved.svg` | `stroke="#E1E1E0"` 淺灰硬寫 | 邊框色應由 CSS 控制，改 `currentColor` |
 | `direction-left.svg` | `stroke="#306CFE"` + `#344054` | 雙色造型，確認是否為有意設計 |
+| `projects.svg` | `fill="black"` 黑色硬寫 | 由 CSS context 控制，改 `currentColor` |
+| `thumbtack-slash.svg` | `fill="#454545"` 灰色硬寫 | 由 CSS context 控制，改 `currentColor` |
+| `split-page.svg` | `fill="#6D6D6D"` 灰色硬寫 | 由 CSS context 控制，改 `currentColor` |
+| `all-pages.svg` | `fill="#6D6D6D"` + `stroke="#888888"` 灰色硬寫 | 由 CSS context 控制，改 `currentColor` |
 
 ### Menu list 狀態背景參考
 | 檔名 | 色值 | token 對應 | 處理方式 |
@@ -295,12 +303,13 @@
 | `check` | 16×16 | 小版勾選，用於 checkbox 內 |
 | `left`, `right` | 16×16 | 小導航箭頭 |
 | `eraser`, `flow`, `pin`, `return`, `reservations`, `up-and-down` | 16×16 | 小尺寸系列 |
-| `dollar`, `duration`, `ranking`, `star` | 20x20 | 中間尺寸 |
+| `dollar`, `duration`, `projects`, `ranking`, `star`, `thumbtack`, `thumbtack-slash` | 20x20 | 中間尺寸 |
 | `suneditor-rotate-to-left`, `suneditor-rotate-to-right` | 20x20 | 中間尺寸 |
 | `hotel` | 31×24 | 非正方形，使用時注意對齊 |
 | `transit`, `direction-left` | 25×25 | 略大於標準，注意排版 |
 | `info-circle-off` | 26x26 | 略大於標準 |
 | `submit` | 15×16 | 非正方形，注意對齊 |
+| `split-page` | 24x25 | SVG 高度向上取整為 25，使用時注意對齊 |
 | `suneditor-s-slash` | 24x27 | 非正方形，注意對齊 |
 | `menu-list-*` | 38×38 | 含 10px padding 與 4px radius 的 menu list icon 容器；不是純 24×24 共用 icon |
 
@@ -323,4 +332,4 @@
 
 ---
 
-*Generated from Figma components page - 118 一般 icon + 12 menu-list icon(各 fill/none-fill 兩檔) + 17 SunEditor + 2 ckeditor icon exported(`~~none~~` 未匯出不計) - Updated 2026-07-31*
+*Generated from Figma components page - 122 一般 icon + 12 menu-list icon(各 fill/none-fill 兩檔) + 17 SunEditor + 2 ckeditor icon exported(`~~none~~` 未匯出不計) - Updated 2026-08-11*

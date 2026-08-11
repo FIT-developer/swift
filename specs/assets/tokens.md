@@ -3,7 +3,8 @@
 > 來源：Figma Variables（Collection: **Semantic**, Mode: **Mode 1**）  
 > 本地匯出參考：`specs/assets/figma-variables.json`（不進版控，內容需如實轉換到本檔）
 > Local Styles 全部為空，所有 token 皆來自 Variables。  
-> 上次同步：2026-07-03（新增 Color/Dots 群組 5 個 token；cart-date/cart-time 由 raw hex 更正為 alias 參照；來源為使用者貼上的 Figma Variables export）
+> 上次同步：2026-08-11（新增 Color/Surface/Status-Negative-light；本地
+> `figma-variables.json` 同步為使用者貼上的 Figma Variables export）
 
 ## Token 使用規則（Strict Mirror）
 
@@ -99,6 +100,7 @@
 | Color/Surface/Secondary | `#F9E616` | 輔助強調（鮮黃） | `yellow-400` |
 | Color/Surface/Accent | `#42EBE9` | 強調色（青色） | `cyan-400` |
 | Color/Surface/Status-Negative | `#E12129` | 錯誤/危險狀態 | `red-600` |
+| Color/Surface/Status-Negative-light | `#F8A4A8` | 危險/停用類按鈕外框或淡色提示 | `red-300` |
 | Color/Surface/Status-Positive | `#2ACA18` | 成功狀態 | `green-500` |
 
 ---

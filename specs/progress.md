@@ -7,6 +7,78 @@
 
 ---
 
+## Session 131：system-basic 加購商品頁 icons 預讀 (2026-08-11)
+
+使用者要求讀 `start.md` / `progress.md` 後進行 figma-go 讀取；接下來會做
+「系統操作 -> 加購商品」頁，先更新 icons，再依序讀 mobile / tablet /
+desktop 三個 RWD layout template。
+
+### Figma 讀取
+
+- Figma file：`swift`
+- Page：`components`
+- Selection：`25:93`「Icons」frame，402 x 857.01
+- 本輪從 selection 中確認新增 icon：
+  `icons/projects`、`icons/thumbtack-slash`、`icons/split-page`、
+  `icons/all-pages`
+- RWD layout templates：
+  - `2183:132622`「加購商品 mobile 0811」375 x 2186
+  - `2183:130916`「加購商品 mobile ~ tablet 0811」767 x 1884
+  - `2183:129489`「加購商品 desktop 0811」1440 x 1786
+
+### 本輪改動
+
+1. 匯出 4 個 SVG 到 `preview/assets/icons/`
+2. `specs/icons.md` 新增上述 4 顆 icon 的主清單、分類索引、尺寸備註與
+   currentColor 待處理記錄
+3. 保存三個 RWD layout 截圖到 `specs/qa-screenshots/session-131/`
+4. 使用者補充 Figma Variables export 後，同步本地 ignored
+   `specs/assets/figma-variables.json`，並在 tracked source 補上
+   `Color/Surface/Status-Negative-light`：
+   `specs/assets/tokens.md` 與 `preview/assets/css/base.css`
+
+### 重要決定
+
+- 使用者確認：tablet 尺寸下 table 因設計佈局有限高，管理按鈕實作時使用
+  `flex-nowrap`；Figma 設計稿不另行處理此 nowrap 視覺。
+- 使用者確認：商品 tabs 為單選 tab button；default 是「所有商品」，
+  selected 狀態是白底，灰底是未選中。不得把目前畫面中灰底的
+  「住宿加購」誤判為 default selected。
+- 使用者確認：desktop sidebar 沿用現有真實系統選單；本頁只變化上方
+  `加購商品 x` page tab/button 與其下方內容。
+- 使用者確認：table 管理按鈕 desktop ~ tablet 採 flex auto 自然流動；
+  mobile 嚴格限制 `flex-nowrap`。若 tablet 實作跑版，也維持
+  `flex-nowrap`。這幾個管理按鈕橫向鋪在自身容器中，原則上不需要
+  button-level scroll。
+- 使用者確認：本輪只做目前這一層 UI；新增 / 修改 / 複製 / 停用 / 專案
+  modal 內容等後續 Figma 補互動 modal 後再接。
+- 使用者補充的 Figma Variables export 顯示：
+  `Color/Surface/Status-Negative-light = #F8A4A8` 是正式 token。後續
+  加購商品 table 的停用 / 負向淡紅按鈕外框與相關淡色提示，優先使用
+  `var(--color-surface-status-negative-light)`，不要再借用
+  `Color/Accent/linear-function-button-delete`。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+
+### 下一步應做
+
+1. 等使用者確認三個 RWD layout 的 implementation contract 與疑點
+2. 使用者確認後，寫入 page spec / 必要 component spec
+3. 實作「系統操作 -> 加購商品」獨立頁與必要 partial / JS / CSS；使用者確認前
+   不寫 page spec、不實作 HTML
+
+### 未解問題
+
+- 三個 RWD layout 已讀；default tab、sidebar、table 管理按鈕與後續 modal
+  範圍已由使用者確認。下一步仍需進入 spec checkpoint 後再寫 spec / 實作
+
+---
+
 ## Session 130：GitHub Pages root demo redirect (2026-08-11)
 
 使用者將 repo 推送到新 GitHub 帳號 `FIT-developer/swift`，GitHub Pages 顯示
