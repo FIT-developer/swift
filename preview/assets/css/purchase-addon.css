@@ -13,25 +13,6 @@
   transform: rotate(180deg);
 }
 
-.pa-type-tab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 42px;
-  padding: 0 20px;
-  border: 1px solid var(--color-neutral-200);
-  border-radius: 6px 6px 0 0;
-  background: var(--color-neutral-200);
-  color: var(--color-text-800);
-  font-size: var(--font-size-base);
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.pa-type-tab.is-active {
-  background: var(--color-neutral-0);
-}
-
 .pa-quick-chip {
   display: inline-flex;
   align-items: center;
@@ -91,35 +72,10 @@
   cursor: pointer;
 }
 
-.pa-legend-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  background: var(--color-neutral-75);
-  flex-shrink: 0;
-}
-
-.pa-icon-thumbtack-filled {
-  width: 20px;
-  height: 20px;
-  background: var(--color-brand-400);
-  -webkit-mask-image: url("../icons/thumbtack.svg");
-  mask-image: url("../icons/thumbtack.svg");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-}
-
 .pa-table-shell {
   border: 1px solid var(--color-neutral-200);
   border-radius: 12px;
-  padding: 12px;
+  padding: 12px 16px;
   background: var(--color-neutral-0);
   overflow-x: auto;
 }
@@ -136,7 +92,7 @@
 }
 
 .pa-product-table {
-  width: 100%;
+  width: 1139px;
 }
 
 .pa-category-table {
@@ -247,6 +203,38 @@
   background: var(--color-neutral-0);
 }
 
+.pa-row-btn-project.is-limited {
+  background: var(--color-accent-light-green);
+}
+
+.pa-language-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pa-language-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 26px;
+  border: 1px solid var(--color-menuitem-default);
+  border-radius: 4px;
+  background: var(--color-neutral-0);
+  padding: 2px 6px;
+  color: var(--color-menuitem-default);
+  font-size: var(--font-size-base);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pa-language-badge.is-selected {
+  background: var(--color-menuitem-default);
+  color: var(--color-neutral-0);
+}
+
 .pa-row-btn-disable {
   border: 1px solid var(--color-surface-status-negative-light);
   background: var(--color-neutral-0);
@@ -310,7 +298,7 @@
 }
 
 #modalPurchaseAddonDataBackdrop .modal-box {
-  width: min(calc(100vw - 24px), 980px);
+  width: min(calc(100vw - 24px), 800px);
   max-height: calc(100vh - 24px);
   max-height: calc(100dvh - 24px);
   display: flex;
@@ -321,29 +309,31 @@
 .pa-data-modal-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 20px;
 }
 
 .pa-data-modal-field {
   display: grid;
-  grid-template-columns: 84px 1fr;
+  grid-template-columns: 64px 1fr;
   align-items: center;
-  gap: 10px;
-}
-
-.pa-data-modal-field:has(.pa-publish-panel:not(.hidden)) {
-  align-items: start;
+  gap: 12px;
 }
 
 .pa-data-modal-control {
   width: 100%;
+  height: 34px;
   border: 1px solid var(--color-neutral-200);
   border-radius: 6px;
   background: var(--color-neutral-0);
-  padding: 8px 12px;
+  padding: 5px 12px;
   color: var(--color-text-800);
   font-size: var(--font-size-base);
   outline: none;
+}
+
+select.pa-data-modal-control {
+  height: 36px;
+  padding: 6px 12px;
 }
 
 .pa-data-modal-control:focus {
@@ -353,6 +343,10 @@
 .pa-data-modal-control:disabled {
   background: var(--color-neutral-100);
   color: var(--color-text-secondary);
+}
+
+select.pa-data-modal-control:disabled {
+  background: var(--color-neutral-200);
 }
 
 .pa-data-modal-hint {
@@ -369,14 +363,19 @@
   gap: 14px;
 }
 
+.pa-publish-field {
+  display: block;
+}
+
 .pa-publish-toggle-line {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .pa-data-modal-copy-card {
-  min-height: 350px;
-  border: 1px solid var(--color-neutral-200);
+  min-height: 287px;
+  border: 1px solid var(--color-neutral-100);
   border-radius: 12px;
   background: var(--color-modal-hover);
   display: flex;
@@ -387,16 +386,22 @@
   padding: 20px;
 }
 
+.pa-category-data-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
 .pa-data-modal-edit-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 48px;
+  height: 42px;
   border: 1px solid var(--color-neutral-200);
   border-radius: 999px;
   background: var(--color-neutral-0);
-  padding: 0 20px;
+  padding: 0 16px;
   color: var(--color-text-800);
   font-size: var(--font-size-base);
   cursor: pointer;
@@ -584,31 +589,20 @@
   padding: 16px;
 }
 
-.pa-publish-panel-title,
-.pa-publish-time-head {
+.pa-publish-panel-title {
   color: var(--color-text-800);
   font-size: var(--font-size-base);
+  line-height: 22px;
 }
 
-.pa-publish-date-row,
-.pa-publish-time-row,
-.pa-publish-time-head {
+.pa-publish-date-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
 .pa-publish-date-row {
-  margin-top: 14px;
-}
-
-.pa-publish-time-head {
-  justify-content: space-between;
-  margin-top: 18px;
-}
-
-.pa-publish-time-row {
-  margin-top: 14px;
+  margin-top: 8px;
 }
 
 .pa-publish-date-control {
@@ -616,10 +610,11 @@
   align-items: center;
   gap: 8px;
   width: 100%;
+  height: 36px;
   border: 1px solid var(--color-neutral-200);
   border-radius: 6px;
   background: var(--color-neutral-0);
-  padding: 8px 10px;
+  padding: 6px 10px;
 }
 
 .pa-publish-date-control input {
@@ -630,16 +625,7 @@
   background: transparent;
   color: var(--color-text-800);
   font-size: var(--font-size-base);
-}
-
-.pa-publish-time-row .pa-data-modal-control {
-  min-width: 0;
-}
-
-.pa-publish-note {
-  margin-top: 10px;
-  color: var(--color-text-800);
-  font-size: var(--font-size-sm);
+  line-height: 22px;
 }
 
 #modalPurchaseAddonPhotoGalleryBackdrop .modal-box {
@@ -661,8 +647,7 @@
   .pa-data-modal-copy-card {
     min-height: 260px;
   }
-  .pa-publish-date-row,
-  .pa-publish-time-row {
+  .pa-publish-date-row {
     gap: 8px;
   }
   .pa-publish-date-row {
@@ -711,14 +696,13 @@
   }
 }
 
-@media (max-width: 1199px) {
-  .pa-product-table {
-    width: 1040px;
-  }
-}
-
 @media (min-width: 768px) {
-  .pa-data-modal-grid {
+  .pa-data-modal-grid,
+  .pa-category-data-modal-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .pa-category-name-field {
+    grid-column: 1 / -1;
   }
 }

@@ -785,39 +785,51 @@ const PAGES = [
     checks: [
       APP_CSS_LOADED_CHECK,
       {
-        name: "purchase-addon sections, tabs, legends, and rows rendered",
+        name: "purchase-addon sections, multilingual states, actions, and rows rendered",
         viewport: { width: 1440, height: 1000 },
         expr: `
           (function () {
             var sections = document.querySelectorAll("[data-pa-section]");
             if (sections.length !== 2) return "section count: " + sections.length;
-            var activeTypeTabs = document.querySelectorAll("[data-pa-type-tabs] .pa-type-tab.is-active");
-            if (activeTypeTabs.length !== 2) return "active type tab count: " + activeTypeTabs.length;
+            if (document.querySelector("[data-pa-type-tabs], .pa-type-tab"))
+              return "removed product type tabs still rendered";
             var productRows = document.querySelectorAll("[data-pa-table-body='product'] tr");
             var categoryRows = document.querySelectorAll("[data-pa-table-body='category'] tr");
             if (productRows.length !== 14) return "product row count: " + productRows.length;
             if (categoryRows.length !== 14) return "category row count: " + categoryRows.length;
-            var legends = document.querySelectorAll(".pa-legend-icon img");
-            if (legends.length < 6) return "legend icon count: " + legends.length;
-            if (!document.querySelector(".pa-icon-thumbtack-filled"))
-              return "filled limited-project icon missing";
+            if (document.querySelector(".pa-legend-icon, .pa-icon-thumbtack-filled"))
+              return "removed legend or row icon still rendered";
+            var productHeader = document.querySelector(".pa-product-table thead");
+            if (!productHeader || productHeader.textContent.indexOf("多語系") === -1)
+              return "multilingual column missing";
+            var languageBadges = productRows[0].querySelectorAll("[data-pa-language]");
+            if (languageBadges.length !== 2)
+              return "language badge count: " + languageBadges.length;
+            if (!languageBadges[0].classList.contains("is-selected") || languageBadges[1].classList.contains("is-selected"))
+              return "initial language selected state mismatch";
             if (productRows[1].querySelectorAll("[data-pa-row-action]").length < 3)
               return "product row 2 management buttons missing";
             if (productRows[2].querySelectorAll("[data-pa-row-action]").length < 3)
               return "product row 3 management buttons missing";
             if (categoryRows[0].querySelectorAll("[data-pa-row-action]").length < 3)
               return "category management buttons missing";
+            if (!categoryRows[0].querySelector("[data-pa-row-action='duplicate']"))
+              return "category duplicate action missing";
             var firstCategoryCells = categoryRows[0].children;
             if (firstCategoryCells[3].querySelector('img[src$="home.svg"]'))
               return "category lodging home icon should not be in name cell";
-            if (!firstCategoryCells[4].querySelector('img[src$="home.svg"]'))
-              return "category lodging home icon should be in type cell";
+            if (firstCategoryCells[4].querySelector("img"))
+              return "category row icon should be removed from type cell";
             if (document.querySelector("[data-pa-row-id='product-2'][data-pa-row-action='project']"))
               return "project button should not show without thumbtack state";
             if (!document.querySelector("[data-pa-row-id='product-4'][data-pa-row-action='project']"))
               return "limited project button missing";
             if (!document.querySelector("[data-pa-row-id='product-5'][data-pa-row-action='project']"))
               return "non-limited project button missing";
+            if (!document.querySelector("[data-pa-row-id='product-4'][data-pa-row-action='project'].is-limited"))
+              return "limited project button should be filled";
+            if (document.querySelector("[data-pa-row-id='product-5'][data-pa-row-action='project'].is-limited"))
+              return "all-project button should remain unfilled";
             var categoryShell = document.querySelector(".pa-category-table-shell");
             var categoryParent = categoryShell && categoryShell.parentElement;
             var productShell = document.querySelector(".pa-product-table").closest(".pa-table-shell");
@@ -839,17 +851,24 @@ const PAGES = [
         name: "purchase-addon controls toggle active states and clear inputs",
         expr: `
           (function () {
-            var firstTabs = document.querySelector("[data-pa-type-tabs]");
-            var secondType = firstTabs.querySelectorAll(".pa-type-tab")[1];
-            secondType.click();
-            if (!secondType.classList.contains("is-active")) return "type tab did not activate";
-            if (firstTabs.querySelectorAll(".pa-type-tab.is-active").length !== 1)
-              return "type tab active count changed incorrectly";
-
             var quick = document.querySelector("[data-pa-quick-filters]");
+            var quickLabels = Array.from(quick.querySelectorAll(".pa-quick-chip"), function (item) {
+              return item.textContent.trim();
+            });
+            if (quickLabels.join("/") !== "全部/網路可訂/只限現場")
+              return "quick filter labels: " + quickLabels.join("/");
             var backendOnly = quick.querySelectorAll(".pa-quick-chip")[2];
             backendOnly.click();
             if (!backendOnly.classList.contains("is-active")) return "quick chip did not activate";
+
+            var language = document.querySelector("[data-pa-language='en'][data-pa-row-id='product-1']");
+            language.click();
+            language = document.querySelector("[data-pa-language='en'][data-pa-row-id='product-1']");
+            if (!language.classList.contains("is-selected") || language.getAttribute("aria-pressed") !== "true")
+              return "language badge did not select";
+            var zh = document.querySelector("[data-pa-language='zh-TW'][data-pa-row-id='product-1']");
+            if (!zh.classList.contains("is-selected"))
+              return "language badges should support multi-select";
 
             var category = document.getElementById("paProductCategoryText");
             var name = document.getElementById("paProductName");
@@ -930,6 +949,7 @@ const PAGES = [
       },
       {
         name: "purchase-addon data and photo modals open/close",
+        viewport: { width: 1080, height: 900 },
         expr: `
           (function () {
             var add = __smoke.modalCheck('[data-pa-modal-mode="new"][data-pa-kind="product"]', "modalPurchaseAddonDataBackdrop");
@@ -940,8 +960,11 @@ const PAGES = [
             for (var i = 0; i < required.length; i += 1) {
               if (modalText.indexOf(required[i]) === -1) return "data modal missing: " + required[i];
             }
-            if (document.querySelectorAll("#modalPurchaseAddonDataBackdrop .pa-data-modal-copy-card").length !== 2)
-              return "data modal copy card count mismatch";
+            if (document.querySelectorAll("#modalPurchaseAddonDataBackdrop [data-pa-product-body] .pa-data-modal-copy-card").length !== 2)
+              return "visible product data modal copy card count mismatch";
+            var dataModalBox = document.querySelector("#modalPurchaseAddonDataBackdrop .modal-box");
+            if (Math.abs(dataModalBox.getBoundingClientRect().width - 800) > 1)
+              return "desktop data modal width: " + dataModalBox.getBoundingClientRect().width;
             var categoryField = document.querySelector("#modalPurchaseAddonDataBackdrop .pa-data-modal-field");
             var categoryLabel = categoryField && categoryField.children[0];
             var categoryControl = categoryField && categoryField.querySelector(".pa-data-modal-control");
@@ -963,13 +986,57 @@ const PAGES = [
               return "publish panel should be inline, not floating";
             if (!publishPanel.querySelector("[data-pa-publish-start-date]") || !publishPanel.querySelector("[data-pa-publish-end-date]"))
               return "publish panel range dates missing";
-            if (!publishPanel.querySelector("[data-pa-publish-start-hour]") || !publishPanel.querySelector("[data-pa-publish-end-hour]"))
-              return "publish panel range hours missing";
-            if (publishPanel.textContent.indexOf("設定開放日期") === -1 || publishPanel.textContent.indexOf("設定開放時段") === -1)
-              return "publish panel labels missing";
+            if (Math.abs(publishPanel.getBoundingClientRect().width - 378) > 1)
+              return "publish panel should use full half-column width: " + publishPanel.getBoundingClientRect().width;
+            var publishDateInputs = publishPanel.querySelectorAll("input");
+            for (var d = 0; d < publishDateInputs.length; d += 1) {
+              if (publishDateInputs[d].scrollWidth > publishDateInputs[d].clientWidth)
+                return "publish date text should not be truncated";
+            }
+            if (publishPanel.querySelector("[data-pa-publish-start-hour], [data-pa-publish-end-hour], [data-pa-publish-time-toggle]"))
+              return "removed publish time controls still rendered";
+            if (publishPanel.textContent.indexOf("設定開放日期") === -1)
+              return "publish date label missing";
+            if (publishPanel.textContent.indexOf("設定開放時段") !== -1 || publishPanel.textContent.indexOf("時間範圍") !== -1)
+              return "removed publish time copy still rendered";
             if (publishPanel.textContent.indexOf("上架設定") !== -1 || publishPanel.textContent.indexOf("取消") !== -1 || publishPanel.textContent.indexOf("儲存") !== -1)
               return "publish panel contains old popup copy";
             document.querySelector("#modalPurchaseAddonDataBackdrop .modal-close-btn[data-modal='modalPurchaseAddonDataBackdrop']").click();
+
+            document.querySelector('[data-pa-modal-mode="new"][data-pa-kind="category"]').click();
+            var categoryModal = document.getElementById("modalPurchaseAddonDataBackdrop");
+            var categoryBody = categoryModal.querySelector("[data-pa-category-body]");
+            var productBody = categoryModal.querySelector("[data-pa-product-body]");
+            if (document.getElementById("paDataModalTitle").textContent.trim() !== "類別新增設定")
+              return "category new modal title mismatch";
+            if (categoryBody.classList.contains("hidden") || !productBody.classList.contains("hidden"))
+              return "category modal body visibility mismatch";
+            var categoryText = categoryBody.textContent;
+            var categoryRequired = ["排序", "型態", "商品", "品名", "品名文案", "備註文案"];
+            for (var c = 0; c < categoryRequired.length; c += 1) {
+              if (categoryText.indexOf(categoryRequired[c]) === -1)
+                return "category modal missing: " + categoryRequired[c];
+            }
+            if (categoryText.indexOf("住宿加購") !== -1)
+              return "category modal lodging toggle/copy should be removed";
+            if (categoryBody.querySelectorAll(".pa-data-modal-copy-card").length !== 2)
+              return "category modal copy card count mismatch";
+            var categoryType = categoryBody.querySelector("select.pa-data-modal-control");
+            if (!categoryType || !categoryType.disabled)
+              return "category type should remain disabled";
+            var neutralSample = document.createElement("span");
+            neutralSample.style.background = "var(--color-neutral-200)";
+            document.body.appendChild(neutralSample);
+            var neutral200 = getComputedStyle(neutralSample).backgroundColor;
+            neutralSample.remove();
+            if (getComputedStyle(categoryType).backgroundColor !== neutral200)
+              return "category disabled select should use neutral-200";
+            categoryModal.querySelector(".modal-close-btn[data-modal='modalPurchaseAddonDataBackdrop']").click();
+
+            document.querySelector('[data-pa-modal-mode="edit"][data-pa-kind="category"]').click();
+            if (document.getElementById("paDataModalTitle").textContent.trim() !== "類別修改設定")
+              return "category edit modal title mismatch";
+            categoryModal.querySelector(".modal-close-btn[data-modal='modalPurchaseAddonDataBackdrop']").click();
 
             document.querySelector('[data-pa-row-action="project"][data-pa-row-id="product-4"]').click();
             var projectModal = document.getElementById("modalPurchaseAddonProjectBackdrop");

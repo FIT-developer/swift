@@ -90,16 +90,6 @@
                       </button>
                     </div>
 
-                    <div class="overflow-x-auto pl-3" data-pa-type-tabs>
-                      <div class="flex w-max gap-4">
-                        <button type="button" class="pa-type-tab is-active">
-                          所有商品
-                        </button>
-                        <button type="button" class="pa-type-tab">住宿加購</button>
-                        <button type="button" class="pa-type-tab">其他商品</button>
-                      </div>
-                    </div>
-
                     <div
                       class="rounded-xl border border-border-disabled p-5"
                       data-pa-filter-panel
@@ -169,10 +159,10 @@
                               全部
                             </button>
                             <button type="button" class="pa-quick-chip">
-                              線上隨單加購
+                              網路可訂
                             </button>
                             <button type="button" class="pa-quick-chip">
-                              僅後台加購
+                              只限現場
                             </button>
                           </div>
                           <div class="pa-query-actions flex items-center gap-2">
@@ -192,9 +182,7 @@
                           </div>
                         </div>
 
-                        <div
-                          class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
-                        >
+                        <div class="flex items-center">
                           <button
                             type="button"
                             class="pa-display-toggle"
@@ -209,48 +197,21 @@
                             />
                             <span data-pa-display-label="product">全部顯示（14 筆）</span>
                           </button>
-                          <div class="flex flex-wrap items-center gap-x-8 gap-y-3">
-                            <span class="inline-flex items-center gap-2 text-base text-text-default">
-                              <span class="pa-legend-icon">
-                                <span class="pa-icon-thumbtack-filled" aria-hidden="true"></span>
-                              </span>
-                              限定專案
-                            </span>
-                            <span class="inline-flex items-center gap-2 text-base text-text-default">
-                              <span class="pa-legend-icon">
-                                <img
-                                  src="./assets/icons/thumbtack-slash.svg"
-                                  alt=""
-                                  class="w-5 h-5"
-                                />
-                              </span>
-                              非限定專案
-                            </span>
-                            <span class="inline-flex items-center gap-2 text-base text-text-default">
-                              <span class="pa-legend-icon">
-                                <img
-                                  src="./assets/icons/home.svg"
-                                  alt=""
-                                  class="w-5 h-5"
-                                />
-                              </span>
-                              住宿加購
-                            </span>
-                          </div>
                         </div>
 
                         <div class="pa-table-shell">
                           <table class="pa-data-table pa-product-table">
                             <colgroup>
-                              <col class="w-[58px]" />
+                              <col class="w-[56px]" />
+                              <col class="w-[61px]" />
+                              <col class="w-[88px]" />
+                              <col class="w-[152px]" />
+                              <col class="w-[88px]" />
+                              <col class="w-[98px]" />
+                              <col class="w-[56px]" />
+                              <col class="w-[56px]" />
                               <col class="w-[72px]" />
-                              <col class="w-[120px]" />
-                              <col class="w-[170px]" />
-                              <col class="w-[140px]" />
-                              <col class="w-[110px]" />
-                              <col class="w-[70px]" />
-                              <col class="w-[70px]" />
-                              <col class="w-[230px]" />
+                              <col class="w-[412px]" />
                             </colgroup>
                             <thead>
                               <tr>
@@ -262,6 +223,7 @@
                                 <th class="text-left">定價</th>
                                 <th class="text-left">排序</th>
                                 <th class="text-left">上架</th>
+                                <th class="text-left">多語系</th>
                                 <th class="text-center">管理</th>
                               </tr>
                             </thead>
@@ -285,6 +247,12 @@
                                     alt=""
                                     class="w-6 h-6"
                                   />
+                                </td>
+                                <td>
+                                  <div class="pa-language-options">
+                                    <button type="button" class="pa-language-badge is-selected" aria-pressed="true">繁中</button>
+                                    <button type="button" class="pa-language-badge" aria-pressed="false">英文</button>
+                                  </div>
                                 </td>
                                 <td>
                                   <div class="pa-table-actions">
@@ -319,6 +287,7 @@
                                 <td>78888</td>
                                 <td>1</td>
                                 <td></td>
+                                <td></td>
                                 <td>
                                   <div class="pa-table-actions">
                                     <button type="button" class="pa-row-btn pa-row-btn-modify">
@@ -346,16 +315,10 @@
                                   ></span>
                                 </td>
                                 <td>火鍋</td>
-                                <td>
-                                  <span class="inline-flex items-center gap-2">
-                                    嗚啦啦
-                                    <span class="pa-legend-icon">
-                                      <img src="./assets/icons/home.svg" alt="" class="w-5 h-5" />
-                                    </span>
-                                  </span>
-                                </td>
+                                <td>嗚啦啦</td>
                                 <td>555</td>
                                 <td>1</td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                               </tr>
@@ -371,16 +334,10 @@
                                   </span>
                                 </td>
                                 <td>花瓶</td>
-                                <td>
-                                  <span class="inline-flex items-center gap-2">
-                                    餐飲類
-                                    <span class="pa-legend-icon">
-                                      <img src="./assets/icons/thumbtack.svg" alt="" class="w-5 h-5" />
-                                    </span>
-                                  </span>
-                                </td>
+                                <td>餐飲類</td>
                                 <td>-100000</td>
                                 <td>1</td>
+                                <td></td>
                                 <td></td>
                                 <td>
                                   <div class="pa-table-actions">
@@ -392,7 +349,7 @@
                                       <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
                                       <span>複製</span>
                                     </button>
-                                    <button type="button" class="pa-row-btn pa-row-btn-project">
+                                    <button type="button" class="pa-row-btn pa-row-btn-project is-limited">
                                       <img src="./assets/icons/projects.svg" alt="" class="w-5 h-5" />
                                       <span>專案</span>
                                     </button>
@@ -415,16 +372,10 @@
                                   </span>
                                 </td>
                                 <td>金紙</td>
-                                <td>
-                                  <span class="inline-flex items-center gap-2">
-                                    餐飲服務
-                                    <span class="pa-legend-icon">
-                                      <img src="./assets/icons/thumbtack-slash.svg" alt="" class="w-5 h-5" />
-                                    </span>
-                                  </span>
-                                </td>
+                                <td>餐飲服務</td>
                                 <td>89898989</td>
                                 <td>1</td>
+                                <td></td>
                                 <td></td>
                                 <td>
                                   <div class="pa-table-actions">
@@ -507,16 +458,6 @@
                       </button>
                     </div>
 
-                    <div class="overflow-x-auto pl-3" data-pa-type-tabs>
-                      <div class="flex w-max gap-4">
-                        <button type="button" class="pa-type-tab is-active">
-                          所有商品
-                        </button>
-                        <button type="button" class="pa-type-tab">住宿加購</button>
-                        <button type="button" class="pa-type-tab">其他商品</button>
-                      </div>
-                    </div>
-
                     <div class="rounded-xl border border-border-disabled p-5">
                       <div class="flex flex-col gap-4">
                         <div class="flex flex-nowrap items-center gap-4" data-pa-status-tabs="category">
@@ -536,9 +477,7 @@
                           </button>
                         </div>
 
-                        <div
-                          class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
-                        >
+                        <div class="flex items-center">
                           <button
                             type="button"
                             class="pa-display-toggle"
@@ -553,16 +492,6 @@
                             />
                             <span data-pa-display-label="category">全部顯示（14 筆）</span>
                           </button>
-                          <span class="inline-flex items-center gap-2 text-base text-text-default">
-                            <span class="pa-legend-icon">
-                              <img
-                                src="./assets/icons/home.svg"
-                                alt=""
-                                class="w-5 h-5"
-                              />
-                            </span>
-                            住宿加購
-                          </span>
                         </div>
 
                         <div class="pa-table-shell pa-category-table-shell">
@@ -595,14 +524,7 @@
                                 <td>22</td>
                                 <td>總部</td>
                                 <td>餐飲服務</td>
-                                <td>
-                                  <span class="inline-flex items-center justify-center gap-2">
-                                    商品
-                                    <span class="pa-legend-icon">
-                                      <img src="./assets/icons/home.svg" alt="" class="w-5 h-5" />
-                                    </span>
-                                  </span>
-                                </td>
+                                <td>商品</td>
                                 <td>
                                   <a
                                     href="#"
@@ -617,6 +539,10 @@
                                     <button type="button" class="pa-row-btn pa-row-btn-modify">
                                       <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
                                       <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
                                     </button>
                                     <button type="button" class="pa-row-btn pa-row-btn-disable">
                                       <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
@@ -639,6 +565,10 @@
                                       <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
                                       <span>修改</span>
                                     </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
+                                    </button>
                                     <button type="button" class="pa-row-btn pa-row-btn-disable">
                                       <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
                                       <span>停用</span>
@@ -659,6 +589,10 @@
                                     <button type="button" class="pa-row-btn pa-row-btn-modify">
                                       <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
                                       <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
                                     </button>
                                     <button type="button" class="pa-row-btn pa-row-btn-disable">
                                       <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
@@ -681,6 +615,10 @@
                                       <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
                                       <span>修改</span>
                                     </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
+                                    </button>
                                     <button type="button" class="pa-row-btn pa-row-btn-disable">
                                       <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />
                                       <span>停用</span>
@@ -701,6 +639,10 @@
                                     <button type="button" class="pa-row-btn pa-row-btn-modify">
                                       <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
                                       <span>修改</span>
+                                    </button>
+                                    <button type="button" class="pa-row-btn pa-row-btn-duplicate">
+                                      <img src="./assets/icons/duplicate.svg" alt="" class="w-6 h-6" />
+                                      <span>複製</span>
                                     </button>
                                     <button type="button" class="pa-row-btn pa-row-btn-disable">
                                       <img src="./assets/icons/suspend-outline.svg" alt="" class="w-6 h-6" />

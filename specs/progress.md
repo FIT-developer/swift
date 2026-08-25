@@ -7,6 +7,79 @@
 
 ---
 
+## Session 149：加購商品 0818 批次更新 (2026-08-25)
+
+使用者批次提供 0818 Figma frame，並確認本輪以 deployed 動態資料行為為
+基線：移除商品類型分流 tabs 與限定 / 非限定 / 住宿加購 icons，新增產品
+table 多語系狀態，調整專案按鈕填色，並更新產品 / 類別 data modal。
+
+### Figma current source
+
+- Page: `2275:84175`「加購商品 desktop 0818」1440x1718
+- Product table: `2275:84177`「Limitation Table」1171x458
+- Product edit modal: `2245:84443`「Modal（產品設定 - 修改 - 上架開啟）0818」800x788
+- Category new modal: `2245:84164`「Modal（類別新增設定）0818」800x564
+- Category edit modal: `2245:84205`「Modal（類別修改設定）0818」800x564
+
+### 使用者拍板
+
+1. Desktop 外層維持 shared shell 12px page padding 與 12px sidebar gap，不採
+   Figma frame 外層 20px。
+2. 啟用 / 停用 counts、14 / 5 rows、全部顯示 / 分頁與狀態移動維持 deployed
+   動態資料行為，不把 Figma sample count 寫死。
+3. 產品設定與類別設定的「所有商品 / 住宿加購 / 其他商品」tabs 全部移除。
+4. 限定、非限定、住宿加購圖例與 row icons 全部移除。
+5. Category 管理欄「複製」保留。
+6. Product / Category data modal desktop shell 採 800px。
+
+### 本輪改動
+
+1. `specs/pages/purchase-addon.md`：
+   - 更新 current Figma nodes、使用者拍板、table 欄位與 modal contract。
+   - 修正舊 99 / 8 靜態狀態描述，改回 deployed 14 / 5 動態 state。
+2. `preview/purchase-addon.html` / `preview/assets/css/purchase-addon.css`：
+   - 移除兩區 type tabs、圖例與 row icons。
+   - Product table 新增「多語系」欄，table shell 使用 Figma 12px / 16px
+     padding 與固定欄寬；Category 保留複製按鈕。
+   - limited project button 使用 `Color/Accent/light-green`；all-project button
+     維持白底。
+   - Product / Category data modal desktop 寬度改為 800px；control、文案卡、
+     編輯按鈕與日期 panel 尺寸依 0818 Figma 調整。
+3. `preview/js/purchase-addon.js`：
+   - 多語系 badge 使用 row state 與 delegated click；各語系可獨立切換，
+     支援同 row 多選。
+   - Product / Category 共用 modal shell，依 kind 切換專屬 body 與 title。
+   - 上架 panel 移除時段 toggle、起迄 hour 與時間提示，只保留全日日期範圍。
+4. `preview/partials/purchase-addon-modals.html`：
+   - Product 上架 panel 只保留日期。
+   - 新增 Category 專屬新增 / 修改 body：排序、disabled 型態、品名、品名文案、
+     備註文案；不顯示住宿加購 toggle。
+5. `scripts/smoke-test.mjs`：
+   - 補測 tabs / legends / row icons 不存在、多語系 multi-select、限定專案填色、
+     Category 複製、800px modal、378px 日期 panel、日期不截字、Category body
+     與移除的時間 / 住宿加購 controls。
+6. 驗收 follow-up：產品 quick filters 文案由「全部 / 線上隨單加購 / 僅後台加購」
+   改為「全部 / 網路可訂 / 只限現場」，單選互動不變，smoke test 鎖定新文案。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`token mirror ok`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `purchase-addon.html` 13 checks 通過
+- Product fallback rows 每列 10 cells；Category fallback rows 每列 8 cells
+- 視覺 QA 截圖輸出到 ignored 目錄 `specs/qa-screenshots/session-149/`：
+  - `purchase-addon-desktop-1440.png`
+  - `purchase-addon-tablet-767.png`
+  - `purchase-addon-mobile-375.png`
+  - `purchase-addon-product-edit-publish-1440.png`
+  - `purchase-addon-category-new-1440.png`
+  - `purchase-addon-category-edit-1440.png`
+  - `purchase-addon-category-new-mobile-375.png`
+
 ## Session 148：加購商品停用專案按鈕與 readonly modal (2026-08-11)
 
 使用者澄清產品設定 table 的「專案」按鈕顯示條件只跟產品是否有

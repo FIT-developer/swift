@@ -30,7 +30,11 @@
       </button>
     </div>
 
-    <div class="min-h-0 flex-1 overflow-y-auto bg-white p-4" data-pa-data-body>
+    <div
+      class="min-h-0 flex-1 overflow-y-auto bg-white p-3"
+      data-pa-data-body
+      data-pa-product-body
+    >
       <div class="pa-data-modal-grid">
         <label class="pa-data-modal-field text-base text-text-default">
           <span>類別</span>
@@ -87,11 +91,11 @@
           <input type="number" value="2000" class="pa-data-modal-control" data-pa-data-field />
         </label>
 
-        <div class="pa-data-modal-field text-base text-text-default">
-          <span>上架</span>
+        <div class="pa-data-modal-field pa-publish-field text-base text-text-default">
+          <span class="sr-only">上架</span>
           <div class="pa-data-modal-toggle-row">
             <div class="pa-publish-toggle-line">
-              <span class="sr-only">上架狀態</span>
+              <span>上架</span>
               <span class="member-data-switch shrink-0" data-pa-publish-switch>
                 <input type="checkbox" data-pa-publish-toggle data-pa-data-field />
                 <span class="member-data-switch-track"></span>
@@ -111,48 +115,6 @@
                   <img src="./assets/icons/calendar.svg" alt="" class="h-5 w-5" />
                 </span>
               </div>
-              <div class="pa-publish-time-head">
-                <span>設定開放時段</span>
-                <span class="member-data-switch shrink-0" data-pa-publish-time-switch>
-                  <input type="checkbox" data-pa-publish-time-toggle checked />
-                  <span class="member-data-switch-track"></span>
-                  <span class="member-data-switch-knob"></span>
-                </span>
-              </div>
-              <div class="pa-publish-time-row">
-                <select class="pa-data-modal-control" data-pa-publish-start-hour>
-                  <option selected>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                  <option>11</option>
-                  <option>12</option>
-                </select>
-                <span class="text-base text-text-default">~</span>
-                <select class="pa-data-modal-control" data-pa-publish-end-hour>
-                  <option>12</option>
-                  <option>13</option>
-                  <option>14</option>
-                  <option>15</option>
-                  <option>16</option>
-                  <option>17</option>
-                  <option>18</option>
-                  <option>19</option>
-                  <option>20</option>
-                  <option>21</option>
-                  <option>22</option>
-                  <option>23</option>
-                  <option selected>24</option>
-                </select>
-                <span class="text-base text-text-default">時</span>
-              </div>
-              <p class="pa-publish-note">時間範圍：1～24。關閉開關時，為全天開放。</p>
             </div>
           </div>
         </div>
@@ -170,6 +132,70 @@
 
         <div class="flex flex-col gap-3">
           <label class="text-base text-text-default">品名文案</label>
+          <div class="pa-data-modal-copy-card">
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button type="button" class="pa-data-modal-edit-btn" data-pa-disable-on-view>
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="hidden min-h-0 flex-1 overflow-y-auto bg-white p-3"
+      data-pa-data-body
+      data-pa-category-body
+    >
+      <div class="pa-category-data-modal-grid">
+        <label class="pa-data-modal-field text-base text-text-default">
+          <span>排序</span>
+          <input
+            type="number"
+            value="12"
+            class="pa-data-modal-control"
+            data-pa-data-field
+          />
+        </label>
+
+        <label class="pa-data-modal-field text-base text-text-default">
+          <span>型態</span>
+          <select
+            class="pa-data-modal-control"
+            disabled
+            data-pa-data-field
+            data-pa-always-disabled
+          >
+            <option>商品</option>
+          </select>
+        </label>
+
+        <label
+          class="pa-data-modal-field pa-category-name-field text-base text-text-default"
+        >
+          <span>品名</span>
+          <input
+            type="text"
+            placeholder="placeholder"
+            class="pa-data-modal-control"
+            data-pa-data-field
+          />
+        </label>
+
+        <div class="flex flex-col gap-3">
+          <label class="text-base text-text-default">品名文案</label>
+          <div class="pa-data-modal-copy-card">
+            <span class="text-base text-text-default">尚未填寫</span>
+            <button type="button" class="pa-data-modal-edit-btn" data-pa-disable-on-view>
+              <img src="./assets/icons/edit.svg" alt="" class="w-6 h-6" />
+              <span>編輯</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <label class="text-base text-text-default">備註文案</label>
           <div class="pa-data-modal-copy-card">
             <span class="text-base text-text-default">尚未填寫</span>
             <button type="button" class="pa-data-modal-edit-btn" data-pa-disable-on-view>

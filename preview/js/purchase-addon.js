@@ -16,6 +16,10 @@ const FLIGHT_PROJECT_ITEM_IDS = ["999", "89", "09"];
 const productRows = [
   product("product-1", "22", true, "房費折抵", "沖帳", "58888", "active", {
     listed: true,
+    languages: [
+      { code: "zh-TW", label: "繁中", selected: true },
+      { code: "en", label: "英文", selected: false },
+    ],
   }),
   product("product-2", "33", false, "退寵物入住保證金", "特別費", "78888", "active"),
   product("product-3", "44", true, "火鍋", "嗚啦啦", "555", "active", {
@@ -90,9 +94,6 @@ const publishScheduleState = {
   enabled: false,
   startDate: "2026-02-10",
   endDate: "2026-03-11",
-  timeEnabled: true,
-  startHour: "1",
-  endHour: "24",
 };
 
 const photoSavedByProduct = {};
@@ -118,13 +119,13 @@ productRows.forEach(function (row) {
 
 export function initPurchaseAddon() {
   initSectionToggles();
-  initSingleSelectGroups("[data-pa-type-tabs]", ".pa-type-tab");
   initSingleSelectGroups("[data-pa-quick-filters]", ".pa-quick-chip");
   initStatusTabs();
   initDisplayModeToggles();
   initClearButtons();
   initReloadButtons();
   initTableActions();
+  initLanguageToggles();
   initModalTitles();
   initPublishSchedule();
   initProjectModal();
@@ -148,6 +149,13 @@ function product(id, code, hasPhoto, name, categoryName, price, state, options) 
     lodging: !!opts.lodging,
     limited: !!opts.limited,
     nonLimited: !!opts.nonLimited,
+    languages: (opts.languages || []).map(function (language) {
+      return {
+        code: language.code,
+        label: language.label,
+        selected: !!language.selected,
+      };
+    }),
   };
 }
 
@@ -272,6 +280,23 @@ function initTableActions() {
   });
 }
 
+function initLanguageToggles() {
+  document.addEventListener("click", function (event) {
+    var badge = event.target.closest("[data-pa-language]");
+    if (!badge) return;
+    var row = productRows.find(function (item) {
+      return item.id === badge.dataset.paRowId;
+    });
+    if (!row) return;
+    var language = row.languages.find(function (item) {
+      return item.code === badge.dataset.paLanguage;
+    });
+    if (!language) return;
+    language.selected = !language.selected;
+    renderTable("product");
+  });
+}
+
 function initModalTitles() {
   document.addEventListener("click", function (event) {
     var trigger = event.target.closest("[data-pa-modal-mode]");
@@ -280,19 +305,26 @@ function initModalTitles() {
     var title = document.getElementById("paDataModalTitle");
     if (!title) return;
     var mode = trigger.dataset.paModalMode;
-    var kind = trigger.dataset.paKind === "category" ? "類別" : "產品";
-    var label =
-      mode === "new"
-        ? "新增"
-        : mode === "view"
-          ? "查看"
-          : mode === "project"
-            ? "專案"
-            : "資料修改";
-    title.textContent = kind + label;
+    var isCategory = trigger.dataset.paKind === "category";
+    if (isCategory) {
+      title.textContent =
+        mode === "new"
+          ? "類別新增設定"
+          : mode === "view"
+            ? "類別查看"
+            : "類別修改設定";
+    } else {
+      title.textContent =
+        mode === "new" ? "產品新增" : mode === "view" ? "產品查看" : "產品修改";
+    }
+    var productBody = document.querySelector("[data-pa-product-body]");
+    var categoryBody = document.querySelector("[data-pa-category-body]");
+    if (productBody) productBody.classList.toggle("hidden", isCategory);
+    if (categoryBody) categoryBody.classList.toggle("hidden", !isCategory);
     setDataModalReadonly(mode === "view");
     renderPublishSchedule();
-    if (mode === "view" || !publishScheduleState.enabled) closePublishSchedulePanel();
+    if (isCategory || mode === "view" || !publishScheduleState.enabled)
+      closePublishSchedulePanel();
     else openPublishSchedulePanel();
   });
 }
@@ -329,16 +361,9 @@ function initPublishSchedule() {
     if (toggle.checked) openPublishSchedulePanel();
     else closePublishSchedulePanel();
   });
-  panel.querySelectorAll("input, select").forEach(function (control) {
+  panel.querySelectorAll("input").forEach(function (control) {
     control.addEventListener("change", syncPublishScheduleFromPanel);
   });
-  var timeToggle = panel.querySelector("[data-pa-publish-time-toggle]");
-  if (timeToggle) {
-    timeToggle.addEventListener("click", function () {
-      publishScheduleState.timeEnabled = timeToggle.checked;
-      renderPublishSchedule();
-    });
-  }
   renderPublishSchedule();
 }
 
@@ -347,22 +372,8 @@ function syncPublishScheduleFromPanel() {
   if (!panel) return;
   var startDate = panel.querySelector("[data-pa-publish-start-date]");
   var endDate = panel.querySelector("[data-pa-publish-end-date]");
-  var timeToggle = panel.querySelector("[data-pa-publish-time-toggle]");
-  var startHour = panel.querySelector("[data-pa-publish-start-hour]");
-  var endHour = panel.querySelector("[data-pa-publish-end-hour]");
   if (startDate) publishScheduleState.startDate = startDate.value;
   if (endDate) publishScheduleState.endDate = endDate.value;
-  if (timeToggle) publishScheduleState.timeEnabled = timeToggle.checked;
-  if (startHour) publishScheduleState.startHour = startHour.value;
-  if (endHour) publishScheduleState.endHour = endHour.value;
-}
-
-function setPublishTimeControlsDisabled(disabled) {
-  var panel = document.querySelector("[data-pa-publish-panel]");
-  if (!panel) return;
-  panel.querySelectorAll("[data-pa-publish-start-hour], [data-pa-publish-end-hour]").forEach(function (control) {
-    control.disabled = disabled;
-  });
 }
 
 function renderPublishSchedule() {
@@ -372,15 +383,8 @@ function renderPublishSchedule() {
   if (toggle) toggle.checked = publishScheduleState.enabled;
   var startDate = panel.querySelector("[data-pa-publish-start-date]");
   var endDate = panel.querySelector("[data-pa-publish-end-date]");
-  var timeToggle = panel.querySelector("[data-pa-publish-time-toggle]");
-  var startHour = panel.querySelector("[data-pa-publish-start-hour]");
-  var endHour = panel.querySelector("[data-pa-publish-end-hour]");
   if (startDate) startDate.value = publishScheduleState.startDate;
   if (endDate) endDate.value = publishScheduleState.endDate;
-  if (timeToggle) timeToggle.checked = publishScheduleState.timeEnabled;
-  if (startHour) startHour.value = publishScheduleState.startHour;
-  if (endHour) endHour.value = publishScheduleState.endHour;
-  setPublishTimeControlsDisabled(!publishScheduleState.timeEnabled);
 }
 
 function openPublishSchedulePanel() {
@@ -718,6 +722,9 @@ function renderProductRow(row, order) {
     (row.listed ? '<img src="./assets/icons/check-green.svg" alt="" class="w-6 h-6" />' : "") +
     "</td>" +
     "<td>" +
+    renderLanguages(row) +
+    "</td>" +
+    "<td>" +
     renderActionButtons("product", row) +
     "</td>" +
     "</tr>"
@@ -776,24 +783,37 @@ function renderPhotoTrigger(row) {
   );
 }
 
+function renderLanguages(row) {
+  if (!row.languages.length) return "";
+  return (
+    '<div class="pa-language-options">' +
+    row.languages
+      .map(function (language) {
+        return (
+          '<button type="button" class="pa-language-badge' +
+          (language.selected ? " is-selected" : "") +
+          '" aria-pressed="' +
+          (language.selected ? "true" : "false") +
+          '" data-pa-row-id="' +
+          row.id +
+          '" data-pa-language="' +
+          language.code +
+          '">' +
+          language.label +
+          "</button>"
+        );
+      })
+      .join("") +
+    "</div>"
+  );
+}
+
 function renderCategoryLabel(row) {
-  var icon = "";
-  if (row.lodging) icon = renderLegendIcon("home");
-  if (row.limited) icon = renderLegendIcon("thumbtack-filled");
-  if (row.nonLimited) icon = renderLegendIcon("thumbtack-slash");
-  return '<span class="inline-flex items-center gap-2">' + row.categoryName + icon + "</span>";
+  return row.categoryName;
 }
 
 function renderCategoryType(row) {
-  return '<span class="inline-flex items-center justify-center gap-2">' + row.type + (row.lodging ? renderLegendIcon("home") : "") + "</span>";
-}
-
-function renderLegendIcon(type) {
-  if (type === "thumbtack-filled") {
-    return '<span class="pa-legend-icon"><span class="pa-icon-thumbtack-filled" aria-hidden="true"></span></span>';
-  }
-  var icon = type === "thumbtack-slash" ? "thumbtack-slash" : "home";
-  return '<span class="pa-legend-icon"><img src="./assets/icons/' + icon + '.svg" alt="" class="w-5 h-5" /></span>';
+  return row.type;
 }
 
 function renderActionButtons(kind, row) {
@@ -825,6 +845,7 @@ function hasProjectState(row) {
 }
 
 function actionBtn(kind, row, action, icon, label, modalId) {
+  var limitedClass = action === "project" && row.limited ? " is-limited" : "";
   var attrs =
     ' data-pa-row-action="' +
     (action === "modify" || action === "view" ? "" : action) +
@@ -846,6 +867,7 @@ function actionBtn(kind, row, action, icon, label, modalId) {
   return (
     '<button type="button" class="pa-row-btn pa-row-btn-' +
     action +
+    limitedClass +
     '"' +
     attrs +
     ">" +
