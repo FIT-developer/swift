@@ -7,6 +7,33 @@
 
 ---
 
+## Session 150：新對話直接同步 GitHub 規則 (2026-08-26)
+
+使用者要求新對話啟動時若 remote commit 領先本地，agent 必須直接同步，
+不可只做版本比對後停止；若同步產生 conflict，保留現場由使用者處理。
+
+### 本輪改動
+
+1. `start.md`：
+   - 本地無 repo 時使用 `git clone`；已有 repo 時使用 `git pull`。
+   - remote 領先時立即同步，不因未提交改動而預先跳過。
+   - branch diverged 時採一般 merge-based pull。
+   - Git 實際產生 conflict 或拒絕覆蓋時保留工作樹並回報，不自行 stash、
+     discard、解 conflict、rebase 或 force。
+2. 回溯 audit：原流程在本地 `start.md` 有未提交修改時只比對、不 pull，正是
+   本次修正的違規情境；新規則套用後已直接同步。
+3. 機器可判定性：此規則依賴 GitHub 連線、remote branch 與工作樹狀態，不能由
+   pre-commit lint 完整判定，保留在新對話啟動流程執行。
+
+### 驗證
+
+- `git fetch origin` exit 0。
+- 本地原為 `d4ab2f0`，`origin/main` 為 `1932684`，remote 領先 1 commit。
+- `git pull --no-rebase origin main` exit 0，以 fast-forward 同步到 `1932684`。
+- 本地未提交的 `start.md` 規則修改仍保留，未產生 conflict。
+- `git diff --check` exit 0。
+- `./scripts/lint-conventions.sh` exit 0。
+
 ## Session 149：加購商品 0818 批次更新 (2026-08-25)
 
 使用者批次提供 0818 Figma frame，並確認本輪以 deployed 動態資料行為為

@@ -2,6 +2,31 @@
 
 > 本文件為此設計系統專案的總規則，所有 component / section / layout 的生成與維護皆遵循此規範。
 
+## 新對話啟動前同步 GitHub
+
+每一次開啟與 AI agent 的新對話時，agent 必須先確認 GitHub repo 與本地資料
+是否同步，再讀取本地規則與開始任何工作：
+
+1. 確認 repo 為 `FIT-developer/swift`，並檢查 GitHub remote 的最新 commit。
+2. 若本地尚無 repo，先從 GitHub clone 最新資料到本地工作目錄。
+3. 若本地 repo 已存在，不可再次 clone 覆蓋；先執行 `git fetch origin`，比對
+   目前 branch 與對應的 `origin/<branch>`。
+4. 只要 remote commit 領先本地，就立即把 remote 最新資料同步到現有本地
+   repo，不可只比對後停止。已有 repo 時使用 `git pull`，不可再次 `git clone`
+   到同一目錄；本地尚無 repo 時才使用 `git clone`。
+5. 不得因本地有未提交改動而預先跳過同步。先直接執行 `git pull`；若 Git
+   實際回報 conflict 或拒絕覆蓋，保留當下工作樹與 conflict 狀態並回報使用者，
+   由使用者處理。agent 不可自行 stash、discard、解 conflict、rebase、force
+   或強制覆蓋。
+6. 若 branch 已 diverged，執行一般 merge-based pull，不可只停在比較結果；
+   如產生 conflict，同樣保留現場並交由使用者處理。
+7. 只有 remote 無法連線時才停止同步並回報。完成同步或確認本地已是最新版後，
+   才依 repo root `AGENTS.md` 讀取
+   `start.md` 與 `specs/progress.md`，並執行後續工作。
+
+同步不得使用 force，也不得主動丟棄本地尚未保存的工作；實際衝突由使用者
+接手處理。
+
 ## 輸出格式 (Output formatting)
 
 Please avoid using special Unicode characters, emoji, box-drawing characters, or decorative symbols in your responses. Use plain ASCII only.
