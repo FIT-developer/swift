@@ -274,6 +274,22 @@
                     >
                   </div>
                 </div>
+                <div
+                  class="inline-flex min-h-11 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                >
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5">
+                    <img
+                      src="./assets/icons/adding-people.svg"
+                      alt=""
+                      class="h-6 w-6"
+                      aria-hidden="true"
+                    />
+                    <div class="text-xs leading-4 text-text-default">
+                      <div>可加人</div>
+                      <div>總人數限制 5</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -283,8 +299,15 @@
             <div class="mb-2 text-base text-text-default">價格</div>
             <div class="overflow-x-auto">
               <table
-                class="room-edit-price-table w-full md:min-w-[343px] table-fixed text-xs text-text-default"
+                class="room-edit-price-table w-full table-fixed text-xs text-text-default"
               >
+                <colgroup>
+                  <col class="w-[162px]" />
+                  <col class="w-[106px]" />
+                  <col class="w-[169px]" />
+                  <col class="w-[169px]" />
+                  <col class="w-[162px]" />
+                </colgroup>
                 <thead>
                   <tr>
                     <th
@@ -313,6 +336,16 @@
                       </span>
                     </th>
                     <th
+                      class="border-t border-b border-text-default px-3 py-3 text-center font-normal"
+                    >
+                      多加成人 / +1,000
+                    </th>
+                    <th
+                      class="border-t border-b border-text-default px-3 py-3 text-center font-normal"
+                    >
+                      多加孩童 / +800
+                    </th>
+                    <th
                       class="border-t border-b border-text-default px-3 py-3 text-left font-normal"
                     >
                       定價
@@ -331,6 +364,28 @@
                         aria-label="2026-03-01 定價調整"
                       />
                     </td>
+                    <td class="px-3">
+                      <div class="stepper room-edit-addon-stepper">
+                        <button type="button" class="stepper-btn" aria-label="減少多加成人數量">
+                          &minus;
+                        </button>
+                        <input type="text" value="5" readonly aria-label="多加成人數量" />
+                        <button type="button" class="stepper-btn" aria-label="增加多加成人數量">
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td class="px-3">
+                      <div class="stepper room-edit-addon-stepper">
+                        <button type="button" class="stepper-btn" aria-label="減少多加孩童數量">
+                          &minus;
+                        </button>
+                        <input type="text" value="5" readonly aria-label="多加孩童數量" />
+                        <button type="button" class="stepper-btn" aria-label="增加多加孩童數量">
+                          +
+                        </button>
+                      </div>
+                    </td>
                     <td class="px-3 text-center">1000</td>
                   </tr>
                   <tr>
@@ -344,6 +399,28 @@
                         aria-label="2026-03-02 定價調整"
                       />
                     </td>
+                    <td class="px-3">
+                      <div class="stepper room-edit-addon-stepper">
+                        <button type="button" class="stepper-btn" aria-label="減少多加成人數量">
+                          &minus;
+                        </button>
+                        <input type="text" value="5" readonly aria-label="多加成人數量" />
+                        <button type="button" class="stepper-btn" aria-label="增加多加成人數量">
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td class="px-3">
+                      <div class="stepper room-edit-addon-stepper">
+                        <button type="button" class="stepper-btn" aria-label="減少多加孩童數量">
+                          &minus;
+                        </button>
+                        <input type="text" value="5" readonly aria-label="多加孩童數量" />
+                        <button type="button" class="stepper-btn" aria-label="增加多加孩童數量">
+                          +
+                        </button>
+                      </div>
+                    </td>
                     <td class="px-3 text-center">1000</td>
                   </tr>
                 </tbody>
@@ -354,6 +431,12 @@
                     </td>
                     <td class="border-t border-text-default px-3 py-2 text-center">
                       8888
+                    </td>
+                    <td class="border-t border-text-default px-3 py-2 text-center">
+                      9999
+                    </td>
+                    <td class="border-t border-text-default px-3 py-2 text-center">
+                      9999
                     </td>
                     <td class="border-t border-text-default px-3 py-2 text-center">
                       9999

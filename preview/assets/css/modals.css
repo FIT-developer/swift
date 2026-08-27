@@ -32,12 +32,18 @@
   flex-direction: column;
 }
 #modalRoomEditBackdrop .modal-box {
-  width: min(calc(100vw - 24px), 646px);
+  width: min(calc(100vw - 24px), 800px);
   max-height: calc(100vh - 24px);  /* fallback */
   max-height: calc(100dvh - 24px); /* iOS Safari dynamic chrome */
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+.room-edit-price-table {
+  min-width: 768px; /* min-width-ok: five-column price table scrolls inside modal body */
+}
+.room-edit-addon-stepper {
+  width: 145px;
 }
 #modalPurchaseAddonBackdrop .modal-box {
   width: min(calc(100vw - 24px), 1194px);

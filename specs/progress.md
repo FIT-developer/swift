@@ -7,6 +7,60 @@
 
 ---
 
+## Session 151：房間預定 modal 新增加人資訊 (2026-08-27)
+
+使用者確認只更新房間預定 table 第一個 `edit.svg` 所使用的共用
+`modalRoomEditBackdrop`。既有 lock、clear、textarea 與 modal 開關行為維持，
+本輪新增加人資訊與價格表展示欄位。
+
+### Figma current source
+
+- Icons frame: `25:93` `Icons`
+- Icon batch: `2178:124636` `icons/projects` 20x20、
+  `2303:85281` `icons/adding-people` 20x20、
+  `2303:85275` `icons/adding-bed` 24x24
+- Modal: `2308:84584` `Modal（0827 新增 可加人）` 800x740
+
+### 使用者拍板
+
+1. 房型摘要新增 `adding-people` icon、`可加人`、`總人數限制 5` 雙行 chip。
+2. 價格 table 新增 `多加成人 / +1,000` 與 `多加孩童 / +800` 兩欄，
+   每個日期 row 各有一組 stepper。
+3. Modal stepper 只實作設計稿外觀；不加前端運算、min / max、總人數限制、
+   lock 或 clear 行為。實際資料與操作由後端處理。
+4. 新 stepper 視覺沿用外層 table「間數」的 `.stepper`，但不掛
+   `.rb-step-*` 行為 hooks。
+5. 0527 已移除的 date controller / 訂房間數 stepper 不恢復。
+6. Icons selection 視為整批交付：三顆都必須寫入 `specs/icons.md`、由原 Figma
+   node 匯出成正式資產，再由 modal 取用；不可只為當前畫面臨時補單顆 SVG。
+
+### 本輪改動
+
+1. `components/modal.md` 更新 0827 current contract。
+2. `specs/icons.md` 完整登錄本批 `projects`、`adding-people`、`adding-bed` 的
+   Figma node、尺寸、正式檔案與取用狀態；三顆均重新由原 node 匯出，僅將
+   中性色正規化為 `currentColor`。本 modal 取用正式的 `adding-people.svg`，
+   `adding-bed.svg` 同批入庫但不在本 modal 額外使用。
+3. `preview/partials/room-booking-modals.html` 新增 summary chip、兩個價格欄位、
+   四組純展示 stepper 與 footer totals。
+4. `preview/assets/css/modals.css` 將 desktop modal 寬度改為 800px，價格表固定
+   768px 並在窄 viewport 於 modal 內水平捲動。
+5. `scripts/smoke-test.mjs` 新增 0827 contract regression checks。
+
+### 驗證
+
+- `xmllint --noout`：`projects.svg`、`adding-people.svg`、`adding-bed.svg`
+  三顆正式資產皆通過，且無中性 `fill="black"` / `stroke="black"` 殘留
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`92 raw hex tokens`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，
+  `room-booking.html` 12 checks 通過
+- Chrome contract checks：desktop modal 800px、價格 table 768px；mobile modal
+  375px，table 只在 modal wrapper 內水平捲動，無 page-level overflow
+
 ## Session 150：新對話直接同步 GitHub 規則 (2026-08-26)
 
 使用者要求新對話啟動時若 remote commit 領先本地，agent 必須直接同步，

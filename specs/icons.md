@@ -13,6 +13,8 @@
 
 | 名稱 | 檔案路徑 | 尺寸 | 語意用途 | Figma 原名 |
 |---|---|---|---|---|
+| adding-bed | assets/icons/adding-bed.svg | 24x24 | 可加床 / 增加床位 | icons/adding-bed |
+| adding-people | assets/icons/adding-people.svg | 20x20 | 可加人 / 增加入住人數 | icons/adding-people |
 | advertisement | assets/icons/advertisement.svg | 24×24 | 廣告/促銷 | icons/advertisement |
 | ai | assets/icons/ai.svg | 24×24 | AI 功能 | icons/ai |
 | all-pages | assets/icons/all-pages.svg | 24x24 | 全部頁面 | icons/all-pages |
@@ -140,6 +142,21 @@
 | video-play | assets/icons/video-play.svg | 24x24 | 啟用（房型卡片「啟用」按鈕，2026-07-31 新增，取代原 restore-page-outline-rounded；純黑線稿，見 components/room-type-card.md） | icons/video-play |
 | warning-orange | assets/icons/warning-orange.svg | 24×24 | 警告 🟠 fill #E05216 | icons/warning |
 | yes | assets/icons/yes.svg | 20x20 | 確認/勾選（黑勾） | icons/yes |
+
+---
+
+## 2026-08-27 Icons 批次同步
+
+> 來源：Figma selection frame `25:93` / `Icons`。本批次必須整批登錄與匯出，頁面只能取用下列正式資產，不得另外手刻或臨時補 SVG。
+
+| Figma node | Figma 原名 | 尺寸 | 正式資產 | 本輪取用狀態 |
+|---|---|---|---|---|
+| `2178:124636` | icons/projects | 20x20 | assets/icons/projects.svg | 已同步；既有專案用途 |
+| `2303:85281` | icons/adding-people | 20x20 | assets/icons/adding-people.svg | 房間預定第一個 edit modal 取用 |
+| `2303:85275` | icons/adding-bed | 24x24 | assets/icons/adding-bed.svg | 已同步入庫；本 modal 未取用 |
+
+- 三顆均由上述 Figma component node 直接匯出 SVG。
+- 中性色的 `fill="black"` / `stroke="black"` 僅做 `currentColor` 正規化，路徑幾何維持 Figma 匯出內容。
 
 ---
 
@@ -283,7 +300,6 @@
 | `submit.svg` | `fill="#2178CF"` 藍色硬寫 | 由 CSS context 控制，改 `currentColor` |
 | `attached-link-moved.svg` | `stroke="#E1E1E0"` 淺灰硬寫 | 邊框色應由 CSS 控制，改 `currentColor` |
 | `direction-left.svg` | `stroke="#306CFE"` + `#344054` | 雙色造型，確認是否為有意設計 |
-| `projects.svg` | `fill="black"` 黑色硬寫 | 由 CSS context 控制，改 `currentColor` |
 | `thumbtack-slash.svg` | `fill="#454545"` 灰色硬寫 | 由 CSS context 控制，改 `currentColor` |
 | `split-page.svg` | `fill="#6D6D6D"` 灰色硬寫 | 由 CSS context 控制，改 `currentColor` |
 | `all-pages.svg` | `fill="#6D6D6D"` + `stroke="#888888"` 灰色硬寫 | 由 CSS context 控制，改 `currentColor` |
@@ -303,7 +319,7 @@
 | `check` | 16×16 | 小版勾選，用於 checkbox 內 |
 | `left`, `right` | 16×16 | 小導航箭頭 |
 | `eraser`, `flow`, `pin`, `return`, `reservations`, `up-and-down` | 16×16 | 小尺寸系列 |
-| `dollar`, `duration`, `projects`, `ranking`, `star`, `thumbtack`, `thumbtack-slash` | 20x20 | 中間尺寸 |
+| `adding-people`, `dollar`, `duration`, `projects`, `ranking`, `star`, `thumbtack`, `thumbtack-slash` | 20x20 | 中間尺寸 |
 | `suneditor-rotate-to-left`, `suneditor-rotate-to-right` | 20x20 | 中間尺寸 |
 | `hotel` | 31×24 | 非正方形，使用時注意對齊 |
 | `transit`, `direction-left` | 25×25 | 略大於標準，注意排版 |

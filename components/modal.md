@@ -271,27 +271,28 @@ Modal (560×390px)
 | 上限 | `1272:27354` | 375×1004px | `lock` + 訂房間數 `5` + `已達上限間數`（**0505 標稿**） |
 | 可編輯價格 | `1272:27306` | 375×1004px | `unlock` + 定價調整 input active（**0505 標稿**） |
 | **↺ 0527 desktop 重整** | `1774:66050` | **646×724px** | 移除 date controller 整段；headline + metadata chips + price table + textarea + footer 四段；info chip 行可橫排 9 個（646 寬足夠 wrap） |
+| **0827 可加人更新（current）** | `2308:84584` | **800x740px** | metadata 新增可加人雙行 chip；價格表新增成人 / 孩童加人數量欄；2026-08-27 確認為 current source |
 
-### 結構（**↺ 0527 重整：移除 date controller 整段**）
+### 結構（0827 current：保留 0527 移除 date controller 的決策）
 
 ```
-Modal (0527 reference: 646×724 desktop, 1774:66050)
-├── Header Frame 10
-│   ├── "我是專案名稱"
-│   ├── status "鎖定"
-│   └── icons/close
-├── Frame 12
-│   ├── "義大利麵專屬房"
-│   └── 9 個 icon + text info chips（套用「單側 Border Info Item 規則」）
-│   ── ↺ 0527 移除：Controller - date（入住日 + 退房日 calendar 對 + 訂房間數 stepper）
-├── Table render - date list
-│   ├── 價格
-│   ├── semantic table：日期 / 定價調整 / 定價
-│   └── 2 筆日期價格與總計
-├── Input textarea
-└── Footer
-    ├── 清除
-    └── 確定
+Modal (0827 current: 800x740 desktop, 2308:84584)
+- Header Frame 10
+  - "我是專案名稱"
+  - status "鎖定"
+  - icons/close
+- Frame 12
+  - "義大利麵專屬房"
+  - 10 個 icon + text info chips（套用「單側 Border Info Item 規則」）
+  - 0527 已移除 Controller - date，不恢復
+- Table render - date list
+  - 價格
+  - semantic table：日期 / 定價調整 / 多加成人 / 多加孩童 / 定價
+  - 2 筆日期價格與總計
+- Input textarea
+- Footer
+  - 清除
+  - 確定
 ```
 
 > **0527 重大變更**：原本中段「Controller - date」（入住日 calendar + 退房日 calendar + 訂房間數 stepper + 已達最低/上限間數 hint）整段**永久移除**。modal 從 metadata chips 直接接 Price table，省去日期挑選與數量調整。 Figma 標的高度從 1004 縮為 724（差 280，正好是被移除段落的視覺高度）。現行 `preview/partials/room-booking-modals.html` 的 `modalRoomEdit` 不得再放回 `Date controller` (`px-3 py-4`) 與 `訂房間數 stepper` 兩 block；對應 JS（`data-room-edit-step`, `data-room-edit-quantity`, `data-room-edit-quantity-hint`, calendar 初始化）也不應恢復。
@@ -303,9 +304,9 @@ Modal (0527 reference: 646×724 desktop, 1774:66050)
 | Header title | `我是專案名稱` |
 | Header status | `鎖定` |
 | 房型 | `義大利麵專屬房` |
-| Info chips | `天數：1 夜`, `會員：金鑽以上`, `最少須訂間數：28`, `不可退款`, `訂金：100%`, `開放期間：2026-01-01 ~ 長期`, `熱賣期間：2026-01-01 ~ 2027-12-31`, `1 天內付款`, `可用庫存數：5` |
+| Info chips | `天數：1 夜`, `會員：金鑽以上`, `最少須訂間數：28`, `不可退款`, `訂金：100%`, `開放期間：2026-01-01 ~ 長期`, `熱賣期間：2026-01-01 ~ 2027-12-31`, `1 天內付款`, `可用庫存數：5`, `可加人 / 總人數限制 5` |
 | 日期 | 入住日與退房日皆使用 `components/calendar-simple.md` default variant；markup 不 hard-code 日期字串，由 JS 填入今日 `dayjs().format("YYYY-MM-DD")` |
-| 價格表 | `2026-03-01`, `2026-03-02`, 定價調整 `1999`, `1999`, 定價 `1000`, `1000`, 總計 `8888`, `9999` |
+| 價格表 | `2026-03-01`, `2026-03-02`; 定價調整 `1999`; 多加成人 `+1,000` 與多加孩童 `+800` 各有一組 `- / 5 / +` stepper；定價 `1000`; footer 為 `總計 / 8888 / 9999 / 9999 / 9999` |
 | Textarea | `我是 textarea\n- 內容\n- 內容` |
 | Footer | `清除`, `確定` |
 
@@ -313,8 +314,9 @@ Modal (0527 reference: 646×724 desktop, 1774:66050)
 
 | 行為 | 規則 |
 |---|---|
-| 開啟預設 | `edit.svg` click → 開啟（0527 起無 stepper，預設為 lock + 定價調整 disabled） |
+| 開啟預設 | `edit.svg` click 開啟；不恢復 0527 移除的 date controller / 訂房間數 stepper；預設為 lock + 定價調整 disabled |
 | lock / unlock | 只控制價格表「定價調整」input 的 active / disabled，與訂房數量無關 |
+| 成人 / 孩童 stepper | 0827 本輪只實作設計稿外觀，不接前端加減、min / max、總人數限制或 lock / clear；實際資料與操作由後端依外層 table「間數」stepper 行為處理 |
 | lock 狀態 | 顯示 `icons/lock`，定價調整 input disabled，背景 `Color/Neutral/100`，文字 `Color/Text/400` |
 | unlock 狀態 | 顯示 `icons/unlock`，定價調整 input 可編輯，背景 `Color/Neutral/0`，文字 `Color/Text/800` |
 | 清除 | 只清除目前非 disabled 的定價調整 input value 與 textarea；disabled input 不動 |
@@ -331,11 +333,11 @@ Modal (0527 reference: 646×724 desktop, 1774:66050)
 | 區塊 | 規格 |
 |---|---|
 | Mobile reference | 375px 為最小支援 viewport / Figma 參考，不是固定寬 |
-| Modal width | `width: 100%`，desktop 可設 `max-width`，mobile 滿版 |
+| Modal width | desktop `800px`；窄於 modal 時使用 viewport 流動寬度，mobile 滿版 |
 | Modal height | content 高於 viewport 時，保留 header / footer，body 垂直 scroll |
 | Info chips | `flex-wrap`，不使用 horizontal overflow；每個 item 必須套用「單側 Border Info Item 規則」，即元素本身 `border-0 border-l-4 rounded-md`，不可使用完整外框、pseudo element 或 inner rail |
 | Date row | 375px 下兩欄平均寬度，欄位內使用 Calendar simple button：日期文字 + `calendar.svg` |
-| Price table | 使用語意 `<table>`，保留 table 自身 padding 與 row border，不拆成卡片，也不使用 grid/full cell border 模擬表格；tbody cell 垂直節奏由 table 專用 CSS 控制：單列時 `td` 上下各 8px；多列時第一列 top 8px、最後列 bottom 8px，列與列之間由上一列 bottom 4px + 下一列 top 4px 組成 8px |
+| Price table | 使用語意 `<table>`，desktop 內容寬 `768px`；欄位依序為日期 / 定價調整 / 多加成人 / 多加孩童 / 定價。保留 table 自身 padding 與 row border，不拆成卡片；窄 viewport 只在 table wrapper 內水平捲動。tbody cell 垂直節奏由 table 專用 CSS 控制：單列時 `td` 上下各 8px；多列時第一列 top 8px、最後列 bottom 8px，列與列之間由上一列 bottom 4px + 下一列 top 4px 組成 8px |
 | Textarea | 可輸入，多行文字區 |
 
 ### Typography / Colors

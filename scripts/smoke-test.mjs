@@ -576,6 +576,70 @@ const PAGES = [
            document.getElementById("modalArrivalMethodBackdrop")) ? true : "modal ids missing"
         `,
       },
+      {
+        name: "room-edit modal 0827 add-person contract",
+        expr: `
+          (function () {
+            var modal = document.getElementById("modalRoomEditBackdrop");
+            var triggers = document.querySelectorAll('[data-modal-open="modalRoomEditBackdrop"]');
+            if (!modal) return "room-edit modal missing";
+            if (triggers.length !== 3) return "room-edit trigger count: " + triggers.length;
+            triggers[0].click();
+            if (!modal.classList.contains("open")) return "first edit did not open modal";
+            var icon = modal.querySelector('img[src$="adding-people.svg"]');
+            if (!icon) return "adding-people icon missing";
+            if (!modal.textContent.includes("總人數限制 5")) return "person limit copy missing";
+            var headers = Array.from(modal.querySelectorAll(".room-edit-price-table th"))
+              .map(function (th) { return th.textContent.replace(/\\s+/g, " ").trim(); });
+            if (!headers.some(function (text) { return text.includes("多加成人 / +1,000"); }))
+              return "adult column missing";
+            if (!headers.some(function (text) { return text.includes("多加孩童 / +800"); }))
+              return "child column missing";
+            var steppers = modal.querySelectorAll(".room-edit-addon-stepper");
+            if (steppers.length !== 4) return "addon stepper count: " + steppers.length;
+            var firstInput = steppers[0].querySelector("input");
+            steppers[0].querySelector("button:last-child").click();
+            if (firstInput.value !== "5") return "visual-only stepper changed value";
+            modal.querySelector('.modal-close-btn[data-modal="modalRoomEditBackdrop"]').click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "room-edit modal uses 800px desktop contract",
+        viewport: { width: 1440, height: 1000 },
+        expr: `
+          (function () {
+            var modal = document.getElementById("modalRoomEditBackdrop");
+            document.querySelector('[data-modal-open="modalRoomEditBackdrop"]').click();
+            var box = modal.querySelector(".modal-box").getBoundingClientRect();
+            var table = modal.querySelector(".room-edit-price-table").getBoundingClientRect();
+            if (Math.abs(box.width - 800) > 1) return "desktop modal width: " + box.width;
+            if (Math.abs(table.width - 768) > 1) return "desktop price table width: " + table.width;
+            modal.querySelector('.modal-close-btn[data-modal="modalRoomEditBackdrop"]').click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "room-edit modal table scroll stays local on mobile",
+        viewport: { width: 375, height: 812, mobile: true },
+        expr: `
+          (function () {
+            var modal = document.getElementById("modalRoomEditBackdrop");
+            document.querySelector('[data-modal-open="modalRoomEditBackdrop"]').click();
+            var box = modal.querySelector(".modal-box").getBoundingClientRect();
+            var scroller = modal.querySelector(".room-edit-price-table").parentElement;
+            if (Math.abs(box.width - 375) > 1) return "mobile modal width: " + box.width;
+            if (scroller.scrollWidth <= scroller.clientWidth)
+              return "price table should overflow its local scroller";
+            if (document.documentElement.scrollWidth > 375)
+              return "page-level horizontal overflow: " + document.documentElement.scrollWidth;
+            modal.querySelector('.modal-close-btn[data-modal="modalRoomEditBackdrop"]').click();
+            return true;
+          })()
+        `,
+      },
       ...SHELL_CHECKS,
       ...SESSION_MODAL_CHECKS,
     ],
