@@ -1493,6 +1493,32 @@ const PAGES = [
         `,
       },
       {
+        name: "room-type add-person select contract (0827)",
+        expr: `
+          (function () {
+            var editableModalIds = ["modalRoomTypeNewBackdrop", "modalRoomTypeEditBackdrop"];
+            for (var i = 0; i < editableModalIds.length; i += 1) {
+              var editable = document.querySelector("#" + editableModalIds[i] + " [data-room-extra-people]");
+              if (!editable) return editableModalIds[i] + " add-person select missing";
+              if (editable.disabled) return editableModalIds[i] + " add-person select disabled";
+              var labels = Array.from(editable.options).map(function (option) {
+                return option.textContent.trim();
+              });
+              if (labels.join("|") !== "不可加人|1|2")
+                return editableModalIds[i] + " options: " + labels.join("|");
+              editable.value = "2";
+              if (editable.value !== "2") return editableModalIds[i] + " cannot select 2";
+            }
+
+            var view = document.querySelector("#modalRoomTypeViewBackdrop [data-room-extra-people]");
+            if (!view) return "view add-person select missing";
+            if (!view.disabled) return "view add-person select should be disabled";
+            if (view.value !== "2") return "view add-person value: " + view.value;
+            return true;
+          })()
+        `,
+      },
+      {
         name: "room count change reveals inventory toggle (new/edit)",
         expr: `
           (function () {

@@ -7,6 +7,41 @@
 
 ---
 
+## Session 152：房型 modal 新增加人 Select (2026-08-27)
+
+使用者確認 `room-type.html` 的資料新增、資料修改、資料查看 modal 只新增一個
+「加人」Select，其餘既有欄位、房間數互動與 modal 行為全部維持。
+
+### Figma current source
+
+- 新增／修改 section：`2308:85675`；modal instance `2308:85163`
+- 僅查看 section：`2308:85677`；modal instance `2308:85438`
+
+### 使用者拍板
+
+1. 新增與修改提供 `不可加人 / 1 / 2` 三個可選 option，預設為 `不可加人`。
+2. 查看固定顯示 `2`，Select 必須 disabled。
+3. 欄位位於「網路訂購」下方、文案卡上方；desktop 橫跨兩欄，mobile 滿寬。
+4. 三個 modal 的其餘設定完全沿用既有規格。
+
+### 本輪改動
+
+1. `components/modal.md` 登錄 0827 Figma nodes、欄位位置、options 與狀態規則。
+2. `preview/partials/room-type-modals.html` 在新增／修改／查看三個 modal 加入
+   對應 Select，並使用 `data-room-extra-people` 作為穩定 contract hook。
+3. `scripts/smoke-test.mjs` 新增三個 modal 的 options、可操作性、disabled 與
+   固定值 regression check。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0（8 pages, 3 standalone）
+- `./scripts/lint-tokens.sh` exit 0（92 raw hex tokens）
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，`room-type.html`
+  16 checks 通過
+
 ## Session 151：房間預定 modal 新增加人資訊 (2026-08-27)
 
 使用者確認只更新房間預定 table 第一個 `edit.svg` 所使用的共用

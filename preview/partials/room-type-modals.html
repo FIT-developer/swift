@@ -119,6 +119,20 @@
           </span>
         </div>
 
+        <!-- Row6: 加人 Select（0827） -->
+        <div class="flex items-center gap-3 min-[640px]:col-span-2">
+          <label for="roomTypeNewExtraPeople" class="w-16 shrink-0 text-base text-text-default">加人</label>
+          <select
+            id="roomTypeNewExtraPeople"
+            data-room-extra-people
+            class="flex-1 min-w-0 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+          >
+            <option value="0">不可加人</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+
         <!-- 房間介紹文案 / 房間名稱文案 -->
         <div class="flex flex-col gap-2">
           <label class="text-base text-text-default">房間介紹文案</label>
@@ -272,6 +286,20 @@
           </span>
         </div>
 
+        <!-- Row6: 加人 Select（0827） -->
+        <div class="flex items-center gap-3 min-[640px]:col-span-2">
+          <label for="roomTypeEditExtraPeople" class="w-16 shrink-0 text-base text-text-default">加人</label>
+          <select
+            id="roomTypeEditExtraPeople"
+            data-room-extra-people
+            class="flex-1 min-w-0 rounded-[6px] border border-border-disabled bg-white px-3 py-1.5 text-base text-text-default outline-none focus:border-border-focus"
+          >
+            <option value="0">不可加人</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+
         <!-- 房間介紹文案 / 房間名稱文案 -->
         <div class="flex flex-col gap-2">
           <label class="text-base text-text-default">房間介紹文案</label>
@@ -420,6 +448,21 @@
             <span class="member-data-switch-track"></span>
             <span class="member-data-switch-knob"></span>
           </span>
+        </div>
+
+        <!-- 加人 Select：查看模式固定為 2 並 disabled（0827） -->
+        <div class="flex items-center gap-3 min-[640px]:col-span-2">
+          <label for="roomTypeViewExtraPeople" class="w-16 shrink-0 text-base text-text-default">加人</label>
+          <select
+            id="roomTypeViewExtraPeople"
+            data-room-extra-people
+            disabled
+            class="flex-1 min-w-0 rounded-[6px] border border-border-disabled bg-border-disabled px-3 py-1.5 text-base text-text-secondary"
+          >
+            <option value="0">不可加人</option>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+          </select>
         </div>
 
         <!-- 房間介紹文案：查看模式示範已儲存內容，無編輯按鈕；

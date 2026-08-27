@@ -936,7 +936,10 @@ Modal (1140x1134px)
 房型卡片的「+ 新增」按鈕（新增）、「修改」按鈕（修改）、「查看」按鈕（查看）觸發。
 **共用元件**：跟其他 modal 一樣沿用 `Modal（有分資料設定與資料修改 title）`，
 header + content slot + footer slot 結構不變。
-**Current Figma Node ID（2026-08-04 confirmed）**：
+**Current Figma Node ID（2026-08-27 add-person field）**：
+- 新增／修改 0827 section：`2308:85675`；modal instance `2308:85163`
+- 查看 0827 section：`2308:85677`；modal instance `2308:85438`
+- 0827 只新增「加人」Select；其餘欄位與房間數互動仍以下列 0804 nodes 為準
 - 新增：`2147:109387` / `2147:109674` / `2147:110051`
   （`Modal（新增）0804-1/2/3`）
 - 修改：`2147:110305` / `2147:110306` / `2147:110307`
@@ -980,6 +983,7 @@ Modal（desktop reference 800px content）
   - default: 房間數 number input(302px, 值"14")                  |  網路訂購 toggle（預設關）
   - changed: 房間數 number input(302px, 值"15" + 差異文案)       |  房數修改 toggle + hint
 - Row5 changed only: 網路訂購 toggle（預設關；full row）
+- Row6: 加人 Select（full row；選項 `不可加人` / `1` / `2`，預設 `不可加人`）
 - 房間介紹文案 card（"尚未填寫" + icons/edit "編輯" 按鈕）          |  房間名稱文案 card（同左，"尚未填寫" + "編輯" 按鈕）
 - 房間設施項目: 4 顆 chip（設施一[選中]／設施二／設施三[選中]／設施五六七八九）
 Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
@@ -997,6 +1001,7 @@ Modal（desktop reference 800px content，比新增多 3 個欄位，版面整�
   - default: 房間數 number input(302px, 值"14")                  |  網路訂購 toggle（預設關）
   - changed: 房間數 number input(302px, 值"15" + 差異文案)       |  房數修改 toggle + hint
 - Row5 changed only: 網路訂購 toggle（預設關；full row）
+- Row6: 加人 Select（full row；選項 `不可加人` / `1` / `2`，預設 `不可加人`）
 - 房間介紹文案 card（"尚未填寫" + icons/edit "編輯" 按鈕）          |  房間名稱文案 card（同左，"尚未填寫" + "編輯" 按鈕）
 - 房間設施項目: 4 顆 chip（設施一[選中]／設施二／設施三[選中]／設施五六七八九）
 Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
@@ -1014,6 +1019,7 @@ Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
 | 房間設施項目 chip | 設施一／設施三選中（藍底 `Color/MenuItem/Default`），設施二／設施五六七八九未選中（白底） | 4 顆 chip **全部統一 disabled 灰色**（`Color/Neutral/200`），不保留選中藍色 |
 | Footer | 取消（`Color/Neutral/200`） + 儲存（`Color/Neutral/800`） | **只有一顆「關閉」按鈕**（`Color/Neutral/800`，樣式沿用原「儲存」按鈕的深色），沒有取消/儲存兩顆並存（2026-07-30 使用者拍板：Figma 原稿留了取消+儲存是貼稿疏漏，實際只要關閉） |
 | 房間數與房數修改 | 可編輯；不等於 14 時使用橘色 input border 與可操作 toggle | 全部 disabled；不使用橘色 input border；房數修改 active 時用 disabled active toggle（灰 track + knob 右側） |
+| 加人 Select | 可選 `不可加人` / `1` / `2` | 固定顯示 `2` 並 disabled；底色使用 `Color/Neutral/200` |
 
 ### 固定文字內容
 
@@ -1030,6 +1036,7 @@ Footer: 取消（bg Color/Neutral/200） + 儲存（bg Color/Neutral/800）
 | 房間數 | `14` | 同新增 |
 | 房數修改（toggle） | 只在房間數不等於 14 時顯示 | 同新增（查看模式 disabled） |
 | 網路訂購（toggle） | 預設關 | 預設關 |
+| 加人 | Select：`不可加人` / `1` / `2`，預設 `不可加人` | 修改同新增；查看固定 `2` 並 disabled |
 | 房間介紹文案 | 空狀態「尚未填寫」 | 查看模式示範已填內容：「已儲存內容」（橘字）+「設定房間名稱、代號、房型、床型、間數、定價、顯示分類與營運方式，並可上傳房間照片、補充設備與房價限制。完成後，系統將依設定內容顯示於訂房頁面，方便旅客快速了解房型資訊並進行預訂。」 |
 | 房間名稱文案 | 空狀態「尚未填寫」 | 查看模式維持空狀態「尚未填寫」 |
 | 房間設施項目 | `設施一`[選中] `設施二` `設施三`[選中] `設施五六七八九` | 同新增（查看模式全部 disabled 灰色，內容文字不變） |
