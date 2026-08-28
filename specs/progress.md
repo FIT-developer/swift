@@ -7,6 +7,69 @@
 
 ---
 
+## Session 154：UI 任務收尾直接提供 preview URL (2026-08-28)
+
+使用者要求往後 UI 任務 self-test 後直接提供 landing page 預覽網址，讓使用者
+自行點入驗收。
+
+### 本輪改動
+
+1. `start.md` 新增「Preview 驗收網址」規則：final 固定提供
+   `http://localhost:8000/landing.html`；若修改其他獨立頁面，另提供該頁直接
+   URL。
+2. URL 提供前必須確認 port 8000 preview server 正在運行且頁面可連線；網址只
+   代表 dev 端 self-test 通過，使用者驗收前仍不可 commit。
+3. 回溯 audit：Session 153 的 final 只提供 QA 截圖路徑，沒有提供可點擊的本機
+   preview URL；本輪立即補上並作為後續收尾固定流程。
+4. 機器可判定性：HTTP 可連線狀態可自動檢查；final 是否包含 URL 無法由 repo
+   pre-commit lint 判斷，因此保留在 `start.md` 收尾 checklist。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- preview server 與 URL HTTP 狀態於本輪 final 前驗證
+
+## Session 153：房間預定三個 edit modal 版本分流與表頭對齊 (2026-08-28)
+
+使用者澄清 0827 可加人更新只適用房間預定 table 第一列的 `edit.svg`；第二、
+第三列必須維持 0527 原版 modal 內容。第一列新版價格 table 的表頭對齊規則為
+「日期靠左，其餘四欄置中」。
+
+### 本輪改動
+
+1. `components/modal.md` 明確記錄三個 edit 入口的版本 mapping：第一列使用
+   0827 新版，第二、第三列使用 0527 原版；同時登錄兩個 desktop 寬度與新版
+   表頭對齊規則。
+2. `preview/partials/room-booking-sections.html` 為三個入口加上穩定 variant hook：
+   第一列 `current`，第二、第三列 `legacy`。
+3. `preview/partials/room-booking-modals.html` 保留第一列五欄價格表，另恢復 0527
+   三欄原版價格表；可加人 chip 與成人 / 孩童 stepper 只在 `current` 顯示。
+4. `preview/js/order-modals.js` 依觸發入口切換 modal variant，並讓 lock、clear、
+   reset 只對當前版本保持正確行為。
+5. `preview/assets/css/modals.css` 將第一列 desktop modal 維持 800px，第二、
+   第三列原版恢復 646px；768px table 最小寬只套用第一列新版。
+6. `scripts/smoke-test.mjs` 新增三入口 mapping、current / legacy 內容隔離、
+   五欄表頭對齊與兩種 desktop 寬度 regression checks。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `node --check preview/js/order-modals.js` exit 0
+- `node --check scripts/smoke-test.mjs` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`8 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`92 raw hex tokens`)
+- `node scripts/smoke-test.mjs` exit 0：8 pages 通過，`room-booking.html`
+  13 checks 通過
+- 視覺 QA 截圖輸出到 ignored 目錄 `specs/qa-screenshots/session-153/`：
+  - `room-edit-current-desktop-1440.png`
+  - `room-edit-legacy-desktop-1440.png`
+  - `room-edit-current-tablet-768.png`
+  - `room-edit-current-mobile-375.png`
+  - `room-edit-legacy-mobile-375.png`
+
 ## Session 152：房型 modal 新增加人 Select (2026-08-27)
 
 使用者確認 `room-type.html` 的資料新增、資料修改、資料查看 modal 只新增一個

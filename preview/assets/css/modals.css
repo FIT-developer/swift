@@ -39,7 +39,10 @@
   flex-direction: column;
   overflow: hidden;
 }
-.room-edit-price-table {
+#modalRoomEditBackdrop[data-room-edit-active-variant="legacy"] .modal-box {
+  width: min(calc(100vw - 24px), 646px);
+}
+#modalRoomEditBackdrop[data-room-edit-active-variant="current"] .room-edit-price-table {
   min-width: 768px; /* min-width-ok: five-column price table scrolls inside modal body */
 }
 .room-edit-addon-stepper {

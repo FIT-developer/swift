@@ -121,6 +121,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="modalRoomEditTitle"
+      data-room-edit-active-variant="current"
     >
       <div class="modal-box mx-3">
         <!-- Header -->
@@ -276,6 +277,7 @@
                 </div>
                 <div
                   class="inline-flex min-h-11 items-center rounded-md border-0 border-l-4 border-border-disabled bg-white"
+                  data-room-edit-current-only
                 >
                   <div class="inline-flex items-center gap-2 px-3 py-1.5">
                     <img
@@ -295,7 +297,7 @@
           </div>
 
           <!-- Price table -->
-          <div class="px-4 py-4">
+          <div class="px-4 py-4" data-room-edit-price-current>
             <div class="mb-2 text-base text-text-default">價格</div>
             <div class="overflow-x-auto">
               <table
@@ -316,9 +318,9 @@
                       日期
                     </th>
                     <th
-                      class="border-t border-b border-text-default px-3 py-2 text-left font-normal"
+                      class="border-t border-b border-text-default px-3 py-2 text-center font-normal"
                     >
-                      <span class="inline-flex items-center gap-2">
+                      <span class="inline-flex w-full items-center justify-center gap-2">
                         <span>定價調整</span>
                         <button
                           type="button"
@@ -346,7 +348,7 @@
                       多加孩童 / +800
                     </th>
                     <th
-                      class="border-t border-b border-text-default px-3 py-3 text-left font-normal"
+                      class="border-t border-b border-text-default px-3 py-3 text-center font-normal"
                     >
                       定價
                     </th>
@@ -437,6 +439,92 @@
                     </td>
                     <td class="border-t border-text-default px-3 py-2 text-center">
                       9999
+                    </td>
+                    <td class="border-t border-text-default px-3 py-2 text-center">
+                      9999
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- 0527 original price table for the second and third edit entry -->
+          <div class="hidden px-4 py-4" data-room-edit-price-legacy>
+            <div class="mb-2 text-base text-text-default">價格</div>
+            <div class="overflow-x-auto">
+              <table
+                class="room-edit-price-table w-full table-fixed text-xs text-text-default md:min-w-[343px]"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      class="border-t border-b border-text-default px-3 py-3 text-left font-normal"
+                    >
+                      日期
+                    </th>
+                    <th
+                      class="border-t border-b border-text-default px-3 py-2 text-left font-normal"
+                    >
+                      <span class="inline-flex items-center gap-2">
+                        <span>定價調整</span>
+                        <button
+                          type="button"
+                          class="flex h-6 w-6 items-center justify-center text-brand-active"
+                          data-room-edit-lock-toggle
+                          data-locked="true"
+                          aria-label="鎖定 / 解鎖定價調整"
+                          aria-pressed="true"
+                        >
+                          <span
+                            class="icon-mask icon-mask-lock h-6 w-6"
+                            data-room-edit-lock-icon
+                          ></span>
+                        </button>
+                      </span>
+                    </th>
+                    <th
+                      class="border-t border-b border-text-default px-3 py-3 text-left font-normal"
+                    >
+                      定價
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="px-3">2026-03-01</td>
+                    <td class="px-3">
+                      <input
+                        type="text"
+                        value="1999"
+                        disabled
+                        class="room-edit-price-input h-7 w-full rounded-md border border-border-disabled bg-border-default px-3 py-1.5 text-xs text-text-secondary outline-none"
+                        aria-label="2026-03-01 定價調整"
+                      />
+                    </td>
+                    <td class="px-3 text-center">1000</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3">2026-03-02</td>
+                    <td class="px-3">
+                      <input
+                        type="text"
+                        value="1999"
+                        disabled
+                        class="room-edit-price-input h-7 w-full rounded-md border border-border-disabled bg-border-default px-3 py-1.5 text-xs text-text-secondary outline-none"
+                        aria-label="2026-03-02 定價調整"
+                      />
+                    </td>
+                    <td class="px-3 text-center">1000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td class="border-t border-text-default px-3 py-2 text-center">
+                      總計
+                    </td>
+                    <td class="border-t border-text-default px-3 py-2 text-center">
+                      8888
                     </td>
                     <td class="border-t border-text-default px-3 py-2 text-center">
                       9999

@@ -255,6 +255,18 @@ Spacing/16, Radius/8,全部引用自 tokens.md"
 - 視覺類功能必須主動跑多角度截圖（mobile/tablet/desktop viewport + state variations）給使用者驗收
 - 驗收前不可進入下一個 task，不可 commit
 
+### Preview 驗收網址
+- UI 任務 self-test 後，必須確認本機 preview server 正在運行，並在 final 直接
+  提供可點擊的 `http://localhost:8000/landing.html` 給使用者自行驗收。
+- 若本輪修改的是其他獨立頁面，除了 landing page URL，還要同時提供該頁的
+  直接 URL，例如房間預定使用 `http://localhost:8000/room-booking.html`。
+- 提供網址只代表 dev 端 self-test 通過，不代表使用者已驗收；收到使用者確認前
+  仍不可 commit。
+- 若 port 8000 無法啟動或被其他程式占用，必須先查明狀態；不可只省略網址，
+  final 要回報實際可用 URL 或明確阻塞原因。
+- 機器可判定性：preview server 是否可連線可由 HTTP check 驗證；final 是否附上
+  URL 屬對話輸出，現有 pre-commit lint 無法判定，保留為收尾 checklist。
+
 ### 讀 Figma 的硬性檢查
 - **必驗 styles.fills / strokes**：不從前例假設顏色；每個 Figma node 都要從當前 selection 的 styles 抓 hex，再對照 `tokens.md` 翻 token 名
 - **selection 防漏三動作**：

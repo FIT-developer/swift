@@ -13,21 +13,33 @@ import { initMemberDataModal } from "./member-data-modal.js";
 import { initOrderEditModal } from "./order-edit-modal.js";
 
 export function initOrderModals() {
+  function setRoomEditVariant(variant) {
+    var modal = document.getElementById("modalRoomEditBackdrop");
+    if (!modal) return;
+    var activeVariant = variant === "legacy" ? "legacy" : "current";
+    modal.dataset.roomEditActiveVariant = activeVariant;
+    modal.querySelectorAll("[data-room-edit-current-only]").forEach(function (el) {
+      el.classList.toggle("hidden", activeVariant !== "current");
+    });
+    var currentPrice = modal.querySelector("[data-room-edit-price-current]");
+    var legacyPrice = modal.querySelector("[data-room-edit-price-legacy]");
+    if (currentPrice) currentPrice.classList.toggle("hidden", activeVariant !== "current");
+    if (legacyPrice) legacyPrice.classList.toggle("hidden", activeVariant !== "legacy");
+  }
+
   function setRoomEditLocked(locked) {
     var modal = document.getElementById("modalRoomEditBackdrop");
     if (!modal) return;
-    var toggle = modal.querySelector("[data-room-edit-lock-toggle]");
-    var icon = modal.querySelector("[data-room-edit-lock-icon]");
-    if (toggle) {
+    modal.querySelectorAll("[data-room-edit-lock-toggle]").forEach(function (toggle) {
       toggle.dataset.locked = locked ? "true" : "false";
       toggle.setAttribute("aria-pressed", locked ? "true" : "false");
       toggle.classList.toggle("text-brand-active", locked);
       toggle.classList.toggle("text-status-positive", !locked);
-    }
-    if (icon) {
+    });
+    modal.querySelectorAll("[data-room-edit-lock-icon]").forEach(function (icon) {
       icon.classList.toggle("icon-mask-lock", locked);
       icon.classList.toggle("icon-mask-unlock", !locked);
-    }
+    });
     modal.querySelectorAll(".room-edit-price-input").forEach(function (input) {
       input.disabled = locked;
       input.classList.toggle("bg-border-default", locked);
@@ -99,15 +111,26 @@ export function initOrderModals() {
   (function () {
     var modal = document.getElementById("modalRoomEditBackdrop");
     if (!modal) return;
-    var lock = modal.querySelector("[data-room-edit-lock-toggle]");
-    lock &&
+    document.querySelectorAll("[data-room-edit-variant]").forEach(function (trigger) {
+      trigger.addEventListener("click", function () {
+        setRoomEditVariant(trigger.dataset.roomEditVariant);
+      });
+    });
+    modal.querySelectorAll("[data-room-edit-lock-toggle]").forEach(function (lock) {
       lock.addEventListener("click", function () {
         setRoomEditLocked(lock.dataset.locked !== "true");
       });
+    });
     var clear = modal.querySelector("[data-room-edit-clear]");
     clear &&
       clear.addEventListener("click", function () {
-        modal
+        var activePrice = modal.querySelector(
+          modal.dataset.roomEditActiveVariant === "legacy"
+            ? "[data-room-edit-price-legacy]"
+            : "[data-room-edit-price-current]",
+        );
+        activePrice &&
+          activePrice
           .querySelectorAll(".room-edit-price-input:not(:disabled)")
           .forEach(function (input) {
             input.value = "";
@@ -115,6 +138,7 @@ export function initOrderModals() {
         var textarea = modal.querySelector("[data-room-edit-textarea]");
         if (textarea) textarea.value = "";
       });
+    setRoomEditVariant("current");
     resetRoomEditModal();
   })();
 

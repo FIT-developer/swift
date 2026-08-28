@@ -257,8 +257,9 @@ Modal (560×390px)
 ## state=room booking edit（訂房明細編輯）
 
 **使用位置**：`preview/partials/room-booking-modals.html`；由 `room-booking.html`
-與訂單修改 modal 內共用的訂房明細表「操作」欄位 `icons/edit` 觸發。
-**觸發**：點擊 `edit.svg` icon 開啟。
+訂房明細表「操作」欄位的三個 `icons/edit` 觸發。
+**觸發**：第一列 `edit.svg` 顯示 0827 新版；第二、第三列 `edit.svg` 顯示
+0527 原版內容，不得套用 0827 的可加人 chip 或五欄價格表。
 **Figma 讀取日期**：2026-05-05。
 
 此 modal 以 375px 作為最小支援 viewport 的 Figma 參考寬度；實作不可固定寫死 375px，需全響應式。Desktop 可用較寬 modal 呈現同內容，小尺寸則依 375px 佈局垂直排列並讓 body 區域 scroll。
@@ -270,10 +271,10 @@ Modal (560×390px)
 | 預設 | `1272:27402` | 375×1004px | `lock` + 訂房間數 `1` + `已達最低間數`（**0505 標稿**） |
 | 上限 | `1272:27354` | 375×1004px | `lock` + 訂房間數 `5` + `已達上限間數`（**0505 標稿**） |
 | 可編輯價格 | `1272:27306` | 375×1004px | `unlock` + 定價調整 input active（**0505 標稿**） |
-| **↺ 0527 desktop 重整** | `1774:66050` | **646×724px** | 移除 date controller 整段；headline + metadata chips + price table + textarea + footer 四段；info chip 行可橫排 9 個（646 寬足夠 wrap） |
-| **0827 可加人更新（current）** | `2308:84584` | **800x740px** | metadata 新增可加人雙行 chip；價格表新增成人 / 孩童加人數量欄；2026-08-27 確認為 current source |
+| **0527 desktop 重整** | `1774:66050` | **646x724px** | 第二、第三列 current source；移除 date controller 整段；保留 9 個 info chips 與三欄價格表 |
+| **0827 可加人更新** | `2308:84584` | **800x740px** | 僅第一列 current source；metadata 新增可加人雙行 chip；價格表新增成人 / 孩童加人數量欄 |
 
-### 結構（0827 current：保留 0527 移除 date controller 的決策）
+### 結構（第一列 0827 新版）
 
 ```
 Modal (0827 current: 800x740 desktop, 2308:84584)
@@ -295,6 +296,9 @@ Modal (0827 current: 800x740 desktop, 2308:84584)
   - 確定
 ```
 
+第二、第三列沿用 0527 原版：646px desktop modal、9 個 info chips、價格表欄位為
+`日期 / 定價調整 / 定價`；其餘 lock、clear、textarea 與關閉行為相同。
+
 > **0527 重大變更**：原本中段「Controller - date」（入住日 calendar + 退房日 calendar + 訂房間數 stepper + 已達最低/上限間數 hint）整段**永久移除**。modal 從 metadata chips 直接接 Price table，省去日期挑選與數量調整。 Figma 標的高度從 1004 縮為 724（差 280，正好是被移除段落的視覺高度）。現行 `preview/partials/room-booking-modals.html` 的 `modalRoomEdit` 不得再放回 `Date controller` (`px-3 py-4`) 與 `訂房間數 stepper` 兩 block；對應 JS（`data-room-edit-step`, `data-room-edit-quantity`, `data-room-edit-quantity-hint`, calendar 初始化）也不應恢復。
 
 ### 固定文字內容
@@ -314,7 +318,7 @@ Modal (0827 current: 800x740 desktop, 2308:84584)
 
 | 行為 | 規則 |
 |---|---|
-| 開啟預設 | `edit.svg` click 開啟；不恢復 0527 移除的 date controller / 訂房間數 stepper；預設為 lock + 定價調整 disabled |
+| 開啟預設 | 第一列切換為 0827 新版；第二、第三列切換為 0527 原版；都不恢復 date controller / 訂房間數 stepper，預設為 lock + 定價調整 disabled |
 | lock / unlock | 只控制價格表「定價調整」input 的 active / disabled，與訂房數量無關 |
 | 成人 / 孩童 stepper | 0827 本輪只實作設計稿外觀，不接前端加減、min / max、總人數限制或 lock / clear；實際資料與操作由後端依外層 table「間數」stepper 行為處理 |
 | lock 狀態 | 顯示 `icons/lock`，定價調整 input disabled，背景 `Color/Neutral/100`，文字 `Color/Text/400` |
@@ -333,11 +337,11 @@ Modal (0827 current: 800x740 desktop, 2308:84584)
 | 區塊 | 規格 |
 |---|---|
 | Mobile reference | 375px 為最小支援 viewport / Figma 參考，不是固定寬 |
-| Modal width | desktop `800px`；窄於 modal 時使用 viewport 流動寬度，mobile 滿版 |
+| Modal width | 第一列 desktop `800px`；第二、第三列 desktop `646px`；窄於 modal 時使用 viewport 流動寬度，mobile 滿版 |
 | Modal height | content 高於 viewport 時，保留 header / footer，body 垂直 scroll |
 | Info chips | `flex-wrap`，不使用 horizontal overflow；每個 item 必須套用「單側 Border Info Item 規則」，即元素本身 `border-0 border-l-4 rounded-md`，不可使用完整外框、pseudo element 或 inner rail |
 | Date row | 375px 下兩欄平均寬度，欄位內使用 Calendar simple button：日期文字 + `calendar.svg` |
-| Price table | 使用語意 `<table>`，desktop 內容寬 `768px`；欄位依序為日期 / 定價調整 / 多加成人 / 多加孩童 / 定價。保留 table 自身 padding 與 row border，不拆成卡片；窄 viewport 只在 table wrapper 內水平捲動。tbody cell 垂直節奏由 table 專用 CSS 控制：單列時 `td` 上下各 8px；多列時第一列 top 8px、最後列 bottom 8px，列與列之間由上一列 bottom 4px + 下一列 top 4px 組成 8px |
+| Price table | 第一列使用五欄語意 `<table>`，desktop 內容寬 `768px`，欄位依序為日期 / 定價調整 / 多加成人 / 多加孩童 / 定價；表頭只有日期靠左，其餘四欄置中。第二、第三列沿用 0527 三欄表格與原對齊。保留 table 自身 padding 與 row border，不拆成卡片；窄 viewport 只在 table wrapper 內水平捲動。tbody cell 垂直節奏由 table 專用 CSS 控制：單列時 `td` 上下各 8px；多列時第一列 top 8px、最後列 bottom 8px，列與列之間由上一列 bottom 4px + 下一列 top 4px 組成 8px |
 | Textarea | 可輸入，多行文字區 |
 
 ### Typography / Colors
