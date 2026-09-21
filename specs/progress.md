@@ -7,6 +7,67 @@
 
 ---
 
+## Session 155：專案內容頁與住宿／串接三步驟 modal (2026-09-21)
+
+使用者依序提供專案內容 desktop、住宿 modal 三步驟與串接 modal 三步驟，
+確認新增／修改共用同一套三步驟 session，title 由觸發入口決定。
+
+### Figma current source
+
+- Page：`2530:90916` `專案內容 desktop 2027 v.1.1`
+- 住宿 batch：`2424:92389`；modal `2423:89025`、`2423:89312`、`2423:89464`
+- 串接 batch：`2424:92390`；modal `2423:89585`、`2423:89869`、`2423:90021`
+
+### 使用者拍板
+
+1. 上一批 modal 屬於「住宿」tab，下一批屬於「串接」tab。
+2. 頁面右上「新增」開啟時，三步 title 都只顯示「新增」；row「修改」則都只
+   顯示「修改」。Figma 的「新增 / 修改」是設計佔位文字。
+3. 三張 modal 是同一個 session 的 Step 1 -> Step 2 -> Step 3，步驟間保留資料。
+4. 串接 Step 1 新增「通路庫存 Booking」，並移除住宿版的上架期限、幾天前
+   可訂、網路開放天數；Step 2 與 Step 3 共用。
+5. Figma 未另提供 tablet／mobile frame；使用者授權依既有設計手法自動編排
+   RWD，不需再逐項確認斷點配置。
+6. Preview 驗收後回報管理欄按鈕跑版，以及 modal Step 2 日期類型 table 的內容
+   超出但列線未延伸；依原 Figma 修正，不接受只裁切溢出文字的處理。
+
+### 本輪改動
+
+1. 新增 `specs/pages/project-content.md`，記錄 page、兩種 Step 1、共用 Step 2/3、
+   title、footer、互動、responsive constraints 與後端未定義項。
+2. 新增 `preview/project-content.html`、`partials/project-content-modals.html`、
+   `js/project-content.js`、`assets/css/project-content.css`。
+3. 專案 table 提供 14 欄、狀態 tabs、適用房型選單與管理操作；住宿／串接 tab
+   決定 modal Step 1 variant。
+4. modal 實作 title 模式、三步切換、步驟資料保存、當步清除、四個月份與三種
+   日期色彩、售價／加人／加兒童設定。
+5. aside「專案內容」改為真實連結，page tabs、partial manifest、app.css 與
+   smoke test 登記新頁。
+6. RWD 採 1024px desktop、768px tablet、479px small-mobile 分界：tablet 保留
+   Step 1 雙欄與 Step 2 的 2 x 2 月曆；mobile 改單欄，寬 table 僅在自身容器
+   水平捲動，modal header／footer 固定可見。
+7. 管理欄依 Figma `2530:91078` 恢復 620px，六顆按鈕各 88 x 36、16px gap、
+   單列垂直置中；日期類型 table 固定 490px 內容寬，窄 viewport 由外框捲動，
+   讓 header／row 框線與內容使用同一個 table 寬度。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `node --check preview/js/project-content.js` exit 0
+- `node --check scripts/smoke-test.mjs` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`9 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`92 raw hex tokens`)
+- `node scripts/smoke-test.mjs` exit 0：9 pages 通過，`project-content.html`
+  11 checks 通過
+- 視覺 QA：1440 page、住宿 Step 1、串接 Step 1、Step 2、Step 3；768px page
+  與三步 modal；375px page、住宿 Step 1、Step 2、Step 3、串接 Step 1。
+  截圖位於 ignored `specs/qa-screenshots/session-155/`
+- 修正後視覺 QA：1440px 管理欄、375px Step 2 日期 table 左／右捲動端點；
+  實測管理欄 620px、操作列 608px、六顆按鈕 88 x 36，日期 table 490px 且
+  `scrollWidth === clientWidth`，最末 cell 與 table 右緣一致。
+
 ## Session 154：UI 任務收尾直接提供 preview URL (2026-08-28)
 
 使用者要求往後 UI 任務 self-test 後直接提供 landing page 預覽網址，讓使用者

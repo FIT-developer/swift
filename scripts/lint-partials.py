@@ -162,6 +162,23 @@ MANIFEST = {
             './js/topbar-modals.js',
         ],
     },
+    'project-content.html': {
+        'partials': [
+            'aside',
+            'topbar',
+            'session-modals',
+            'topbar-modals',
+            'project-content-modals',
+        ],
+        'modules': [
+            './js/partials.js',
+            './js/page-shell.js',
+            './js/page-tabs.js',
+            './js/project-content.js',
+            './js/modal-controller.js',
+            './js/topbar-modals.js',
+        ],
+    },
 }
 
 # 舊單元件 preview（無 partial 架構），僅豁免不檢查；

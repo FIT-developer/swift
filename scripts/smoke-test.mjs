@@ -258,7 +258,8 @@ const APP_CSS_LOADED_CHECK = {
         "system-basic.css",
         "lodging-info.css",
         "room-type.css",
-        "purchase-addon.css"
+        "purchase-addon.css",
+        "project-content.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -1702,6 +1703,200 @@ const PAGES = [
             var grid = document.getElementById("roomTypePhotoCardGrid");
             if (!grid || grid.children.length !== 5) return "photo grid slot count: " + (grid && grid.children.length);
             document.querySelector("#modalRoomTypePhotoGalleryBackdrop .modal-close-btn").click();
+            return true;
+          })()
+        `,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
+  {
+    file: "project-content.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalLogoutBackdrop") &&
+      !!document.getElementById("modalProjectContentBackdrop") &&
+      document.querySelectorAll(".pc-project-table thead th").length === 14 &&
+      document.querySelectorAll(".pc-calendar-card").length === 4
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "project-content page tabs, table, and room menu contract",
+        viewport: { width: 1440, height: 1000 },
+        expr: `
+          (function () {
+            var kinds = document.querySelectorAll("[data-pc-kind]");
+            if (kinds.length !== 2) return "kind tab count: " + kinds.length;
+            if (!kinds[0].classList.contains("is-active")) return "lodging should start active";
+            if (document.querySelectorAll("[data-pc-status]").length !== 5)
+              return "status tab count mismatch";
+            var headers = Array.from(document.querySelectorAll(".pc-project-table thead th"), function (cell) {
+              return cell.textContent.trim();
+            });
+            if (headers.join("|") !== "編號|類別|照片管理|專案名稱|上架期限|專案期限|適用房型|已開至|已設至|價格|排序|管理|價格更新|最後更新時間")
+              return "table headers changed: " + headers.join("|");
+            var shell = document.querySelector(".pc-table-shell");
+            if (!(shell.scrollWidth > shell.clientWidth)) return "project table should scroll inside shell";
+            var managementCell = document.querySelector(".pc-project-table tbody td:nth-child(12)");
+            var managementActions = managementCell.querySelector(".pc-management-actions");
+            var managementButtons = Array.from(managementActions.querySelectorAll(".pc-action-button"));
+            if (managementButtons.length !== 6) return "management action count: " + managementButtons.length;
+            if (managementButtons.some(function (button) {
+              var buttonRect = button.getBoundingClientRect();
+              return Math.abs(buttonRect.width - 88) > 1 || Math.abs(buttonRect.height - 36) > 1;
+            })) return "management button dimensions changed";
+            if (managementButtons.some(function (button) {
+              return Math.abs(button.getBoundingClientRect().top - managementButtons[0].getBoundingClientRect().top) > 1;
+            })) return "management buttons should stay on one row";
+            if (managementActions.scrollWidth > managementCell.clientWidth + 1)
+              return "management actions overflow their table cell";
+            var roomToggle = document.querySelector("[data-pc-room-toggle]");
+            var roomMenu = document.getElementById("pcRoomMenu");
+            if (!roomMenu.hidden) return "room menu should start closed";
+            roomToggle.click();
+            if (roomMenu.hidden || roomToggle.getAttribute("aria-expanded") !== "true")
+              return "room menu did not open";
+            roomToggle.click();
+            if (!roomMenu.hidden) return "room menu did not close";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "project-content lodging new modal preserves step state",
+        viewport: { width: 1440, height: 1000 },
+        expr: `
+          (function () {
+            var trigger = document.querySelector('[data-pc-modal-mode="new"]');
+            trigger.click();
+            var modal = document.getElementById("modalProjectContentBackdrop");
+            var form = document.getElementById("pcProjectForm");
+            if (!modal.classList.contains("open")) return "new modal did not open";
+            if (document.getElementById("pcModalTitle").textContent.trim() !== "新增")
+              return "new title mismatch";
+            if (form.dataset.pcModalKind !== "lodging") return "lodging kind mismatch";
+            if (!form.querySelector("[data-pc-channel-only]").hidden)
+              return "channel field visible in lodging";
+            if (form.querySelector("[data-pc-lodging-only]").hidden)
+              return "lodging fields hidden";
+            var projectName = form.querySelector('[data-pc-step-panel="1"] input:not([disabled])');
+            projectName.value = "保留步驟資料";
+            form.querySelector('[data-pc-footer="1"] [data-pc-next]').click();
+            if (form.dataset.pcCurrentStep !== "2") return "did not enter step 2";
+            if (!form.querySelector('[data-pc-step-dot="2"]').classList.contains("is-active"))
+              return "step 2 dot not active";
+            var dateTableShell = form.querySelector(".pc-date-type-table-wrap");
+            if (dateTableShell.scrollWidth > dateTableShell.clientWidth + 1)
+              return "desktop date type table should not scroll";
+            form.querySelector('[data-pc-footer="2"] [data-pc-next]').click();
+            if (form.dataset.pcCurrentStep !== "3") return "did not enter step 3";
+            var overflowingPriceShell = Array.from(form.querySelectorAll(".pc-price-table-shell")).some(function (shell) {
+              return shell.scrollWidth > shell.clientWidth + 1;
+            });
+            if (overflowingPriceShell) return "desktop price table should not scroll";
+            form.querySelector('[data-pc-footer="3"] [data-pc-previous]').click();
+            form.querySelector('[data-pc-footer="2"] [data-pc-previous]').click();
+            if (projectName.value !== "保留步驟資料") return "step 1 value was not preserved";
+            modal.querySelector(".pc-modal-close").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "project-content channel edit modal uses channel step 1",
+        expr: `
+          (function () {
+            document.querySelector('[data-pc-kind="channel"]').click();
+            document.querySelector('[data-pc-modal-mode="edit"]').click();
+            var modal = document.getElementById("modalProjectContentBackdrop");
+            var form = document.getElementById("pcProjectForm");
+            if (document.getElementById("pcModalTitle").textContent.trim() !== "修改")
+              return "edit title mismatch";
+            if (form.dataset.pcModalKind !== "channel") return "channel kind mismatch";
+            var channel = form.querySelector("[data-pc-channel-only]");
+            if (channel.hidden || channel.textContent.indexOf("通路庫存") === -1)
+              return "channel inventory missing";
+            if (Array.from(form.querySelectorAll("[data-pc-lodging-only]")).some(function (node) { return !node.hidden; }))
+              return "lodging-only fields visible in channel";
+            modal.querySelector(".pc-modal-close").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "project-content tablet keeps two-column modal layout",
+        viewport: { width: 768, height: 1024 },
+        expr: `
+          (function () {
+            if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1)
+              return "tablet page-level horizontal overflow";
+            document.querySelector('[data-pc-kind="lodging"]').click();
+            document.querySelector('[data-pc-modal-mode="new"]').click();
+            var form = document.getElementById("pcProjectForm");
+            var rect = form.getBoundingClientRect();
+            if (rect.width > innerWidth - 20) return "tablet modal wider than viewport: " + rect.width;
+            var modalBody = form.querySelector(".pc-modal-body");
+            if (modalBody.scrollWidth > modalBody.clientWidth + 1)
+              return "tablet Step 1 has horizontal overflow";
+            var columns = getComputedStyle(form.querySelector(".pc-form-grid")).gridTemplateColumns.split(" ");
+            if (columns.length !== 2) return "tablet Step 1 should keep two columns: " + columns.join("|");
+            form.querySelector('[data-pc-footer="1"] [data-pc-next]').click();
+            var cards = form.querySelectorAll(".pc-calendar-card");
+            if (Math.abs(cards[0].getBoundingClientRect().top - cards[1].getBoundingClientRect().top) > 2)
+              return "tablet calendar first row misaligned";
+            if (cards[2].getBoundingClientRect().top <= cards[0].getBoundingClientRect().top)
+              return "tablet calendar second row missing";
+            form.querySelector('[data-pc-footer="2"] [data-pc-next]').click();
+            var priceOverflow = Array.from(form.querySelectorAll(".pc-price-table-shell")).some(function (shell) {
+              return shell.scrollWidth > shell.clientWidth + 1;
+            });
+            if (priceOverflow) return "tablet price table should fit without scrolling";
+            document.querySelector("#modalProjectContentBackdrop .pc-modal-close").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "project-content mobile keeps overflow inside page and modal",
+        viewport: { width: 375, height: 812, mobile: true },
+        expr: `
+          (function () {
+            var pageOverflow = document.documentElement.scrollWidth > document.documentElement.clientWidth + 1;
+            if (pageOverflow) return "page-level horizontal overflow";
+            document.querySelector('[data-pc-kind="lodging"]').click();
+            document.querySelector('[data-pc-modal-mode="new"]').click();
+            var form = document.getElementById("pcProjectForm");
+            var rect = form.getBoundingClientRect();
+            if (rect.width > innerWidth - 20) return "modal wider than viewport: " + rect.width;
+            var columns = getComputedStyle(form.querySelector(".pc-form-grid")).gridTemplateColumns.split(" ");
+            if (columns.length !== 1) return "mobile Step 1 should use one column";
+            var footer = form.querySelector(".pc-modal-footer").getBoundingClientRect();
+            if (footer.bottom > innerHeight + 1) return "mobile footer outside viewport";
+            form.querySelector('[data-pc-footer="1"] [data-pc-next]').click();
+            var cards = document.querySelectorAll(".pc-calendar-card");
+            if (cards.length !== 4) return "calendar card count: " + cards.length;
+            var dateTableShell = form.querySelector(".pc-date-type-table-wrap");
+            var dateTable = form.querySelector(".pc-date-type-table");
+            if (!(dateTableShell.scrollWidth > dateTableShell.clientWidth))
+              return "mobile date type table should scroll inside its shell";
+            if (dateTable.scrollWidth > dateTable.clientWidth + 1)
+              return "date type content extends beyond its table borders";
+            var tableRight = dateTable.getBoundingClientRect().right;
+            var lastDateCell = dateTable.querySelector("tbody tr:last-child td:last-child");
+            if (Math.abs(lastDateCell.getBoundingClientRect().right - tableRight) > 1)
+              return "date type row border does not reach table edge";
+            if (cards[1].getBoundingClientRect().top <= cards[0].getBoundingClientRect().top)
+              return "mobile calendars should stack";
+            form.querySelector('[data-pc-footer="2"] [data-pc-next]').click();
+            var priceShell = form.querySelector(".pc-price-table-shell");
+            if (!(priceShell.scrollWidth > priceShell.clientWidth))
+              return "mobile price table should scroll inside its shell";
+            if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1)
+              return "mobile document overflow after Step 3";
+            document.querySelector("#modalProjectContentBackdrop .pc-modal-close").click();
             return true;
           })()
         `,

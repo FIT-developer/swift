@@ -16,6 +16,7 @@ var TAB_PAGES = {
   "lodging-info.html": "民宿資料",
   "room-type.html": "房型",
   "purchase-addon.html": "加購商品",
+  "project-content.html": "專案內容",
 };
 
 function readTabs() {
