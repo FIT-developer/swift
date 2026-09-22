@@ -48,7 +48,8 @@ page tabs、session modals 與 topbar modals。
 - 適用房型 header 依 Figma `2362:96112`：文字區右側是 38 x 38 的
   `icons/arrow-down-drop` 按鈕。只有此 header 按鈕可開啟下方選單；資料列右側的
   `icons/search` 是 row action，不得綁定選單。Figma 的展開選單是互動展示，
-  不是頁面初始狀態。
+  不是頁面初始狀態。選單內容只保留原 UI 的兩個房型選項，順序為
+  `（DS）啦啦啦`、`（GG）哦哦哦`；不得混入連結、簡訊、複製、取消等管理操作。
 - 底部操作為「整批修改排序」與勾選後的「整批更新專案價格」。
 
 ## 新增／修改 modal

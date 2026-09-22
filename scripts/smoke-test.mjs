@@ -1758,6 +1758,11 @@ const PAGES = [
             var roomToggle = document.querySelector("[data-pc-room-toggle]");
             var roomMenu = document.getElementById("pcRoomMenu");
             var roomSearch = document.querySelector(".pc-room-search");
+            var roomOptions = Array.from(roomMenu.querySelectorAll(":scope > button"), function (button) {
+              return button.textContent.trim();
+            });
+            if (roomOptions.join("|") !== "（DS）啦啦啦|（GG）哦哦哦")
+              return "room menu options changed: " + roomOptions.join("|");
             if (!roomToggle.closest("th") || !roomToggle.querySelector('img[src$="arrow-down-drop.svg"]'))
               return "room menu trigger should be the header arrow button";
             if (roomSearch.hasAttribute("data-pc-room-toggle") || roomSearch.hasAttribute("aria-controls"))

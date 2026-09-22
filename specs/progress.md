@@ -7,6 +7,28 @@
 
 ---
 
+## Session 158：適用房型選單縮減為兩個房型項目 (2026-09-22)
+
+使用者確認「專案內容」table 的適用房型選單只需要保留原 UI layout 顯示的
+前兩個房型項目，後續管理操作皆不需要。
+
+### 本輪改動
+
+1. 選單只保留 `（DS）啦啦啦` 與 `（GG）哦哦哦`，移除連結、簡訊、複製、取消。
+2. `specs/pages/project-content.md` 明確限制選單內容與順序，避免再混入管理操作。
+3. `scripts/smoke-test.mjs` 新增房型選項數量、內容與順序的 regression check。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `node --check scripts/smoke-test.mjs` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`10 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`92 raw hex tokens`)
+- `node scripts/smoke-test.mjs` exit 0：10 pages 通過，`project-content.html`
+  11 checks 通過。
+
 ## Session 157：專案內容適用房型選單 trigger 層級修正 (2026-09-22)
 
 使用者指出「專案內容」table 的適用房型選單誤綁在資料列放大鏡，要求依目前
