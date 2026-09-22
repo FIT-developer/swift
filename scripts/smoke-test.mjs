@@ -1735,7 +1735,8 @@ const PAGES = [
             if (document.querySelectorAll("[data-pc-status]").length !== 5)
               return "status tab count mismatch";
             var headers = Array.from(document.querySelectorAll(".pc-project-table thead th"), function (cell) {
-              return cell.textContent.trim();
+              var label = cell.querySelector(":scope > .pc-room-heading-control > span");
+              return label ? label.textContent.trim() : cell.textContent.trim();
             });
             if (headers.join("|") !== "編號|類別|照片管理|專案名稱|上架期限|專案期限|適用房型|已開至|已設至|價格|排序|管理|價格更新|最後更新時間")
               return "table headers changed: " + headers.join("|");
@@ -1756,7 +1757,14 @@ const PAGES = [
               return "management actions overflow their table cell";
             var roomToggle = document.querySelector("[data-pc-room-toggle]");
             var roomMenu = document.getElementById("pcRoomMenu");
+            var roomSearch = document.querySelector(".pc-room-search");
+            if (!roomToggle.closest("th") || !roomToggle.querySelector('img[src$="arrow-down-drop.svg"]'))
+              return "room menu trigger should be the header arrow button";
+            if (roomSearch.hasAttribute("data-pc-room-toggle") || roomSearch.hasAttribute("aria-controls"))
+              return "row search action should not control the room menu";
             if (!roomMenu.hidden) return "room menu should start closed";
+            roomSearch.click();
+            if (!roomMenu.hidden) return "row search action opened the room menu";
             roomToggle.click();
             if (roomMenu.hidden || roomToggle.getAttribute("aria-expanded") !== "true")
               return "room menu did not open";

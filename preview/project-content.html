@@ -111,7 +111,30 @@
                         <th>專案名稱</th>
                         <th>上架期限</th>
                         <th>專案期限</th>
-                        <th>適用房型</th>
+                        <th class="pc-room-heading">
+                          <div class="pc-room-heading-control">
+                            <span>適用房型</span>
+                            <button
+                              type="button"
+                              class="pc-room-menu-toggle"
+                              data-pc-room-toggle
+                              aria-expanded="false"
+                              aria-controls="pcRoomMenu"
+                              aria-label="展開適用房型選單"
+                            >
+                              <img src="./assets/icons/arrow-down-drop.svg" alt="" />
+                            </button>
+                            <div id="pcRoomMenu" class="pc-room-menu" hidden>
+                              <div class="pc-room-menu-title">選單</div>
+                              <button type="button">（DS）啦啦啦</button>
+                              <button type="button" class="is-highlighted">（GG）哦哦哦</button>
+                              <button type="button">連結</button>
+                              <button type="button">簡訊</button>
+                              <button type="button">複製</button>
+                              <button type="button">取消</button>
+                            </div>
+                          </div>
+                        </th>
                         <th>已開至</th>
                         <th>已設至</th>
                         <th>價格</th>
@@ -162,22 +185,10 @@
                             <button
                               type="button"
                               class="pc-room-search"
-                              data-pc-room-toggle
-                              aria-expanded="false"
-                              aria-controls="pcRoomMenu"
-                              aria-label="選擇適用房型"
+                              aria-label="查看適用房型"
                             >
                               <img src="./assets/icons/search.svg" alt="" />
                             </button>
-                            <div id="pcRoomMenu" class="pc-room-menu" hidden>
-                              <div class="pc-room-menu-title">選單</div>
-                              <button type="button">（DS）啦啦啦</button>
-                              <button type="button" class="is-highlighted">（GG）哦哦哦</button>
-                              <button type="button">連結</button>
-                              <button type="button">簡訊</button>
-                              <button type="button">複製</button>
-                              <button type="button">取消</button>
-                            </div>
                           </div>
                         </td>
                         <td>0000-00-00</td>

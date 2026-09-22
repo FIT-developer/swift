@@ -7,6 +7,44 @@
 
 ---
 
+## Session 157：專案內容適用房型選單 trigger 層級修正 (2026-09-22)
+
+使用者指出「專案內容」table 的適用房型選單誤綁在資料列放大鏡，要求依目前
+Figma selection 修正並提供預覽。
+
+### Figma current source
+
+- Page：`2351:99451` `Frame 400`，2276 x 1118。
+- 適用房型欄：`2362:96112` `Frame 145`，176 x 738。
+- Header trigger：`2362:96115` `icons/arrow-down-drop`，38 x 38。
+- Row search action：`2362:96119` `icons/search`，24 x 24。
+
+### 本輪改動
+
+1. `specs/pages/project-content.md` 將選單 trigger 明確改為適用房型 header 右側
+   箭頭；資料列放大鏡維持獨立 row action，不得控制選單。
+2. `preview/project-content.html` 將既有選單移到 header control 下，新增
+   `arrow-down-drop.svg` trigger，並移除放大鏡上的 toggle / ARIA 綁定。
+3. `preview/assets/css/project-content.css` 依 Figma 實作 138 + 38 的 header
+   結構、38 x 38 粉紅箭頭按鈕，選單從 header 下方展開。
+4. `scripts/smoke-test.mjs` 新增 trigger 層級 regression checks，包含放大鏡
+   不得開啟選單、header 箭頭可正確開關選單。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `node --check preview/js/project-content.js` exit 0
+- `node --check scripts/smoke-test.mjs` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`10 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`92 raw hex tokens`)
+- `node scripts/smoke-test.mjs` exit 0：10 pages 通過，`project-content.html`
+  11 checks 通過。
+- 視覺 QA：1440、768、375 viewport 均確認 row search 不開選單、header 箭頭
+  展開選單、選單位於 header 下方、按鈕為 38 x 38，頁面無 viewport overflow。
+  截圖位於 ignored `specs/qa-screenshots/session-157/`。
+
 ## Session 156：數量價格表、群組編輯與日期區間 (2026-09-21)
 
 使用者完成數量價格表 desktop、群組編輯、快速新增庫存、雙月日期區間、inline
