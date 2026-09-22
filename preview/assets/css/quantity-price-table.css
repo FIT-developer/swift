@@ -1,0 +1,880 @@
+/* Quantity and price table page, date-range popover, and page-scoped modals. */
+
+.qp-page-panel {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-20);
+  padding: var(--spacing-20);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-12);
+  background: var(--color-neutral-75);
+  container-type: inline-size;
+}
+
+.qp-filter-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.qp-filter-row {
+  display: flex;
+  min-width: 0;
+  align-items: flex-end;
+  gap: var(--spacing-16);
+}
+
+.qp-filter-row--actions {
+  position: relative;
+}
+
+.qp-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  color: var(--color-text-800);
+}
+
+.qp-field select,
+.qp-field input,
+.qp-number-unit input {
+  height: 36px;
+  padding: 0 var(--spacing-10);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-6);
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
+}
+
+.qp-filter-row--fields .qp-field:first-child select {
+  width: 322px;
+}
+
+.qp-filter-row--fields .qp-field:last-child select {
+  width: 334px;
+}
+
+.qp-secondary-button,
+.qp-primary-button,
+.qp-reset-button,
+.qp-date-range-button {
+  display: inline-flex;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-12);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-6);
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.qp-primary-button {
+  border-color: var(--color-surface-brand-default);
+  background: var(--color-surface-brand-default);
+  color: var(--color-neutral-0);
+}
+
+.qp-primary-button:hover {
+  border-color: var(--color-surface-brand-hover);
+  background: var(--color-surface-brand-hover);
+}
+
+.qp-secondary-button:hover,
+.qp-reset-button:hover,
+.qp-date-range-button:hover {
+  background: var(--color-neutral-50);
+}
+
+.qp-date-range-wrap {
+  position: relative;
+}
+
+.qp-date-range-button {
+  width: 163px;
+  font-size: var(--font-size-sm);
+}
+
+.qp-query-actions {
+  display: flex;
+  margin-left: auto;
+  gap: var(--spacing-8);
+}
+
+.qp-table-shell {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-12);
+  background: var(--color-neutral-0);
+  overflow-x: auto;
+}
+
+.qp-rate-table {
+  width: 1216px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  color: var(--color-text-800);
+  font-size: var(--font-size-sm);
+}
+
+.qp-label-column {
+  width: 320px;
+}
+
+.qp-day-column {
+  width: 64px;
+}
+
+.qp-rate-table th,
+.qp-rate-table td {
+  height: 49px;
+  padding: var(--spacing-6);
+  border-right: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+  background: var(--color-neutral-0);
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 400;
+}
+
+.qp-rate-table tr > :last-child {
+  border-right: 0;
+}
+
+.qp-rate-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.qp-rate-table th:first-child,
+.qp-project-row th {
+  text-align: left;
+}
+
+.qp-month-row th {
+  height: 38px;
+  background: var(--color-neutral-75);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.qp-date-row th {
+  height: 52px;
+  padding: 0;
+}
+
+.qp-date-row span,
+.qp-date-row strong {
+  display: block;
+  font-weight: 400;
+}
+
+.qp-date-row strong {
+  margin-top: var(--spacing-2);
+}
+
+.qp-project-row th {
+  height: 44px;
+  padding-left: var(--spacing-12);
+  background: var(--color-neutral-75);
+  font-weight: 600;
+}
+
+.qp-rate-table .is-today {
+  background: var(--color-accent-pink);
+}
+
+.qp-status-row th,
+.qp-status-row td {
+  height: 42px;
+}
+
+.qp-status-row td {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.qp-status {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  justify-content: center;
+  margin-right: auto;
+  margin-left: auto;
+  padding: var(--spacing-4) var(--spacing-8);
+  border-radius: var(--radius-4);
+  white-space: nowrap;
+}
+
+.qp-status--open {
+  width: 100%;
+  background: var(--color-accent-light-green);
+}
+
+.qp-status--closed {
+  background: var(--color-neutral-100);
+}
+
+.qp-rate-row th {
+  height: 64px;
+  padding: var(--spacing-8) var(--spacing-12);
+  white-space: nowrap;
+}
+
+.qp-rate-row th img {
+  width: 18px;
+  height: 18px;
+  margin-left: var(--spacing-8);
+  vertical-align: middle;
+}
+
+.qp-rate-name {
+  vertical-align: middle;
+}
+
+.qp-xml-badge {
+  display: inline-block;
+  margin-left: var(--spacing-6);
+  padding: var(--spacing-2) var(--spacing-4);
+  border: 1px solid var(--color-bootstrap-components-focus);
+  color: var(--color-menuitem-default);
+  vertical-align: middle;
+}
+
+.qp-text-button {
+  padding: var(--spacing-4);
+  border: 0;
+  background: transparent;
+  color: var(--color-menuitem-default);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.qp-rate-cell {
+  position: relative;
+  height: 49px;
+  padding: 0 !important;
+}
+
+.qp-rate-display {
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-4);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-800);
+  cursor: pointer;
+}
+
+.qp-rate-display span,
+.qp-rate-display strong {
+  display: block;
+  font-size: var(--font-size-sm);
+  line-height: 1.25;
+  font-weight: 400;
+}
+
+.qp-rate-editor {
+  position: relative;
+  width: 100%;
+  height: 49px;
+  padding-top: 15px;
+}
+
+.qp-rate-display[hidden],
+.qp-rate-editor[hidden],
+.qp-calendar-popover[hidden] {
+  display: none;
+}
+
+.qp-rate-editor input {
+  width: 64px;
+  min-width: 64px; /* min-width-ok: input remains usable inside the scrolling table */
+  height: 34px;
+  padding-left: var(--spacing-4);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-6);
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
+  font-size: var(--font-size-sm);
+}
+
+.qp-detail-hotspot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.qp-calendar-popover {
+  position: absolute;
+  z-index: var(--z-popover);
+  top: calc(100% + var(--spacing-4));
+  left: 0;
+  width: 746px;
+  max-height: calc(100vh - 120px);
+  max-height: calc(100dvh - 120px);
+  padding: var(--spacing-20);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-8);
+  background: var(--color-neutral-0);
+  box-shadow: var(--effect-calendar-shadow);
+  overflow-y: auto;
+}
+
+.qp-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-24);
+}
+
+.qp-calendar-month {
+  min-width: 0;
+}
+
+.qp-calendar-heading {
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  align-items: center;
+  margin-bottom: var(--spacing-12);
+}
+
+.qp-calendar-heading h2 {
+  color: var(--color-text-800);
+  text-align: center;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+.qp-calendar-arrow {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-6);
+  background: transparent;
+  cursor: pointer;
+}
+
+.qp-calendar-arrow:hover {
+  background: var(--color-neutral-50);
+}
+
+.qp-calendar-arrow img {
+  width: 20px;
+  height: 20px;
+}
+
+.qp-calendar-weekdays,
+.qp-calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-4);
+}
+
+.qp-calendar-weekdays {
+  margin-bottom: var(--spacing-4);
+}
+
+.qp-calendar-weekdays span {
+  display: flex;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-800);
+}
+
+.qp-calendar-day {
+  height: 39px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-12);
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+}
+
+.qp-calendar-day:hover:not(:disabled) {
+  background: var(--color-neutral-75);
+}
+
+.qp-calendar-day.is-disabled {
+  border-color: var(--color-neutral-100);
+  background: var(--color-neutral-100);
+  color: var(--color-text-400);
+  cursor: not-allowed;
+}
+
+.qp-calendar-day.is-overflow {
+  border-color: var(--color-neutral-100);
+  background: transparent;
+  color: var(--color-text-400);
+  cursor: default;
+}
+
+.qp-calendar-day.is-today {
+  border-color: var(--color-accent-pink);
+  background: var(--color-accent-pink);
+  color: var(--color-neutral-0);
+}
+
+.qp-calendar-day.is-range-middle {
+  border-color: var(--color-accent-light-green);
+  background: var(--color-accent-light-green);
+  color: var(--color-text-800);
+}
+
+.qp-calendar-day.is-range-endpoint {
+  border-color: var(--color-bootstrap-components-focus);
+  background: var(--color-bootstrap-components-focus);
+  color: var(--color-neutral-0);
+}
+
+.qp-modal-box {
+  display: flex;
+  width: calc(100vw - 20px);
+  max-height: calc(100vh - 20px);
+  max-height: calc(100dvh - 20px);
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.qp-modal-box .qp-primary-button,
+.qp-modal-box .qp-primary-button:hover {
+  border-color: var(--color-neutral-200);
+  background: var(--color-neutral-800);
+  color: var(--color-neutral-100);
+}
+
+.qp-modal-box .qp-secondary-button,
+.qp-modal-box .qp-secondary-button:hover {
+  border-color: var(--color-neutral-200);
+  background: var(--color-neutral-200);
+  color: var(--color-text-800);
+}
+
+.qp-group-modal,
+.qp-detail-modal {
+  max-width: 514px;
+}
+
+.qp-inventory-modal {
+  max-width: 673px;
+}
+
+.qp-modal-header {
+  display: flex;
+  min-height: 51px;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-12);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.qp-modal-header h2 {
+  color: var(--color-text-800);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.qp-modal-close {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-6);
+  background: transparent;
+  cursor: pointer;
+}
+
+.qp-modal-close:hover {
+  background: var(--color-neutral-50);
+}
+
+.qp-modal-close img {
+  width: 24px;
+  height: 24px;
+}
+
+.qp-modal-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding: var(--spacing-12);
+  overflow-y: auto;
+}
+
+.qp-group-date-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-12);
+}
+
+.qp-weekday-fieldset {
+  padding: 0;
+  border: 0;
+  color: var(--color-text-800);
+}
+
+.qp-weekday-fieldset legend {
+  margin-bottom: var(--spacing-8);
+}
+
+.qp-weekday-list,
+.qp-radio-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-12);
+}
+
+.qp-weekday-list label,
+.qp-radio-list label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  color: var(--color-text-800);
+  white-space: nowrap;
+}
+
+.qp-weekday-list input,
+.qp-radio-list input,
+.qp-month-table input {
+  accent-color: var(--color-menuitem-default);
+}
+
+.qp-room-title {
+  color: var(--color-menuitem-default);
+  text-decoration: underline;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.qp-group-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  padding: var(--spacing-12);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-8);
+  color: var(--color-text-800);
+}
+
+.qp-group-card h4 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.qp-group-card p {
+  color: var(--color-text-400);
+  font-size: var(--font-size-sm);
+}
+
+.qp-number-unit {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.qp-number-unit input {
+  width: 120px;
+}
+
+.qp-card-select select {
+  width: 100%;
+}
+
+.qp-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-8);
+}
+
+.qp-inventory-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.qp-month-select-panel {
+  display: grid;
+  box-sizing: border-box;
+  width: 649px;
+  grid-template-columns: 60px minmax(0, 1fr);
+  margin-bottom: var(--spacing-6);
+  border: 1px solid var(--color-neutral-200);
+  color: var(--color-text-800);
+}
+
+.qp-month-select-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--color-neutral-200);
+  font-size: var(--font-size-xl);
+}
+
+.qp-inventory-table {
+  width: 649px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1px solid var(--color-neutral-200);
+  color: var(--color-text-800);
+  font-size: var(--font-size-sm);
+}
+
+.qp-inventory-table > thead > tr > th,
+.qp-inventory-table > tbody > tr > th,
+.qp-inventory-table > tbody > tr > td {
+  padding: var(--spacing-8);
+  border-right: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+  text-align: center;
+  font-weight: 400;
+}
+
+.qp-inventory-table > thead > tr > th {
+  height: 47px;
+}
+
+.qp-inventory-table tbody > tr > th,
+.qp-inventory-table tbody > tr > td {
+  height: 119px;
+}
+
+.qp-inventory-table > thead > tr > :last-child,
+.qp-inventory-table > tbody > tr > :last-child {
+  border-right: 0;
+}
+
+.qp-inventory-table > tbody > tr:last-child > * {
+  border-bottom: 0;
+}
+
+.qp-inventory-table > thead > tr > th:nth-child(1),
+.qp-inventory-table > tbody > tr > :nth-child(1) {
+  width: 60px;
+}
+
+.qp-inventory-table > thead > tr > th:nth-child(2),
+.qp-inventory-table > tbody > tr > :nth-child(2) {
+  width: 196px;
+  text-align: left;
+}
+
+.qp-inventory-table > thead > tr > th:last-child,
+.qp-inventory-table > tbody > tr > :last-child {
+  width: 92px;
+}
+
+.qp-month-table-slot {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.qp-month-table {
+  width: 100%;
+  height: 119px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  color: var(--color-text-800);
+}
+
+.qp-month-table th {
+  height: 22px;
+  padding: 0 var(--spacing-4);
+  overflow: hidden;
+  border-right: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+  white-space: nowrap;
+  text-align: left;
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.qp-month-table td {
+  height: 97px;
+  padding: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--color-neutral-200);
+  vertical-align: top;
+}
+
+.qp-month-table tr > :last-child {
+  border-right: 0;
+}
+
+.qp-month-table label {
+  display: flex;
+  width: 100%;
+  height: 97px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4) 0 var(--spacing-8);
+  overflow: hidden;
+}
+
+.qp-month-name {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-text-800);
+  white-space: pre-line;
+  text-align: center;
+  font-size: var(--font-size-base);
+  line-height: 1.25;
+}
+
+.qp-month-cell {
+  padding: 0 !important;
+}
+
+.qp-month-cell .qp-month-table-slot {
+  width: 301px;
+}
+
+.qp-inventory-table input[type="number"] {
+  width: 60px;
+  height: 34px;
+  padding-left: var(--spacing-6);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-6);
+  color: var(--color-text-800);
+}
+
+.qp-inventory-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.qp-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  color: var(--color-text-800);
+}
+
+.qp-detail-heading > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.qp-detail-actions {
+  margin-top: var(--spacing-12);
+}
+
+@media (max-width: 1199px) {
+  .qp-calendar-popover {
+    width: calc(100vw - 292px);
+  }
+
+  .qp-calendar-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container (max-width: 700px) {
+  .qp-filter-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: var(--spacing-12);
+  }
+
+  .qp-filter-row--fields .qp-field:first-child select,
+  .qp-filter-row--fields .qp-field:last-child select,
+  .qp-filter-row--actions > button,
+  .qp-date-range-button,
+  .qp-date-range-wrap,
+  .qp-query-actions {
+    width: 100%;
+  }
+
+  .qp-query-actions {
+    grid-column: 1 / -1;
+    margin-left: 0;
+  }
+
+  .qp-query-actions > button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .qp-page-panel {
+    padding: var(--spacing-12);
+  }
+
+  .qp-filter-row,
+  .qp-group-date-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: var(--spacing-12);
+  }
+
+  .qp-filter-row--fields .qp-field select,
+  .qp-filter-row--actions > button,
+  .qp-date-range-button,
+  .qp-date-range-wrap,
+  .qp-query-actions {
+    width: 100%;
+  }
+
+  .qp-query-actions {
+    grid-column: auto;
+    margin-left: 0;
+  }
+
+  .qp-query-actions > button {
+    flex: 1;
+  }
+
+  .qp-calendar-popover {
+    width: calc(100vw - 52px);
+    max-height: calc(100vh - 96px);
+    max-height: calc(100dvh - 96px);
+    padding: var(--spacing-12);
+  }
+
+  .qp-calendar-grid {
+    gap: var(--spacing-16);
+  }
+
+  .qp-calendar-day {
+    font-size: var(--font-size-base);
+  }
+
+  .qp-rate-table {
+    width: 1216px;
+  }
+
+  .qp-card-actions {
+    justify-content: stretch;
+  }
+
+  .qp-card-actions > button {
+    flex: 1;
+  }
+}

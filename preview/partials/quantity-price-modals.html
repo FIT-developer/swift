@@ -1,0 +1,221 @@
+<div
+  id="modalQuantityGroupBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="qpGroupModalTitle"
+>
+  <form id="qpGroupForm" class="modal-box qp-modal-box qp-group-modal">
+    <header class="qp-modal-header">
+      <h2 id="qpGroupModalTitle">群組編輯</h2>
+      <button
+        type="button"
+        class="modal-close-btn qp-modal-close"
+        data-modal="modalQuantityGroupBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" />
+      </button>
+    </header>
+
+    <div class="qp-modal-body">
+      <div class="qp-group-date-grid">
+        <label class="qp-field">
+          <span>起始日</span>
+          <input type="text" value="0000-00-00" />
+        </label>
+        <label class="qp-field">
+          <span>截止日</span>
+          <input type="text" value="0000-00-00" />
+        </label>
+      </div>
+
+      <fieldset class="qp-weekday-fieldset">
+        <legend>你想要改哪幾天？</legend>
+        <div class="qp-weekday-list">
+          <label><input type="checkbox" /> 一</label>
+          <label><input type="checkbox" checked /> 二</label>
+          <label><input type="checkbox" /> 三</label>
+          <label><input type="checkbox" /> 四</label>
+          <label><input type="checkbox" /> 五</label>
+          <label><input type="checkbox" /> 六</label>
+          <label><input type="checkbox" /> 日</label>
+        </div>
+      </fieldset>
+
+      <h3 class="qp-room-title">景觀多人房</h3>
+
+      <section class="qp-group-card" aria-labelledby="qpInventoryTitle">
+        <h4 id="qpInventoryTitle">可售數量</h4>
+        <p>提示文字</p>
+        <label class="qp-number-unit">
+          <input type="number" value="12" />
+          <span>間房</span>
+        </label>
+        <div class="qp-card-actions">
+          <button type="button" class="qp-primary-button">儲存變更</button>
+          <button
+            type="button"
+            class="modal-close-btn qp-secondary-button"
+            data-modal="modalQuantityGroupBackdrop"
+          >
+            取消
+          </button>
+        </div>
+      </section>
+
+      <section class="qp-group-card" aria-labelledby="qpPriceTitle">
+        <h4 id="qpPriceTitle">價格</h4>
+        <p>提示文字</p>
+        <label class="qp-field qp-card-select">
+          <span class="sr-only">選擇房價專案</span>
+          <select>
+            <option>選擇房價專案</option>
+          </select>
+        </label>
+        <label class="qp-number-unit">
+          <input type="number" />
+          <span>TWD</span>
+        </label>
+        <div class="qp-card-actions">
+          <button type="button" class="qp-primary-button">儲存變更</button>
+          <button
+            type="button"
+            class="modal-close-btn qp-secondary-button"
+            data-modal="modalQuantityGroupBackdrop"
+          >
+            取消
+          </button>
+        </div>
+      </section>
+
+      <section class="qp-group-card" aria-labelledby="qpRoomStatusTitle">
+        <h4 id="qpRoomStatusTitle">房況</h4>
+        <p>提示文字</p>
+        <div class="qp-radio-list">
+          <label><input type="radio" name="qp-group-room-status" /> 開房</label>
+          <label><input type="radio" name="qp-group-room-status" checked /> 關房</label>
+        </div>
+        <p>提示文字</p>
+        <div class="qp-card-actions">
+          <button type="button" class="qp-primary-button">儲存變更</button>
+          <button
+            type="button"
+            class="modal-close-btn qp-secondary-button"
+            data-modal="modalQuantityGroupBackdrop"
+          >
+            取消
+          </button>
+        </div>
+      </section>
+    </div>
+  </form>
+</div>
+
+<div
+  id="modalQuantityInventoryBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="qpInventoryModalTitle"
+>
+  <form id="qpInventoryForm" class="modal-box qp-modal-box qp-inventory-modal">
+    <header class="qp-modal-header">
+      <h2 id="qpInventoryModalTitle">設定</h2>
+      <button
+        type="button"
+        class="modal-close-btn qp-modal-close"
+        data-modal="modalQuantityInventoryBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" />
+      </button>
+    </header>
+
+    <div class="qp-modal-body">
+      <div class="qp-inventory-scroll">
+        <div class="qp-month-select-panel">
+          <div class="qp-month-select-label">全選</div>
+          <div class="qp-month-table-slot" data-qp-month-table="header"></div>
+        </div>
+
+        <table class="qp-inventory-table" aria-label="快速新增庫存">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>房型</th>
+              <th>設定月份</th>
+              <th>房間數</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <th scope="row">(aaa) 好睡房</th>
+              <td class="qp-month-cell"><div class="qp-month-table-slot" data-qp-month-table="room-1"></div></td>
+              <td><input type="number" value="12" aria-label="好睡房房間數" /></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <th scope="row">(aaa) 好讚讚</th>
+              <td class="qp-month-cell"><div class="qp-month-table-slot" data-qp-month-table="room-2"></div></td>
+              <td><input type="number" value="12" aria-label="好讚讚房間數" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="qp-inventory-actions">
+        <button type="button" class="qp-primary-button">設定房間數量</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div
+  id="modalQuantityPriceDetailBackdrop"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="qpDetailRoomTitle"
+>
+  <form id="qpDetailForm" class="modal-box qp-modal-box qp-detail-modal">
+    <header class="qp-modal-header">
+      <h2 id="qpDetailRoomTitle">景觀房</h2>
+      <button
+        type="button"
+        class="modal-close-btn qp-modal-close"
+        data-modal="modalQuantityPriceDetailBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" />
+      </button>
+    </header>
+
+    <div class="qp-modal-body">
+      <div class="qp-detail-heading">
+        <div>
+          <strong id="qpDetailRatePlan">Standar Rate-447</strong>
+          <span id="qpDetailDate">0000-00-00</span>
+        </div>
+        <button type="button" class="qp-text-button">群組編輯</button>
+      </div>
+
+      <div class="qp-radio-list">
+        <label><input type="radio" name="qp-detail-room-status" /> 開房</label>
+        <label><input type="radio" name="qp-detail-room-status" checked /> 關房</label>
+      </div>
+
+      <div class="qp-card-actions qp-detail-actions">
+        <button type="button" class="qp-primary-button">儲存變更</button>
+        <button
+          type="button"
+          class="modal-close-btn qp-secondary-button"
+          data-modal="modalQuantityPriceDetailBackdrop"
+        >
+          取消
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

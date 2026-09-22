@@ -7,6 +7,64 @@
 
 ---
 
+## Session 156：數量價格表、群組編輯與日期區間 (2026-09-21)
+
+使用者完成數量價格表 desktop、群組編輯、快速新增庫存、雙月日期區間、inline
+number 與價格細部 modal 的 Figma 讀取後，要求整理規格並實作。Figma 未提供
+tablet/mobile，由使用者授權依既有設計手法自動編排。
+
+### Figma current source
+
+- Page：`2386:98253` `數量價格表`
+- 群組編輯：`2386:99177`
+- 快速新增庫存：`2387:105078`
+- 雙月日期區間：`2387:103133`、`2387:104431`、`2387:103777`、`2387:104101`
+- inline number：`2387:106298`
+- 價格細部 modal：`2387:106427`
+
+### 使用者拍板
+
+1. `xxoo` 是假示意, 不建立頁籤；主 table 補足完整 14 天。
+2. 群組編輯的日期與星期同時顯示；房型文字不是 tab；各區儲存只影響自己，
+   任一取消均關閉 modal。
+3. 快速新增庫存的月份全選、row 覆寫與套用房數本輪只呈現 UI, JS 與資料生成
+   交由後端。
+4. 日期範圍第二次選取後保持展開；第三次點擊重建起點；補位日期不可點；新增
+   左右箭頭且一次移動一個月。
+5. 價格點擊後帶入原值的 number input，Enter 回到純數字；input 上方空間開啟
+   價格細部 modal。細部 modal 內的群組編輯本輪不串接。
+
+### 本輪改動
+
+- 新增 `specs/pages/quantity-price-table.md`。
+- 新增獨立頁面 `preview/quantity-price-table.html`、page CSS、ES module 與 modal
+  partial，並接入 aside、page tabs、app.css 與 partial manifest。
+- table 實作 14 個日期欄與 42 個價格 cell；所有 row border 到 table 最右側。
+- 日期 popover 實作 disabled/today/endpoint/interior/overflow 狀態與一個月導覽。
+- tablet 依 page panel container width 改為兩欄篩選，mobile 改為單欄；寬表格
+  與月份 grid 只在元件內水平捲動。
+- smoke test 新增 12 項本頁 contract 檢查；全站 10 pages 通過。另完成 1440、
+  768、375 viewport 與 calendar、group modal、mobile inventory modal 截圖檢視。
+- Preview 回饋修正日期欄由約 48px 增至 64px，避免「無單量」超出 td；number
+  input 明確設定 64px 最小寬。Modal action 恢復 Figma 的深灰儲存與淺灰取消，
+  不沿用頁面橘色 primary。
+- 快速新增庫存月份文字曾被共用 visually-hidden 樣式隱藏；依 Figma 恢復上方
+  全選區與兩列房型各自的 2026 年 9 月至 2027 年 8 月，年份分組、直向月份與
+  checkbox 均可見，仍不加入後端批次勾選行為。
+- 2026-09-22 重新讀取快速新增庫存 `2387:105078`，將三個月份區由 absolute
+  年份標籤與 CSS grid 改為 semantic nested table；`2026 年` 使用 colspan 4，
+  `2027 年` 使用 colspan 8，月份文字受各自 td 約束，不再跨格或跑版。上方全選
+  欄恢復 Figma 的 60px，月份區為 589px；房型列月份區為 301px。
+
+### 驗證
+
+- `./scripts/lint-fonts.sh`：exit 0
+- `./scripts/lint-conventions.sh`：exit 0
+- `./scripts/lint-partials.sh`：10 pages / 3 standalone, exit 0
+- `node scripts/smoke-test.mjs`：10 pages pass, 本頁 12 checks
+- 巢狀月份 table 修正後重跑：lint 與 10 pages smoke test 通過；1440、768、375
+  viewport 截圖檢查年份合併欄、月份儲存格與 modal 內橫向捲動。
+
 ## Session 155：專案內容頁與住宿／串接三步驟 modal (2026-09-21)
 
 使用者依序提供專案內容 desktop、住宿 modal 三步驟與串接 modal 三步驟，

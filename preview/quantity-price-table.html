@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 數量價格表</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body data-page="數量價格表">
+    <div
+      id="rootWrap"
+      class="flex min-h-screen max-w-[1440px] flex-col gap-3 p-3 mx-auto"
+    >
+      <div class="flex items-center justify-between md:hidden">
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
+        <button
+          id="mobileMenuBtn"
+          type="button"
+          class="cursor-pointer rounded-md p-1 opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="h-5 w-6" alt="" />
+        </button>
+      </div>
+
+      <div id="bodyArea" class="flex flex-1 min-w-0 flex-col gap-3 md:flex-row">
+        <div data-partial="aside"></div>
+
+        <div id="mainColumn" class="flex flex-1 min-w-0 flex-col gap-3">
+          <div data-partial="topbar"></div>
+
+          <main class="flex min-w-0 flex-1 flex-col">
+            <section class="qp-page-panel" aria-labelledby="quantityPriceTitle">
+              <h1 id="quantityPriceTitle" class="sr-only">數量價格表</h1>
+
+              <form id="qpFilterForm" class="qp-filter-panel">
+                <div class="qp-filter-row qp-filter-row--fields">
+                  <label class="qp-field">
+                    <span>專案</span>
+                    <select>
+                      <option>content</option>
+                    </select>
+                  </label>
+                  <label class="qp-field">
+                    <span>房型</span>
+                    <select>
+                      <option>content</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="qp-filter-row qp-filter-row--actions">
+                  <div class="qp-date-range-wrap">
+                    <button
+                      id="qpDateRangeButton"
+                      type="button"
+                      class="qp-date-range-button"
+                      aria-expanded="false"
+                      aria-controls="qpDateRangePopover"
+                    >
+                      <span data-qp-date-range-label>0000-00-00 ~ 0000-00-00</span>
+                    </button>
+
+                    <section
+                      id="qpDateRangePopover"
+                      class="qp-calendar-popover"
+                      aria-label="選擇日期區間"
+                      hidden
+                    >
+                      <div class="qp-calendar-grid">
+                        <article class="qp-calendar-month" data-qp-calendar-month="0">
+                          <header class="qp-calendar-heading">
+                            <button
+                              type="button"
+                              class="qp-calendar-arrow"
+                              data-qp-calendar-previous
+                              aria-label="上一個月"
+                            >
+                              <img src="./assets/icons/arrow-left.svg" alt="" />
+                            </button>
+                            <h2 data-qp-calendar-title></h2>
+                            <span class="qp-calendar-heading-space" aria-hidden="true"></span>
+                          </header>
+                          <div class="qp-calendar-weekdays" aria-hidden="true">
+                            <span>一</span><span>二</span><span>三</span><span>四</span>
+                            <span>五</span><span>六</span><span>日</span>
+                          </div>
+                          <div class="qp-calendar-days" data-qp-calendar-days></div>
+                        </article>
+
+                        <article class="qp-calendar-month" data-qp-calendar-month="1">
+                          <header class="qp-calendar-heading">
+                            <span class="qp-calendar-heading-space" aria-hidden="true"></span>
+                            <h2 data-qp-calendar-title></h2>
+                            <button
+                              type="button"
+                              class="qp-calendar-arrow"
+                              data-qp-calendar-next
+                              aria-label="下一個月"
+                            >
+                              <img src="./assets/icons/arrow-right.svg" alt="" />
+                            </button>
+                          </header>
+                          <div class="qp-calendar-weekdays" aria-hidden="true">
+                            <span>一</span><span>二</span><span>三</span><span>四</span>
+                            <span>五</span><span>六</span><span>日</span>
+                          </div>
+                          <div class="qp-calendar-days" data-qp-calendar-days></div>
+                        </article>
+                      </div>
+                    </section>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="qp-secondary-button"
+                    data-modal-open="modalQuantityGroupBackdrop"
+                  >
+                    群組編輯
+                  </button>
+                  <button
+                    type="button"
+                    class="qp-secondary-button"
+                    data-modal-open="modalQuantityInventoryBackdrop"
+                  >
+                    快速新增庫存
+                  </button>
+
+                  <div class="qp-query-actions">
+                    <button type="reset" class="qp-reset-button">Reset</button>
+                    <button type="button" class="qp-primary-button">查詢</button>
+                  </div>
+                </div>
+              </form>
+
+              <div class="qp-table-shell">
+                <table class="qp-rate-table" aria-label="14 天房量與價格">
+                  <colgroup>
+                    <col class="qp-label-column" />
+                    <col span="14" class="qp-day-column" />
+                  </colgroup>
+                  <thead>
+                    <tr class="qp-month-row">
+                      <th aria-hidden="true"></th>
+                      <th colspan="7">2026 年 8 月</th>
+                      <th colspan="7">2026 年 9 月</th>
+                    </tr>
+                    <tr class="qp-date-row">
+                      <th aria-hidden="true"></th>
+                      <th><span>一</span><strong>24</strong></th>
+                      <th><span>二</span><strong>25</strong></th>
+                      <th class="is-today"><span>三</span><strong>26</strong></th>
+                      <th><span>四</span><strong>27</strong></th>
+                      <th><span>五</span><strong>28</strong></th>
+                      <th><span>六</span><strong>29</strong></th>
+                      <th><span>日</span><strong>30</strong></th>
+                      <th><span>一</span><strong>24</strong></th>
+                      <th><span>二</span><strong>25</strong></th>
+                      <th><span>三</span><strong>26</strong></th>
+                      <th><span>四</span><strong>27</strong></th>
+                      <th><span>五</span><strong>28</strong></th>
+                      <th><span>六</span><strong>29</strong></th>
+                      <th><span>日</span><strong>30</strong></th>
+                    </tr>
+                    <tr class="qp-project-row">
+                      <th colspan="15">專案內容 （ID：222111）</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="qp-status-row">
+                      <th scope="row">房況</th>
+                      <td colspan="2"><span class="qp-status qp-status--open">開放訂房</span></td>
+                      <td class="is-today"><span class="qp-status qp-status--closed">無單量</span></td>
+                      <td colspan="4"><span class="qp-status qp-status--open">開放訂房</span></td>
+                      <td colspan="7"><span class="qp-status qp-status--open">開放訂房</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">可售房量</th>
+                      <td>12</td><td>12</td><td class="is-today">12</td><td>12</td><td>12</td>
+                      <td>12</td><td>12</td><td>12</td><td>12</td><td>12</td><td>12</td>
+                      <td>12</td><td>12</td><td>12</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">淨訂單量</th>
+                      <td>0</td><td>0</td><td class="is-today">0</td><td>0</td><td>0</td>
+                      <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                      <td>0</td><td>0</td><td>0</td>
+                    </tr>
+                    <tr class="qp-rate-row">
+                      <th scope="row">
+                        <span class="qp-rate-name">Standard Rate 447</span>
+                        <img src="./assets/icons/person.svg" alt="" />
+                        <button type="button" class="qp-text-button">設定</button>
+                      </th>
+                    </tr>
+                    <tr class="qp-rate-row">
+                      <th scope="row">
+                        <span class="qp-rate-name">Non-refundable (BF,D 503)</span>
+                        <span class="qp-xml-badge">非 XML</span>
+                        <img src="./assets/icons/person.svg" alt="" />
+                        <button type="button" class="qp-text-button">設定</button>
+                      </th>
+                    </tr>
+                    <tr class="qp-rate-row">
+                      <th scope="row">
+                        <span class="qp-rate-name">Non-refundable (Standar Rate 447)</span>
+                        <span class="qp-xml-badge">非 XML</span>
+                        <img src="./assets/icons/person.svg" alt="" />
+                        <button type="button" class="qp-text-button">X2 編輯</button>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="mobileSidebarBackdrop"
+      class="mobile-sidebar-backdrop md:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <div data-partial="session-modals"></div>
+    <div data-partial="topbar-modals"></div>
+    <div data-partial="quantity-price-modals"></div>
+
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
+      import { initQuantityPriceTable } from "./js/quantity-price-table.js";
+      import { createModalController } from "./js/modal-controller.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
+
+      await loadPartials();
+      initPageShell();
+      initPageTabs();
+      const quantityPriceTable = initQuantityPriceTable();
+      createModalController({ beforeOpen: quantityPriceTable.beforeOpen });
+      initTopbarModals();
+    </script>
+  </body>
+</html>

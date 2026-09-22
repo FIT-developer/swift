@@ -17,6 +17,7 @@ var TAB_PAGES = {
   "room-type.html": "房型",
   "purchase-addon.html": "加購商品",
   "project-content.html": "專案內容",
+  "quantity-price-table.html": "數量價格表",
 };
 
 function readTabs() {
