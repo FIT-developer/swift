@@ -7,6 +7,40 @@
 
 ---
 
+## Session 159：數量價格表移除價格列附加 UI (2026-09-23)
+
+使用者以 figma-go 指定調整「數量價格表」下方 table，移除人數與設定操作及
+`非 XML`，並確認依目前 Figma frame 實作。
+
+### Figma current source
+
+- Page：`2386:98257` `Frame 400`，1140 x 530。
+- 下方 table：`2386:101801`，604 x 214。
+- 價格 rows：`2386:101828`、`2386:101841`、`2386:101856`。
+
+### 本輪改動
+
+1. 三個價格 row 的 label cell 只保留專案名稱，移除 person icon、`設定`、
+   `X2 編輯`，並從第二、三列移除 `非 XML`。
+2. 依 Figma 補回第二、三列左側名稱欄的 Neutral/100 灰底；第一列與右側價格
+   cell 維持原背景。
+3. 清除主 table 已不再使用的 person icon 與 XML badge page CSS；modal 共用的
+   `.qp-text-button` 保留。
+4. 保留 Session 156 已確認的 14 天 table、價格 cell、inline number 與價格細部
+   modal，不套用這次 Figma 縮短的示意日期欄。
+5. smoke test 新增價格列內容與第二、三列灰底範圍的 regression checks。
+
+### 驗證
+
+- `git diff --check` exit 0
+- `node --check scripts/smoke-test.mjs` exit 0
+- `./scripts/lint-fonts.sh` exit 0
+- `./scripts/lint-conventions.sh` exit 0
+- `./scripts/lint-partials.sh` exit 0 (`10 pages, 3 standalone`)
+- `./scripts/lint-tokens.sh` exit 0 (`92 raw hex tokens`)
+- `node scripts/smoke-test.mjs` exit 0：10 pages 通過，`quantity-price-table.html`
+  12 checks 通過。
+
 ## Session 158：適用房型選單縮減為兩個房型項目 (2026-09-22)
 
 使用者確認「專案內容」table 的適用房型選單只需要保留原 UI layout 顯示的

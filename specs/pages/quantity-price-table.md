@@ -1,6 +1,6 @@
 # 數量價格表
 
-> current source: Figma `2386:98253` `數量價格表`, read 2026-09-21
+> current source: Figma `2386:98257` `Frame 400`, table `2386:101801`, read 2026-09-23
 > current modals: `2386:99177`, `2387:105078`, `2387:106427`
 > quick inventory current source: `2387:105078`, reread 2026-09-22
 > current calendar states: `2387:103133`, `2387:104431`, `2387:103777`, `2387:104101`
@@ -38,9 +38,13 @@
   2. 房況
   3. 可售房量
   4. 淨訂單量
-  5. `Standard Rate 447`, person icon, 設定
-  6. `Non-refundable (BF,D 503)`, `非 XML`, person icon, 設定
-  7. `Non-refundable (Standar Rate 447)`, `非 XML`, person icon, `X2 編輯`
+  5. `Standard Rate 447`
+  6. `Non-refundable (BF,D 503)`
+  7. `Non-refundable (Standar Rate 447)`
+- 三個價格 row 的 label cell 只顯示上述名稱。依 Figma `2386:101828`、
+  `2386:101841`、`2386:101856`，不顯示 `非 XML`、person icon、`設定` 或
+  `X2 編輯`。第一列 label cell 維持 Neutral/0；第二、三列 label cell 使用
+  `Color/Neutral/100` 灰底，灰底不可延伸到右側價格 cell。
 - 價格 cell 顯示 `TWD` 與 `8000`。`Standar Rate` 的拼字保留 Figma 原文。
 
 ## Inline number edit and detail modal

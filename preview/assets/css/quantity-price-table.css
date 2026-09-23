@@ -226,24 +226,12 @@
   white-space: nowrap;
 }
 
-.qp-rate-row th img {
-  width: 18px;
-  height: 18px;
-  margin-left: var(--spacing-8);
-  vertical-align: middle;
-}
-
 .qp-rate-name {
   vertical-align: middle;
 }
 
-.qp-xml-badge {
-  display: inline-block;
-  margin-left: var(--spacing-6);
-  padding: var(--spacing-2) var(--spacing-4);
-  border: 1px solid var(--color-bootstrap-components-focus);
-  color: var(--color-menuitem-default);
-  vertical-align: middle;
+.qp-rate-table .qp-rate-label--muted {
+  background: var(--color-neutral-100);
 }
 
 .qp-text-button {

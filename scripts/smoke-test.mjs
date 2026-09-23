@@ -1960,6 +1960,21 @@ const PAGES = [
             })) return "open status does not fill its merged table cell";
             if (document.querySelectorAll(".qp-rate-row").length !== 3)
               return "rate row count mismatch";
+            var rateRows = document.querySelectorAll(".qp-rate-row");
+            if (Array.from(rateRows).some(function (row) {
+              return row.querySelector(".qp-xml-badge, img, .qp-text-button");
+            })) return "rate rows should only contain their project names and price cells";
+            var neutralSample = document.createElement("span");
+            neutralSample.style.background = "var(--color-neutral-100)";
+            document.body.appendChild(neutralSample);
+            var neutralBackground = getComputedStyle(neutralSample).backgroundColor;
+            neutralSample.remove();
+            var rateLabels = Array.from(rateRows, function (row) { return row.querySelector("th"); });
+            if (getComputedStyle(rateLabels[0]).backgroundColor === neutralBackground)
+              return "standard rate label should not use the muted background";
+            if (rateLabels.slice(1).some(function (label) {
+              return getComputedStyle(label).backgroundColor !== neutralBackground;
+            })) return "non-refundable rate labels should use the neutral muted background";
             return true;
           })()
         `,
