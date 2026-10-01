@@ -7,6 +7,48 @@
 
 ---
 
+## Session 160：Icons data 與 Input variant 更新寫入規格 (2026-10-01)
+
+使用者以 figma-go 依序指定讀取 Icons data 與 Input component set 更新，並
+寫入規格；本輪只更新 spec，不匯出 SVG，也不修改 preview 實作。
+
+### Figma current source
+
+- Page：`1:2` `components`。
+- Icons selection：`25:93` `Icons`，402x945.01，共 163 個直屬 children。
+- 與 `specs/icons.md` 交叉比對後，149 個已有記錄，14 個尚未登錄。
+- Input selection：`20:34` `Input`，195x874，共 21 個 variants；新增
+  `2578:105314` `status=icons leftside + 3 sub label`，98x60。
+
+### 本輪改動
+
+1. `specs/icons.md` 新增 2026-10-01 current source，登錄
+   `lock-time-outline`、`options`、兩個 `data-usage` 與 `number-0` 至
+   `number-9` 的 node id、尺寸、paint 與幾何摘要。
+2. `#000000` 對應 `Color/Icon/Default`；`data-usage-32-regular` 的
+   `#6D6D6D` 對應 `Color/Neutral/500`。
+3. 明確標記 14 個 icon 尚未匯出正式 SVG，產品語意、使用頁面與互動狀態也
+   尚未定義；實作前仍需完成匯出與用途確認。
+4. 記錄 frame 內既有的 `icons/list`、`icons/restore`、`icons/check` 同名節點，
+   本輪不自行合併或改名。
+5. `components/input.md` 將 variant 數量由 20 更新為 21，Group G 新增三行文字
+   variant 的 layout、spacing、typography、color token 與未定義行為。
+6. 使用者確認 component set 外層 `#9747FF` 是 Figma 原生 selection 效果，
+   與 variant 無關；規格明確排除該 stroke。
+7. 使用者確認 `icons/close` 已設定 Alternative item，可任意替換 `icons/`
+   開頭的 icon component；規格將此記為共用 icon slot 規則，不再列為疑點。
+
+### 驗證
+
+- Figma root children checklist：163 個直屬 children，逐項取得 id、名稱、類型
+  與尺寸。
+- 14 個新 component 以 `get_nodes_info` 逐一讀取 bounds、children、fills 與
+  strokes，並用 selection PNG 交叉確認可見圖形。
+- 本地 `preview/assets/icons/` 與 repo 全文搜尋確認沒有這 14 個正式資產或既有
+  規格記錄。
+- Input component set 的 21 個 child 已逐項取得 id、名稱、尺寸與 styles；新
+  variant 另讀完整 node、3 個文字節點並以 3x PNG 交叉確認。
+
 ## Session 159：數量價格表移除價格列附加 UI (2026-09-23)
 
 使用者以 figma-go 指定調整「數量價格表」下方 table，移除人數與設定操作及

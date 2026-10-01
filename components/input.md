@@ -2,14 +2,17 @@
 
 **Figma Node ID**: `20:34`（Component Set）  
 **Type**: COMPONENT_SET  
-**最後同步**: 2026-04-13（依 Landing page - 0116）
+**最後同步**: 2026-10-01（Figma current source `20:34`）
 
 ---
 
 ## 概述
 
 `Input` 是通用輸入元件，涵蓋文字輸入、數字輸入、文字區域、單選按鈕、帶 icon 的輸入框、日期選取等。  
-以 `status` 屬性區分，共 **20 個 variants**，分為 7 個語意群組。
+以 `status` 屬性區分，共 **21 個 variants**，分為 7 個語意群組。
+
+> Figma component set 外層的紫色 selection stroke `#9747FF` 是 Figma 原生
+> 編輯器標示，不屬於 Input UI，也不屬於任何 variant 的 border 或 state。
 
 ---
 
@@ -25,6 +28,14 @@
 | Background（default） | `Color/Neutral/0` `Color/Neutral/0` | `Color/Neutral/100` `Color/Neutral/100` |
 | Text color（default） | `Color/Neutral/800` `Color/Neutral/800` | `Color/Neutral/400` `Color/Neutral/400` |
 | Font size | `12px`（sm） | — |
+
+### Icon Alternative item 規則
+
+- Component 定義中的 `icons/close` 是 icon slot 的 placeholder，已設定為
+  Alternative item。
+- 使用 instance 時可替換成任意 `icons/` 開頭的 icon component；
+  `icons/close` 不是固定語意，也不是未定義問題。
+- 實際顯示哪一顆 icon 由使用該 Input instance 的頁面或 component 規格決定。
 
 ---
 
@@ -136,6 +147,7 @@
 | `icons leftside + stroke` | `91:572` | 36×98px | 左 icon + 右側單行文字 | ⬜ 待比對 |
 | `icons leftside + sub label + two dates` | `698:10063` | 44×155px | 左 icon + 右側雙行（主標 + 日期區間）| ⬜ 待比對 |
 | `icons leftside + sub label + one date` | `698:10131` | 44×98px | 左 icon + 右側雙行（主標 + 單一日期） | ⬜ 待比對 |
+| `icons leftside + 3 sub label` | `2578:105314` | 60x98px | 左 icon + 右側三行等級相同的 sm 文字 | Figma current source 2026-10-01 |
 
 **日期區間格式（two dates）**：
 
@@ -150,6 +162,24 @@
 [icon] [主標 sm]
        [日期 sm]
 ```
+
+**三行文字格式（3 sub label）**：
+
+```
+[icon] [sm 文字]
+       [sm 文字]
+       [sm 文字]
+```
+
+- 外框：98x60，`Radius/6`，padding top/bottom 6px、left/right 12px。
+- 背景：`Color/Neutral/0`；border：`Color/Neutral/200`。
+- Icon slot：24x24，距左側 12px，垂直置中；placeholder 為 `icons/close`，
+  遵守上方 Alternative item 規則。
+- Icon 與文字 stack 間距 8px。
+- 文字 stack：42x48，共三行；每行 42x16，Noto Sans Regular 12px，
+  `Color/Neutral/800`，行間距 0。
+- 三行實際內容、長文字 overflow / truncation 與 mobile 行為由使用情境規格決定；
+  本次 Figma component 未定義。
 
 ---
 
@@ -172,11 +202,9 @@
 |---|---|
 | `number` variant 的 +/- 互動行為 | Figma 未定義 |
 | `text area` 的最大高度 / 展開行為 | Figma 未定義 |
-| `attached-link` icon slot 的完整對照表 | ⬜ 隨各 section spec 補齊 |
-| `icons leftside` icon slot 的完整對照表 | ⬜ 隨各 section spec 補齊 |
 | `range`（radio selected）觸發方式 | Figma 未定義互動 |
 | 行動版（mobile）佈局 | Figma 未定義 |
 
 ---
 
-*Generated from Figma components page · Updated 2026-04-13*
+*Generated from Figma components page - Updated 2026-10-01*

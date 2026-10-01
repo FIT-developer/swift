@@ -145,6 +145,51 @@
 
 ---
 
+## 2026-10-01 Icons data 更新
+
+> Current source：Figma `components` page，selection frame `25:93` / `Icons`，
+> 尺寸 402x945.01，讀取日期 2026-10-01。Frame 共有 163 個直屬 children；
+> 與本規格交叉比對後，149 個已有記錄，以下 14 個為本次新增登錄。
+
+### 使用狀態
+
+- 本批次目前只在 Figma 登錄，`preview/assets/icons/` 尚無對應 SVG。
+- 正式匯出前不得在 HTML / CSS / JS 引用，也不得自行手刻替代圖示。
+- 產品語意、使用頁面與互動狀態未由目前 selection 定義，維持未定義；不得從
+  component 名稱自行推定用途。
+- 這批皆為靜態 component，selection 未提供 active、hover、disabled 或其他
+  variant state。
+
+### Figma component 清單
+
+| Figma node | Figma 原名 | 尺寸 | 可見 vector paint | 幾何摘要 | 資產狀態 |
+|---|---|---|---|---|---|
+| `2560:101494` | icons/lock-time-outline | 24x24 | fill `#000000` -> `Color/Icon/Default` | 3 個 fill vector | 待匯出 |
+| `2578:105609` | icons/options | 24x24 | stroke `#000000` -> `Color/Icon/Default` | 2 個 stroke vector | 待匯出 |
+| `2578:105622` | icons/data-usage-32-regular | 24x24 | fill `#6D6D6D` -> `Color/Neutral/500` | 1 個 19.5x19.5 fill vector | 待匯出 |
+| `2578:105625` | icons/data-usage-checkmark-24-regular | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 21x21 fill vector | 待匯出 |
+| `2578:105704` | icons/number-1 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105707` | icons/number-2 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105712` | icons/number-3 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105715` | icons/number-4 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105718` | icons/number-5 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105721` | icons/number-6 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105724` | icons/number-7 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105727` | icons/number-8 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105730` | icons/number-9 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
+| `2578:105734` | icons/number-0 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 2 個 fill vector：6x10.5 外形與 1.5x1.5 內部 | 待匯出 |
+
+### Frame 交叉檢查
+
+- Root children checklist：163 個直屬 children，類型為 162 個 `COMPONENT` 與
+  1 個 `INSTANCE` (`2100:97539` / `icons/image-empty`)。
+- 本批 14 個 component 均已逐一用 `get_nodes_info` 讀取 bounds、children 與
+  `styles.fills` / `styles.strokes`，並以完整 frame PNG 交叉確認可見圖形。
+- Frame 內仍有 3 組同名 component：`icons/list`、`icons/restore`、
+  `icons/check`。它們是既有狀態，本輪不改名，也不把同名節點合併。
+
+---
+
 ## 2026-08-27 Icons 批次同步
 
 > 來源：Figma selection frame `25:93` / `Icons`。本批次必須整批登錄與匯出，頁面只能取用下列正式資產，不得另外手刻或臨時補 SVG。
