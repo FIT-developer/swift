@@ -3,173 +3,196 @@
   class="modal-backdrop"
   role="dialog"
   aria-modal="true"
-  aria-labelledby="pcModalTitle"
+  aria-labelledby="pcwTitle"
 >
-  <form id="pcProjectForm" class="modal-box pc-modal-box" data-pc-modal-kind="lodging">
-    <header class="pc-modal-header">
-      <div class="pc-modal-heading-row">
-        <h2 id="pcModalTitle" class="pc-modal-title">新增</h2>
-        <div class="pc-step-indicator" aria-label="目前步驟">
-          <span class="pc-step-dot is-active" data-pc-step-dot="1">1</span>
-          <span class="pc-step-line" aria-hidden="true"></span>
-          <span class="pc-step-dot" data-pc-step-dot="2">2</span>
-          <span class="pc-step-line" aria-hidden="true"></span>
-          <span class="pc-step-dot" data-pc-step-dot="3">3</span>
-        </div>
-        <button
-          type="button"
-          class="modal-close-btn pc-modal-close"
-          data-modal="modalProjectContentBackdrop"
-          aria-label="關閉"
-        >
-          <img src="./assets/icons/close.svg" alt="" />
-        </button>
+  <form id="pcProjectForm" class="modal-box pcw-modal-box pcw-modal-box--step-1">
+    <header class="pcw-header">
+      <div class="pcw-heading">
+        <h2 id="pcwTitle" class="pcw-title" data-pcw-title>新增</h2>
+        <p class="pcw-subtitle" data-pcw-subtitle>專案</p>
       </div>
-      <p>我是提示文字</p>
+      <button
+        type="button"
+        class="modal-close-btn pcw-close"
+        data-modal="modalProjectContentBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" />
+      </button>
+      <ol class="pcw-step-indicator" aria-label="目前步驟">
+        <li class="pcw-step-dot is-active" data-pcw-step-dot="1" aria-current="step">
+          <img src="./assets/icons/number-1.svg" alt="" />
+        </li>
+        <li class="pcw-step-connector" aria-hidden="true"></li>
+        <li class="pcw-step-dot" data-pcw-step-dot="2">
+          <img src="./assets/icons/number-2.svg" alt="" />
+        </li>
+        <li class="pcw-step-connector" aria-hidden="true"></li>
+        <li class="pcw-step-dot" data-pcw-step-dot="3">
+          <img src="./assets/icons/number-3.svg" alt="" />
+        </li>
+      </ol>
     </header>
 
-    <div class="pc-modal-body">
-      <section class="pc-modal-step" data-pc-step-panel="1">
-        <div class="pc-form-grid">
-          <label class="pc-inline-field">
-            <span>專案代號</span>
-            <input type="text" value="12" disabled />
+    <div class="pcw-body">
+      <section class="pcw-step-panel" data-pcw-step="1" aria-label="專案">
+        <div class="pcw-project-grid">
+          <label class="pcw-field">
+            <span class="pcw-field-label">專案代號</span>
+            <input class="pcw-input" type="text" name="projectCode" value="12" readonly />
           </label>
-          <label class="pc-inline-field">
-            <span>專案名稱</span>
-            <input type="text" value="" />
+          <label class="pcw-field">
+            <span class="pcw-field-label">專案名稱</span>
+            <input class="pcw-input" type="text" name="projectName" value="" data-pcw-field="projectName" />
           </label>
 
-          <label class="pc-inline-field pc-span-2" data-pc-channel-only hidden>
-            <span>通路庫存</span>
-            <select>
-              <option>Booking</option>
+          <label class="pcw-field">
+            <span class="pcw-field-label">專案類型</span>
+            <input class="pcw-input" type="text" name="projectType" value="住宿專案" readonly />
+          </label>
+          <label class="pcw-field">
+            <span class="pcw-field-label">計價方式</span>
+            <select class="pcw-input" name="pricingMethod">
+              <option selected>間數</option>
             </select>
           </label>
 
-          <label class="pc-inline-field">
-            <span aria-hidden="true"></span>
-            <input type="text" value="住宿專案" disabled />
-          </label>
-          <label class="pc-inline-field">
-            <span>計價方式</span>
-            <select>
-              <option>間數</option>
-            </select>
-          </label>
-
-          <fieldset class="pc-inline-field pc-fieldset">
-            <legend>加人</legend>
-            <div class="pc-radio-row">
-              <label><input type="radio" name="pc-extra-person" /> 可</label>
-              <label><input type="radio" name="pc-extra-person" checked /> 不可</label>
-            </div>
-          </fieldset>
-          <label class="pc-inline-field">
-            <span>排序</span>
-            <input type="text" value="999" />
+          <div class="pcw-field">
+            <span class="pcw-field-label">加人</span>
+            <label class="member-data-switch">
+              <input type="checkbox" name="extraPerson" role="switch" aria-label="加人" />
+              <span class="member-data-switch-track" aria-hidden="true"></span>
+              <span class="member-data-switch-knob" aria-hidden="true"></span>
+            </label>
+          </div>
+          <label class="pcw-field">
+            <span class="pcw-field-label">排序</span>
+            <input class="pcw-input" type="text" name="sortOrder" value="999" />
           </label>
 
-          <label class="pc-inline-field pc-checkbox-field">
-            <span aria-hidden="true"></span>
-            <span><input type="checkbox" /> 不可退款</span>
-          </label>
-          <label class="pc-inline-field">
-            <span>含餐</span>
-            <span class="pc-select-info-wrap">
-              <select>
-                <option>YES</option>
+          <div class="pcw-field">
+            <span class="pcw-field-label">退款</span>
+            <label class="member-data-switch">
+              <input type="checkbox" name="refund" role="switch" aria-label="退款" />
+              <span class="member-data-switch-track" aria-hidden="true"></span>
+              <span class="member-data-switch-knob" aria-hidden="true"></span>
+            </label>
+          </div>
+          <div class="pcw-field">
+            <label class="pcw-field-label" for="pcwMealPlan">含餐</label>
+            <span class="pcw-select-info">
+              <select id="pcwMealPlan" class="pcw-input" name="mealPlan">
+                <option selected>YES</option>
               </select>
-              <button type="button" class="pc-info-button" aria-describedby="pcMealTooltip">
-                <img src="./assets/icons/info.svg" alt="說明" />
+              <button
+                type="button"
+                class="pcw-info-button"
+                aria-describedby="pcwMealTooltip"
+                aria-label="含餐說明"
+              >
+                <img src="./assets/icons/info.svg" alt="" />
               </button>
-              <span id="pcMealTooltip" class="pc-tooltip" role="tooltip">說明內容</span>
+              <span id="pcwMealTooltip" class="pcw-tooltip" role="tooltip">說明內容</span>
+            </span>
+          </div>
+
+          <div class="pcw-field pcw-date-field">
+            <span class="pcw-field-label">專案期間</span>
+            <div class="pcw-date-range">
+              <label class="pcw-date-input-wrap">
+                <span class="sr-only">專案開始日期</span>
+                <input class="pcw-input" type="text" name="projectStart" value="2026-02-10" />
+                <img src="./assets/icons/calendar.svg" alt="" />
+              </label>
+              <span class="pcw-date-separator" aria-hidden="true">~</span>
+              <label class="pcw-date-input-wrap">
+                <span class="sr-only">專案結束日期</span>
+                <input class="pcw-input" type="text" name="projectEnd" value="2026-03-11" />
+                <img src="./assets/icons/calendar.svg" alt="" />
+              </label>
+            </div>
+          </div>
+          <div class="pcw-field pcw-date-field">
+            <span class="pcw-field-label">上架期限</span>
+            <div class="pcw-date-range">
+              <label class="pcw-date-input-wrap">
+                <span class="sr-only">上架開始日期</span>
+                <input class="pcw-input" type="text" name="publishStart" value="2026-02-10" />
+                <img src="./assets/icons/calendar.svg" alt="" />
+              </label>
+              <span class="pcw-date-separator" aria-hidden="true">~</span>
+              <label class="pcw-date-input-wrap">
+                <span class="sr-only">上架結束日期</span>
+                <input class="pcw-input" type="text" name="publishEnd" value="2026-03-11" />
+                <img src="./assets/icons/calendar.svg" alt="" />
+              </label>
+            </div>
+          </div>
+
+          <div class="pcw-field pcw-duration-field" role="group" aria-labelledby="pcwDurationLabel">
+            <span id="pcwDurationLabel" class="pcw-field-label">專案天數</span>
+            <label class="pcw-radio-option">
+              <input type="radio" name="durationRule" value="equal" />
+              <span>等於</span>
+            </label>
+            <label class="pcw-radio-option">
+              <input type="radio" name="durationRule" value="at-least" checked />
+              <span>至少</span>
+            </label>
+            <input class="pcw-input pcw-duration-input" type="text" name="duration" value="1" aria-label="專案天數" />
+            <span>夜</span>
+          </div>
+
+          <div class="pcw-field pcw-room-types" role="group" aria-labelledby="pcwRoomTypesLabel">
+            <span id="pcwRoomTypesLabel" class="pcw-field-label">專案房型</span>
+            <div class="pcw-room-type-options">
+              <label class="pcw-check-option"><input type="checkbox" name="roomTypes" value="all" /><span>全選</span></label>
+              <label class="pcw-check-option"><input type="checkbox" name="roomTypes" value="one" /><span>方案一</span></label>
+              <label class="pcw-check-option"><input type="checkbox" name="roomTypes" value="two" /><span>方案二</span></label>
+              <span class="pcw-room-type-last">
+                <label class="pcw-check-option"><input type="checkbox" name="roomTypes" value="three" /><span>方案三</span></label>
+                <button type="button" class="pcw-add-button">加</button>
+              </span>
+            </div>
+          </div>
+          <label class="pcw-field pcw-booking-days">
+            <span class="pcw-field-label pcw-label-with-note">
+              <span>提前訂位</span>
+              <small>註：1 表示今天只能訂明天之後的...</small>
+            </span>
+            <span class="pcw-number-unit">
+              <input class="pcw-input" type="text" name="advanceBookingDays" value="12" />
+              <span>天</span>
             </span>
           </label>
 
-          <label class="pc-inline-field">
-            <span>排序</span>
-            <input type="text" value="999" />
-          </label>
-          <div class="pc-inline-field pc-date-range-field">
-            <span>專案期間</span>
-            <div class="pc-date-range">
-              <label>
-                <span class="sr-only">專案開始日期</span>
-                <input type="text" value="2026-02-10" />
-                <img src="./assets/icons/calendar.svg" alt="" />
-              </label>
-              <span>~</span>
-              <label>
-                <span class="sr-only">專案結束日期</span>
-                <input type="text" value="2026-03-11" />
-                <img src="./assets/icons/calendar.svg" alt="" />
-              </label>
-            </div>
-          </div>
-
-          <fieldset class="pc-inline-field pc-fieldset pc-room-options">
-            <legend>專案房型</legend>
-            <div class="pc-room-option-list">
-              <label><input type="checkbox" /> 全選</label>
-              <label><input type="checkbox" /> 方案一</label>
-              <label><input type="checkbox" /> 方案二</label>
-              <label><input type="checkbox" /> 方案三</label>
-              <button type="button" class="pc-mini-button">加</button>
-            </div>
-          </fieldset>
-          <fieldset class="pc-inline-field pc-fieldset">
-            <legend>專案天數</legend>
-            <div class="pc-radio-row pc-night-row">
-              <label><input type="radio" name="pc-night-rule" /> 等於</label>
-              <label><input type="radio" name="pc-night-rule" checked /> 至少</label>
-              <input type="text" value="1" aria-label="專案天數" />
-              <span>夜</span>
-            </div>
-          </fieldset>
-
-          <div class="pc-inline-field pc-date-range-field" data-pc-lodging-only>
-            <span>上架期限</span>
-            <div class="pc-date-range">
-              <label>
-                <span class="sr-only">上架開始日期</span>
-                <input type="text" value="2026-02-10" />
-                <img src="./assets/icons/calendar.svg" alt="" />
-              </label>
-              <span>~</span>
-              <label>
-                <span class="sr-only">上架結束日期</span>
-                <input type="text" value="2026-03-11" />
-                <img src="./assets/icons/calendar.svg" alt="" />
-              </label>
-            </div>
-          </div>
-          <label class="pc-inline-field pc-field-with-note" data-pc-lodging-only>
-            <span>幾天前可訂<small>註：1 表示今天只能訂明天之後的...</small></span>
-            <span class="pc-number-unit"><input type="text" value="12" /><span>天</span></span>
+          <label class="pcw-field pcw-network-days">
+            <span class="pcw-field-label pcw-label-with-note">
+              <span>網路開放</span>
+              <small>註 註 註 註 註 註 註 註 註 註 註 註 註 註 註</small>
+            </span>
+            <span class="pcw-number-unit">
+              <input class="pcw-input" type="text" name="networkOpenDays" value="12" />
+              <span>天</span>
+            </span>
           </label>
 
-          <label class="pc-inline-field pc-span-2 pc-field-with-note" data-pc-lodging-only>
-            <span>網路開放天數<small>註 註 註 註 註 註 註 註 註 註 註</small></span>
-            <span class="pc-number-unit"><input type="text" value="12" /><span>天</span></span>
-          </label>
-
-          <div class="pc-copy-card-wrap pc-span-2">
-            <article class="pc-copy-card">
-              <h3>專案名稱案</h3>
-              <div>
+          <div class="pcw-copy-grid">
+            <article class="pcw-copy-card">
+              <h3>專案名稱文案</h3>
+              <div class="pcw-copy-content">
                 <p>尚未填寫</p>
-                <button type="button" class="pc-edit-copy-button">
+                <button type="button" class="pcw-edit-copy">
                   <img src="./assets/icons/edit.svg" alt="" />
                   <span>編輯</span>
                 </button>
               </div>
             </article>
-            <article class="pc-copy-card">
+            <article class="pcw-copy-card">
               <h3>專案介紹文案</h3>
-              <div>
+              <div class="pcw-copy-content">
                 <p>尚未填寫</p>
-                <button type="button" class="pc-edit-copy-button">
+                <button type="button" class="pcw-edit-copy">
                   <img src="./assets/icons/edit.svg" alt="" />
                   <span>編輯</span>
                 </button>
@@ -179,142 +202,34 @@
         </div>
       </section>
 
-      <section class="pc-modal-step" data-pc-step-panel="2" hidden>
-        <label class="pc-inline-field pc-summary-project">
-          <span>專案</span>
-          <input type="text" value="xxx-yyy-zzz" disabled />
-        </label>
-
-        <div class="pc-date-status-copy">
-          <span>已設定日期區間</span>
-          <span>已選取設定的日期區間</span>
-        </div>
-
-        <div class="pc-date-type-table-wrap">
-          <table class="pc-date-type-table">
-            <thead>
-              <tr>
-                <th>排序</th>
-                <th>日期名稱</th>
-                <th>詳細</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <input type="checkbox" aria-label="選取平日" />
-                  <img src="./assets/icons/up.svg" alt="向上排序" />
-                </td>
-                <td><span>自設</span><i class="pc-date-swatch pc-date-swatch--weekday"></i><span>平日</span></td>
-                <td>1. 不限制&nbsp; | 一、二、三、日</td>
-              </tr>
-              <tr>
-                <td>
-                  <input type="checkbox" aria-label="選取假日" />
-                  <img src="./assets/icons/up.svg" alt="向上排序" />
-                  <img src="./assets/icons/down.svg" alt="向下排序" />
-                </td>
-                <td><span>自設</span><i class="pc-date-swatch pc-date-swatch--holiday"></i><span>假日</span></td>
-                <td>1. 不限制&nbsp; | 一、二、三、日</td>
-              </tr>
-              <tr>
-                <td>
-                  <input type="checkbox" aria-label="選取連續假日" />
-                  <img src="./assets/icons/down.svg" alt="向下排序" />
-                </td>
-                <td><span>自設</span><i class="pc-date-swatch pc-date-swatch--long-holiday"></i><span>連續假日</span></td>
-                <td>1. 不限制&nbsp; | 一、二、三、日</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="pc-calendar-nav">
-          <button type="button" aria-label="上一個月份"><img src="./assets/icons/left.svg" alt="" /></button>
-          <strong>2026 年 03 月</strong>
-          <button type="button" aria-label="下一個月份"><img src="./assets/icons/right.svg" alt="" /></button>
-        </div>
-
-        <div class="pc-calendar-grid" data-pc-calendar-grid></div>
-
-        <div class="pc-selected-dates">
-          <span>指定日期</span>
-          <span>2026-03-02 指定為 平日</span>
-          <span>2026-04-03 指定為 假日</span>
-          <span>2026-06-05 指定為 連續假日</span>
-        </div>
-        <label class="pc-save-sample"><input type="checkbox" /> 將此日期設定儲存成樣本</label>
-      </section>
-
-      <section class="pc-modal-step" data-pc-step-panel="3" hidden>
-        <div class="pc-price-summary">
-          <label><span>專案</span><input type="text" value="xxx-yyy-zzz" disabled /></label>
-          <label><span>計價</span><input type="text" value="每間" disabled /></label>
-          <label><span>天數</span><input type="text" value="1" disabled /></label>
-        </div>
-        <div class="pc-name-summary"><span>名稱</span><span>28 間</span></div>
-
-        <div class="pc-price-table-shell pc-price-table-shell--sale">
-          <table class="pc-price-table">
-            <thead><tr><th>日期</th><th colspan="3">售價</th></tr></thead>
-            <tbody>
-              <tr>
-                <th><i class="pc-date-swatch pc-date-swatch--weekday"></i>平日</th>
-                <td><label><input type="radio" name="pc-sale-weekday" /> 開放</label></td>
-                <td><label><input type="radio" name="pc-sale-weekday" checked /> 不開放</label></td>
-                <td><input type="text" value="8888" /></td>
-              </tr>
-              <tr>
-                <th><i class="pc-date-swatch pc-date-swatch--holiday"></i>假日</th>
-                <td><label><input type="radio" name="pc-sale-holiday" /> 開放</label></td>
-                <td><label><input type="radio" name="pc-sale-holiday" checked /> 不開放</label></td>
-                <td><input type="text" value="8888" /></td>
-              </tr>
-              <tr>
-                <th><i class="pc-date-swatch pc-date-swatch--long-holiday"></i>連續假日</th>
-                <td><label><input type="radio" name="pc-sale-long-holiday" /> 開放</label></td>
-                <td><label><input type="radio" name="pc-sale-long-holiday" checked /> 不開放</label></td>
-                <td><input type="text" value="8888" /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="pc-price-section-heading"><span>加人</span><span>每位</span></div>
-        <div class="pc-price-table-shell">
-          <table class="pc-price-table pc-price-table--extra" data-pc-extra-table="adult"></table>
-        </div>
-
-        <div class="pc-price-section-heading"><span>加兒童</span><span>每位</span></div>
-        <div class="pc-price-table-shell">
-          <table class="pc-price-table pc-price-table--extra" data-pc-extra-table="child"></table>
-        </div>
-      </section>
+      <section class="pcw-step-panel" data-pcw-step="2" aria-label="日期" hidden></section>
+      <section class="pcw-step-panel" data-pcw-step="3" aria-label="價格" hidden></section>
     </div>
 
-    <footer class="pc-modal-footer">
-      <div class="pc-footer-group" data-pc-footer="1">
+    <footer class="pcw-footer">
+      <div class="pcw-footer-row" data-pcw-footer="1">
         <span></span>
-        <span>
-          <button type="button" class="pc-footer-button pc-footer-button--secondary" data-pc-clear>清除</button>
-          <button type="button" class="pc-footer-button pc-footer-button--primary" data-pc-next>下一頁</button>
+        <span class="pcw-footer-actions">
+          <button type="button" class="pcw-footer-button pcw-footer-button--secondary" data-pcw-clear>清除</button>
+          <button type="button" class="pcw-footer-button pcw-footer-button--primary" data-pcw-next>下一頁</button>
         </span>
       </div>
-      <div class="pc-footer-group" data-pc-footer="2" hidden>
-        <button type="button" class="pc-footer-button pc-footer-button--primary" data-pc-previous>上一頁</button>
-        <span>
-          <button type="button" class="pc-footer-button pc-footer-button--secondary" data-pc-clear>清除</button>
-          <button type="button" class="pc-footer-button pc-footer-button--primary" data-pc-next>下一頁</button>
+      <div class="pcw-footer-row" data-pcw-footer="2" hidden>
+        <button type="button" class="pcw-footer-button pcw-footer-button--primary" data-pcw-previous>上一頁</button>
+        <span class="pcw-footer-actions">
+          <button type="button" class="pcw-footer-button pcw-footer-button--secondary" data-pcw-clear>清除</button>
+          <button type="button" class="pcw-footer-button pcw-footer-button--primary" data-pcw-next>下一頁</button>
         </span>
       </div>
-      <div class="pc-footer-group" data-pc-footer="3" hidden>
-        <button type="button" class="pc-footer-button pc-footer-button--primary" data-pc-previous>上一頁</button>
-        <span>
-          <button type="button" class="pc-footer-button pc-footer-button--secondary" data-pc-clear>清除</button>
+      <div class="pcw-footer-row" data-pcw-footer="3" hidden>
+        <button type="button" class="pcw-footer-button pcw-footer-button--primary" data-pcw-previous>上一頁</button>
+        <span class="pcw-footer-actions">
+          <button type="button" class="pcw-footer-button pcw-footer-button--secondary" data-pcw-clear>清除</button>
           <button
             type="button"
-            class="modal-close-btn pc-footer-button pc-footer-button--primary"
+            class="modal-close-btn pcw-footer-button pcw-footer-button--primary"
             data-modal="modalProjectContentBackdrop"
+            data-pcw-save
           >
             儲存
           </button>

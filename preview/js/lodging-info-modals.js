@@ -1,3 +1,5 @@
+import { initPhotoSort } from "./photo-sort.js";
+
 // 民宿資料頁 - 照片管理 modal 行為（components/modal.md state=photo-gallery）
 // 每個 headquarters/分館卡各自獨立一份 5 張圖片資料（demo 用 row1/row2 兩組
 // local state），開啟時从「上次上傳成功後的狀態」複製一份 working 副本；
@@ -69,7 +71,7 @@ function buildCard(slot, idx) {
   var head = document.createElement("div");
   head.className = "flex items-center gap-2";
   head.innerHTML =
-    '<img src="./assets/icons/dots-line.svg" alt="拖曳排序" class="w-6 h-6 cursor-grab" />' +
+    '<img src="./assets/icons/dots-line.svg" alt="拖曳排序" class="w-6 h-6 cursor-grab" data-photo-sort-handle role="button" tabindex="0" draggable="false" />' +
     '<span class="text-xl text-text-default">圖片 ' + (idx + 1) + "</span>";
   if (idx === 0) {
     // 「主圖」永遠顯示在排序第 1 位，不管該格有沒有圖片（2026-07-30
@@ -183,32 +185,11 @@ function handleUploadCommit() {
   pendingObjectUrls = [];
 }
 
-let dragSourceIndex = null;
-
 function initDragAndDrop() {
-  var grid = document.getElementById("lodgingPhotoCardGrid");
-  if (!grid) return;
-
-  grid.addEventListener("dragstart", function (e) {
-    var card = e.target.closest("[data-slot]");
-    if (!card) return;
-    dragSourceIndex = Number(card.dataset.slot);
-    e.dataTransfer.effectAllowed = "move";
-  });
-
-  grid.addEventListener("dragover", function (e) {
-    e.preventDefault();
-  });
-
-  grid.addEventListener("drop", function (e) {
-    e.preventDefault();
-    var card = e.target.closest("[data-slot]");
-    if (!card || dragSourceIndex === null) return;
-    var targetIndex = Number(card.dataset.slot);
-    if (targetIndex === dragSourceIndex) return;
-    var moved = workingSlots.splice(dragSourceIndex, 1)[0];
-    workingSlots.splice(targetIndex, 0, moved);
-    dragSourceIndex = null;
+  const grid = document.getElementById("lodgingPhotoCardGrid");
+  initPhotoSort(grid, (source, target) => {
+    const moved = workingSlots.splice(source, 1)[0];
+    workingSlots.splice(target, 0, moved);
     render();
   });
 }
@@ -238,8 +219,6 @@ export function initLodgingInfoModals() {
   if (uploadBtn) {
     uploadBtn.addEventListener("click", function () {
       handleUploadCommit();
-      var backdrop = document.getElementById("modalPhotoGalleryBackdrop");
-      if (backdrop) backdrop.classList.remove("open");
     });
   }
 

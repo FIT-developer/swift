@@ -256,6 +256,14 @@ selector），會由「後出現於 stylesheet 的規則」勝出 - Tailwind Pla
   enabled 規則的位置（checked disabled 在右側），不整顆降低 opacity
 - 來源：`components/member-data-modal.md`（會員資料 modal 常用會員、訂閱電子報）
 
+### 照片管理排序
+
+- 共用手勢模組: `preview/js/photo-sort.js`, 契約為 grid + 各頁自己的 onMove callback。
+- 四個照片管理器共用 desktop / touch / keyboard 排序手勢, 不共用照片資料。
+- 觸控把手使用 `data-photo-sort-handle`, 預先設 `touch-action: none`;
+  非把手區域維持一般垂直捲動。捕捉在 grid, 不捕捉到 backdrop。
+- 來源規格: `components/modal.md` `state=photo-gallery`, 2026-10-22 使用者要求。
+
 ### 密碼欄 eye toggle（Figma 單態示意 = 完整互動）
 - 使用者在 Figma 對密碼欄只會示意 eye-open 或 eye-close **其中一種**狀態
   （2026-07-16 明示）; 實作一律直接補完整 toggle, 不列「另一態未定義」疑點

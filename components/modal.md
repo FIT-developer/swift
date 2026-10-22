@@ -909,7 +909,7 @@ Modal (1140x1134px)
 | 行為 | 規則 |
 |---|---|
 | 開啟 | 點擊 headquarters/分館卡片左側圓形照片觸發器（有圖態含右下角小 icon）開啟 `modalPhotoGallery`；開啟時依該筆資料實際張數渲染對應 card 狀態，無資料的位置一律渲染無圖 card |
-| 拖曳排序 | dots-line 把手支援拖放排序（本輪做完整功能）；排序後即時更新每張 card 的 `圖片 N` 標題與「主圖」pill 歸屬（永遠跟著新的第 1 位）；排序結果為 modal 內 local state，需等按「上傳」才視為送出 |
+| 拖曳排序 | dots-line 把手在 desktop 與手機皆支援排序; desktop 保留卡片原生拖放, 滑鼠與觸控皆可從把手按住拖動, 一般卡片區仍可滑動清單。觸控靠近 body 上下邊緣時自動捲動, 放開套用本輪順序, pointer cancel 放棄本次拖動, 不得關閉 modal。排序後更新每張 card 的 `圖片 N` 標題與「主圖」pill 歸屬, 永遠跟著新的第 1 位; 順序只改 modal local state, 按「上傳」才保存。適用民宿資料 / 房型 / 專案內容 / 加購商品, 四頁資料與取消保存機制各自獨立 |
 | 上傳圖片 / 更換圖片 | click 觸發 `input[type=file]`（accept `image/jpeg`）；選檔後立即以 `URL.createObjectURL` 本地預覽取代該 card 圖片；無圖 card 選檔後立即切換為有圖 card 版型（新增拖曳把手旁的圖片顯示、按鈕從「上傳圖片」變成「更換圖片」+「刪除」）；本地預覽為 prototype 行為，實際上傳/儲存由後端接手 |
 | 刪除 | click 後該 card 從有圖 state 立即切回無圖 state（清除本地預覽），並釋放對應 `URL.createObjectURL` object URL；刪除不影響其他 card 排序位置（原地變空）。主圖 pill 固定顯示在排序第 1 位，刪除第 1 位的圖片後 pill 不會移動、留在原地（第 1 位變成無圖但仍有 pill，提示使用者這格還沒圖），2026-07-30 訂正後不再需要「pill 移到新的第 1 張有圖 card」這個轉移邏輯 |
 | 取消 | 關閉 modal，捨棄本輪所有本地變更（拖曳排序 / 新選檔 / 刪除），下次開啟回到上次「上傳」成功後的狀態 |

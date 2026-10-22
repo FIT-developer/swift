@@ -153,10 +153,11 @@
 
 ### 使用狀態
 
-- 本批次目前只在 Figma 登錄，`preview/assets/icons/` 尚無對應 SVG。
+- 本批 14 個 component 中, 13 個已於 2026-10-22 為專案內容實作匯出 SVG;
+  其餘仍待匯出, 實際狀態見下表。
 - 正式匯出前不得在 HTML / CSS / JS 引用，也不得自行手刻替代圖示。
-- 產品語意、使用頁面與互動狀態未由目前 selection 定義，維持未定義；不得從
-  component 名稱自行推定用途。
+- 已匯出項目的專案內容用途見本檔 2026-10-22 記錄; 其餘產品語意與使用頁面
+  仍未定義, 不得只從 component 名稱自行推定。
 - 這批皆為靜態 component，selection 未提供 active、hover、disabled 或其他
   variant state。
 
@@ -164,20 +165,20 @@
 
 | Figma node | Figma 原名 | 尺寸 | 可見 vector paint | 幾何摘要 | 資產狀態 |
 |---|---|---|---|---|---|
-| `2560:101494` | icons/lock-time-outline | 24x24 | fill `#000000` -> `Color/Icon/Default` | 3 個 fill vector | 待匯出 |
+| `2560:101494` | icons/lock-time-outline | 24x24 | fill `#000000` -> `Color/Icon/Default` | 3 個 fill vector | 2026-10-22 exported |
 | `2578:105609` | icons/options | 24x24 | stroke `#000000` -> `Color/Icon/Default` | 2 個 stroke vector | 待匯出 |
-| `2578:105622` | icons/data-usage-32-regular | 24x24 | fill `#6D6D6D` -> `Color/Neutral/500` | 1 個 19.5x19.5 fill vector | 待匯出 |
-| `2578:105625` | icons/data-usage-checkmark-24-regular | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 21x21 fill vector | 待匯出 |
-| `2578:105704` | icons/number-1 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105707` | icons/number-2 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105712` | icons/number-3 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105715` | icons/number-4 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105718` | icons/number-5 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105721` | icons/number-6 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105724` | icons/number-7 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105727` | icons/number-8 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105730` | icons/number-9 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 待匯出 |
-| `2578:105734` | icons/number-0 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 2 個 fill vector：6x10.5 外形與 1.5x1.5 內部 | 待匯出 |
+| `2578:105622` | icons/data-usage-32-regular | 24x24 | fill `#6D6D6D` -> `Color/Neutral/500` | 1 個 19.5x19.5 fill vector | 2026-10-22 exported |
+| `2578:105625` | icons/data-usage-checkmark-24-regular | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 21x21 fill vector | 2026-10-22 exported |
+| `2578:105704` | icons/number-1 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105707` | icons/number-2 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105712` | icons/number-3 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105715` | icons/number-4 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105718` | icons/number-5 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105721` | icons/number-6 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105724` | icons/number-7 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105727` | icons/number-8 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105730` | icons/number-9 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 1 個 6x10.5 fill vector | 2026-10-22 exported |
+| `2578:105734` | icons/number-0 | 24x24 | fill `#000000` -> `Color/Icon/Default` | 2 個 fill vector：6x10.5 外形與 1.5x1.5 內部 | 2026-10-22 exported |
 
 ### Frame 交叉檢查
 
@@ -394,3 +395,15 @@
 ---
 
 *Generated from Figma components page - 122 一般 icon + 12 menu-list icon(各 fill/none-fill 兩檔) + 17 SunEditor + 2 ckeditor icon exported(`~~none~~` 未匯出不計) - Updated 2026-08-11*
+
+### 2026-10-22 project-content implementation assets
+
+- 本次從既有 Figma component 匯出 13 個實際用到的 SVG 至 `preview/assets/icons/`:
+  `lock-time-outline`, `data-usage-32-regular`, `data-usage-checkmark-24-regular`,
+  `number-0` 至 `number-9`。
+- 用途: 專案卡限時資訊 / 日期定義來源池 / 已加入定義與價格列順位。
+- Number icons 依清單從上到下分配順位, 交換項目後即重編; 多位數組合對應 digit SVG,
+  不以文字替代。日期定義的資料 ID 不因順位改變。
+- 2026-10-22 再讀 number-5 至 number-0 的 6 個 component, 各 24x24,
+  向量 fill 為 `#000000` 對應 `Color/Icon/Default`, 匯出保留原幾何。
+- 上表其他尚未使用的 component 保留待匯出狀態, 本次不額外同步 Variables。

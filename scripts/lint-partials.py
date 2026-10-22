@@ -169,6 +169,7 @@ MANIFEST = {
             'session-modals',
             'topbar-modals',
             'project-content-modals',
+            'project-content-extras',
         ],
         'modules': [
             './js/partials.js',

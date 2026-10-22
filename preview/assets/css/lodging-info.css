@@ -120,6 +120,9 @@
   grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
+.lodging-photo-card [data-photo-sort-handle] { flex: none; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-touch-callout: none; }
+.lodging-photo-card.is-photo-drop-target { outline: 2px solid var(--color-border-plugin-focus); }
+.photo-sort-ghost { position: fixed; z-index: var(--z-popover); pointer-events: none; background: var(--color-neutral-0); box-shadow: var(--effect-dropdown-shadow); }
 @container (min-width: 900px) {
   .lodging-photo-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

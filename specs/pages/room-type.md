@@ -191,3 +191,13 @@ Figma 修正為單層 `content`（frame 直接子節點只有「頂部 logo/選�
 
 - 本次 Figma 未提供這 3 個 modal 的窄版單獨 frame，窄 viewport 下的兩欄 row
   版面调整見 `components/modal.md` `state=room-type` 段「Layout / RWD」
+
+## 2026-10-22 照片管理觸控排序修正
+
+- `components/modal.md` photo-gallery 的 dots-line 把手在手機也可拖動排序,
+  非把手區域仍可垂直滑動; 靠近 body 上下邊緣可自動捲動到其他卡片。
+- 拖動後放開只改當輪 working state, pointer cancel 放棄此次拖動;
+  取消 / 關閉後還原, 上傳後才保存, 編號與主圖 pill 依新順位更新。
+- `preview/js/photo-sort.js` 共用手勢, 本頁照片資料與其他頁仍各自獨立。
+- 上傳按鈕由共用 modal controller 關閉並維護 body scroll lock,
+  不在頁面 JS 直接移除 backdrop class。

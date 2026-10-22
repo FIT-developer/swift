@@ -7,6 +7,434 @@
 
 ---
 
+## Session 169: 專案內容改版與驗收修正 commit/push 交接 (2026-10-22)
+
+### 使用者驗收與提交範圍
+
+- 使用者確認「可以了 commit & push」, 本批進入 commit/push flow,
+  實際 SHA 與遠端狀態以 git history 為準。
+- 提交 Session 163 至 168 的專案內容住宿卡片 / GHA modal / 三步驟 modal /
+  日期定義排序與順位 icons / 狀態 tab 統計 / UI 對齊修正。
+- 一併提交產品設定只保留 ota、專案內容、數量價格表的 menu 整理,
+  以及四頁圖片 modal 的共用 mouse/touch 排序、取消保存與關閉修正。
+- 相關 Figma 資產、tokens 24px 字級、component/page specs、partial manifest
+  與 regression checks 均隨本批提交。
+- `specs/pages/quantity-price-table.md` 是原有獨立待實作 contract,
+  不屬於本批驗收, 排除本次 staging, 保留本機工作樹供該任務後續處理。
+
+### 驗證與交接
+
+- 最後程式變更後 `node scripts/smoke-test.mjs` 10 頁 exit 0,
+  專案 23 項; 狀態統計、mobile 對齊、mouse/touch 排序與 modal 行為均涵蓋。
+- 375 / 768 / 1440 視覺 QA 與 Figma 核對紀錄見 Session 163 至 168,
+  截圖位於對應 session 的 `specs/qa-screenshots/` 子目錄。
+- fonts / conventions / partials / tokens lint、untracked 新檔 conventions
+  與 `git diff --check` 均通過, commit 時再執行 repo pre-commit hook。
+- 上一輪確認 landing / project-content preview HTTP 200。
+- 本批新增字級 token 已同步 `specs/assets/tokens.md` 與 base CSS;
+  共用互動 pattern 已同步 `specs/html-conventions.md`, 未新增全域開發規則,
+  `start.md` 維持原內容。
+- 範本套用、日期定義授權、成人/孩童權限與真實 API 維持後端邊界。
+- 後續數量價格表實作須另依使用者開工指示進行, 不從本批驗收推論授權。
+
+## Session 168: 價格頁手機間數值與 input 左緣對齊 (2026-10-22)
+
+### 本輪改動
+
+- 使用者指出 Step 3 的間數 / 28 間應對齊上下 input, 要求核對。
+- 再讀 Figma `2724:118363` JSON / PNG, 間數群組
+  `I2724:118363;73:678;2724:118261` 為 64px label + 12px gap,
+  值起點 x=76 與專案 input 外框起點一致。
+- 實測 1440 / 768 原本已對齊; 375 的 summary label 仍為 64px,
+  上下 `.pcw-field` 已切為 76px, 造成 28 間左偏 12px。
+- 僅修正小於 640px 的 `.pcw-price-summary` label 欄寬為 76px,
+  與既有欄位規則一致。桌面、平板排版與資料維持既有行為。
+- 同步 `specs/pages/project-content.md` 與既有 smoke alignment assertions。
+
+### 驗證與下一步
+
+- Chrome 實測: 1440 的專案 input / 間數值左緣同為 x=429,
+  768 同為 x=101; 375 修正前 100 / 88, 修正後專案 / 間數值 /
+  計價 / 天數皆為 x=100。無水平溢出。
+- Source、before / aligned 三個尺寸截圖在 `specs/qa-screenshots/session-168/`。
+- `node scripts/smoke-test.mjs`: 10 頁 exit 0, 專案 23 項,
+  包含 desktop / responsive 間數與 input 邊界對齊檢查。
+- fonts / conventions / partials / tokens lint、untracked wizard CSS conventions
+  與 `git diff --check` exit 0; preview landing / project-content HTTP 200。
+- 沿用既有欄寬與 spacing tokens, 無新增 token 或全域開發規則,
+  `tokens.md` / `start.md` 不需改動。
+- self-tested / pending user review, 未 commit/push; 其餘未提交工作保留。
+
+## Session 167: Step 1 含餐欄位與 info icon 分離 (2026-10-22)
+
+### 本輪改動與來源
+
+- 使用者指出第一頁含餐欄位的 info icon 應獨立放在欄位右側, 不可嵌入欄位。
+- 重新讀取 Figma Step 1 `2582:114936` JSON 與 PNG,
+  含餐列 `I2582:115072;73:678;2582:114967` 為 378x36:
+  label 64px / gap 12px / Select 266x36 / gap 12px / info 24x24。
+  Select sample 是 YES, 本輪保留既有下拉欄位, 只修正組合排版。
+- info icon node `I2582:115072;73:678;2582:114970` 是欄位 sibling,
+  其 x=354、y=6; source PNG 同時確認 info 在框外, tooltip 是浮動說明。
+- `project-content-wizard.css` 移除按鈕 absolute/right 與欄位額外 40px padding,
+  改為 flex 欄位 + 12px gap + 不縮放的 24px info button; icon 本身亦為 24px。
+  tooltip 的 hover / focus 機制保留。
+- 同步 `specs/pages/project-content.md` 與 smoke contract checks。
+
+### 驗證與下一步
+
+- Chrome 1440 / 768 / 375 測量 icon 24x24, 與欄位間距皆為 12px、垂直置中,
+  欄位隨可用空間縮放, modal body 無水平溢出。
+- Focus 可顯示 tooltip, 說明框維持於 viewport 內。
+- Source 與實作 default / tooltip 截圖在 `specs/qa-screenshots/session-167/`。
+- `node scripts/smoke-test.mjs`: 10 頁 exit 0, 專案內容 23 項,
+  追加 desktop 與 responsive 欄位 / info 間距與尺寸檢查。
+- fonts / conventions / partials / tokens lint、untracked wizard CSS conventions
+  與 `git diff --check` exit 0。沿用既有 spacing / icon / 字級 tokens,
+  無新增 token 或全域規則, `tokens.md` / `start.md` 不需改動。
+- 狀態 self-tested / pending user review, 未 commit/push; 其他未提交工作保留。
+- 驗收入口 `http://localhost:8000/project-content.html`,
+  `http://localhost:8000/landing.html`。
+
+## Session 166: 專案狀態 tab 數量與卡片同步 (2026-10-22)
+
+### 本輪改動
+
+- 使用者指出卡片分類已隨啟用 / 停用變動, 但 tab 仍保留 Figma 示意數量。
+- 專案內容 `全部` / `上架` / `停用` 改由 `projectCards` 同一份資料統計,
+  每次 render 同步更新三個後綴, 不以目前可見清單數量替代其他分類的統計。
+- 預設 4 / 2 / 2; 停用一張後 4 / 1 / 3, 重新啟用恢復 4 / 2 / 2。
+  所有卡停用或啟用亦可正確顯示 4 / 0 / 4 或 4 / 4 / 0。
+- HTML 移除 99 / 8 / 8 示意值, 由具名 count 節點接收統計。
+  沿用既有文字、括號、樣式、tokens 與 icons, 不更名 tab。
+- 修改 `preview/project-content.html`, `preview/js/project-content.js`,
+  `specs/pages/project-content.md` 與 smoke regression。
+
+### 驗證與下一步
+
+- `node scripts/smoke-test.mjs`: 10 頁 exit 0, 專案內容 23 項;
+  包含初始數量、切換 tab、啟用停用、兩種零分類與還原狀態。
+- fonts / conventions / partials / tokens lint 與 `git diff --check` exit 0。
+- Chrome 1440 / 768 / 375 檢查初始、停用與零分類數量, 無水平溢出;
+  截圖位於 `specs/qa-screenshots/session-166/`。
+- localhost:8000 的 landing / project-content HTTP 200。
+- 未新增 token 或全域開發規則, `tokens.md` / `start.md` 不需改動。
+- 先前工作與數量價格表未提交 spec 保留。self-tested / pending user review,
+  未 commit/push。
+
+## Session 165: Toggle component 還原、長按 modal 修正與四頁圖片觸控排序 (2026-10-22)
+
+### 本輪改動與使用者確認
+
+- 使用者回報四項問題: toggle 失真、日期定義長按調整後 modal 關閉、手機版外層
+  padding 未移除、圖片 modal 僅 desktop 可拖放。
+- 使用者確認手機只移除頁面外層留白, 日期 modal 面板內距保留。
+- Step 1 / 已加入定義改用 `.member-data-switch` 共用結構, 移除整組自訂
+  `.pcw-toggle` CSS 與 GHA override。track 64x28, knob 24x24 圓形,
+  checked 位移 36px。排序 disabled 使用共用灰 track, 不整顆降低 opacity。
+- 實際重現 mouse 長按原地放開後 modal 關閉: capture target 是 backdrop,
+  release 產生的 click 被當成點背景。改在不重排的 form 捕捉與處理 lost capture,
+  不改共用 modal backdrop 關閉規則。
+- 專案頁 `rootWrap` 改 `md:p-3`, 小於 768px 外層 padding 歸零;
+  mobile top bar 自帶 `px-3 pt-3`, 其他內容與 modal 內距保留。
+- 全 repo audit 發現 4 個照片管理器只有原生 drag/drop:
+  專案內容 / 房型 / 民宿資料 / 加購商品, 本輪全部補上觸控排序。
+
+### 圖片排序實作
+
+- 新增 `preview/js/photo-sort.js`, 四頁只共用手勢, working/saved 資料仍各自獨立。
+- dots-line 把手支援滑鼠 / touch / pen pointer 與方向鍵, 保留 desktop 卡片原生
+  drag/drop。把手預設 touch-action none 與禁止圖片 callout, 卡片其他區域仍可滑動。
+- 手勢在 grid 捕捉, 拖曳浮動卡片不攔截 hit target。靠近 photo body 上下邊緣時
+  自動捲動, 放開套用 working 順序, pointer cancel 放棄此次拖動, 關閉會清除手勢。
+- 只按上傳才保存, 取消還原; 重新渲染後編號與主圖 pill 維持依順位。
+- 同步修正民宿與房型上傳後 body scroll lock 殘留; 三頁上傳按鈕一律走 shared
+  modal controller, 移除頁面 JS 手動關 backdrop / 強制解鎖。專案頁原本已走共用關閉。
+- Binding audit: 四頁原 dragstart / dragover / drop 搬到 shared helper,
+  replace / delete / file change / upload commit 保留各頁; header / footer cancel /
+  upload / backdrop / Esc 關閉責任由 shared modal controller 維持。
+
+### 驗證
+
+- `node scripts/smoke-test.mjs`: 10 頁 exit 0, 專案 22 項, 民宿 16 項,
+  房型 17 項, 加購 14 項。
+- 新增真實 Chrome stationary mouse/touch 長按後放開檢查, modal 保持開啟;
+  原有雙邊自動捲動、首末交換與順位連動檢查仍通過。
+- 每個圖片 modal 均以真實 touch 檢查正常滑動 / 把手排序 / pointer cancel /
+  取消還原 / 上傳保存 / 首項拖至最末 / modal 與 body lock; 原生 drop 綁定與
+  真實 desktop mouse 把手拖曳亦逐頁檢查。
+- Switch checked / off / disabled 幾何與共用狀態檢查, 各尺寸量測 track 64x28,
+  knob 24x24, 保持在 track 內。
+- 375 / 768 / 1440 截圖含主頁、Step 1、日期定義 default/排序、GHA 與四頁圖片
+  modal; 手機圖片另存 dragging / sorted 狀態。無 document 或日期 body 水平溢出。
+- 截圖: `specs/qa-screenshots/session-165/`。
+- fonts / conventions / partials / tokens lint、untracked 新檔 conventions、
+  `git diff --check` exit 0。全部沿用既有 tokens / icon / 字級。
+- `components/modal.md` / `specs/html-conventions.md` / 四頁 spec 同步;
+  沒有新增全域開發規則或 tokens, `start.md` / `tokens.md` 本輪維持原內容。
+- 數量價格表原有未提交 spec 與先前改版工作保留, 本輪不改該頁實作。
+
+### 下一步
+
+- self-tested / pending user review, 未 commit/push。
+- 驗收頁: `project-content.html`, `room-type.html`, `lodging-info.html`,
+  `purchase-addon.html`, 以及 `landing.html`, 全部由 localhost:8000 提供。
+- 手機拖曳從每張圖左上 dots-line 把手開始, 一般圖片區域仍保留垂直滑動。
+
+## Session 164: 日期定義順位 number icons 與即時重編 (2026-10-22)
+
+### 本輪改動與決策
+
+- 使用者補充: 日期定義前方數字使用本批重讀的 Figma number icons,
+  由上到下依當前順位分配; 原第 2、3 筆交換後, 原第 3 筆改為 2, 原第 2 筆改為 3。
+- 移除日期定義固定 number 欄位, 改由清單 index 產生 1 至 N。
+  拖曳、鍵盤調整及拖曳浮動項目立即同步編號; 加入或移除亦連續重編。
+- 取消還原原順序與編號, 儲存後 Step 3 房型 / 成人 / 孩童價格列沿用相同順序。
+  單日指定與價格資料仍依日期定義 ID 保存, 不因順位改變而交換資料。
+- 再讀並直接匯出 `number-5` 至 `number-9` 與 `number-0`, 補齊 10 個 digit SVG。
+  多位數由 digit icons 組合, 保留原 24x24 SVG 幾何與原始 glyph 大小;
+  防止 Tailwind img max-width 將窄 digit slot 內的 SVG 縮小。
+- 修正拖曳後 click suppression 可能殘留到下次 toggle 操作的狀態;
+  放開後僅攔截緊接的 click, 重新開啟 modal 時清空。
+- 同步 `specs/icons.md` 與 `specs/pages/project-content.md`。
+  沿用原 token, 未新增全域開發規則, `tokens.md` / `start.md` 不需改動。
+
+### 驗證
+
+- Smoke: 10 頁通過, 專案內容 20 項。新增順位交換 / 取消 / 儲存 /
+  加入移除 / 多位數 SVG / 原尺寸與價格、單日指定資料完整性檢查。
+- 真實 Chrome mouse / touch 拖曳: 首項拖至最末時 list 與 ghost 都顯示新順位 15,
+  拖回最前時 ghost 還原 1; 兩側自動捲動與放開停止保持有效。
+- 1440 / 768 / 375 截圖核對 default / swapped / prices / double-digits,
+  另含 1440 拖曳中的 ghost。已加入限高 264px, 來源 330px, 無水平溢出。
+- 截圖路徑: `specs/qa-screenshots/session-164/`。
+- fonts / conventions / partials / tokens lint 與 untracked 新檔 conventions 檢查通過。
+- 本機 landing 與 project-content 預覽 HTTP 200。
+
+### 下一步
+
+- self-tested / pending user review, 未 commit/push。
+- 驗收網址: `http://localhost:8000/project-content.html`,
+  `http://localhost:8000/landing.html`。
+- Session 163 其他改版與數量價格表原有未提交 spec 保留。
+
+## Session 163: 專案內容 1021 改版與產品設定選單整理 (2026-10-22)
+
+### 本次處理
+
+- 使用者逐張確認本輪 Figma 差異, 並於 2026-10-22 授權實作。
+- 9 個來源均已重新讀取 JSON/PNG, main/date/GHA 另讀 SVG 漸層。
+  current source 與 children checklist 已收斂至 `specs/pages/project-content.md`。
+- 實作範圍: 專案住宿卡片、GHA modal、三步驟新增/修改、單日選擇與照片管理。
+- 產品設定選單只保留 `ota` / `專案內容` / `數量價格表`;
+  ota 目前沒有實作頁面, 保留既有無連結入口, 不新增目的地。
+- 數量價格表 Session 162 規格與既有未提交變更保留, 本輪不實作該頁改版。
+
+### 本輪確認事項
+
+- GHA 原主分類移除, 由期限條件旁按鈕開啟 modal; 卡片內容沿用。
+- 有使用範本的專案顯示不可點擊的藍色範本 label。
+- Step 1 移除重複排序, 專案天數獨占整列。
+- Step 2 來源池為系統授權日期定義總數; 已加入數隨選取變動。
+  加入預設 true, toggle false 就移除; 單日可選清單同步移除。
+- Step 2 範本 select 僅顯示選項, 後端負責套用。
+- 兩個清單各自限高並垂直捲動, 所有尺寸皆同。長按進排序;
+  拖曳靠近上下邊緣持續自動捲動, 越近越快, 離開或放開停止。
+  只捲已加入清單, 來源與 modal 不動; 不增加移至最上/最下按鈕。
+- Step 3 每房型各一卡, 單一也一樣; 移除全部 toggle, 價格皆可編輯。
+  成人/孩童區域照稿渲染, 顯示權限與價格套用方式交由後端決定。
+- 使用者再次確認原 640px container query 門檻:
+  即使 viewport 1440px, 每卡 522px 仍採 mobile 結構, 是本次 Figma 圖面例外。
+
+### 實作與資產
+
+- `preview/project-content.html` / `preview/js/project-content.js` / domain CSS 改為
+  4 張住宿卡片, 狀態切換、獨立明細/設定 accordion、排序與範本提示。
+- 三步驟獨立在 `project-content-wizard.js` / `project-content-wizard.css`,
+  `project-content-modals.html`; GHA/照片外框在 `project-content-extras.html`。
+- `project-content-photo.js` 採獨立 per-project saved/working state,
+  取消不寫回、上傳後更新主圖, 不共用房型頁狀態。
+- 從當前 Figma 匯出 7 個既有 SVG icon, 從來源 SVG 擷取 3 張原始 JPEG。
+- `tokens.md` / `base.css` 補登 24px `--font-size-2xl`, 來源為當前專案/GHA
+  card 標題; 所有顏色仍引用既有 Variables, 未全量重同步。
+- menu spec、icons spec、page spec、partial manifest 與 CSS import chain 均已同步。
+
+### 驗證
+
+- `node scripts/smoke-test.mjs`: 10 頁 exit 0, 專案內容 19 項。
+- 真實 Chrome mouse/touch 長按排序: 首項可拖至末項, 上下邊緣自動捲動,
+  離開邊緣或放開後停止。來源池與父 modal scrollTop 維持不變。
+- 排序捕捉改到不會重排的 modal, 並停用 joined list 的 scroll anchoring,
+  修正 pointer capture 中斷及瀏覽器錨點抵銷向上捲動的問題。
+- 單日 Popover 選取後維持單選, 立即更新 calendar/指定日期;
+  改用事件 composedPath 判定點擊來源, 避免重建選項 DOM 後被誤判成外部點擊。
+- Mobile Offcanvas 滿寬, backdrop/Esc 不關閉, close 後父 modal 仍鎖住 body scroll。
+- 1440 / 768 / 375 無 document 水平溢出; 預設 joined list 264px、source 330px,
+  排序 joined list 272px, 各尺寸一致。每卡小於 640px 保持 mobile 結構。
+- Step 3 兩張房型卡、12 個可編輯價格欄、0 個 toggle; 清除只作用當前頁。
+- 截圖在 `specs/qa-screenshots/session-163/`, 包含主頁、三步驟上下區域、
+  GHA、拖曳與 mobile Offcanvas。規格與畫面差異以本 Session 的使用者確認為準。
+- fonts/conventions/partials/tokens lint 與 `git diff --check` exit 0。
+- 原有數量價格表 spec 與 Session 162 保留; 未修改該頁 preview 實作。
+- 協作代理因 workspace credits 中止, root 接手其餘程式與驗證;
+  不將代理中止前的部分工作當作本輪通過依據。
+
+### 下一步與邊界
+
+- 狀態為 self-tested / pending user review, 未 commit/push; 等使用者驗收。
+- 驗收入口 `http://localhost:8000/project-content.html`, 同時保留 landing 預覽。
+- ota 仍是既有未串接入口; 範本套用、成人/孩童權限、實際資料與 API 交由後端。
+- 全部日期定義移除後的正式驗證規則、價格格式與 API 成功/失敗狀態仍未定義。
+- 本輪沒有新增全域開發規則, `start.md` 維持原內容。
+
+## Session 162: 數量價格表改版 Figma contract 與待開工交接 (2026-10-03)
+
+本輪任務是「產品設定 -> 數量價格表」, 與 Session 161 的「專案內容」改版
+分開管理。使用者要求先寫入交接, 等通知開工後才修改實作。兩個任務均有待實作
+內容, 開工時依使用者指定的任務處理, 不可合併兩頁規格或順便修改另一頁。
+
+### Figma current source
+
+- Page: `1:2` `components`, file `swift`。
+- 數量價格表 desktop: `2590:124601`, 1440 x 943.48。
+- 主內容: `2590:124605`, 1140 x 569; 主卡片 `2590:124611`, 1140 x 509。
+- 群組編輯 reference: `2590:124714`, 534 x 1081;
+  modal `2590:124715`, 514 x 1061。
+- 價格細部 modal: `2590:125176`, 514 x 297。
+- 新增庫存 modal: `2592:128347`, 1044 x 367。
+- 日期區間展開: `2590:124719`, 746 x 406。
+- 雙月曆 default / 單選 / 區間: `2590:124819`, `2590:124914`, `2590:125009`。
+- Read date: 2026-10-03。三個 group accordion 的按鈕名稱依使用者後續確認改為
+  「清除」; 使用者已更新 Figma 並指示不用重新讀取。
+
+### 已確認 contract
+
+1. 完整 14 天 table 與 1216px 寬度沿用既有實作, 不跟隨 Figma 下方只畫
+   5 個日期 cell 的縮短示意。三個價格列仍只顯示名稱, 第二、三列名稱欄為灰底。
+2. 「快速新增庫存」改為「新增庫存」, 帶 plus icon, 移到主卡片右上方獨立列。
+   第二操作列保留日期區間與帶 icon 的群組編輯, 右側改為清除與深灰底查詢。
+3. 主頁「清除」只清除專案 select、房型 select 與日期區間, 不開啟 modal。
+   對話中曾把「本頁不加入 modal」寫得太廣; 後續 selection 已明確提供三顆
+   modal, 不得把前一句解讀為移除本頁所有 modal 功能。
+4. 群組編輯包含可售數量、價格、房況三個獨立 accordion, 預設全部展開。
+   星期、房況與其他示意值依本次 Figma 呈現, 例如星期一與四、關房、可售數量 12。
+5. 三區「取消」是圖面誤植, 改為「清除」, 只清除目前 accordion 內容;
+   不影響其他區或上方共用日期 / 星期。各區「儲存變更」也只作用於目前
+   accordion, 不關閉 modal。這個規則不得擴張到 detail 或 inventory modal。
+6. 「景觀房」是示意字, detail modal 實際資料從主頁 `Standard Rate 447`
+   等被操作的 row / cell 帶入。
+7. 新增庫存改為一張橫向月份 table, 2026 年 8 月至 2027 年 7 月, 共 12 個月。
+   欄寬為房型 300px、每月 48px、總房數 144px; 三個示意房型 AAC / AZC / ZZO,
+   總房數 input 均為 999, table 下方保留可見的取消與儲存變更。
+8. 上方每月 checkbox 勾選 / 取消時同步操作該月份的所有房型。下方同一月份
+   全部房型選滿時上方也選中, 任一取消時上方取消。使用者已確認「選滿一行」
+   指同一月份的所有房型, 不是某房型的 12 個月份。
+9. 上下所有月份 checkbox 的點擊範圍填滿各自 cell, 點空白處效果相同,
+   單次操作只切換一次。這次需做前端同步互動, 不沿用舊版只有 UI 的規則。
+10. 三顆 modal JSON 的 hidden `Slot 2` 含「清除 / 下一頁」, PNG 都不可見,
+    不實作。Group accordion 的「清除」與 hidden footer 是不同範圍。
+11. 雙月日期區間本輪只重新確認。四個新舊 frame 排除 ID / 畫布位置後,
+    尺寸、結構、文字與 styles 相同, PNG 逐一相同; 沿用既有 spec / JS。
+    不導入「專案內容」的四月曆、日期範本或 mobile Offcanvas。
+
+### 本輪改動
+
+- 更新 `specs/pages/quantity-price-table.md` 為本次 current contract, 包含來源、
+  children checklist、confirmed defaults、互動範圍、沿用 / 覆蓋及未確認項目。
+- 重寫過期 group / inventory 規則, 移除舊版星期二預設、三區取消關閉 modal、
+  673px 庫存 modal、直向月份巢狀 table 與舊房型等 current 內文。
+- 新增本 Session 交接; 保留 Session 161 原文與 `specs/pages/project-content.md`
+  既有未提交內容。本輪不修改 preview、scripts、tokens 或 start.md。
+
+### 驗證
+
+- 頁面與三顆 modal 讀取 selection tree / styles 並以 PNG 核對可見內容。
+- 日曆新舊對照:
+  `2590:124719` / `2387:103133`, `2590:124819` / `2387:104431`,
+  `2590:124914` / `2387:103777`, `2590:125009` / `2387:104101`。
+  四組結構比較均 0 差異, 1x PNG 輸出逐一相同。
+- `git diff --check` 與 `./scripts/lint-conventions.sh` 均 exit 0。
+- 309 個參考與實作檔案的 SHA-256 與寫入前相同, 包含 project-content spec、
+  preview、scripts、tokens 與 start.md。本輪沒有 UI 實作,
+  不把前次 smoke / QA 結果當作新版通過。
+- 本輪沒有新增 token 或開發規則, tokens.md 與 start.md 不需修改。
+
+### 未確認項目
+
+- Detail modal 內層「群組編輯」是否串接巢狀 modal; 舊版只有外觀的決定
+  不可自動沿用為新版需求。
+- Detail / inventory 的儲存後 modal 開關行為與庫存總房數套用方式。
+- 實際資料與 API 由後端提供; 未定義行為開工時先確認, 不從示意畫面推測。
+
+### 下一次開工
+
+1. 等使用者通知開工, 按指定任務處理。數量價格表只讀本 Session 與
+   `specs/pages/quantity-price-table.md`; 專案內容改版另讀 Session 161 與其專屬 spec。
+2. 數量價格表預計修改 `preview/quantity-price-table.html`、
+   `preview/partials/quantity-price-modals.html`、`preview/assets/css/quantity-price-table.css`、
+   `preview/js/quantity-price-table.js`, 並依需要調整 `scripts/smoke-test.mjs`。
+3. 先做舊實作 vs current contract 差異 checkpoint, 保留 14 天 table、inline
+   number / hotspot 與相同的雙月曆。一次不超過一個 section。
+4. 驗證主頁 filters 清除、三區獨立收合 / 清除 / 儲存不關閉、上下月份同步與
+   整格 checkbox 點擊; QA 至少 1440 / 768 / 375, 檢查內部水平捲動與日期區間。
+5. 依 start.md 跑必要 lint / smoke、提供截圖與 preview URL, 待使用者驗收。
+
+## Session 161：專案內容改版 Figma contract 與實作交接 (2026-10-01)
+
+使用者以 figma-go 分批提供「產品設定 -> 專案內容」住宿、GHA、mobile card、
+三步驟新增或修改 modal、日期 Popover 與 mobile Offcanvas，並完成需求問答。
+本輪只整理 current spec 與交接，依使用者要求延後至下一次再實作。
+
+### Figma current source
+
+- 住宿 desktop：`2582:116671`，1440 x 2011。
+- GHA desktop：`2588:121840`，1440 x 1059。
+- 住宿 mobile card：`2584:119146`，351 x 1166。
+- Step 1：`2582:114936`，820 x 1310。
+- Step 2 default：`2577:104171`，1140 x 1295。
+- Step 2 reorder：`2578:110113`，1140 x 1333。
+- Step 3：`2582:113320`，780 x 1283。
+- Mobile date Offcanvas：`2588:124216`。
+- Desktop date Popover：`2589:124502`。
+
+### 已確認 contract
+
+1. 頁面 default 是住宿、全部、未逾期、房型全部；未逾期與已逾期單選。
+2. 上架卡顯示修改、複製、停用；停用卡顯示查看、啟用，切換後立即重新分類。
+3. 專案明細與專案設定是獨立 accordion，default 都展開；同列卡片等高。
+4. 設定 table 以水平 scrollbar 保留固有寬度。GHA 與停用 filter 不顯示
+   儲存排序；全部 filter 只 disabled 停用卡的排序 input。
+5. GHA 只顯示卡片與說明 accordion；toggle true 或 false 同步控制左上角黃色或
+   灰色漸層，排序是後端資料文字。
+6. card 小於 640px 採 mobile 結構，nested card 使用 container query；操作按鈕
+   空間不足時 flex-wrap。
+7. Step 1 使用 `退款` toggle，不沿用歷史版本的 `不可退款` checkbox；補上
+   `專案類型` label，並將 Figma typo 更正為 `專案名稱文案`。
+8. Step 2 以日期範本、長按拖曳排序、四月曆與單日指定取代舊日期類型 table；
+   月曆每次移動 1 個月。
+9. 每個日期一定且只能選一個範本；目前選項不會取消，只能改選，並立即同步
+   calendar 與指定日期清單。
+10. desktop 日期選擇使用 Popover；mobile 使用從下往上展開的大尺寸 Offcanvas，
+    沿用既有 Calendar Offcanvas 模式。
+11. Step 3 的售價、成人與孩童三區 toggle 各自獨立；Step 1 加人 toggle 的正式
+    連動交給後端，preview 依 Figma 直出。
+12. 三步驟的清除只清除當前頁。
+
+### 本輪改動
+
+- 重寫 `specs/pages/project-content.md` 為 2026-10-01 current contract。
+- 舊 Figma `2423:88883` 的 `不可退款` 與舊 table/modal 規則降為 historical
+  reference，不得補入新實作。
+- 沒有修改 `preview/`、測試或產品程式碼。
+
+### 下一次開工
+
+1. 先依 current contract 比對現有 project-content HTML、partial、CSS 與 JS，
+   列出沿用、覆蓋與必須移除的舊結構。
+2. 依 spec-driven 順序修改 preview，並補 smoke regression checks。
+3. QA 至少覆蓋 1440、768、375，另驗證 card container 小於與大於 640px、
+   table 內層水平捲動、mobile Offcanvas、日期範本排序與三區獨立 toggle。
+
 ## Session 160：Icons data 與 Input variant 更新寫入規格 (2026-10-01)
 
 使用者以 figma-go 依序指定讀取 Icons data 與 Input component set 更新，並

@@ -260,6 +260,7 @@ const APP_CSS_LOADED_CHECK = {
         "room-type.css",
         "purchase-addon.css",
         "project-content.css",
+        "project-content-wizard.css",
         "quantity-price-table.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
@@ -1714,207 +1715,314 @@ const PAGES = [
   },
   {
     file: "project-content.html",
-    readyExpr: `
-      !document.querySelector("[data-partial]") &&
-      !!document.getElementById("sidebar") &&
-      !!document.getElementById("modalLogoutBackdrop") &&
-      !!document.getElementById("modalProjectContentBackdrop") &&
-      document.querySelectorAll(".pc-project-table thead th").length === 14 &&
-      document.querySelectorAll(".pc-calendar-card").length === 4
-    `,
+    readyExpr: `!document.querySelector("[data-partial]") && document.querySelectorAll("[data-pc-card]").length === 4 && !!document.getElementById("pcProjectForm")`,
     checks: [
       APP_CSS_LOADED_CHECK,
       {
-        name: "project-content page tabs, table, and room menu contract",
+        name: "project-content current cards, menu and defaults",
         viewport: { width: 1440, height: 1000 },
-        expr: `
-          (function () {
-            var kinds = document.querySelectorAll("[data-pc-kind]");
-            if (kinds.length !== 2) return "kind tab count: " + kinds.length;
-            if (!kinds[0].classList.contains("is-active")) return "lodging should start active";
-            if (document.querySelectorAll("[data-pc-status]").length !== 5)
-              return "status tab count mismatch";
-            var headers = Array.from(document.querySelectorAll(".pc-project-table thead th"), function (cell) {
-              var label = cell.querySelector(":scope > .pc-room-heading-control > span");
-              return label ? label.textContent.trim() : cell.textContent.trim();
-            });
-            if (headers.join("|") !== "編號|類別|照片管理|專案名稱|上架期限|專案期限|適用房型|已開至|已設至|價格|排序|管理|價格更新|最後更新時間")
-              return "table headers changed: " + headers.join("|");
-            var shell = document.querySelector(".pc-table-shell");
-            if (!(shell.scrollWidth > shell.clientWidth)) return "project table should scroll inside shell";
-            var managementCell = document.querySelector(".pc-project-table tbody td:nth-child(12)");
-            var managementActions = managementCell.querySelector(".pc-management-actions");
-            var managementButtons = Array.from(managementActions.querySelectorAll(".pc-action-button"));
-            if (managementButtons.length !== 6) return "management action count: " + managementButtons.length;
-            if (managementButtons.some(function (button) {
-              var buttonRect = button.getBoundingClientRect();
-              return Math.abs(buttonRect.width - 88) > 1 || Math.abs(buttonRect.height - 36) > 1;
-            })) return "management button dimensions changed";
-            if (managementButtons.some(function (button) {
-              return Math.abs(button.getBoundingClientRect().top - managementButtons[0].getBoundingClientRect().top) > 1;
-            })) return "management buttons should stay on one row";
-            if (managementActions.scrollWidth > managementCell.clientWidth + 1)
-              return "management actions overflow their table cell";
-            var roomToggle = document.querySelector("[data-pc-room-toggle]");
-            var roomMenu = document.getElementById("pcRoomMenu");
-            var roomSearch = document.querySelector(".pc-room-search");
-            var roomOptions = Array.from(roomMenu.querySelectorAll(":scope > button"), function (button) {
-              return button.textContent.trim();
-            });
-            if (roomOptions.join("|") !== "（DS）啦啦啦|（GG）哦哦哦")
-              return "room menu options changed: " + roomOptions.join("|");
-            if (!roomToggle.closest("th") || !roomToggle.querySelector('img[src$="arrow-down-drop.svg"]'))
-              return "room menu trigger should be the header arrow button";
-            if (roomSearch.hasAttribute("data-pc-room-toggle") || roomSearch.hasAttribute("aria-controls"))
-              return "row search action should not control the room menu";
-            if (!roomMenu.hidden) return "room menu should start closed";
-            roomSearch.click();
-            if (!roomMenu.hidden) return "row search action opened the room menu";
-            roomToggle.click();
-            if (roomMenu.hidden || roomToggle.getAttribute("aria-expanded") !== "true")
-              return "room menu did not open";
-            roomToggle.click();
-            if (!roomMenu.hidden) return "room menu did not close";
-            return true;
-          })()
-        `,
+        expr: `(function () {
+          window.__pcQa = {
+            q: function (s) { return document.querySelector(s); },
+            close: function () {
+              var sheet = document.getElementById('pcwDateSheet');
+              if (sheet.classList.contains('open')) sheet.querySelector('[data-pcw-sheet-close]').click();
+              document.querySelectorAll('.modal-backdrop.open .modal-close-btn').forEach(function (b) { if (b.getClientRects().length) b.click(); });
+            },
+            open: function () { this.close(); this.q('[data-pc-modal-mode="new"]').click(); },
+            go: function (step) {
+              var form = this.q('#pcProjectForm');
+              while (Number(form.dataset.pcwCurrentStep) < step) this.q('[data-pcw-footer="' + form.dataset.pcwCurrentStep + '"] [data-pcw-next]').click();
+              while (Number(form.dataset.pcwCurrentStep) > step) this.q('[data-pcw-footer="' + form.dataset.pcwCurrentStep + '"] [data-pcw-previous]').click();
+            }
+          };
+          var cards = document.querySelectorAll('[data-pc-card]');
+          if (cards.length !== 4 || document.querySelectorAll('[data-pc-status]').length !== 3) return 'card/status count';
+          if(Array.from(document.querySelectorAll('[data-pc-status-count]')).map(function(n){return n.textContent;}).join('|')!=='4|2|2')return 'initial tab totals';
+          if (document.querySelector('[data-pc-kind="gha"]')) return 'obsolete GHA tab';
+          if (document.querySelectorAll('.pc-card-mobile-media .pc-badge--template').length !== 1) return 'template hint count';
+          if (getComputedStyle(cards[0].querySelector('.pc-card-mobile-media')).display === 'none') return '522px card must use mobile structure';
+          if (cards[0].getBoundingClientRect().height !== cards[1].getBoundingClientRect().height) return 'same row unequal height';
+          var product = Array.from(document.querySelectorAll('.accordion-trigger')).find(function(b){return b.textContent.includes('產品設定');});
+          var labels = Array.from(product.nextElementSibling.children).map(function(n){return n.textContent.trim();});
+          if (labels.join('|') !== 'ota|專案內容|數量價格表') return 'product menu: ' + labels.join('|');
+          return true;
+        })()`,
       },
       {
-        name: "project-content lodging new modal preserves step state",
-        viewport: { width: 1440, height: 1000 },
-        expr: `
-          (function () {
-            var trigger = document.querySelector('[data-pc-modal-mode="new"]');
-            trigger.click();
-            var modal = document.getElementById("modalProjectContentBackdrop");
-            var form = document.getElementById("pcProjectForm");
-            if (!modal.classList.contains("open")) return "new modal did not open";
-            if (document.getElementById("pcModalTitle").textContent.trim() !== "新增")
-              return "new title mismatch";
-            if (form.dataset.pcModalKind !== "lodging") return "lodging kind mismatch";
-            if (!form.querySelector("[data-pc-channel-only]").hidden)
-              return "channel field visible in lodging";
-            if (form.querySelector("[data-pc-lodging-only]").hidden)
-              return "lodging fields hidden";
-            var projectName = form.querySelector('[data-pc-step-panel="1"] input:not([disabled])');
-            projectName.value = "保留步驟資料";
-            form.querySelector('[data-pc-footer="1"] [data-pc-next]').click();
-            if (form.dataset.pcCurrentStep !== "2") return "did not enter step 2";
-            if (!form.querySelector('[data-pc-step-dot="2"]').classList.contains("is-active"))
-              return "step 2 dot not active";
-            var dateTableShell = form.querySelector(".pc-date-type-table-wrap");
-            if (dateTableShell.scrollWidth > dateTableShell.clientWidth + 1)
-              return "desktop date type table should not scroll";
-            form.querySelector('[data-pc-footer="2"] [data-pc-next]').click();
-            if (form.dataset.pcCurrentStep !== "3") return "did not enter step 3";
-            var overflowingPriceShell = Array.from(form.querySelectorAll(".pc-price-table-shell")).some(function (shell) {
-              return shell.scrollWidth > shell.clientWidth + 1;
-            });
-            if (overflowingPriceShell) return "desktop price table should not scroll";
-            form.querySelector('[data-pc-footer="3"] [data-pc-previous]').click();
-            form.querySelector('[data-pc-footer="2"] [data-pc-previous]').click();
-            if (projectName.value !== "保留步驟資料") return "step 1 value was not preserved";
-            modal.querySelector(".pc-modal-close").click();
-            return true;
-          })()
-        `,
+        name: "project status transitions, independent accordions and sort scope",
+        expr: `(function () {
+          var q=__pcQa.q;
+          function totals(){return Array.from(document.querySelectorAll('[data-pc-status-count]')).map(function(n){return n.textContent;}).join('|');}
+          q('[data-pc-status="online"]').click();
+          if(document.querySelectorAll('[data-pc-card]').length!==2 || totals()!=='4|2|2') return 'online filter/totals';
+          q('[data-pc-action="offline"]').click();
+          if(document.querySelectorAll('[data-pc-card]').length!==1 || totals()!=='4|1|3') return 'disabled card/totals not updated immediately';
+          q('[data-pc-status="offline"]').click();
+          if(document.querySelectorAll('[data-pc-card]').length!==3 || totals()!=='4|1|3' || !q('[data-pc-sort-actions]').hidden) return 'offline filter/totals/sort visibility';
+          q('[data-pc-action="online"][data-pc-card-id="project-199-a"]').click();
+          if(document.querySelectorAll('[data-pc-card]').length!==2 || totals()!=='4|2|2')return 'enabled card/totals not updated immediately';
+          q('[data-pc-status="all"]').click();
+          if(document.querySelectorAll('[data-pc-card]').length!==4 || totals()!=='4|2|2')return 'all totals depend on active tab';
+          if(document.querySelectorAll('[data-pc-sort]:disabled').length!==2) return 'all filter disabled sorts';
+          q('[data-pc-save-sort]').click();
+          if(q('[data-pc-save-sort]').dataset.pcSavedCount!=='2') return 'save sort included inactive cards';
+          var detail=q('[data-pc-accordion-toggle="details"]'), setting=q('[data-pc-accordion-toggle="settings"]');
+          detail.click();
+          if(detail.getAttribute('aria-expanded')!=='false' || setting.getAttribute('aria-expanded')!=='true') return 'accordions coupled';
+          detail.click();
+          var shell=q('[data-pc-table-scroll]');
+          if(shell.scrollWidth<=shell.clientWidth) return 'settings table should retain width';
+          return true;
+        })()`,
       },
       {
-        name: "project-content channel edit modal uses channel step 1",
-        expr: `
-          (function () {
-            document.querySelector('[data-pc-kind="channel"]').click();
-            document.querySelector('[data-pc-modal-mode="edit"]').click();
-            var modal = document.getElementById("modalProjectContentBackdrop");
-            var form = document.getElementById("pcProjectForm");
-            if (document.getElementById("pcModalTitle").textContent.trim() !== "修改")
-              return "edit title mismatch";
-            if (form.dataset.pcModalKind !== "channel") return "channel kind mismatch";
-            var channel = form.querySelector("[data-pc-channel-only]");
-            if (channel.hidden || channel.textContent.indexOf("通路庫存") === -1)
-              return "channel inventory missing";
-            if (Array.from(form.querySelectorAll("[data-pc-lodging-only]")).some(function (node) { return !node.hidden; }))
-              return "lodging-only fields visible in channel";
-            modal.querySelector(".pc-modal-close").click();
-            return true;
-          })()
-        `,
+        name: "project status totals include zero-count groups and preserve the full total",
+        expr: `(function () {
+          var q=__pcQa.q;
+          function totals(){return Array.from(document.querySelectorAll('[data-pc-status-count]')).map(function(n){return n.textContent;}).join('|');}
+          q('[data-pc-status="online"]').click();
+          Array.from(document.querySelectorAll('[data-pc-action="offline"]')).map(function(b){return b.dataset.pcCardId;}).forEach(function(id){q('[data-pc-action="offline"][data-pc-card-id="'+id+'"]').click();});
+          if(totals()!=='4|0|4' || document.querySelectorAll('[data-pc-card]').length!==0)return 'zero online count or full total';
+          q('[data-pc-status="offline"]').click();
+          Array.from(document.querySelectorAll('[data-pc-action="online"]')).map(function(b){return b.dataset.pcCardId;}).forEach(function(id){q('[data-pc-action="online"][data-pc-card-id="'+id+'"]').click();});
+          if(totals()!=='4|4|0' || document.querySelectorAll('[data-pc-card]').length!==0)return 'zero offline count or full total';
+          q('[data-pc-status="all"]').click();
+          ['project-155-a','project-155-b'].forEach(function(id){q('[data-pc-action="offline"][data-pc-card-id="'+id+'"]').click();});
+          return totals()==='4|2|2' && document.querySelectorAll('[data-pc-card]').length===4;
+        })()`,
       },
       {
-        name: "project-content tablet keeps two-column modal layout",
-        viewport: { width: 768, height: 1024 },
-        expr: `
-          (function () {
-            if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1)
-              return "tablet page-level horizontal overflow";
-            document.querySelector('[data-pc-kind="lodging"]').click();
-            document.querySelector('[data-pc-modal-mode="new"]').click();
-            var form = document.getElementById("pcProjectForm");
-            var rect = form.getBoundingClientRect();
-            if (rect.width > innerWidth - 20) return "tablet modal wider than viewport: " + rect.width;
-            var modalBody = form.querySelector(".pc-modal-body");
-            if (modalBody.scrollWidth > modalBody.clientWidth + 1)
-              return "tablet Step 1 has horizontal overflow";
-            var columns = getComputedStyle(form.querySelector(".pc-form-grid")).gridTemplateColumns.split(" ");
-            if (columns.length !== 2) return "tablet Step 1 should keep two columns: " + columns.join("|");
-            form.querySelector('[data-pc-footer="1"] [data-pc-next]').click();
-            var cards = form.querySelectorAll(".pc-calendar-card");
-            if (Math.abs(cards[0].getBoundingClientRect().top - cards[1].getBoundingClientRect().top) > 2)
-              return "tablet calendar first row misaligned";
-            if (cards[2].getBoundingClientRect().top <= cards[0].getBoundingClientRect().top)
-              return "tablet calendar second row missing";
-            form.querySelector('[data-pc-footer="2"] [data-pc-next]').click();
-            var priceOverflow = Array.from(form.querySelectorAll(".pc-price-table-shell")).some(function (shell) {
-              return shell.scrollWidth > shell.clientWidth + 1;
-            });
-            if (priceOverflow) return "tablet price table should fit without scrolling";
-            document.querySelector("#modalProjectContentBackdrop .pc-modal-close").click();
-            return true;
-          })()
-        `,
+        name: "GHA modal retains cards, toggle ribbon and all close paths",
+        expr: `(function () {
+          var result=__smoke.modalCheck('[data-pc-open-gha]','modalProjectGhaBackdrop'); if(result!==true)return result;
+          result=__smoke.escCheck('[data-pc-open-gha]','modalProjectGhaBackdrop'); if(result!==true)return result;
+          __pcQa.q('[data-pc-open-gha]').click();
+          if(document.querySelectorAll('[data-pc-gha-card]').length!==4) return 'GHA card count';
+          var toggle=__pcQa.q('[data-pc-gha-toggle]'), ribbon=toggle.closest('[data-pc-gha-card]').querySelector('[data-pc-gha-ribbon]');
+          toggle.click(); if(ribbon.dataset.pcGhaEnabled!=='true')return 'GHA yellow ribbon missing';
+          toggle.click(); if(ribbon.dataset.pcGhaEnabled!=='false')return 'GHA gray ribbon missing';
+          __pcQa.q('[data-pc-gha-close]').click();
+          return !__pcQa.q('#modalProjectGhaBackdrop').classList.contains('open') && document.body.style.overflow!== 'hidden';
+        })()`,
       },
       {
-        name: "project-content mobile keeps overflow inside page and modal",
-        viewport: { width: 375, height: 812, mobile: true },
-        expr: `
-          (function () {
-            var pageOverflow = document.documentElement.scrollWidth > document.documentElement.clientWidth + 1;
-            if (pageOverflow) return "page-level horizontal overflow";
-            document.querySelector('[data-pc-kind="lodging"]').click();
-            document.querySelector('[data-pc-modal-mode="new"]').click();
-            var form = document.getElementById("pcProjectForm");
-            var rect = form.getBoundingClientRect();
-            if (rect.width > innerWidth - 20) return "modal wider than viewport: " + rect.width;
-            var columns = getComputedStyle(form.querySelector(".pc-form-grid")).gridTemplateColumns.split(" ");
-            if (columns.length !== 1) return "mobile Step 1 should use one column";
-            var footer = form.querySelector(".pc-modal-footer").getBoundingClientRect();
-            if (footer.bottom > innerHeight + 1) return "mobile footer outside viewport";
-            form.querySelector('[data-pc-footer="1"] [data-pc-next]').click();
-            var cards = document.querySelectorAll(".pc-calendar-card");
-            if (cards.length !== 4) return "calendar card count: " + cards.length;
-            var dateTableShell = form.querySelector(".pc-date-type-table-wrap");
-            var dateTable = form.querySelector(".pc-date-type-table");
-            if (!(dateTableShell.scrollWidth > dateTableShell.clientWidth))
-              return "mobile date type table should scroll inside its shell";
-            if (dateTable.scrollWidth > dateTable.clientWidth + 1)
-              return "date type content extends beyond its table borders";
-            var tableRight = dateTable.getBoundingClientRect().right;
-            var lastDateCell = dateTable.querySelector("tbody tr:last-child td:last-child");
-            if (Math.abs(lastDateCell.getBoundingClientRect().right - tableRight) > 1)
-              return "date type row border does not reach table edge";
-            if (cards[1].getBoundingClientRect().top <= cards[0].getBoundingClientRect().top)
-              return "mobile calendars should stack";
-            form.querySelector('[data-pc-footer="2"] [data-pc-next]').click();
-            var priceShell = form.querySelector(".pc-price-table-shell");
-            if (!(priceShell.scrollWidth > priceShell.clientWidth))
-              return "mobile price table should scroll inside its shell";
-            if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1)
-              return "mobile document overflow after Step 3";
-            document.querySelector("#modalProjectContentBackdrop .pc-modal-close").click();
-            return true;
-          })()
-        `,
+        name: "wizard step1 contract, state preservation and per-step clear",
+        expr: `(function () {
+          __pcQa.open(); var q=__pcQa.q, form=q('#pcProjectForm');
+          if(q('[data-pcw-title]').textContent!=='新增' || q('[data-pcw-subtitle]').textContent!=='專案')return 'wizard heading';
+          if(form.querySelectorAll('[name="sortOrder"]').length!==1 || form.querySelectorAll('[name="refund"][role="switch"]').length!==1)return 'duplicate sort/old refund';
+          var meal=q('#pcwMealPlan').getBoundingClientRect(), info=q('.pcw-info-button').getBoundingClientRect();
+          if(Math.abs(info.left-meal.right-12)>0.5 || info.width!==24 || info.height!==24 || Math.abs(info.top+info.height/2-meal.top-meal.height/2)>0.5)return 'meal info icon must sit outside field with 12px gap';
+          var name=form.elements.projectName; name.value='session value';
+          __pcQa.go(2); __pcQa.go(1); if(name.value!=='session value')return 'step navigation lost input';
+          q('[data-pcw-footer="1"] [data-pcw-clear]').click(); if(name.value!=='')return 'step1 clear';
+          name.value='keep step1'; __pcQa.go(2); q('[data-pcw-footer="2"] [data-pcw-clear]').click();
+          if(q('[data-pcw-joined-count]').textContent!=='0' || q('[data-pcw-source-count]').textContent!=='15')return 'step2 clear scope';
+          __pcQa.go(1); if(name.value!=='keep step1')return 'step2 clear erased step1';
+          __pcQa.close(); return true;
+        })()`,
       },
+      {
+        name: "definition pool membership, source total and single-day assignment",
+        viewport: {width:1440,height:1000},
+        expr: `(function () {
+          __pcQa.open(); __pcQa.go(2); var q=__pcQa.q;
+          if(q('[data-pcw-joined-count]').textContent!=='3' || q('[data-pcw-source-count]').textContent!=='15')return 'initial counts';
+          if(q('[data-pcw-template]').options[0].text!=='avcd001')return 'template select';
+          q('[data-pcw-source="d2"]').click(); if(q('[data-pcw-joined-count]').textContent!=='4')return 'source add';
+          var toggle=q('[data-pcw-remove="d2"]'); if(!toggle.checked)return 'added definition not true';
+          toggle.click(); if(q('[data-pcw-remove="d2"]') || q('[data-pcw-joined-count]').textContent!=='3')return 'false must remove';
+          q('[data-pcw-date="2026-03-03"]').click();
+          var popover=q('.pcw-day-popover'); if(popover.hidden || popover.querySelectorAll('[data-pcw-choose]').length!==3 || popover.querySelector('[data-pcw-choose="d2"]'))return 'day pool options';
+          popover.querySelector('[data-pcw-choose="d3"]').click();
+          if(q('[data-pcw-date="2026-03-03"]').dataset.pcwApplied!=='d3')return 'calendar did not update';
+          popover.querySelector('[data-pcw-choose="d3"]').click();
+          if(popover.querySelector('[data-pcw-choose="d3"]').getAttribute('aria-pressed')!=='true')return 'active choice deselected';
+          var bounds=popover.getBoundingClientRect(); if(bounds.left<12 || bounds.right>document.documentElement.clientWidth-12)return 'popover outside viewport';
+          document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}));
+          if(!popover.hidden || !q('#modalProjectContentBackdrop').classList.contains('open'))return 'popover Escape closed parent';
+          q('[data-pcw-remove="d3"]').click();
+          if(q('[data-pcw-date="2026-03-03"]').dataset.pcwApplied==='d3')return 'dangling assignment';
+          if(q('[data-pcw-source-count]').textContent!=='15')return 'source total changed';
+          __pcQa.close(); return true;
+        })()`,
+      },
+      {
+        name: "long press sorting, bounded scrollers, cancel and save",
+        viewport: {width:1440,height:1000},
+        expr: `(async function () {
+          __pcQa.open(); __pcQa.go(2); var q=__pcQa.q;
+          Array.from(document.querySelectorAll('[data-pcw-source][aria-pressed="false"]')).map(function(b){return b.dataset.pcwSource;}).forEach(function(id){q('[data-pcw-source="'+id+'"]').click();});
+          var list=q('[data-pcw-joined-list]'), source=q('[data-pcw-source-list]');
+          if(list.children.length!==15 || list.clientHeight!==264 || source.clientHeight!==330 || list.scrollHeight<=list.clientHeight || source.scrollHeight<=source.clientHeight)return 'capped independent scrollers';
+          var original=Array.from(list.children).map(function(n){return n.dataset.pcwDefinition;}).join('|');
+          var first=list.firstElementChild, box=first.getBoundingClientRect();
+          first.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:42,button:0,clientX:box.left+45,clientY:box.top+20}));
+          await new Promise(function(r){setTimeout(r,500);});
+          list.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:42}));
+          if(!list.classList.contains('is-reordering') || list.clientHeight!==272)return 'long press did not enter sort mode';
+          if(!Array.from(source.querySelectorAll('button')).every(function(b){return b.disabled;}))return 'source active during reorder';
+          first.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));
+          q('[data-pcw-cancel-order]').click();
+          if(Array.from(list.children).map(function(n){return n.dataset.pcwDefinition;}).join('|')!==original)return 'cancel did not restore';
+          first=list.firstElementChild; box=first.getBoundingClientRect();
+          first.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:43,button:0,clientX:box.left+45,clientY:box.top+20}));
+          await new Promise(function(r){setTimeout(r,500);});
+          list.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:43}));
+          first.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));
+          q('[data-pcw-save-order]').click();
+          if(Array.from(list.children).map(function(n){return n.dataset.pcwDefinition;}).join('|')===original)return 'save did not apply';
+          if(q('[data-pcw-date="2026-03-06"]').dataset.pcwApplied!=='d3')return 'saved priority did not update calendar';
+          __pcQa.close();return true;
+        })()`,
+      },
+      {
+        name: "definition ranks use Figma digit icons and follow order, membership and prices",
+        viewport: {width:1440,height:1000},
+        expr: `(function () {
+          __pcQa.open(); __pcQa.go(2); var q=__pcQa.q, list=q('[data-pcw-joined-list]');
+          function order(){return Array.from(list.children).map(function(row){return row.dataset.pcwDefinition;}).join('|');}
+          function iconsMatch(rows){return rows.every(function(row,index){
+            var icon=row.querySelector('[data-pcw-rank]'), rank=String(index+1);
+            return icon && icon.getAttribute('aria-label')===rank && icon.textContent==='' &&
+              Array.from(icon.querySelectorAll('img')).every(function(img){var box=img.getBoundingClientRect();return box.width===24 && box.height===24;}) &&
+              Array.from(icon.querySelectorAll('img')).map(function(img){return img.getAttribute('src');}).join('|')===
+              rank.split('').map(function(digit){return './assets/icons/number-'+digit+'.svg';}).join('|');
+          });}
+          if(order()!=='d1|d3|d4' || !iconsMatch(Array.from(list.children)))return 'initial ranks must be 1,2,3';
+          __pcQa.go(3);
+          var price=q('[data-pcw-price="room-a-d3"]'); price.value='2345'; price.dispatchEvent(new Event('input',{bubbles:true}));
+          __pcQa.go(2);
+          q('[data-pcw-date="2026-03-03"]').click(); q('.pcw-day-popover [data-pcw-choose="d3"]').click();
+          document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}));
+          function swap(){var row=q('[data-pcw-definition="d3"]');
+            row.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true}));
+            row.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));}
+          swap();
+          if(order()!=='d1|d4|d3' || !iconsMatch(Array.from(list.children)))return '2/3 exchange did not renumber immediately';
+          q('[data-pcw-cancel-order]').click();
+          if(order()!=='d1|d3|d4' || !iconsMatch(Array.from(list.children)))return 'cancel did not restore ranks';
+          swap(); q('[data-pcw-save-order]').click();
+          if(order()!=='d1|d4|d3' || !iconsMatch(Array.from(list.children)))return 'saved rank order';
+          if(q('[data-pcw-date="2026-03-03"]').dataset.pcwApplied!=='d3')return 'rank changed assigned definition identity';
+          __pcQa.go(3);
+          var groups=Array.from(document.querySelectorAll('[data-pcw-room],[data-pcw-extra]'));
+          if(groups.length!==4 || groups.some(function(group){
+            var rows=Array.from(group.querySelectorAll('.pcw-price-row'));
+            return !iconsMatch(rows) || rows.map(function(row){return row.querySelector('input').dataset.pcwPrice.slice(-2);}).join('|')!=='d1|d4|d3';
+          }))return 'price groups do not follow saved ranks';
+          if(q('[data-pcw-price="room-a-d3"]').value!=='2345')return 'price moved to another definition';
+          __pcQa.go(2); q('[data-pcw-remove="d1"]').click();
+          if(order()!=='d4|d3' || !iconsMatch(Array.from(list.children)))return 'remove did not close rank gap';
+          q('[data-pcw-source="d2"]').click();
+          if(order()!=='d4|d3|d2' || !iconsMatch(Array.from(list.children)))return 'add did not assign last rank';
+          Array.from(document.querySelectorAll('[data-pcw-source][aria-pressed="false"]')).map(function(b){return b.dataset.pcwSource;}).forEach(function(id){q('[data-pcw-source="'+id+'"]').click();});
+          if(list.children.length!==15 || !iconsMatch(Array.from(list.children)))return 'multi-digit ranks must use number SVGs';
+          __pcQa.close(); return true;
+        })()`,
+      },
+      {
+        name: "calendar month step and per-room editable prices without toggles",
+        expr: `(function () {
+          __pcQa.open(); __pcQa.go(2); var q=__pcQa.q;
+          q('[data-pcw-month="1"]').click(); if(!q('[data-pcw-month-title]').textContent.includes('04 月'))return 'month did not move one';
+          q('[data-pcw-month="-1"]').click(); if(!q('[data-pcw-month-title]').textContent.includes('03 月'))return 'previous month';
+          if(document.querySelectorAll('.pcw-calendar-card').length!==4)return 'four calendars missing';
+          __pcQa.go(3);
+          if(Math.abs(q('.pcw-price-summary').children[1].getBoundingClientRect().left-q('.pcw-price-project input').getBoundingClientRect().left)>0.5)return 'room count does not align with project input';
+          if(document.querySelectorAll('[data-pcw-room]').length!==2 || document.querySelectorAll('[data-pcw-price]').length!==12 || q('[data-pcw-step="3"]').querySelector('[role="switch"]'))return 'room cards/prices/toggles';
+          if(Array.from(document.querySelectorAll('[data-pcw-price]')).some(function(input){return input.disabled;}))return 'prices should all be editable';
+          var input=q('[data-pcw-price="room-a-d1"]'); input.value='7777'; input.dispatchEvent(new Event('input',{bubbles:true}));
+          __pcQa.go(2); __pcQa.go(3); if(q('[data-pcw-price="room-a-d1"]').value!=='7777')return 'price navigation lost data';
+          q('[data-pcw-footer="3"] [data-pcw-clear]').click(); if(Array.from(document.querySelectorAll('[data-pcw-price]')).some(function(i){return i.value!=='';}))return 'price clear';
+          q('[data-pcw-save]').click(); if(q('#modalProjectContentBackdrop').classList.contains('open'))return 'save did not close';
+          return true;
+        })()`,
+      },
+      {
+        name: "wizard header/backdrop/Escape close and read-only view",
+        expr: `(function () {
+          var r=__smoke.modalCheck('[data-pc-modal-mode="new"]','modalProjectContentBackdrop');if(r!==true)return r;
+          r=__smoke.escCheck('[data-pc-modal-mode="new"]','modalProjectContentBackdrop');if(r!==true)return r;
+          __pcQa.q('[data-pc-modal-mode="view"]').click();
+          if(__pcQa.q('[data-pcw-title]').textContent!=='查看' || !__pcQa.q('[name="projectName"]').disabled)return 'view mode editable';
+          __pcQa.go(3);if(Array.from(document.querySelectorAll('[data-pcw-price]')).some(function(i){return !i.disabled;}))return 'view prices editable';
+          __pcQa.close();return true;
+        })()`,
+      },
+      {
+        name: "project switches preserve the shared component geometry and disabled state",
+        viewport: {width:375,height:1000,mobile:true},
+        expr: `(async function () {
+          var q=__pcQa.q;
+          function correctSwitches(root){return Array.from(root.querySelectorAll('.member-data-switch')).every(function(toggle){
+            var box=toggle.getBoundingClientRect(),knob=toggle.querySelector('.member-data-switch-knob').getBoundingClientRect();
+            return box.width===64 && box.height===28 && knob.width===24 && knob.height===24 && knob.left>=box.left && knob.right<=box.right && knob.top>=box.top && knob.bottom<=box.bottom;
+          });}
+          __pcQa.open();
+          var offTrack=getComputedStyle(q('[name="refund"]').parentElement.querySelector('.member-data-switch-track')).backgroundColor;
+          if(!correctSwitches(q('[data-pcw-step="1"]')))return 'step1 switch distorted';
+          q('[name="refund"]').click();await new Promise(function(r){setTimeout(r,230);});
+          if(!correctSwitches(q('[data-pcw-step="1"]')))return 'checked switch distorted';
+          __pcQa.go(2);if(!correctSwitches(q('[data-pcw-joined-list]')))return 'definition switch distorted';
+          var row=q('[data-pcw-definition]');row.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true}));
+          await new Promise(function(r){setTimeout(r,230);});
+          var toggle=q('[data-pcw-remove]'),track=toggle.parentElement.querySelector('.member-data-switch-track');
+          if(!toggle.disabled || getComputedStyle(toggle.parentElement).opacity!=='1' || getComputedStyle(track).backgroundColor!==offTrack)return 'disabled switch did not use shared gray-track state';
+          __pcQa.close();q('[data-pc-open-gha]').click();
+          if(!correctSwitches(q('#modalProjectGhaBackdrop')))return 'GHA switch distorted';
+          q('[data-pc-gha-close]').click();return true;
+        })()`,
+      },
+      {
+        name: "project photo sessions independent and footer close paths",
+        expr: `(function () {
+          var q=__pcQa.q;
+          q('[data-pc-card-id="project-199-a"] [data-pc-photo-trigger]').click();
+          if(document.querySelectorAll('#pcProjectPhotoCardGrid [data-slot]').length!==5)return 'photo slots';
+          q('#pcProjectPhotoCardGrid [data-slot="0"] [data-action="delete"]').click();
+          q('[data-pc-photo-cancel]').click();
+          q('[data-pc-card-id="project-199-a"] [data-pc-photo-trigger]').click();
+          if(!q('#pcProjectPhotoCardGrid [data-slot="0"] img[src*="project-content-hotel"]'))return 'cancel mutated saved photo';
+          q('#pcProjectPhotoUploadBtn').click();
+          if(q('#modalProjectPhotoBackdrop').classList.contains('open') || document.body.style.overflow==='hidden')return 'photo upload close/lock';
+          q('[data-pc-card-id="project-199-b"] [data-pc-photo-trigger]').click();
+          if(q('#pcProjectPhotoCardGrid [data-action="delete"]'))return 'photo data leaked between cards';
+          q('[data-pc-photo-cancel]').click();return true;
+        })()`,
+      },
+      ...[768,375].map(function(width){return {
+        name: "project responsive cards and wizard at " + width,
+        viewport: {width:width,height:900,mobile:width<768},
+        expr: `(function () {
+          __pcQa.open(); var q=__pcQa.q;
+          if(document.documentElement.scrollWidth>document.documentElement.clientWidth)return 'page horizontal overflow';
+          var meal=q('#pcwMealPlan').getBoundingClientRect(), info=q('.pcw-info-button').getBoundingClientRect();
+          if(Math.abs(info.left-meal.right-12)>0.5 || info.width!==24 || info.right>document.documentElement.clientWidth)return 'responsive meal/info spacing or overflow';
+          if(document.documentElement.clientWidth<768 && (getComputedStyle(q('#rootWrap')).paddingLeft!=='0px' || getComputedStyle(q('#rootWrap')).paddingRight!=='0px'))return 'mobile page outer padding';
+          __pcQa.go(2);
+          if(q('[data-pcw-joined-list]').clientHeight!==264 || q('[data-pcw-source-list]').clientHeight!==330)return 'limits changed at narrow width';
+          if(q('.pcw-body').scrollWidth>q('.pcw-body').clientWidth)return 'date body horizontal overflow';
+          if(document.documentElement.clientWidth<768){
+            q('[data-pcw-date="2026-03-03"]').click();var sheet=q('#pcwDateSheet');
+            if(!sheet.classList.contains('open'))return 'mobile offcanvas missing';
+            var bounds=sheet.querySelector('.pcw-day-sheet').getBoundingClientRect();
+            if(bounds.left!==0 || Math.round(bounds.right)!==document.documentElement.clientWidth)return 'offcanvas not full width';
+            document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}));sheet.click();
+            if(!sheet.classList.contains('open'))return 'offcanvas unexpectedly dismissed';
+            sheet.querySelector('[data-pcw-sheet-close]').click();
+            if(document.body.style.overflow!=='hidden' || !q('#modalProjectContentBackdrop').classList.contains('open'))return 'child close unlocked parent';
+          }
+          __pcQa.go(3);if(q('.pcw-body').scrollWidth>q('.pcw-body').clientWidth)return 'price body overflow';
+          var amountLeft=q('.pcw-price-summary').children[1].getBoundingClientRect().left;
+          if(Math.abs(amountLeft-q('.pcw-price-project input').getBoundingClientRect().left)>0.5)return 'responsive room count does not align with project input';
+          if(document.documentElement.clientWidth<640 && Array.from(q('.pcw-price-summary').querySelectorAll('input')).some(function(input){return Math.abs(input.getBoundingClientRect().left-amountLeft)>0.5;}))return 'mobile room count does not align with pricing inputs';
+          __pcQa.close();return true;
+        })()`,
+      };}),
+      { name: "real mouse drag scrolls only joined list, both edges and first-to-last", viewport: { width: 1440, height: 1000 }, pointer: "mouse" },
+      { name: "real touch scroll and long press reorder preserve parent lock", viewport: { width: 375, height: 1000, mobile: true }, pointer: "touch" },
       ...SHELL_CHECKS,
       ...SESSION_MODAL_CHECKS,
     ],
@@ -2178,6 +2286,200 @@ async function pollReady(cdp, sessionId, expr) {
   throw new Error("page ready condition timed out");
 }
 
+const PHOTO_TOUCH_CHECKS = [{"page": "project-content.html", "trigger": "[data-pc-photo-trigger]", "modal": "modalProjectPhotoBackdrop", "grid": "pcProjectPhotoCardGrid", "file": "pcProjectPhotoFileInput", "upload": "pcProjectPhotoUploadBtn"}, {"page": "lodging-info.html", "trigger": "#lodgingRow1PhotoTrigger", "modal": "modalPhotoGalleryBackdrop", "grid": "lodgingPhotoCardGrid", "file": "lodgingPhotoFileInput", "upload": "lodgingPhotoUploadBtn"}, {"page": "room-type.html", "trigger": "[data-room-type-photo-trigger]", "modal": "modalRoomTypePhotoGalleryBackdrop", "grid": "roomTypePhotoCardGrid", "file": "roomTypePhotoFileInput", "upload": "roomTypePhotoUploadBtn"}, {"page": "purchase-addon.html", "trigger": "[data-pa-photo-trigger]", "modal": "modalPurchaseAddonPhotoGalleryBackdrop", "grid": "purchaseAddonPhotoCardGrid", "file": "purchaseAddonPhotoFileInput", "upload": "purchaseAddonPhotoUploadBtn"}];
+for (const config of PHOTO_TOUCH_CHECKS) {
+  PAGES.find((page) => page.file === config.page).checks.push({
+    name: "photo mouse/touch sorting, native drop, scroll, cancellation and saved order",
+    viewport: { width: 375, height: 1000, mobile: true },
+    photoTouch: config,
+  });
+}
+
+async function testPhotoTouch(cdp, sessionId, config) {
+  const ev = (expression) => evaluate(cdp, sessionId, expression);
+  const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const state = () => ev(`(function(){
+    var grid=document.getElementById(${JSON.stringify(config.grid)}), modal=grid.closest('.modal-backdrop'), body=grid.closest('.lodging-photo-modal-body');
+    var rows=Array.from(grid.children),marker=window.__photoTouchMarker;
+    return {index:rows.findIndex(function(row){return Array.from(row.querySelectorAll('.lodging-photo-preview img')).some(function(img){return img.src===marker;});}),
+      titles:rows.map(function(row){return row.firstElementChild.textContent.trim();}),
+      main:rows.map(function(row){return row.firstElementChild.textContent.includes('主圖');}),
+      scroll:body.scrollTop,max:body.scrollHeight-body.clientHeight,
+      ghost:!!document.querySelector('.photo-sort-ghost'),open:modal.classList.contains('open'),locked:document.body.style.overflow==='hidden'};
+  })()`);
+  const open = () => ev(`document.querySelector(${JSON.stringify(config.trigger)}).click(); document.getElementById(${JSON.stringify(config.grid)}).closest('.lodging-photo-modal-body').scrollTop=0;`);
+  const close = () => ev(`(function(){var modal=document.getElementById(${JSON.stringify(config.modal)});Array.from(modal.querySelectorAll('.modal-close-btn')).find(function(btn){return btn.textContent.trim()==='取消';}).click();})()`);
+  const touch = (type, x, y) => cdp.send('Input.dispatchTouchEvent', {
+    type, touchPoints: ['touchEnd','touchCancel'].includes(type) ? [] : [{x,y,id:1}],
+  }, sessionId);
+  const seed = () => ev(`(async function(){
+    var canvas=document.createElement('canvas');canvas.width=16;canvas.height=16;
+    canvas.getContext('2d').fillRect(0,0,16,16);
+    var blob=await new Promise(function(resolve){canvas.toBlob(resolve,'image/jpeg');});
+    var grid=document.getElementById(${JSON.stringify(config.grid)});
+    grid.querySelector('[data-slot="0"] [data-action="replace"], [data-slot="0"] [data-pa-photo-action="replace"]').click();
+    var data=new DataTransfer();data.items.add(new File([blob],'touch-sort.jpg',{type:'image/jpeg'}));
+    var input=document.getElementById(${JSON.stringify(config.file)});input.files=data.files;input.dispatchEvent(new Event('change',{bubbles:true}));
+    window.__photoTouchMarker=grid.querySelector('[data-slot="0"] .lodging-photo-preview img').src;
+  })()`);
+  try {
+    await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1},sessionId);
+    await open(); await seed(); await pause(150);
+    // Native scrolling outside the handle must remain usable.
+    const ordinary = await ev(`(function(){var box=document.querySelector('#${config.grid} [data-slot="0"] .lodging-photo-preview').getBoundingClientRect();return {x:box.left+80,y:Math.min(box.top+80,850)};})()`);
+    await touch('touchStart',ordinary.x,ordinary.y);
+    for(let step=1;step<=4;step++){await touch('touchMove',ordinary.x,ordinary.y-step*20);await pause(20);}
+    await touch('touchEnd');await pause(250);
+    if ((await state()).scroll<=0 || (await state()).ghost) return 'ordinary photo swipe did not scroll independently';
+    await ev(`document.getElementById('${config.grid}').closest('.lodging-photo-modal-body').scrollTop=0`);
+    async function dragToSecond(cancel=false) {
+      const p = await ev(`(function(){var grid=document.getElementById('${config.grid}'),handle=grid.querySelector('[data-slot="0"] [data-photo-sort-handle]').getBoundingClientRect(),target=grid.querySelector('[data-slot="1"]').getBoundingClientRect();return {x:handle.left+12,y:handle.top+12,to:Math.min(target.top+40,880)};})()`);
+      await touch('touchStart',p.x,p.y);
+      for(let step=1;step<=5;step++){await touch('touchMove',p.x,p.y+(p.to-p.y)*step/5);await pause(20);}
+      if (!(await state()).ghost) throw new Error('touch did not start photo sorting');
+      await touch(cancel?'touchCancel':'touchEnd');await pause(100);
+    }
+    await dragToSecond(true);
+    if ((await state()).index!==0 || (await state()).ghost) return 'pointer cancel changed photo order';
+    await dragToSecond();
+    let result=await state();
+    if(result.index!==1 || !result.open || !result.locked || result.ghost || result.main.join('|')!=='true|false|false|false|false') return 'touch reorder failed or modal closed: '+JSON.stringify(result);
+    if(result.titles.some(function(title,index){return !title.startsWith('圖片 '+(index+1));}))return 'photo headings lost positional numbering';
+    await close(); await open();
+    if((await state()).index!==-1)return 'cancel persisted pending photo/reorder';
+    await seed(); await dragToSecond();
+    await ev(`document.getElementById('${config.upload}').click()`);
+    if((await state()).open || (await state()).locked)return 'upload did not close cleanly: '+JSON.stringify(await state());
+    await open();
+    if((await state()).index!==1)return 'upload did not save touch order';
+    // Desktop native drag event bindings still operate on the same working slots.
+    const nativeResult = await ev(`(function(){var grid=document.getElementById('${config.grid}'),from=grid.children[1],to=grid.children[0],data=new DataTransfer();from.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer:data}));to.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer:data}));to.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:data}));return true;})()`);
+    if(nativeResult!==true || (await state()).index!==0)return 'desktop native drop stopped working';
+    await close(); await open();
+    if((await state()).index!==1)return 'native drop cancel mutated saved order';
+    // Touch can reach the final card using only the photo body scroller.
+    await ev(`document.getElementById('${config.grid}').querySelector('[data-slot="1"] [data-photo-sort-handle]').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true}));`);
+    const p=await ev(`(function(){var grid=document.getElementById('${config.grid}'),handle=grid.querySelector('[data-slot="0"] [data-photo-sort-handle]').getBoundingClientRect(),body=grid.closest('.lodging-photo-modal-body').getBoundingClientRect();return {x:handle.left+12,y:handle.top+12,bottom:body.bottom-3};})()`);
+    await touch('touchStart',p.x,p.y);await touch('touchMove',p.x,p.bottom);
+    for(let attempt=0;attempt<70;attempt++){await pause(100);const now=await state();if(now.scroll>=now.max-1)break;}
+    const bottom=await state();
+    if(bottom.scroll<bottom.max-1)return 'photo edge auto scroll did not reach last item';
+    await touch('touchEnd');await pause(100);
+    if((await state()).index!==4 || !(await state()).open)return 'first photo did not reach last item';
+    await close();
+    await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false},sessionId);
+    await cdp.send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false},sessionId);
+    await open();
+    const mouse=await ev(`(function(){var grid=document.getElementById('${config.grid}'),from=grid.querySelector('[data-slot="1"] [data-photo-sort-handle]').getBoundingClientRect(),to=grid.querySelector('[data-slot="0"]').getBoundingClientRect();return {x:from.left+12,y:from.top+12,tx:to.left+80,ty:to.top+70};})()`);
+    await cdp.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:mouse.x,y:mouse.y},sessionId);
+    await cdp.send('Input.dispatchMouseEvent',{type:'mousePressed',x:mouse.x,y:mouse.y,button:'left',buttons:1,clickCount:1},sessionId);
+    for(let step=1;step<=8;step++){
+      await cdp.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:mouse.x+(mouse.tx-mouse.x)*step/8,y:mouse.y+(mouse.ty-mouse.y)*step/8,button:'left',buttons:1},sessionId);
+      await pause(20);
+    }
+    await cdp.send('Input.dispatchMouseEvent',{type:'mouseReleased',x:mouse.tx,y:mouse.ty,button:'left',buttons:0,clickCount:1},sessionId);
+    if((await state()).index!==0 || !(await state()).open)return 'real mouse handle drag failed';
+    await close(); await open();
+    if((await state()).index!==1)return 'mouse cancellation changed saved order';
+    await close();
+    return true;
+  } finally {
+    await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false},sessionId);
+    await ev(`(function(){var modal=document.getElementById('${config.modal}');if(modal.classList.contains('open'))modal.querySelector('.modal-close-btn').click();})()`);
+  }
+}
+
+async function testProjectPointer(cdp, sessionId, kind) {
+  const ev = (expression) => evaluate(cdp, sessionId, expression);
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const state = () => ev(`(function(){
+    var list=document.querySelector('[data-pcw-joined-list]');
+    var first=list.firstElementChild.getBoundingClientRect(),bounds=list.getBoundingClientRect();
+    var ghost=document.querySelector('.pcw-drag-ghost [data-pcw-rank]');
+    return {x:first.left+60,y:first.top+20,top:bounds.top+3,bottom:bounds.bottom-3,
+      ranks:Array.from(list.querySelectorAll('[data-pcw-rank]')).map(function(icon){return icon.getAttribute('aria-label');}).join('|'),
+      ghostRank:ghost && ghost.getAttribute('aria-label'),
+      ghostDigits:ghost && Array.from(ghost.querySelectorAll('img')).map(function(img){return img.getAttribute('src').split('number-')[1].slice(0,1);}).join(''),
+      scroll:list.scrollTop,max:list.scrollHeight-list.clientHeight,sorting:list.classList.contains('is-reordering'),
+      parent:document.querySelector('.pcw-body').scrollTop,source:document.querySelector('[data-pcw-source-list]').scrollTop,
+      open:document.getElementById('modalProjectContentBackdrop').classList.contains('open')};
+  })()`);
+  const move = async (type, x, y) => {
+    if (kind === "touch") {
+      await cdp.send("Input.dispatchTouchEvent", {
+        type: type === "down" ? "touchStart" : type === "up" ? "touchEnd" : "touchMove",
+        touchPoints: type === "up" ? [] : [{ x, y, id: 1 }],
+      }, sessionId);
+    } else {
+      await cdp.send("Input.dispatchMouseEvent", {
+        type: type === "down" ? "mousePressed" : type === "up" ? "mouseReleased" : "mouseMoved",
+        x, y, button: "left", buttons: type === "up" ? 0 : 1,
+        ...(type === "move" ? {} : { clickCount: 1 }),
+      }, sessionId);
+    }
+  };
+  await ev(`__pcQa.open();__pcQa.go(2);
+    Array.from(document.querySelectorAll('[data-pcw-source][aria-pressed="false"]')).map(function(b){return b.dataset.pcwSource;}).forEach(function(id){document.querySelector('[data-pcw-source="'+id+'"]').click();});`);
+  await delay(220);
+  if (kind === "touch") await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 1 }, sessionId);
+  const stationary = await state();
+  if (kind === "mouse") await cdp.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: stationary.x, y: stationary.y }, sessionId);
+  await move("down", stationary.x, stationary.y);
+  await delay(520);
+  await move("up", stationary.x, stationary.y);
+  await delay(100);
+  const afterHold = await state();
+  if (!afterHold.open || !afterHold.sorting) return "stationary long press closed modal or lost sorting mode";
+  await ev(`document.querySelector('[data-pcw-cancel-order]').click()`);
+  if (kind === "touch") {
+    const ordinary = await state();
+    await move("down", ordinary.x, ordinary.y + 80);
+    await move("move", ordinary.x, ordinary.y + 20);
+    await delay(80);
+    await move("up", ordinary.x, ordinary.y + 20);
+    await delay(500);
+    const scrolled = await state();
+    if (scrolled.sorting || scrolled.scroll <= 0) return "ordinary touch must scroll without entering reorder";
+    await ev(`document.querySelector('[data-pcw-joined-list]').scrollTop=0`);
+  }
+  const initial = await state();
+  if (kind === "mouse") await cdp.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: initial.x, y: initial.y }, sessionId);
+  await move("down", initial.x, initial.y);
+  await delay(520);
+  const held = await state();
+  if (!held.sorting) return "real long press did not enter reorder";
+  await move("move", initial.x, held.bottom);
+  await delay(450);
+  const scrolling = await state();
+  if (scrolling.scroll <= 0 || scrolling.parent !== initial.parent || scrolling.source !== initial.source) return "edge scroll moved wrong container or did not move";
+  await move("move", initial.x, (held.top + held.bottom) / 2);
+  const away = await state(); await delay(200);
+  if (Math.abs((await state()).scroll - away.scroll) > 1) return "leaving edge did not stop";
+  await move("move", initial.x, held.bottom);
+  for (let attempt=0;attempt<50;attempt++) {
+    await delay(100);const now=await state();if(now.scroll>=now.max-1)break;
+  }
+  const bottom = await state();
+  if (bottom.scroll < bottom.max - 1) return "could not drag to last item";
+  if (bottom.ghostRank !== "15" || bottom.ghostDigits !== "15" || bottom.ranks !== Array.from({length:15},(_,index)=>index+1).join('|')) return "drag to bottom did not renumber list and ghost";
+  await move("move", initial.x, held.top);
+  for (let attempt=0;attempt<50;attempt++) { await delay(100);if((await state()).scroll===0)break; }
+  const top = await state();
+  if (top.scroll !== 0) return "upper edge could not return to first item";
+  if (top.ghostRank !== "1" || top.ghostDigits !== "1") return "drag to top did not renumber ghost";
+  await move("move", initial.x, held.bottom);
+  for (let attempt=0;attempt<50;attempt++) { await delay(100);const now=await state();if(now.scroll>=now.max-1)break; }
+  await move("up", initial.x, held.bottom);
+  const released = await state(); await delay(200);
+  const stopped = await state();
+  if (!stopped.open || Math.abs(stopped.scroll-released.scroll)>1 || stopped.parent!==initial.parent || stopped.source!==initial.source) return "release did not stop cleanly or closed parent";
+  await ev(`document.querySelector('[data-pcw-save-order]').click()`);
+  const last = await ev(`document.querySelector('[data-pcw-joined-list]').lastElementChild.dataset.pcwDefinition`);
+  await ev("__pcQa.close()");
+  if (kind === "touch") await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: false }, sessionId);
+  return last === "d1" ? true : "first item did not move to last";
+}
+
 async function testPage(cdp, baseUrl, page, consoleErrors) {
   const failures = [];
   const { targetId } = await cdp.send("Target.createTarget", { url: "about:blank" });
@@ -2223,7 +2525,11 @@ async function testPage(cdp, baseUrl, page, consoleErrors) {
           sessionId,
         );
       }
-      const result = await evaluate(cdp, sessionId, check.expr);
+      const result = check.pointer
+        ? await testProjectPointer(cdp, sessionId, check.pointer)
+        : check.photoTouch
+          ? await testPhotoTouch(cdp, sessionId, check.photoTouch)
+          : await evaluate(cdp, sessionId, check.expr);
       if (result !== true) failures.push(check.name + ": " + result);
     } catch (err) {
       failures.push(check.name + ": " + err.message);

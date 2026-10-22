@@ -1,3 +1,5 @@
+import { initPhotoSort } from "./photo-sort.js";
+
 // 房型頁 - 照片管理 modal 行為（components/modal.md state=photo-gallery 版型沿用）
 // 版型跟「系統設定 -> 民宿資料」頁共用，但這裡是獨立 instance
 // (#modalRoomTypePhotoGalleryBackdrop)，JS 完全獨立不 import
@@ -64,7 +66,7 @@ function buildCard(slot, idx) {
   const head = document.createElement("div");
   head.className = "flex items-center gap-2";
   head.innerHTML =
-    '<img src="./assets/icons/dots-line.svg" alt="拖曳排序" class="w-6 h-6 cursor-grab" />' +
+    '<img src="./assets/icons/dots-line.svg" alt="拖曳排序" class="w-6 h-6 cursor-grab" data-photo-sort-handle role="button" tabindex="0" draggable="false" />' +
     '<span class="text-xl text-text-default">圖片 ' + (idx + 1) + "</span>";
   if (idx === 0) {
     const pill = document.createElement("span");
@@ -167,30 +169,11 @@ function handleUploadCommit() {
   pendingObjectUrls = [];
 }
 
-let dragSourceIndex = null;
-
 function initDragAndDrop() {
   const grid = document.getElementById("roomTypePhotoCardGrid");
-  if (!grid) return;
-
-  grid.addEventListener("dragstart", (e) => {
-    const card = e.target.closest("[data-slot]");
-    if (!card) return;
-    dragSourceIndex = Number(card.dataset.slot);
-    e.dataTransfer.effectAllowed = "move";
-  });
-
-  grid.addEventListener("dragover", (e) => e.preventDefault());
-
-  grid.addEventListener("drop", (e) => {
-    e.preventDefault();
-    const card = e.target.closest("[data-slot]");
-    if (!card || dragSourceIndex === null) return;
-    const targetIndex = Number(card.dataset.slot);
-    if (targetIndex === dragSourceIndex) return;
-    const moved = workingSlots.splice(dragSourceIndex, 1)[0];
-    workingSlots.splice(targetIndex, 0, moved);
-    dragSourceIndex = null;
+  initPhotoSort(grid, (source, target) => {
+    const moved = workingSlots.splice(source, 1)[0];
+    workingSlots.splice(target, 0, moved);
     render();
   });
 }
@@ -212,8 +195,6 @@ export function initRoomTypePhotoModal() {
   if (uploadBtn) {
     uploadBtn.addEventListener("click", () => {
       handleUploadCommit();
-      const backdrop = document.getElementById("modalRoomTypePhotoGalleryBackdrop");
-      if (backdrop) backdrop.classList.remove("open");
     });
   }
 

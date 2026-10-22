@@ -332,6 +332,7 @@
 | `--font-size-base` | `16px` | `text-base` | **預設 body 字**、表格內文 |
 | `--font-size-lg`   | `18px` | `text-lg`   | 強調 body |
 | `--font-size-xl`   | `20px` | `text-xl`   | Section 標題 |
+| `--font-size-2xl` | `24px` | `text-2xl` | 專案/GHA card 標題, Figma 2724:116123 / 2724:117275 (2026-10-22) |
 
 ---
 

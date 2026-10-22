@@ -16,9 +16,9 @@
   <body data-page="專案內容">
     <div
       id="rootWrap"
-      class="flex min-h-screen max-w-[1440px] flex-col gap-3 p-3 mx-auto"
+      class="mx-auto flex min-h-screen max-w-[1440px] flex-col gap-3 md:p-3"
     >
-      <div class="flex items-center justify-between md:hidden">
+      <div class="flex items-center justify-between px-3 pt-3 md:hidden">
         <a href="./landing.html" aria-label="回今日總覽">
           <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
         </a>
@@ -32,10 +32,10 @@
         </button>
       </div>
 
-      <div id="bodyArea" class="flex flex-1 min-w-0 flex-col gap-3 md:flex-row">
+      <div id="bodyArea" class="flex min-w-0 flex-1 flex-col gap-3 md:flex-row">
         <div data-partial="aside"></div>
 
-        <div id="mainColumn" class="flex flex-1 min-w-0 flex-col gap-3">
+        <div id="mainColumn" class="flex min-w-0 flex-1 flex-col gap-3">
           <div data-partial="topbar"></div>
 
           <main class="flex min-w-0 flex-1 flex-col">
@@ -47,6 +47,7 @@
                   class="pc-pill-button"
                   data-modal-open="modalProjectContentBackdrop"
                   data-pc-modal-mode="new"
+                  data-pc-open-wizard
                 >
                   <img src="./assets/icons/outline-plus.svg" alt="" />
                   <span>新增</span>
@@ -75,175 +76,48 @@
               </div>
 
               <div class="pc-content-card">
-                <div class="pc-status-tabs" role="tablist" aria-label="專案狀態">
-                  <button type="button" class="member-data-filter-tab is-active" data-pc-status="all">
-                    全部 <span class="font-normal">（99）</span>
+                <div class="pc-status-tabs" role="group" aria-label="專案狀態">
+                  <button type="button" class="member-data-filter-tab is-active" data-pc-status="all" aria-pressed="true">
+                    全部 <span class="font-normal">（<span data-pc-status-count>0</span>）</span>
                   </button>
-                  <button type="button" class="member-data-filter-tab" data-pc-status="online">
-                    上架 <span class="font-normal">（8）</span>
+                  <button type="button" class="member-data-filter-tab" data-pc-status="online" aria-pressed="false">
+                    上架 <span class="font-normal">（<span data-pc-status-count>0</span>）</span>
                   </button>
-                  <button type="button" class="member-data-filter-tab" data-pc-status="offline">
-                    下架 <span class="font-normal">（8）</span>
-                  </button>
-                  <button type="button" class="member-data-filter-tab" data-pc-status="expired">
-                    過期 <span class="font-normal">（8）</span>
-                  </button>
-                  <button type="button" class="member-data-filter-tab" data-pc-status="deleted">
-                    刪除 <span class="font-normal">（8）</span>
+                  <button type="button" class="member-data-filter-tab" data-pc-status="offline" aria-pressed="false">
+                    停用 <span class="font-normal">（<span data-pc-status-count>0</span>）</span>
                   </button>
                 </div>
 
                 <div class="pc-toolbar">
-                  <button type="button" class="pc-display-button" aria-pressed="true">
-                    <span class="pc-display-square" aria-hidden="true"></span>
-                    <span>全部顯示（14 筆）</span>
+                  <div class="pc-expiry-filters" role="group" aria-label="期限">
+                    <button type="button" class="pc-expiry-filter is-active" data-pc-expiry="unexpired" aria-pressed="true">未逾期</button>
+                    <button type="button" class="pc-expiry-filter" data-pc-expiry="expired" aria-pressed="false">已逾期</button>
+                  </div>
+                  <button
+                    type="button"
+                    class="pc-gha-open"
+                    data-modal-open="modalProjectGhaBackdrop"
+                    data-pc-open-gha
+                  >
+                    GHA
                   </button>
-                  <span class="pc-channel-chip">GHA</span>
-                </div>
-
-                <div class="pc-table-shell">
-                  <table class="pc-project-table">
-                    <thead>
-                      <tr>
-                        <th>編號</th>
-                        <th>類別</th>
-                        <th>照片管理</th>
-                        <th>專案名稱</th>
-                        <th>上架期限</th>
-                        <th>專案期限</th>
-                        <th class="pc-room-heading">
-                          <div class="pc-room-heading-control">
-                            <span>適用房型</span>
-                            <button
-                              type="button"
-                              class="pc-room-menu-toggle"
-                              data-pc-room-toggle
-                              aria-expanded="false"
-                              aria-controls="pcRoomMenu"
-                              aria-label="展開適用房型選單"
-                            >
-                              <img src="./assets/icons/arrow-down-drop.svg" alt="" />
-                            </button>
-                            <div id="pcRoomMenu" class="pc-room-menu" hidden>
-                              <div class="pc-room-menu-title">選單</div>
-                              <button type="button">（DS）啦啦啦</button>
-                              <button type="button" class="is-highlighted">（GG）哦哦哦</button>
-                            </div>
-                          </div>
-                        </th>
-                        <th>已開至</th>
-                        <th>已設至</th>
-                        <th>價格</th>
-                        <th>排序</th>
-                        <th>管理</th>
-                        <th>價格更新</th>
-                        <th>最後更新時間</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>22</td>
-                        <td>
-                          <div class="pc-stack pc-stack--compact">
-                            <span>限時</span>
-                            <span>BB</span>
-                            <span>GHA</span>
-                          </div>
-                        </td>
-                        <td>
-                          <span class="pc-project-photo" aria-label="專案照片"></span>
-                        </td>
-                        <td>
-                          <div class="pc-stack">
-                            <span>我是名稱</span>
-                            <span>天數：1</span>
-                            <span>付款日：1</span>
-                            <span>最少訂購數：1</span>
-                            <span>訂金預收：100%</span>
-                            <span>內含：2</span>
-                            <span>最多人數：5</span>
-                            <span>退款：不可</span>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="pc-stack">
-                            <span>限時：n ~ n</span>
-                            <span>自 0000-00-00</span>
-                            <span>至 0000-00-00</span>
-                            <span>n 天前可訂</span>
-                          </div>
-                        </td>
-                        <td>0000-00-00</td>
-                        <td class="pc-room-cell">
-                          <div class="pc-room-picker">
-                            <span class="pc-room-count">99</span>
-                            <span>（DS）啦啦啦</span>
-                            <button
-                              type="button"
-                              class="pc-room-search"
-                              aria-label="查看適用房型"
-                            >
-                              <img src="./assets/icons/search.svg" alt="" />
-                            </button>
-                          </div>
-                        </td>
-                        <td>0000-00-00</td>
-                        <td>0000-00-00</td>
-                        <td>
-                          <div class="pc-stack pc-stack--compact">
-                            <span>999</span>
-                            <span>未設定</span>
-                          </div>
-                        </td>
-                        <td>
-                          <input class="pc-sort-input" type="text" value="001" aria-label="排序" />
-                        </td>
-                        <td>
-                          <div class="pc-management-actions">
-                            <button
-                              type="button"
-                              class="pc-action-button pc-action-button--edit"
-                              data-modal-open="modalProjectContentBackdrop"
-                              data-pc-modal-mode="edit"
-                            >
-                              <img src="./assets/icons/edit.svg" alt="" />
-                              <span>修改</span>
-                            </button>
-                            <button type="button" class="pc-action-button pc-action-button--copy">
-                              <img src="./assets/icons/duplicate.svg" alt="" />
-                              <span>複製</span>
-                            </button>
-                            <button type="button" class="pc-action-button pc-action-button--offline">
-                              <img src="./assets/icons/suspend-outline.svg" alt="" />
-                              <span>下架</span>
-                            </button>
-                            <button type="button" class="pc-action-button pc-action-button--delete">
-                              <img src="./assets/icons/trash-can.svg" alt="" />
-                              <span>刪除</span>
-                            </button>
-                            <button type="button" class="pc-action-button pc-action-button--view">
-                              <img src="./assets/icons/preview-outline.svg" alt="" />
-                              <span>查看</span>
-                            </button>
-                            <button type="button" class="pc-action-button pc-action-button--online">
-                              <img src="./assets/icons/video-play.svg" alt="" />
-                              <span>上架</span>
-                            </button>
-                          </div>
-                        </td>
-                        <td><input type="checkbox" aria-label="價格更新" /></td>
-                        <td>0000-00-00</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div class="pc-batch-actions">
-                  <button type="button" class="pc-secondary-button">整批修改排序</button>
-                  <label class="pc-batch-price">
-                    <input type="checkbox" />
-                    <span>整批更新專案價格</span>
+                  <label class="pc-room-filter">
+                    <span>房型套用</span>
+                    <select data-pc-room-filter aria-label="房型套用">
+                      <option value="all" selected>全部</option>
+                      <option value="sb">（SB）威尼斯一百人隨住隨案</option>
+                      <option value="tw">（TW）台灣好行</option>
+                    </select>
                   </label>
+                </div>
+
+                <div class="pc-card-grid" data-pc-card-grid aria-live="polite"></div>
+
+                <div class="pc-sort-actions" data-pc-sort-actions>
+                  <span class="pc-sort-save-status" data-pc-save-status aria-live="polite"></span>
+                  <button type="button" class="pc-save-sort" data-pc-save-sort data-pc-saved-count="0">
+                    儲存排序
+                  </button>
                 </div>
               </div>
             </section>
@@ -261,6 +135,7 @@
     <div data-partial="session-modals"></div>
     <div data-partial="topbar-modals"></div>
     <div data-partial="project-content-modals"></div>
+    <div data-partial="project-content-extras"></div>
 
     <script type="module">
       import { loadPartials } from "./js/partials.js";
