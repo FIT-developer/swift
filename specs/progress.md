@@ -7,6 +7,33 @@
 
 ---
 
+## Session 170: 提交紀錄與規格一併保存, 補入數量價格表 contract (2026-10-22)
+
+### 使用者要求與本輪改動
+
+- 使用者要求把本次紀錄與相關檔案一起包含並推送, 不再留下本機孤兒規格。
+- `start.md` 已補入提交範圍核對、紀錄與對應 spec / contract 一起保存,
+  以及 push 後檢查工作樹與遠端同步的必要步驟。
+- 等待開工、待實作或不同任務不得作為排除已要求保存之規格的理由;
+  保存規格不代表授權實作, UI 實作驗收要求維持既有規則。
+- 本批一併納入 Session 162 的 `specs/pages/quantity-price-table.md`
+  current contract, 補正 Session 169 只推送交接卻漏下對應規格的情況。
+- Session 169 保留當時提交範圍的歷史紀錄, 其排除理由不作為後續流程依據。
+  本輪不修改數量價格表 preview 實作, 後續仍依明確開工指示處理。
+
+### 回溯核對與驗證
+
+- 本輪開始時工作樹唯一改動為數量價格表 spec, 沒有其他遺留檔案。
+  Session 162 的交接已在 `0680973` 隨 progress.md 提交, 對應 spec 尚未納入;
+  本批將該 spec、start.md 與本次交接一起進入 commit/push flow。
+- 相關流程以 start.md 為單一權威, AGENTS.md 保持入口引用, 不複製規則。
+- 可用 Git status / staged diff 核對檔案清單; 檔案歸屬與使用者保存 / 排除指示
+  需 review, 不新增無法準確判定語意範圍的 lint。
+- 本輪僅修改規則與規格紀錄, 無 token 或 UI 實作改動, tokens.md 不需同步。
+- 提交前執行 repo pre-commit 的 fonts / conventions / tokens / partials lint
+  與 staged diff whitespace check; 推送後核對工作樹與 origin/main。
+- 實際 SHA 與遠端狀態以 git history 與本輪推送後檢查為準。
+
 ## Session 169: 專案內容改版與驗收修正 commit/push 交接 (2026-10-22)
 
 ### 使用者驗收與提交範圍

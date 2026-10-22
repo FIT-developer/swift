@@ -394,14 +394,38 @@ checkbox 三色、toggle switch、filter tab、modal delegation pattern 等
 - 記錄：本輪改動、驗證、下一步應做、重要決定、未解問題
 - 若只是小修，也要記錄會影響下一輪判斷的決策或規則變更
 - **每個 commit 後立即同步**，不要累積到 session 末才補。漏更新 progress.md 等同於沒做交接
+- 本次紀錄與其對應的 spec / contract / 規則檔須一起納入提交範圍,
+  不可只提交 progress.md, 卻把紀錄所依據的內容留在本機。提交檢查依下節執行。
 
 ## commit & push flow（強制順序）
 當使用者打「commit & push」（或同義 keyword）時，**先做交接、再 commit、再 push**，一次性 flow，不要分階段等使用者再次確認：
 
 1. **寫 / 更新 `specs/progress.md`** - 在檔案最上方新增本次 Session 段（本輪改動 / 驗證 / 重要決定 / 未解問題）
-2. **`git add`** - staging 本次改動的檔案，含 `specs/progress.md`
+2. **核對範圍並 `git add`** - 先用 `git status --short` 檢查 tracked / untracked
+   改動, 一併 staging 本次紀錄、對應 spec / contract / 規則與已驗收實作,
+   含 `specs/progress.md`; 再以 `git diff --cached --name-status` 核對清單。
 3. **`git commit`** - commit message 包含主要修改說明
 4. **`git push origin main`** - push 到遠端
+5. **確認沒有遺漏** - push 後執行 `git status --short` 與
+   `git rev-list --left-right --count HEAD...origin/main`, 確認本次應提交內容
+   沒有遺留且本地 / 遠端 commit 一致。若仍有變更, 逐項核對原因,
+   不可未檢查就只回報推送成功。
+
+**紀錄與規格一起保存 (2026-10-22 使用者要求)**:
+- 使用者要求 commit & push 時, 本次紀錄及其對應檔案必須一起包含並推送。
+  先前已要求保存、但仍未提交的 spec / contract / 交接內容也須一併核對納入,
+  不可留下只有本機有新版的孤兒檔案。
+- 「等待開工」「待實作」「不同頁面 / 任務」均不是排除紀錄或規格的理由。
+  使用者已要求保存的規格可以先提交; 這不代表已授權實作或產品已驗收。
+- 不可自行縮小提交範圍, 或只因實作尚未開始就排除對應 spec。
+  若使用者明確指定排除, 依其指示保留並在交接與 final 列明檔案及原因。
+  無關的使用者改動仍須辨識, 不可直接以 `git add .` 混入本次提交。
+- 發現本次應納入的紀錄 / spec 遺漏時, 在同一 flow 補提交並推送,
+  不需使用者再次要求; 不 amend 或 force 改寫既有提交。
+- UI 實作仍依既有驗收規則處理, 不因保存規格而放寬驗收要求。
+- 機器可判定性: Git status / staged diff 可列出遺留與提交清單;
+  檔案是否屬於本次紀錄、使用者是否要求保存或明確排除, 需比對指示與交接,
+  無法單靠 grep / diff 判定, 因此保留為本流程的必要 review。
 
 只打「commit」不打「push」、或只說「push」不說「commit」時，沿用其字面意思，不擴張為完整 flow。
 若 session 中已經事先寫過 progress.md 該段，不需重寫，直接 staging 既有變更 commit。
