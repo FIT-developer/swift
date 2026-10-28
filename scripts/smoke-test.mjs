@@ -2076,10 +2076,12 @@ const PAGES = [
             neutralSample.style.background = "var(--color-neutral-100)";
             document.body.appendChild(neutralSample);
             var neutralBackground = getComputedStyle(neutralSample).backgroundColor;
+            neutralSample.style.background = "var(--color-neutral-75)";
+            var standardBackground = getComputedStyle(neutralSample).backgroundColor;
             neutralSample.remove();
             var rateLabels = Array.from(rateRows, function (row) { return row.querySelector("th"); });
-            if (getComputedStyle(rateLabels[0]).backgroundColor === neutralBackground)
-              return "standard rate label should not use the muted background";
+            if (getComputedStyle(rateLabels[0]).backgroundColor !== standardBackground)
+              return "standard rate label should use Neutral/75";
             if (rateLabels.slice(1).some(function (label) {
               return getComputedStyle(label).backgroundColor !== neutralBackground;
             })) return "non-refundable rate labels should use the neutral muted background";
@@ -2093,6 +2095,9 @@ const PAGES = [
         expr: `
           (function () {
             var trigger = document.getElementById("qpDateRangeButton");
+            var dateLabel = document.querySelector("[data-qp-date-range-label]");
+            if (dateLabel.textContent.trim() !== "0000-00-00 ~ 0000-00-00")
+              return "date range should start empty before calendar interaction";
             trigger.click();
             var popover = document.getElementById("qpDateRangePopover");
             if (popover.hidden) return "calendar did not open";
@@ -2120,6 +2125,9 @@ const PAGES = [
             if (before === after || after !== "2026 年 2 月|2026 年 3 月")
               return "month navigation mismatch: " + after;
             trigger.click();
+            document.querySelector("[data-qp-filter-clear]").click();
+            if (dateLabel.textContent.trim() !== "0000-00-00 ~ 0000-00-00")
+              return "filter clear did not restore the empty date range after calendar interaction";
             return true;
           })()
         `,
@@ -2151,60 +2159,401 @@ const PAGES = [
         `,
       },
       {
-        name: "quantity-price group and inventory modals use confirmed defaults",
+        name: "quantity-price main filter defaults and clear restore the full default state",
         expr: `
           (function () {
-            document.querySelector('[data-modal-open="modalQuantityGroupBackdrop"]').click();
-            var group = document.getElementById("modalQuantityGroupBackdrop");
-            if (!group.classList.contains("open")) return "group modal did not open";
-            var weekdays = group.querySelectorAll(".qp-weekday-list input:checked");
-            if (weekdays.length !== 1 || weekdays[0].parentElement.textContent.trim() !== "二")
-              return "weekday default mismatch";
-            if (!group.querySelector('[name="qp-group-room-status"]:checked').parentElement.textContent.includes("關房"))
-              return "room status default mismatch";
-            var save = group.querySelector(".qp-primary-button");
-            var cancel = group.querySelector(".qp-card-actions .qp-secondary-button");
-            if (getComputedStyle(save).backgroundColor !== "rgb(69, 69, 69)")
-              return "modal save color changed";
-            if (getComputedStyle(cancel).backgroundColor !== "rgb(209, 209, 209)")
-              return "modal cancel color changed";
-            group.querySelector(".qp-card-actions .modal-close-btn").click();
-            document.querySelector('[data-modal-open="modalQuantityInventoryBackdrop"]').click();
-            var inventory = document.getElementById("modalQuantityInventoryBackdrop");
-            if (!inventory.classList.contains("open")) return "inventory modal did not open";
-            if (inventory.querySelectorAll('[data-qp-month-table="header"] input').length !== 12)
-              return "inventory month count mismatch";
-            var monthTables = inventory.querySelectorAll(".qp-month-table");
-            if (monthTables.length !== 3 || Array.from(monthTables).some(function (table) {
-              return table.querySelectorAll("tbody td").length !== 12;
-            })) return "inventory month tables are incomplete";
-            var yearGroupsValid = Array.from(monthTables).every(function (table) {
-              var headings = table.querySelectorAll("thead th");
-              return headings.length === 2 && headings[0].colSpan === 4 && headings[1].colSpan === 8 &&
-                headings[0].textContent.trim() === "2026 年" && headings[1].textContent.trim() === "2027 年";
+            var form = document.getElementById("qpFilterForm");
+            var selects = Array.from(form.querySelectorAll("select[data-qp-filter]"));
+            if (selects.length !== 3) return "filter select count: " + selects.length;
+            var defaults = selects.map(function (select) {
+              return select.options[select.selectedIndex].textContent.trim();
             });
-            if (!yearGroupsValid) return "inventory year colspan structure mismatch";
-            if (inventory.querySelector(".qp-month-year")) return "legacy positioned year label remains";
-            var headerMonths = monthTables[0].querySelectorAll(".qp-month-name");
-            if (headerMonths[0].textContent.replace(/\\s/g, "") !== "九月" ||
-                headerMonths[11].textContent.replace(/\\s/g, "") !== "八月")
-              return "inventory visible month range mismatch";
-            if (headerMonths[0].getBoundingClientRect().width < 1)
-              return "inventory month labels are visually hidden";
-            var cellsContainMonths = Array.from(inventory.querySelectorAll(".qp-month-table tbody td")).every(function (cell) {
-              var cellRect = cell.getBoundingClientRect();
-              var monthRect = cell.querySelector(".qp-month-name").getBoundingClientRect();
-              return monthRect.left >= cellRect.left - 1 && monthRect.right <= cellRect.right + 1;
+            if (defaults.some(function (value) { return value !== "content"; }))
+              return "filter defaults should show content: " + defaults.join("|");
+            var dateButton = document.getElementById("qpDateRangeButton");
+            var dateLabel = document.querySelector("[data-qp-date-range-label]");
+            var placeholder = "0000-00-00 ~ 0000-00-00";
+            if (!dateLabel || dateLabel.textContent.trim() !== placeholder)
+              return "date range should start empty";
+            selects.forEach(function (select) {
+              select.value = "";
+              select.dispatchEvent(new Event("change", { bubbles: true }));
             });
-            if (!cellsContainMonths) return "inventory month text overflows its cell";
-            var tablesFitSlots = Array.from(monthTables).every(function (table) {
-              return table.getBoundingClientRect().width <= table.parentElement.getBoundingClientRect().width + 1;
-            });
-            if (!tablesFitSlots) return "inventory nested table exceeds its slot";
-            inventory.querySelector(".qp-modal-close").click();
+            dateButton.click();
+            var calendar = document.getElementById("qpDateRangePopover");
+            if (dateButton.getAttribute("aria-expanded") !== "true" || calendar.hidden)
+              return "date range did not open for clear test";
+            calendar.querySelector('[data-date="2026-02-03"]').click();
+            calendar.querySelector('[data-date="2026-02-07"]').click();
+            if (dateLabel.textContent.trim() === placeholder)
+              return "date range selection did not change the visible value";
+            var noDefault = document.createElement("select");
+            noDefault.dataset.qpFilter = "smoke-no-default";
+            noDefault.appendChild(new Option("Temporary", "temporary"));
+            form.appendChild(noDefault);
+            noDefault.value = "temporary";
+            var clear = form.querySelector("[data-qp-filter-clear]");
+            if (!clear || clear.type !== "reset") {
+              noDefault.remove();
+              return "filter clear should use the form reset control";
+            }
+            clear.click();
+            var emptyDefault = noDefault.selectedIndex === -1;
+            noDefault.remove();
+            if (selects.some(function (select, index) {
+              return select.options[select.selectedIndex].textContent.trim() !== defaults[index];
+            })) return "clear did not restore the three content defaults";
+            if (!emptyDefault) return "clear did not empty a filter without a declared default";
+            if (dateLabel.textContent.trim() !== placeholder || dateButton.getAttribute("aria-expanded") !== "false")
+              return "clear did not empty and close the date range";
             return true;
           })()
         `,
+      },
+      {
+        name: "quantity-price group defaults and select-all stays within its own list",
+        expr: `
+          (function () {
+            var opener = Array.from(document.querySelectorAll('[data-modal-open="modalQuantityGroupBackdrop"]'))
+              .find(function (button) { return !button.closest("#modalQuantityPriceDetailBackdrop"); });
+            if (!opener) return "main group opener missing";
+            opener.click();
+            var group = document.getElementById("modalQuantityGroupBackdrop");
+            if (!group.classList.contains("open")) return "group modal did not open";
+            var set = group.querySelector("#qpGroupSet");
+            var to = group.querySelector("#qpGroupTo");
+            var start = group.querySelector("#qpGroupStartDate");
+            var end = group.querySelector("#qpGroupEndDate");
+            var weekdays = Array.from(group.querySelectorAll('#qpGroupForm input[name="weekday"]'));
+            var lists = Array.from(group.querySelectorAll("#qpGroupLists [data-qp-group-list]"));
+            function optionText() { return set.selectedOptions[0].textContent.trim(); }
+            function verifyReset(expectedOption) {
+              if (optionText() !== expectedOption) return "Set changed: " + optionText();
+              if (to.value !== "0" || start.value !== "" || end.value !== "") return "To/date reset mismatch";
+              if (weekdays.some(function (input) { return input.checked; })) return "weekday reset mismatch";
+              if (group.querySelectorAll("#qpGroupLists [data-qp-group-item]:checked, #qpGroupLists [data-qp-group-select-all]:checked").length)
+                return "list selection reset mismatch";
+              return true;
+            }
+            if (lists.length !== 2) return "group list count: " + lists.length;
+            var reset = verifyReset("option 1");
+            if (reset !== true) return "option 1 " + reset;
+            var expected = [
+              ["ABC", "XYZ"],
+              ["頻道 1", "頻道 2"],
+            ];
+            if (lists.some(function (list, index) {
+              var text = list.textContent;
+              var all = list.querySelector("[data-qp-group-select-all]");
+              var items = Array.from(list.querySelectorAll("[data-qp-group-item]"));
+              return !all || !items.length || all.dataset.qpGroupKey !== list.dataset.qpGroupKey ||
+                items.some(function (item) { return item.dataset.qpGroupKey !== list.dataset.qpGroupKey; }) ||
+                items.some(function (item) { return item.checked; }) || all.checked ||
+                expected[index].some(function (value) { return !text.includes(value); });
+            })) return "option 1 content, list association, or unchecked defaults mismatch";
+            var firstAll = lists[0].querySelector("[data-qp-group-select-all]");
+            var firstItems = Array.from(lists[0].querySelectorAll("[data-qp-group-item]"));
+            firstAll.click();
+            if (firstItems.some(function (item) { return !item.checked; }) ||
+                Array.from(lists.slice(1)).some(function (list) {
+                  return list.querySelectorAll("[data-qp-group-item]:checked").length > 0 ||
+                    list.querySelector("[data-qp-group-select-all]").checked;
+                })) return "select-all changed a different list or missed an item";
+            firstItems[0].click();
+            if (firstItems[0].checked || firstAll.checked) return "one item removal did not clear its select-all";
+            firstItems[0].click();
+            if (!firstAll.checked || firstItems.some(function (item) { return !item.checked; }))
+              return "all selected items did not synchronize select-all";
+            firstAll.click();
+            if (firstAll.checked || firstItems.some(function (item) { return item.checked; }))
+              return "select-all did not clear only its own list";
+            group.querySelector("[data-qp-group-clear]").click();
+            reset = verifyReset("option 1");
+            if (reset !== true || !group.classList.contains("open")) return "group clear should reset in place: " + reset;
+            group.querySelector('.modal-close-btn[data-modal="modalQuantityGroupBackdrop"]').click();
+            if (group.classList.contains("open") || document.body.style.overflow === "hidden")
+              return "group close did not unlock the page";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "quantity-price Set 2 and Set 3 retain their content while switching resets fields",
+        expr: `
+          (function () {
+            var opener = Array.from(document.querySelectorAll('[data-modal-open="modalQuantityGroupBackdrop"]'))
+              .find(function (button) { return !button.closest("#modalQuantityPriceDetailBackdrop"); });
+            opener.click();
+            var group = document.getElementById("modalQuantityGroupBackdrop");
+            var set = group.querySelector("#qpGroupSet");
+            var to = group.querySelector("#qpGroupTo");
+            var start = group.querySelector("#qpGroupStartDate");
+            var end = group.querySelector("#qpGroupEndDate");
+            function choose(text) {
+              var option = Array.from(set.options).find(function (item) { return item.textContent.trim() === text; });
+              if (!option) return false;
+              set.value = option.value;
+              set.dispatchEvent(new Event("change", { bubbles: true }));
+              return true;
+            }
+            function populate() {
+              to.value = "7";
+              to.dispatchEvent(new Event("input", { bubbles: true }));
+              start.value = "2026-08-01";
+              end.value = "2026-08-02";
+              start.dispatchEvent(new Event("change", { bubbles: true }));
+              end.dispatchEvent(new Event("change", { bubbles: true }));
+              var weekday = group.querySelector('#qpGroupForm input[name="weekday"]');
+              var item = group.querySelector("[data-qp-group-item]");
+              weekday.click();
+              item.click();
+            }
+            function verifyReset(text) {
+              if (set.selectedOptions[0].textContent.trim() !== text) return "selected Set mismatch";
+              if (to.value !== "0" || start.value !== "" || end.value !== "") return "To/date values were retained";
+              if (group.querySelectorAll('#qpGroupForm input[name="weekday"]:checked').length ||
+                  group.querySelectorAll("[data-qp-group-item]:checked, [data-qp-group-select-all]:checked").length)
+                return "weekday/list values were retained";
+              return true;
+            }
+            populate();
+            if (!choose("option 2")) return "option 2 missing";
+            var reset = verifyReset("option 2");
+            if (reset !== true) return "switch to option 2: " + reset;
+            var option2 = Array.from(group.querySelectorAll("#qpGroupLists [data-qp-group-list]"));
+            if (!option2[0].textContent.includes("Title") || !option2[0].textContent.includes("ABC") || !option2[0].textContent.includes("FCG") ||
+                !option2[1].textContent.includes("XZZ") || !option2[1].textContent.includes("FOG"))
+              return "option 2 content mismatch";
+            populate();
+            if (!choose("option 3")) return "option 3 missing";
+            reset = verifyReset("option 3");
+            if (reset !== true) return "switch to option 3: " + reset;
+            var option3 = Array.from(group.querySelectorAll("#qpGroupLists [data-qp-group-list]"));
+            if (!option3[0].textContent.includes("IOP") || !option3[0].textContent.includes("ZOQ") ||
+                !option3[1].textContent.includes("BBQ") || !option3[1].textContent.includes("FUC"))
+              return "option 3 content mismatch";
+            group.querySelector('.modal-close-btn[data-modal="modalQuantityGroupBackdrop"]').click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "quantity-price group clear preserves Set 2 and 3; save and reopen return to option 1",
+        expr: `
+          (function () {
+            var opener = Array.from(document.querySelectorAll('[data-modal-open="modalQuantityGroupBackdrop"]'))
+              .find(function (button) { return !button.closest("#modalQuantityPriceDetailBackdrop"); });
+            var group = document.getElementById("modalQuantityGroupBackdrop");
+            function openGroup() { opener.click(); return group.classList.contains("open"); }
+            function choose(text) {
+              var set = group.querySelector("#qpGroupSet");
+              var option = Array.from(set.options).find(function (item) { return item.textContent.trim() === text; });
+              set.value = option.value;
+              set.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+            function populate() {
+              group.querySelector("#qpGroupTo").value = "4";
+              group.querySelector("#qpGroupStartDate").value = "2026-09-01";
+              group.querySelector("#qpGroupEndDate").value = "2026-09-02";
+              group.querySelector('#qpGroupForm input[name="weekday"]').click();
+              group.querySelector("[data-qp-group-item]").click();
+            }
+            function verifyClear(expected) {
+              var set = group.querySelector("#qpGroupSet");
+              if (set.selectedOptions[0].textContent.trim() !== expected) return "Set did not stay " + expected;
+              if (group.querySelector("#qpGroupTo").value !== "0" ||
+                  group.querySelector("#qpGroupStartDate").value !== "" ||
+                  group.querySelector("#qpGroupEndDate").value !== "") return "To/date did not clear";
+              if (group.querySelectorAll('#qpGroupForm input[name="weekday"]:checked, [data-qp-group-item]:checked, [data-qp-group-select-all]:checked').length)
+                return "weekday/list controls did not clear";
+              if (!group.classList.contains("open") || document.body.style.overflow !== "hidden")
+                return "clear closed or unlocked the modal";
+              return true;
+            }
+            if (!openGroup()) return "group modal did not open";
+            choose("option 2");
+            populate();
+            group.querySelector("[data-qp-group-clear]").click();
+            var result = verifyClear("option 2");
+            if (result !== true) return "clear on option 2: " + result;
+            populate();
+            choose("option 3");
+            populate();
+            group.querySelector("[data-qp-group-clear]").click();
+            result = verifyClear("option 3");
+            if (result !== true) return "clear on option 3: " + result;
+            var save = Array.from(group.querySelectorAll("#qpGroupForm [data-modal]"))
+              .find(function (button) { return button.textContent.includes("儲存變更"); });
+            if (!save) return "group save button missing";
+            save.click();
+            if (group.classList.contains("open") || document.body.style.overflow === "hidden")
+              return "save did not close and unlock the group modal";
+            if (!openGroup()) return "group modal did not reopen";
+            if (group.querySelector("#qpGroupSet").selectedOptions[0].textContent.trim() !== "option 1")
+              return "main opener did not start at option 1";
+            group.querySelector('.modal-close-btn[data-modal="modalQuantityGroupBackdrop"]').click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "quantity-price nested detail group opens at option 1 and closes back to locked parent",
+        expr: `
+          (function () {
+            var cell = document.querySelector(".qp-rate-cell");
+            cell.querySelector("[data-qp-rate-display]").click();
+            cell.querySelector("[data-qp-detail-open]").click();
+            var detail = document.getElementById("modalQuantityPriceDetailBackdrop");
+            if (!detail.classList.contains("open") || document.body.style.overflow !== "hidden")
+              return "detail parent did not open and lock the page";
+            detail.querySelector('[data-modal-open="modalQuantityGroupBackdrop"]').click();
+            var group = document.getElementById("modalQuantityGroupBackdrop");
+            if (!group.classList.contains("open")) return "nested group did not open";
+            if (group.querySelector("#qpGroupSet").selectedOptions[0].textContent.trim() !== "option 1")
+              return "detail opener did not start at option 1";
+            var parentZ = Number.parseInt(getComputedStyle(detail).zIndex, 10);
+            var childZ = Number.parseInt(getComputedStyle(group).zIndex, 10);
+            if (!(childZ > parentZ)) return "nested group is not above its detail parent";
+            group.querySelector('.modal-close-btn[data-modal="modalQuantityGroupBackdrop"]').click();
+            if (group.classList.contains("open") || !detail.classList.contains("open") || document.body.style.overflow !== "hidden")
+              return "closing nested group did not preserve and lock its parent";
+            detail.querySelector('.modal-close-btn[data-modal="modalQuantityPriceDetailBackdrop"]').click();
+            if (detail.classList.contains("open") || document.body.style.overflow === "hidden")
+              return "closing the detail parent did not unlock the page";
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "quantity-price inventory month span, sample state, and availability boundaries",
+        viewport: { width: 1440, height: 1000 },
+        expr: `
+          (function () {
+            document.querySelector('[data-modal-open="modalQuantityInventoryBackdrop"]').click();
+            var modal = document.getElementById("modalQuantityInventoryBackdrop");
+            var table = modal.querySelector(".qp-inventory-table");
+            if (!modal.classList.contains("open") || !table) return "inventory modal/table did not open";
+            if (modal.querySelectorAll("table").length !== 1) return "inventory should use one semantic table";
+            var headers = Array.from(table.querySelectorAll("[data-qp-inventory-month-header]"));
+            var expectedMonths = [
+              "2026-08", "2026-09", "2026-10", "2026-11", "2026-12",
+              "2027-01", "2027-02", "2027-03", "2027-04", "2027-05",
+              "2027-06", "2027-07", "2027-08", "2027-09",
+            ];
+            if (headers.length !== 14 || headers.map(function (header) { return header.dataset.monthKey; }).join("|") !== expectedMonths.join("|"))
+              return "inventory month range mismatch";
+            var yearHeads = Array.from(table.querySelectorAll("thead tr:first-child th"))
+              .filter(function (heading) { return heading.textContent.includes("2026") || heading.textContent.includes("2027"); });
+            if (yearHeads.length !== 2 || yearHeads[0].colSpan !== 5 || yearHeads[1].colSpan !== 9)
+              return "inventory year spans should be 5 and 9";
+            if (yearHeads[0].textContent.trim() !== "2026 年" || yearHeads[1].textContent.trim() !== "2027 年")
+              return "inventory year labels mismatch";
+            var extras = Array.from(table.querySelectorAll("[data-qp-inventory-extra-month]"));
+            if (extras.length !== 2 || extras.map(function (header) { return header.dataset.monthKey; }).join("|") !== "2027-08|2027-09")
+              return "only August and September 2027 should be beyond the original 12 months";
+            var sample = document.createElement("span");
+            sample.style.background = "var(--color-brand-100)";
+            document.body.appendChild(sample);
+            var extraBackground = getComputedStyle(sample).backgroundColor;
+            sample.remove();
+            if (extras.some(function (header) { return getComputedStyle(header).backgroundColor !== extraBackground; }))
+              return "extra-month headers should use Brand/100";
+            var batch = function (month) {
+              return table.querySelector('input[data-qp-inventory-batch][data-month-key="' + month + '"]');
+            };
+            var bodyRows = Array.from(table.querySelectorAll("tbody tr"));
+            var roomRows = bodyRows.filter(function (row) { return row.querySelector("input[data-qp-inventory-room]"); });
+            var room = function (code, month) {
+              var roomCode = code.toLowerCase();
+              var row = roomRows.find(function (item) {
+                return item.querySelector('input[data-qp-inventory-room="' + roomCode + '"]');
+              });
+              return row && row.querySelector('input[data-qp-inventory-room][data-month-key="' + month + '"]');
+            };
+            var cellDisabled = function (input) {
+              return input.closest(".qp-inventory-cell").classList.contains("is-disabled");
+            };
+            if (bodyRows.length !== 4 || roomRows.length !== 3 || roomRows.some(function (row) {
+              return row.querySelectorAll("input[data-qp-inventory-room]").length !== 14;
+            })) return "inventory should have one batch row and three 14-month room rows";
+            if (!batch("2027-03").checked || roomRows.some(function (row) {
+              return !row.querySelector('input[data-qp-inventory-room][data-month-key="2027-03"]').checked;
+            }) || !room("AAC", "2026-12").checked || batch("2026-12").checked)
+              return "inventory preview sample selections mismatch";
+            ["2027-08", "2027-09"].forEach(function (month) {
+              var input = batch(month);
+              if (!input || !input.disabled || !input.closest(".qp-inventory-cell").classList.contains("is-disabled"))
+                throw new Error("disabled batch cell mismatch: " + month);
+            });
+            if (room("AAC", "2027-08").disabled || cellDisabled(room("AAC", "2027-08")) ||
+                !room("AAC", "2027-09").disabled || !cellDisabled(room("AAC", "2027-09")) ||
+                room("AZC", "2027-08").disabled || cellDisabled(room("AZC", "2027-08")) ||
+                room("AZC", "2027-09").disabled || cellDisabled(room("AZC", "2027-09")) ||
+                !room("ZZO", "2027-08").disabled || !cellDisabled(room("ZZO", "2027-08")) ||
+                !room("ZZO", "2027-09").disabled || !cellDisabled(room("ZZO", "2027-09")))
+              return "room availability boundary mismatch";
+            var clearable = table.querySelector('input[data-qp-inventory-batch][data-month-key="2026-12"]');
+            if (!clearable) return "December batch input missing";
+            modal.querySelector('.modal-close-btn[data-modal="modalQuantityInventoryBackdrop"]').click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "quantity-price inventory batch and room selections synchronize without partial batch state",
+        expr: `
+          (function () {
+            document.querySelector('[data-modal-open="modalQuantityInventoryBackdrop"]').click();
+            var modal = document.getElementById("modalQuantityInventoryBackdrop");
+            var table = modal.querySelector(".qp-inventory-table");
+            var month = "2026-12";
+            var batch = table.querySelector('input[data-qp-inventory-batch][data-month-key="' + month + '"]');
+            var rows = Array.from(table.querySelectorAll("tbody tr"));
+            var roomRows = rows.filter(function (row) { return row.querySelector("input[data-qp-inventory-room]"); });
+            var rooms = roomRows.map(function (row) {
+              return row.querySelector('input[data-qp-inventory-room][data-month-key="' + month + '"]');
+            });
+            if (batch.checked || rooms.filter(function (input) { return input.checked; }).length !== 1)
+              return "December should begin with only AAC checked";
+            batch.closest(".qp-inventory-cell-label").click();
+            if (!batch.checked || rooms.some(function (input) { return !input.checked; }))
+              return "batch label did not select every room exactly once";
+            var azcRow = roomRows.find(function (row) { return row.querySelector('input[data-qp-inventory-room="azc"]'); });
+            var azc = azcRow.querySelector('input[data-qp-inventory-room][data-month-key="' + month + '"]');
+            azc.closest(".qp-inventory-cell-label").click();
+            if (azc.checked || batch.checked || rooms.some(function (input) { return input !== azc && !input.checked; }))
+              return "one room removal did not clear the batch state";
+            azc.closest(".qp-inventory-cell-label").click();
+            if (!azc.checked || !batch.checked || rooms.some(function (input) { return !input.checked; }))
+              return "all selected rooms did not restore batch checked state";
+            ["2027-08", "2027-09"].forEach(function (key) {
+              var input = table.querySelector('input[data-qp-inventory-batch][data-month-key="' + key + '"]');
+              var before = input.checked;
+              input.focus();
+              input.dispatchEvent(new KeyboardEvent("keydown", { key: " ", bubbles: true }));
+              input.dispatchEvent(new KeyboardEvent("keyup", { key: " ", bubbles: true }));
+              input.click();
+              input.closest(".qp-inventory-cell-label").click();
+              if (!input.disabled || input.checked !== before || document.activeElement === input)
+                throw new Error("disabled batch accepted focus or interaction: " + key);
+            });
+            var aacSeptember = table.querySelector('input[data-qp-inventory-room][data-month-key="2027-09"]');
+            var before = aacSeptember.checked;
+            aacSeptember.focus();
+            aacSeptember.dispatchEvent(new KeyboardEvent("keydown", { key: " ", bubbles: true }));
+            aacSeptember.click();
+            aacSeptember.closest(".qp-inventory-cell-label").click();
+            if (!aacSeptember.disabled || aacSeptember.checked !== before || document.activeElement === aacSeptember)
+              return "disabled AAC September cell accepted focus or interaction";
+            modal.querySelector('.modal-close-btn[data-modal="modalQuantityInventoryBackdrop"]').click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "quantity-price mobile inventory blank-cell pointer and disabled keyboard behavior",
+        viewport: { width: 375, height: 812, mobile: true },
+        quantityInventoryPointer: true,
       },
       {
         name: "quantity-price tablet reflows filters without page overflow",
@@ -2213,9 +2562,17 @@ const PAGES = [
           (function () {
             if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1)
               return "tablet page-level horizontal overflow";
-            var fields = document.querySelectorAll(".qp-filter-row--fields .qp-field");
-            if (Math.abs(fields[0].getBoundingClientRect().top - fields[1].getBoundingClientRect().top) > 1)
-              return "tablet fields should use two columns";
+            var fields = document.querySelectorAll(".qp-filter-row--fields .qp-filter-field");
+            var fieldGrid = document.querySelector(".qp-filter-row--fields");
+            if (fields.length !== 3 || fieldGrid.querySelectorAll("select[data-qp-filter]").length !== 3)
+              return "tablet should retain three native filter controls";
+            var gridBounds = fieldGrid.getBoundingClientRect();
+            if (Array.from(fields).some(function (field) {
+              var bounds = field.getBoundingClientRect();
+              var select = field.querySelector("select[data-qp-filter]");
+              return !select || select.getBoundingClientRect().width < 120 ||
+                bounds.left < gridBounds.left - 1 || bounds.right > gridBounds.right + 1;
+            })) return "tablet filter fields should remain usable within the page panel";
             var shell = document.querySelector(".qp-table-shell");
             if (!(shell.scrollWidth > shell.clientWidth)) return "tablet rate table should scroll";
             return true;
@@ -2232,17 +2589,87 @@ const PAGES = [
             var shell = document.querySelector(".qp-table-shell");
             if (!(shell.scrollWidth > shell.clientWidth)) return "mobile rate table should scroll";
             document.querySelector('[data-modal-open="modalQuantityInventoryBackdrop"]').click();
-            var modal = document.querySelector(".qp-inventory-modal");
-            if (modal.getBoundingClientRect().width > innerWidth - 20)
-              return "inventory modal wider than viewport";
+            var modal = document.getElementById("modalQuantityInventoryBackdrop");
+            var modalBox = modal.querySelector(".modal-box");
+            var modalBounds = modalBox.getBoundingClientRect();
+            if (Math.abs(modalBounds.left) > 1 || Math.abs(modalBounds.top) > 1 ||
+                Math.abs(modalBounds.width - innerWidth) > 1 ||
+                Math.abs(modalBounds.height - innerHeight) > 1)
+              return "inventory modal should fill the mobile viewport";
             var inventoryShell = modal.querySelector(".qp-inventory-scroll");
             if (!(inventoryShell.scrollWidth > inventoryShell.clientWidth))
               return "mobile inventory table should scroll";
+            var inventoryTable = inventoryShell.querySelector(".qp-inventory-table");
+            var total = inventoryTable.querySelector("[data-qp-inventory-total]") ||
+              inventoryTable.querySelector("[data-qp-inventory-total-mark]");
+            if (!total) return "inventory total column marker missing";
+            var totalCell = total.matches("th, td") ? total : total.closest("th, td");
+            if (!totalCell) return "inventory total column cell missing";
+            inventoryShell.scrollLeft = 0;
+            var firstMonth = inventoryTable.querySelector('[data-qp-inventory-month-header][data-month-key="2026-08"]');
+            if (!firstMonth || firstMonth.getBoundingClientRect().left < inventoryShell.getBoundingClientRect().left - 1)
+              return "inventory left edge is not reachable at scroll start";
+            inventoryShell.scrollLeft = inventoryShell.scrollWidth;
+            var shellRect = inventoryShell.getBoundingClientRect();
+            if (totalCell.getBoundingClientRect().right > shellRect.right + 1)
+              return "rightmost total column is not reachable inside inventory scroller";
+            if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1)
+              return "inventory horizontal scrolling overflowed the page";
             document.querySelector("#modalQuantityInventoryBackdrop .qp-modal-close").click();
             document.getElementById("qpDateRangeButton").click();
             var calendar = document.getElementById("qpDateRangePopover").getBoundingClientRect();
             if (calendar.right > innerWidth + 1) return "mobile calendar exceeds viewport";
             document.getElementById("qpDateRangeButton").click();
+            return true;
+          })()
+        `,
+      },
+      {
+        name: "quantity-price mobile group and detail modals fill viewport and preserve nested lock",
+        viewport: { width: 375, height: 812, mobile: true },
+        expr: `
+          (function () {
+            function fitsViewport(modal) {
+              if (!modal || !modal.classList.contains("open")) return false;
+              var box = modal.querySelector(".modal-box");
+              if (!box) return false;
+              var rect = box.getBoundingClientRect();
+              return Math.abs(rect.left) <= 1 && Math.abs(rect.top) <= 1 &&
+                Math.abs(rect.width - innerWidth) <= 1 &&
+                Math.abs(rect.height - innerHeight) <= 1;
+            }
+            var group = document.getElementById("modalQuantityGroupBackdrop");
+            var groupOpener = Array.from(document.querySelectorAll('[data-modal-open="modalQuantityGroupBackdrop"]'))
+              .find(function (button) { return !button.closest("#modalQuantityPriceDetailBackdrop"); });
+            if (!groupOpener) return "main group opener missing";
+            groupOpener.click();
+            if (!fitsViewport(group)) return "option 1 group modal should fill the mobile viewport";
+            var set = group.querySelector("#qpGroupSet");
+            var variants = ["option 1", "option 2", "option 3"];
+            for (var index = 0; index < variants.length; index += 1) {
+              var value = variants[index];
+              set.value = value;
+              set.dispatchEvent(new Event("change", { bubbles: true }));
+              if (!fitsViewport(group)) return value + " group modal should fill the mobile viewport";
+            }
+            group.querySelector('.modal-close-btn[data-modal="modalQuantityGroupBackdrop"]').click();
+            if (group.classList.contains("open")) return "group modal did not close";
+
+            var cell = document.querySelector(".qp-rate-cell");
+            cell.querySelector("[data-qp-rate-display]").click();
+            cell.querySelector("[data-qp-detail-open]").click();
+            var detail = document.getElementById("modalQuantityPriceDetailBackdrop");
+            if (!fitsViewport(detail) || document.body.style.overflow !== "hidden")
+              return "detail modal should fill viewport and lock the page";
+            detail.querySelector('[data-modal-open="modalQuantityGroupBackdrop"]').click();
+            if (!fitsViewport(group) || !fitsViewport(detail) || document.body.style.overflow !== "hidden")
+              return "nested group and detail modals should both fill viewport while locked";
+            group.querySelector('.modal-close-btn[data-modal="modalQuantityGroupBackdrop"]').click();
+            if (group.classList.contains("open") || !detail.classList.contains("open") || document.body.style.overflow !== "hidden")
+              return "closing nested group should retain the fullscreen detail lock";
+            detail.querySelector('.modal-close-btn[data-modal="modalQuantityPriceDetailBackdrop"]').click();
+            if (detail.classList.contains("open") || document.body.style.overflow === "hidden")
+              return "closing detail should release the page lock";
             return true;
           })()
         `,
@@ -2480,6 +2907,79 @@ async function testProjectPointer(cdp, sessionId, kind) {
   return last === "d1" ? true : "first item did not move to last";
 }
 
+async function testQuantityInventoryPointer(cdp, sessionId) {
+  const ev = (expression) => evaluate(cdp, sessionId, expression);
+  const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const clickAt = async (x, y) => {
+    await cdp.send("Input.dispatchMouseEvent", { type: "mouseMoved", x, y }, sessionId);
+    await cdp.send("Input.dispatchMouseEvent", {
+      type: "mousePressed", x, y, button: "left", buttons: 1, clickCount: 1,
+    }, sessionId);
+    await cdp.send("Input.dispatchMouseEvent", {
+      type: "mouseReleased", x, y, button: "left", buttons: 0, clickCount: 1,
+    }, sessionId);
+  };
+  await ev(`document.querySelector('[data-modal-open="modalQuantityInventoryBackdrop"]').click()`);
+  try {
+  await pause(80);
+  const enabled = await ev(`(function(){
+    var modal=document.getElementById('modalQuantityInventoryBackdrop');
+    var table=modal.querySelector('.qp-inventory-table');
+    var shell=modal.querySelector('.qp-inventory-scroll');
+    var row=Array.from(table.querySelectorAll('tbody tr')).find(function(item){return item.querySelector('input[data-qp-inventory-room="azc"]');});
+    var input=row.querySelector('input[data-qp-inventory-room][data-month-key="2026-08"]');
+    var cell=input.closest('.qp-inventory-cell');
+    var bounds=cell.getBoundingClientRect();
+    var target={x:Math.max(bounds.left+4,shell.getBoundingClientRect().left+4),y:bounds.top+bounds.height/2};
+    return {target:target, checked:input.checked, disabled:input.disabled,
+      label:!!input.closest('.qp-inventory-cell-label'), open:modal.classList.contains('open'),
+      overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1};
+  })()`);
+  if (!enabled.open || enabled.disabled || enabled.checked || !enabled.label || enabled.overflow)
+    return "mobile AZC August cell is not an available blank target: " + JSON.stringify(enabled);
+  await clickAt(enabled.target.x, enabled.target.y);
+  await pause(40);
+  const selected = await ev(`(function(){var input=document.querySelector('#modalQuantityInventoryBackdrop input[data-qp-inventory-room="azc"][data-month-key="2026-08"]');return input.checked;})()`);
+  if (!selected) return "clicking blank space in an enabled cell did not select it exactly once";
+  await clickAt(enabled.target.x, enabled.target.y);
+  await pause(40);
+  const cleared = await ev(`(function(){var input=document.querySelector('#modalQuantityInventoryBackdrop input[data-qp-inventory-room="azc"][data-month-key="2026-08"]');return !input.checked;})()`);
+  if (!cleared) return "clicking the enabled cell twice did not restore its original state";
+  const disabled = await ev(`(function(){
+    var modal=document.getElementById('modalQuantityInventoryBackdrop');
+    var table=modal.querySelector('.qp-inventory-table');
+    var shell=modal.querySelector('.qp-inventory-scroll');
+    shell.scrollLeft=shell.scrollWidth;
+    var row=Array.from(table.querySelectorAll('tbody tr')).find(function(item){return item.querySelector('input[data-qp-inventory-room="aac"]');});
+    var input=row.querySelector('input[data-qp-inventory-room][data-month-key="2027-09"]');
+    var cell=input.closest('.qp-inventory-cell');
+    var bounds=cell.getBoundingClientRect();
+    return {target:{x:bounds.left+4,y:bounds.top+bounds.height/2},disabled:input.disabled,
+      checked:input.checked,cellDisabled:cell.classList.contains('is-disabled'),
+      shell:shell.getBoundingClientRect().toJSON()};
+  })()`);
+  if (!disabled.disabled || !disabled.cellDisabled || disabled.checked)
+    return "AAC September disabled cell state mismatch: " + JSON.stringify(disabled);
+  await clickAt(disabled.target.x, disabled.target.y);
+  const afterClick = await ev(`(function(){var input=document.querySelector('#modalQuantityInventoryBackdrop input[data-qp-inventory-room="aac"][data-month-key="2027-09"]');return input.checked;})()`);
+  if (afterClick) return "clicking blank space in disabled AAC September changed it";
+  const focusResult = await ev(`(function(){
+    var input=document.querySelector('#modalQuantityInventoryBackdrop input[data-qp-inventory-room="aac"][data-month-key="2027-09"]');
+    input.focus();
+    input.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true}));
+    input.dispatchEvent(new KeyboardEvent('keyup',{key:' ',bubbles:true}));
+    return {focused:document.activeElement===input,checked:input.checked};
+  })()`);
+  if (focusResult.focused || focusResult.checked)
+    return "disabled AAC September accepted keyboard focus or changed state";
+  await ev(`document.querySelector('#modalQuantityInventoryBackdrop .modal-close-btn[data-modal="modalQuantityInventoryBackdrop"]').click()`);
+  return true;
+  } finally {
+    await ev(`(function(){var modal=document.getElementById('modalQuantityInventoryBackdrop');var close=modal&&modal.querySelector('.modal-close-btn[data-modal="modalQuantityInventoryBackdrop"]');if(modal&&modal.classList.contains('open')&&close)close.click();})()`)
+      .catch(() => {});
+  }
+}
+
 async function testPage(cdp, baseUrl, page, consoleErrors) {
   const failures = [];
   const { targetId } = await cdp.send("Target.createTarget", { url: "about:blank" });
@@ -2527,6 +3027,8 @@ async function testPage(cdp, baseUrl, page, consoleErrors) {
       }
       const result = check.pointer
         ? await testProjectPointer(cdp, sessionId, check.pointer)
+        : check.quantityInventoryPointer
+          ? await testQuantityInventoryPointer(cdp, sessionId)
         : check.photoTouch
           ? await testPhotoTouch(cdp, sessionId, check.photoTouch)
           : await evaluate(cdp, sessionId, check.expr);

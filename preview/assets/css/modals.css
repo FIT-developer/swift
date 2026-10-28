@@ -782,7 +782,10 @@
   #modalRoomTypeNewBackdrop,
   #modalRoomTypeEditBackdrop,
   #modalRoomTypeViewBackdrop,
-  #modalRoomTypePhotoGalleryBackdrop {
+  #modalRoomTypePhotoGalleryBackdrop,
+  #modalQuantityGroupBackdrop,
+  #modalQuantityInventoryBackdrop,
+  #modalQuantityPriceDetailBackdrop {
     align-items: stretch;
     justify-content: stretch;
     padding: 0;
@@ -800,7 +803,10 @@
   #modalRoomTypeNewBackdrop .modal-box,
   #modalRoomTypeEditBackdrop .modal-box,
   #modalRoomTypeViewBackdrop .modal-box,
-  #modalRoomTypePhotoGalleryBackdrop .modal-box {
+  #modalRoomTypePhotoGalleryBackdrop .modal-box,
+  #modalQuantityGroupBackdrop .modal-box,
+  #modalQuantityInventoryBackdrop .modal-box,
+  #modalQuantityPriceDetailBackdrop .modal-box {
     width: 100%;
     max-width: 100%;
     max-height: none;

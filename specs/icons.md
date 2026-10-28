@@ -44,6 +44,7 @@
 | deposit | assets/icons/deposit.svg | 24×24 | 訂金/押金 | icons/deposit |
 | direction-left | assets/icons/direction-left.svg | 25×25 | 方向左（雙色）⚠️ stroke #306CFE + #344054 | icons/direction-left |
 | document | assets/icons/document.svg | 24×24 | 文件 | icons/document |
+| document-multiple-02 | assets/icons/document-multiple-02.svg | 24x24 | 群組編輯; 2026-10-28 從 I2741:102483;1676:102755 匯出 | icons/document-multiple-02 |
 | dollar | assets/icons/dollar.svg | 20×20 | 金錢/貨幣 | icons/dollar |
 | door | assets/icons/door.svg | 24×24 | 門/房門 | icons/door |
 | dots-line | assets/icons/dots-line.svg | 24x24 | 更多選項（直式三點） | icons/dots-line |

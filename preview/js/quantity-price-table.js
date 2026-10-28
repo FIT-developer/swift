@@ -11,25 +11,37 @@ var RATE_ROWS = [
   { room: "景觀多人房", plan: "Non-refundable (Standar Rate 447)" },
 ];
 
-var INVENTORY_MONTHS = [
-  { year: 2026, month: 9 },
-  { year: 2026, month: 10 },
-  { year: 2026, month: 11 },
-  { year: 2026, month: 12 },
-  { year: 2027, month: 1 },
-  { year: 2027, month: 2 },
-  { year: 2027, month: 3 },
-  { year: 2027, month: 4 },
-  { year: 2027, month: 5 },
-  { year: 2027, month: 6 },
-  { year: 2027, month: 7 },
-  { year: 2027, month: 8 },
+var INVENTORY_MONTHS = [];
+for (var monthIndex = 0; monthIndex < 14; monthIndex += 1) {
+  var inventoryDate = new Date(2026, 7 + monthIndex, 1);
+  INVENTORY_MONTHS.push({
+    year: inventoryDate.getFullYear(),
+    month: inventoryDate.getMonth() + 1,
+  });
+}
+
+var INVENTORY_ROOMS = [
+  { key: "aac", name: "（AAC）維力雜醬麵房", availableUntil: "2027-08" },
+  { key: "azc", name: "（AZC）味全真的不要喝房", availableUntil: "2027-09" },
+  { key: "zzo", name: "（ZZO）火鍋讚", availableUntil: "2027-07" },
 ];
 
-var MONTH_NAMES = [
-  "一", "二", "三", "四", "五", "六",
-  "七", "八", "九", "十", "十一", "十二",
-];
+var GROUP_OPTIONS = {
+  "option 1": [
+    { items: ["ABC", "XYZ"] },
+    { items: ["頻道 1", "頻道 2"] },
+  ],
+  "option 2": [
+    { title: "Title", items: ["ABC", "FCG"] },
+    { title: "Title", items: ["XZZ", "FOG"] },
+    { items: ["頻道 1", "頻道 2"] },
+  ],
+  "option 3": [
+    { title: "Title", items: ["IOP", "ZOQ"] },
+    { title: "Title", items: ["BBQ", "FUC"] },
+    { items: ["頻道 1", "頻道 2"] },
+  ],
+};
 
 var DEMO_TODAY = new Date(2026, 1, 3);
 
@@ -76,52 +88,301 @@ function renderRateCells() {
   });
 }
 
-function renderInventoryMonths() {
-  document.querySelectorAll("[data-qp-month-table]").forEach(function (slot) {
-    if (slot.children.length) return;
-    var group = slot.dataset.qpMonthTable;
-    var table = document.createElement("table");
-    var head = document.createElement("thead");
-    var yearRow = document.createElement("tr");
-    var body = document.createElement("tbody");
-    var monthRow = document.createElement("tr");
+function makeElement(tagName, className, text) {
+  var element = document.createElement(tagName);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
 
-    table.className = "qp-month-table";
-    table.setAttribute("aria-label", group === "header" ? "全選月份" : "房型設定月份");
+function makeCheckboxControl(options) {
+  var config = options || {};
+  var control = makeElement("span", "qp-check-control");
+  var input = document.createElement("input");
+  var visual = makeElement("span", "qp-check-visual");
 
-    [
-      { year: 2026, span: 4 },
-      { year: 2027, span: 8 },
-    ].forEach(function (item) {
-      var yearCell = document.createElement("th");
-      yearCell.scope = "colgroup";
-      yearCell.colSpan = item.span;
-      yearCell.textContent = item.year + " 年";
-      yearRow.appendChild(yearCell);
-    });
+  input.type = "checkbox";
+  if (config.name) input.name = config.name;
+  if (config.label) input.setAttribute("aria-label", config.label);
+  if (config.checked) {
+    input.checked = true;
+    input.defaultChecked = true;
+  }
+  if (config.disabled) input.disabled = true;
+  if (config.batch) input.setAttribute("data-qp-inventory-batch", "");
+  if (config.room) input.setAttribute("data-qp-inventory-room", config.room);
+  if (config.monthKey) input.dataset.monthKey = config.monthKey;
+  if (config.groupKey) input.dataset.qpGroupKey = config.groupKey;
+  if (config.selectAll) input.setAttribute("data-qp-group-select-all", "");
+  if (config.groupItem) input.setAttribute("data-qp-group-item", "");
+
+  visual.setAttribute("aria-hidden", "true");
+  control.appendChild(input);
+  control.appendChild(visual);
+  return { control: control, input: input };
+}
+
+function monthKey(item) {
+  return item.year + "-" + pad(item.month);
+}
+
+function roomIsAvailable(room, month) {
+  return monthKey(month) <= room.availableUntil;
+}
+
+function isSampleInventoryChecked(rowKey, item) {
+  var key = monthKey(item);
+  if (key === "2027-03") return true;
+  return rowKey === "aac" && key === "2026-12";
+}
+
+function renderInventoryTable() {
+  var columns = document.querySelector("[data-qp-inventory-columns]");
+  var head = document.querySelector("[data-qp-inventory-head]");
+  var body = document.querySelector("[data-qp-inventory-rows]");
+  if (!columns || !head || !body || body.children.length) return;
+
+  columns.appendChild(makeElement("col", "qp-inventory-room-column"));
+  INVENTORY_MONTHS.forEach(function () {
+    columns.appendChild(makeElement("col", "qp-inventory-month-column"));
+  });
+  columns.appendChild(makeElement("col", "qp-inventory-total-column"));
+
+  var yearRow = document.createElement("tr");
+  var roomHeader = makeElement("th", "", "房型");
+  roomHeader.scope = "col";
+  roomHeader.rowSpan = 2;
+  yearRow.appendChild(roomHeader);
+
+  [
+    { year: 2026, span: 5 },
+    { year: 2027, span: 9 },
+  ].forEach(function (year) {
+    var cell = makeElement("th", "", year.year + " 年");
+    cell.scope = "colgroup";
+    cell.colSpan = year.span;
+    cell.setAttribute("data-qp-inventory-year-header", "");
+    yearRow.appendChild(cell);
+  });
+
+  var totalHeader = makeElement("th", "", "總房數");
+  totalHeader.scope = "col";
+  totalHeader.rowSpan = 2;
+  yearRow.appendChild(totalHeader);
+  head.appendChild(yearRow);
+
+  var monthRow = document.createElement("tr");
+  INVENTORY_MONTHS.forEach(function (item, index) {
+    var cell = makeElement("th", index >= 12 ? "qp-inventory-extra-month" : "", item.month + "月");
+    cell.scope = "col";
+    cell.dataset.monthKey = monthKey(item);
+    cell.setAttribute("data-qp-inventory-month-header", "");
+    if (index >= 12) cell.setAttribute("data-qp-inventory-extra-month", "");
+    monthRow.appendChild(cell);
+  });
+  head.appendChild(monthRow);
+
+  var rows = [{ key: "all", name: "全部房型", batch: true }].concat(
+    INVENTORY_ROOMS.map(function (room) {
+      return { key: room.key, name: room.name, batch: false, room: room };
+    }),
+  );
+
+  rows.forEach(function (rowData) {
+    var row = document.createElement("tr");
+    var nameCell = makeElement("th");
+    nameCell.scope = "row";
+    nameCell.appendChild(makeElement("span", "qp-inventory-room-name", rowData.name));
+    if (rowData.batch) {
+      nameCell.appendChild(makeElement("span", "qp-inventory-batch-badge", "批次套用"));
+    }
+    row.appendChild(nameCell);
 
     INVENTORY_MONTHS.forEach(function (item) {
-      var cell = document.createElement("td");
-      var label = document.createElement("label");
-      var input = document.createElement("input");
-      var month = document.createElement("span");
-      input.type = "checkbox";
-      input.name = group + "-" + item.year + "-" + item.month;
-      input.setAttribute("aria-label", item.year + " 年 " + item.month + " 月");
-      month.className = "qp-month-name";
-      month.textContent = (MONTH_NAMES[item.month - 1] + "月").split("").join("\n");
-      label.appendChild(month);
-      label.appendChild(input);
-      cell.appendChild(label);
-      monthRow.appendChild(cell);
+      var key = monthKey(item);
+      var td = makeElement("td", "qp-inventory-cell");
+      var label = makeElement("label", "qp-inventory-cell-label");
+      var unavailable = rowData.batch
+        ? INVENTORY_ROOMS.some(function (room) {
+            return !roomIsAvailable(room, item);
+          })
+        : !roomIsAvailable(rowData.room, item);
+      var rowLabel = rowData.name + "，" + item.year + " 年 " + item.month + " 月";
+      var checkbox = makeCheckboxControl({
+        batch: rowData.batch,
+        room: rowData.batch ? "" : rowData.key,
+        monthKey: key,
+        name: "qp-inventory-" + rowData.key + "-" + key,
+        label: rowLabel,
+        disabled: unavailable,
+        checked: !unavailable && isSampleInventoryChecked(rowData.key, item),
+      });
+
+      td.dataset.monthKey = key;
+      if (unavailable) td.classList.add("is-disabled");
+      label.appendChild(checkbox.control);
+      td.appendChild(label);
+      row.appendChild(td);
     });
 
-    head.appendChild(yearRow);
-    body.appendChild(monthRow);
-    table.appendChild(head);
-    table.appendChild(body);
-    slot.appendChild(table);
+    var totalCell = makeElement("td", "qp-inventory-total-cell");
+    if (rowData.batch) {
+      var totalMark = makeElement("span", "qp-inventory-total-mark");
+      var totalIcon = document.createElement("img");
+      totalIcon.src = "./assets/icons/outline-minus.svg";
+      totalIcon.alt = "";
+      totalMark.setAttribute("data-qp-inventory-total-mark", "");
+      totalMark.appendChild(totalIcon);
+      totalCell.appendChild(totalMark);
+    } else {
+      var total = document.createElement("input");
+      total.className = "qp-inventory-total";
+      total.setAttribute("data-qp-inventory-total", "");
+      total.type = "number";
+      total.value = "999";
+      total.defaultValue = "999";
+      total.setAttribute("aria-label", rowData.name + "總房數");
+      totalCell.appendChild(total);
+    }
+    row.appendChild(totalCell);
+    body.appendChild(row);
   });
+
+  body.querySelectorAll("[data-qp-inventory-room]").forEach(function (roomInput) {
+    syncInventoryBatch(roomInput.dataset.monthKey);
+  });
+}
+
+function syncInventoryBatch(key) {
+  var table = document.querySelector(".qp-inventory-table");
+  if (!table) return;
+  var batch = Array.from(table.querySelectorAll("[data-qp-inventory-batch]"))
+    .find(function (input) {
+      return input.dataset.monthKey === key;
+    });
+  if (!batch || batch.disabled) return;
+  var rooms = Array.from(table.querySelectorAll("[data-qp-inventory-room]"))
+    .filter(function (input) {
+      return input.dataset.monthKey === key;
+    });
+  batch.checked = rooms.length > 0 && rooms.every(function (input) { return input.checked; });
+}
+
+function initInventorySync() {
+  var table = document.querySelector(".qp-inventory-table");
+  if (!table) return;
+  table.addEventListener("change", function (event) {
+    var input = event.target.closest("[data-qp-inventory-batch], [data-qp-inventory-room]");
+    if (!input) return;
+    var key = input.dataset.monthKey;
+    if (input.hasAttribute("data-qp-inventory-batch")) {
+      table.querySelectorAll("[data-qp-inventory-room]").forEach(function (roomInput) {
+        if (roomInput.dataset.monthKey === key) roomInput.checked = input.checked;
+      });
+    }
+    syncInventoryBatch(key);
+  });
+}
+
+function renderGroupLists(setValue) {
+  var root = document.getElementById("qpGroupLists");
+  var groups = GROUP_OPTIONS[setValue] || GROUP_OPTIONS["option 1"];
+  if (!root) return;
+  root.innerHTML = "";
+
+  groups.forEach(function (group, index) {
+    var key = "group-" + (index + 1);
+    var section = makeElement(
+      "section",
+      "qp-group-list" + (group.title ? " qp-group-list--titled" : ""),
+    );
+    section.dataset.qpGroupList = "";
+    section.dataset.qpGroupKey = key;
+
+    var header = makeElement("div", "qp-group-list-header");
+    if (group.title) {
+      var title = makeElement("h3", "qp-group-list-title", group.title);
+      header.appendChild(title);
+    } else {
+      header.appendChild(makeElement("span"));
+    }
+
+    var selectAllLabel = makeElement("label", "qp-group-select-all");
+    var selectAll = makeCheckboxControl({ groupKey: key, selectAll: true, label: "全選" });
+    selectAllLabel.appendChild(selectAll.control);
+    selectAllLabel.appendChild(makeElement("span", "", "全選"));
+    header.appendChild(selectAllLabel);
+    section.appendChild(header);
+
+    var itemList = makeElement("div", "qp-group-items");
+    group.items.forEach(function (item) {
+      var itemLabel = makeElement("label", "qp-group-item");
+      var itemCheckbox = makeCheckboxControl({
+        groupKey: key,
+        groupItem: true,
+        label: item,
+      });
+      itemLabel.appendChild(itemCheckbox.control);
+      itemLabel.appendChild(makeElement("span", "", item));
+      itemList.appendChild(itemLabel);
+    });
+    section.appendChild(itemList);
+    root.appendChild(section);
+  });
+}
+
+function resetGroupForm(optionValue) {
+  var form = document.getElementById("qpGroupForm");
+  if (!form) return;
+  var set = document.getElementById("qpGroupSet");
+  set.value = optionValue || "option 1";
+  form.classList.toggle("is-expanded", set.value !== "option 1");
+  document.getElementById("qpGroupTo").value = "0";
+  document.getElementById("qpGroupStartDate").value = "";
+  document.getElementById("qpGroupEndDate").value = "";
+  form.querySelectorAll('input[name="weekday"]').forEach(function (input) {
+    input.checked = false;
+  });
+  renderGroupLists(set.value);
+}
+
+function initGroupForm() {
+  var form = document.getElementById("qpGroupForm");
+  var set = document.getElementById("qpGroupSet");
+  var lists = document.getElementById("qpGroupLists");
+  if (!form || !set || !lists) return;
+
+  set.addEventListener("change", function () {
+    resetGroupForm(set.value);
+  });
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+  });
+
+  form.querySelector("[data-qp-group-clear]").addEventListener("click", function () {
+    resetGroupForm(set.value);
+  });
+
+  lists.addEventListener("change", function (event) {
+    var input = event.target.closest("[data-qp-group-select-all], [data-qp-group-item]");
+    if (!input) return;
+    var group = input.closest("[data-qp-group-list]");
+    if (!group) return;
+
+    if (input.hasAttribute("data-qp-group-select-all")) {
+      group.querySelectorAll("[data-qp-group-item]").forEach(function (item) {
+        item.checked = input.checked;
+      });
+      return;
+    }
+
+    var items = Array.from(group.querySelectorAll("[data-qp-group-item]"));
+    var selectAll = group.querySelector("[data-qp-group-select-all]");
+    selectAll.checked = items.length > 0 && items.every(function (item) { return item.checked; });
+  });
+
+  resetGroupForm("option 1");
 }
 
 function initInlineRates() {
@@ -230,6 +491,7 @@ function initDateRangePicker() {
 
       button.disabled = isOverflow || isPast;
       button.setAttribute("aria-pressed", isEndpoint || isMiddle ? "true" : "false");
+      button.setAttribute("aria-label", dateKey(date));
       if (!button.disabled) {
         button.addEventListener("click", function (event) {
           event.stopPropagation();
@@ -245,11 +507,32 @@ function initDateRangePicker() {
       var offset = Number(monthNode.dataset.qpCalendarMonth);
       renderMonth(monthNode, new Date(viewMonth.getFullYear(), viewMonth.getMonth() + offset, 1));
     });
+    if (!popover.hidden) positionPopover();
   }
 
   function close() {
     popover.hidden = true;
     trigger.setAttribute("aria-expanded", "false");
+  }
+
+  function positionPopover() {
+    var root = document.documentElement;
+    var rootStyle = window.getComputedStyle(root);
+    var gutter = parseFloat(rootStyle.getPropertyValue("--spacing-12")) || 12;
+    var gap = parseFloat(rootStyle.getPropertyValue("--spacing-8")) || 8;
+    var triggerRect = trigger.getBoundingClientRect();
+    var popoverRect = popover.getBoundingClientRect();
+    var maxLeft = Math.max(gutter, root.clientWidth - popoverRect.width - gutter);
+    var left = Math.min(Math.max(triggerRect.left, gutter), maxLeft);
+    var top = triggerRect.bottom + gap;
+    var maxTop = Math.max(gutter, root.clientHeight - popoverRect.height - gutter);
+
+    if (top > maxTop && triggerRect.top - popoverRect.height - gap >= gutter) {
+      top = triggerRect.top - popoverRect.height - gap;
+    }
+    top = Math.min(Math.max(top, gutter), maxTop);
+    popover.style.setProperty("--qp-calendar-left", Math.round(left) + "px");
+    popover.style.setProperty("--qp-calendar-top", Math.round(top) + "px");
   }
 
   trigger.addEventListener("click", function () {
@@ -275,6 +558,8 @@ function initDateRangePicker() {
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape" && !popover.hidden) close();
   });
+  window.addEventListener("resize", positionPopover);
+  window.addEventListener("scroll", positionPopover, true);
 
   render();
   return function resetCalendar() {
@@ -287,20 +572,39 @@ function initDateRangePicker() {
   };
 }
 
+function resetFilterDefaults(filter) {
+  if (!filter) return;
+  filter.querySelectorAll("select[data-qp-filter]").forEach(function (select) {
+    var defaultIndex = Array.from(select.options).findIndex(function (option) {
+      return option.defaultSelected;
+    });
+    select.selectedIndex = defaultIndex;
+  });
+}
+
 export function initQuantityPriceTable() {
   renderRateCells();
-  renderInventoryMonths();
+  renderInventoryTable();
+  initInventorySync();
+  initGroupForm();
   initInlineRates();
   var resetCalendar = initDateRangePicker();
   var filter = document.getElementById("qpFilterForm");
-  if (filter) filter.addEventListener("reset", resetCalendar);
+  if (filter) {
+    resetFilterDefaults(filter);
+    filter.addEventListener("reset", function (event) {
+      event.preventDefault();
+      resetFilterDefaults(filter);
+      resetCalendar();
+    });
+  }
 
   document.documentElement.dataset.qpReady = "true";
 
   return {
     beforeOpen: function (id) {
       if (id === "modalQuantityGroupBackdrop") {
-        document.getElementById("qpGroupForm").reset();
+        resetGroupForm("option 1");
       }
       if (id === "modalQuantityInventoryBackdrop") {
         document.getElementById("qpInventoryForm").reset();
