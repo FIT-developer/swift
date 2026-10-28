@@ -433,7 +433,7 @@
   cursor: pointer;
 }
 
-.qp-calendar-day:hover:not(:disabled) {
+.qp-calendar-day:where(:hover:not(:disabled)) {
   background: var(--color-neutral-75);
 }
 

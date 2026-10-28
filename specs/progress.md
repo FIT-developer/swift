@@ -7,6 +7,35 @@
 
 ---
 
+## Session 177: 數量價格表日期區間端點 hover 底色修正 (2026-10-28)
+
+### 本輪改動與原因
+
+- 使用者以 iPhone 截圖回報區間第二次點選後端點底色變淡、白字難辨。
+- Chrome 實際滑鼠反向選取 2/19 -> 2/4 重現相同畫面: 2/4 仍有藍框白字,
+  底色卻被 Neutral/75 的 hover 規則覆蓋。原 hover specificity 為 0-3-0,
+  高於 is-range-endpoint / is-range-middle / is-today 的 0-2-0。
+- 先補 page spec: hover 維持既有日期狀態底色與文字對比; CSS 使用
+  :where(:hover:not(:disabled)) 將 hover 規則降至 0-1-0, 讓狀態樣式優先。
+- 沿用既有 Bootstrap/components/focus、Accent/light-green、Accent/pink、
+  Neutral/75 與文字 token; 不新增設計值或全域規則, tokens.md / start.md 無變動。
+
+### 驗證與下一步
+
+- Chrome 在 375x812 模擬觸控、768x1024 / 1440x1000 實際滑鼠輸入驗證:
+  正向 / 反向、相鄰日期、今天作端點、跨月與第三次點擊重設均通過;
+  端點維持藍底白字, 中段 hover 維持綠底, 今日 hover 維持粉底。
+- 三個尺寸 popover 均位於 viewport 內, 頁面無水平溢出。
+- 11 張 PNG 存於 specs/qa-screenshots/session-177/, 含 1 張修正前重現圖;
+  已視覺核對 mobile / tablet / desktop 與今日端點、跨月代表圖。
+- fonts / conventions / tokens / partials lint 與 git diff --check exit 0;
+  token mirror 92 個 raw 值一致, partial manifest 10 頁 / 3 standalone。
+- 完整 browser smoke exit 0: 10 頁 / 139 項, 數量價格表 20 項通過。
+- localhost:8000 的 quantity-price-table.html 與 landing.html 均 HTTP 200。
+- 本輪 self-tested; 使用者後續明確要求 commit & push, 將 CSS 修正、page spec
+  與本筆交接一併提交。本輪進入 commit/push flow, 實際 SHA 與遠端狀態以
+  git history 為準。尚未在實機 iPhone Safari 驗證, 不將 Chrome QA 視為實機驗證。
+
 ## Session 176: 提交與推送數量價格表新版及驗收修正 (2026-10-28)
 
 ### 本輪改動與重要決定
