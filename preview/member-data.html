@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 會員資料</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body data-page="會員資料">
+    <div
+      id="rootWrap"
+      class="flex min-h-screen max-w-[1440px] flex-col gap-3 mx-auto p-3"
+    >
+      <div class="flex items-center justify-between md:hidden">
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
+        <button
+          id="mobileMenuBtn"
+          type="button"
+          class="cursor-pointer rounded-md p-1 opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="h-5 w-6" alt="" />
+        </button>
+      </div>
+
+      <div id="bodyArea" class="flex min-w-0 flex-1 flex-col gap-3 md:flex-row">
+        <div data-partial="aside"></div>
+
+        <div id="mainColumn" class="flex min-w-0 flex-1 flex-col gap-3">
+          <div data-partial="topbar"></div>
+
+          <main class="flex min-w-0 flex-1 flex-col">
+            <h1 class="member-page-visually-hidden">會員資料</h1>
+            <div class="member-page-content">
+              <form id="memberFilterForm" class="member-page-query-panel">
+                <div class="member-page-filter-grid">
+                  <section class="member-page-filter-column" aria-label="日期查詢">
+                    <div class="member-page-filter-row member-page-date-type-row">
+                      <span class="member-page-visually-hidden">日期類型</span>
+                      <div
+                        class="member-page-date-types"
+                        role="group"
+                        aria-label="日期類型"
+                      >
+                        <button
+                          type="button"
+                          class="member-page-date-type"
+                          data-member-date-type="createdAt"
+                          aria-pressed="false"
+                        >
+                          帳號建立日
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-date-type"
+                          data-member-date-type="bookingDate"
+                          aria-pressed="false"
+                        >
+                          訂房日
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-date-type"
+                          data-member-date-type="stayDate"
+                          aria-pressed="false"
+                        >
+                          住房日&#xFF08;入住人&#xFF09;
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-date-type"
+                          data-member-date-type="bookerCheckin"
+                          aria-pressed="false"
+                        >
+                          入住日&#xFF08;訂房人&#xFF09;
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-date-type"
+                          data-member-date-type="birthday"
+                          aria-pressed="false"
+                        >
+                          生日
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="member-page-date-range">
+                      <div class="member-page-date-input">
+                        <label class="member-page-visually-hidden" for="memberDateStart">開始日期</label>
+                        <input
+                          id="memberDateStart"
+                          class="member-page-control"
+                          type="text"
+                          name="dateStart"
+                          value="2026-02-27"
+                          readonly
+                        />
+                        <button
+                          type="button"
+                          class="member-page-date-picker"
+                          data-member-date-picker="dateStart"
+                          aria-label="開啟開始日期選擇器"
+                        >
+                          <img src="./assets/icons/calendar.svg" alt="" />
+                        </button>
+                      </div>
+                      <div class="member-page-date-input">
+                        <label class="member-page-visually-hidden" for="memberDateEnd">結束日期</label>
+                        <input
+                          id="memberDateEnd"
+                          class="member-page-control"
+                          type="text"
+                          name="dateEnd"
+                          value="2026-02-27"
+                          readonly
+                        />
+                        <button
+                          type="button"
+                          class="member-page-date-picker"
+                          data-member-date-picker="dateEnd"
+                          aria-label="開啟結束日期選擇器"
+                        >
+                          <img src="./assets/icons/calendar.svg" alt="" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="member-page-periods" aria-label="日期快速控制">
+                      <div class="member-page-period-group" data-member-period="today">
+                        <button
+                          type="button"
+                          class="member-page-period-step"
+                          data-member-period-step="-1"
+                          aria-label="上一個今日區間"
+                        >
+                          <img src="./assets/icons/left.svg" alt="" />
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-period-label"
+                          data-member-period-step="0"
+                        >
+                          今日
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-period-step"
+                          data-member-period-step="1"
+                          aria-label="下一個今日區間"
+                        >
+                          <img src="./assets/icons/right.svg" alt="" />
+                        </button>
+                      </div>
+                      <div class="member-page-period-group" data-member-period="week">
+                        <button
+                          type="button"
+                          class="member-page-period-step"
+                          data-member-period-step="-1"
+                          aria-label="上一週"
+                        >
+                          <img src="./assets/icons/left.svg" alt="" />
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-period-label"
+                          data-member-period-step="0"
+                        >
+                          本週
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-period-step"
+                          data-member-period-step="1"
+                          aria-label="下一週"
+                        >
+                          <img src="./assets/icons/right.svg" alt="" />
+                        </button>
+                      </div>
+                      <div class="member-page-period-group" data-member-period="month">
+                        <button
+                          type="button"
+                          class="member-page-period-step"
+                          data-member-period-step="-1"
+                          aria-label="上一個月"
+                        >
+                          <img src="./assets/icons/left.svg" alt="" />
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-period-label"
+                          data-member-period-step="0"
+                        >
+                          本月
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-period-step"
+                          data-member-period-step="1"
+                          aria-label="下一個月"
+                        >
+                          <img src="./assets/icons/right.svg" alt="" />
+                        </button>
+                      </div>
+                      <div class="member-page-period-group" data-member-period="year">
+                        <button
+                          type="button"
+                          class="member-page-period-step"
+                          data-member-period-step="-1"
+                          aria-label="上一年"
+                        >
+                          <img src="./assets/icons/left.svg" alt="" />
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-period-label"
+                          data-member-period-step="0"
+                        >
+                          今年
+                        </button>
+                        <button
+                          type="button"
+                          class="member-page-period-step"
+                          data-member-period-step="1"
+                          aria-label="下一年"
+                        >
+                          <img src="./assets/icons/right.svg" alt="" />
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="member-page-filter-column" aria-label="會員條件查詢">
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label" for="memberBranch">館別</label>
+                      <select class="member-page-control" id="memberBranch" name="branch">
+                        <option value="" selected>全部</option>
+                        <option value="旅宿 e 管家">旅宿 e 管家</option>
+                        <option value="分館 2">分館 2</option>
+                      </select>
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label" for="memberNationality">國籍</label>
+                      <select
+                        class="member-page-control"
+                        id="memberNationality"
+                        name="nationality"
+                      >
+                        <option value="" selected>全部</option>
+                        <option value="台灣">台灣</option>
+                        <option value="香港">香港</option>
+                        <option value="北港">北港</option>
+                        <option value="南港">南港</option>
+                        <option value="東港">東港</option>
+                        <option value="西港">西港</option>
+                      </select>
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label" for="memberIntegration">三方串接</label>
+                      <select
+                        class="member-page-control"
+                        id="memberIntegration"
+                        name="integration"
+                      >
+                        <option value="" selected>不限</option>
+                        <option value="Google">Google</option>
+                        <option value="Line">Line</option>
+                        <option value="Facebook">Facebook</option>
+                      </select>
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label" for="memberGender">性別</label>
+                      <select class="member-page-control" id="memberGender" name="gender">
+                        <option value="" selected>不限</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                        <option value="不願透露">其他</option>
+                      </select>
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label" for="memberContains">包含條件</label>
+                      <select class="member-page-control" id="memberContains" name="contains">
+                        <option value="" selected>無</option>
+                        <option value="email">Email</option>
+                        <option value="phone">行動電話</option>
+                        <option value="address">地址</option>
+                      </select>
+                    </div>
+                    <div class="member-page-field-row member-page-birthday-row">
+                      <span class="member-page-field-label">生日</span>
+                      <div class="member-page-birthday-controls">
+                        <label class="member-page-birthday-select">
+                          <span class="member-page-visually-hidden">生日月份</span>
+                          <select class="member-page-control" name="birthMonth">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                          </select>
+                          <span aria-hidden="true">月</span>
+                        </label>
+                        <label class="member-page-birthday-select">
+                          <span class="member-page-visually-hidden">生日日期</span>
+                          <select class="member-page-control" name="birthDay">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                          </select>
+                          <span aria-hidden="true">日</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label member-page-field-label--brand" for="memberName">名稱</label>
+                      <input
+                        class="member-page-control"
+                        id="memberName"
+                        type="text"
+                        name="name"
+                        placeholder="placeholder"
+                      />
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label member-page-field-label--brand" for="memberIdentity">證號</label>
+                      <input
+                        class="member-page-control"
+                        id="memberIdentity"
+                        type="text"
+                        name="identity"
+                        placeholder="placeholder"
+                      />
+                    </div>
+                  </section>
+
+                  <section class="member-page-filter-column" aria-label="聯絡資料與統計查詢">
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label member-page-field-label--brand" for="memberPhone">行動電話</label>
+                      <input
+                        class="member-page-control"
+                        id="memberPhone"
+                        type="text"
+                        name="phone"
+                        placeholder="placeholder"
+                      />
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label" for="memberEmail">Email</label>
+                      <input
+                        class="member-page-control"
+                        id="memberEmail"
+                        type="email"
+                        name="email"
+                        placeholder="placeholder"
+                      />
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label" for="memberAddress">地址</label>
+                      <input
+                        class="member-page-control"
+                        id="memberAddress"
+                        type="text"
+                        name="address"
+                        placeholder="placeholder"
+                      />
+                    </div>
+                    <div class="member-page-field-row">
+                      <label class="member-page-field-label" for="memberRemark">備註</label>
+                      <input
+                        class="member-page-control"
+                        id="memberRemark"
+                        type="text"
+                        name="remark"
+                        placeholder="placeholder"
+                      />
+                    </div>
+                    <div class="member-page-field-row member-page-range-row">
+                      <label class="member-page-field-label" for="memberAmountMin">消費額</label>
+                      <div class="member-page-number-range">
+                        <input
+                          class="member-page-control"
+                          id="memberAmountMin"
+                          type="number"
+                          name="amountMin"
+                          aria-label="消費額最低值"
+                          placeholder="placeholder"
+                        />
+                        <span aria-hidden="true">~</span>
+                        <input
+                          class="member-page-control"
+                          id="memberAmountMax"
+                          type="number"
+                          name="amountMax"
+                          aria-label="消費額最高值"
+                          placeholder="placeholder"
+                        />
+                      </div>
+                    </div>
+                    <div class="member-page-field-row member-page-range-row">
+                      <label class="member-page-field-label" for="memberBookingMin">訂房次數</label>
+                      <div class="member-page-number-range">
+                        <input
+                          class="member-page-control"
+                          id="memberBookingMin"
+                          type="number"
+                          name="bookingMin"
+                          aria-label="訂房次數最低值"
+                          placeholder="placeholder"
+                        />
+                        <span aria-hidden="true">~</span>
+                        <input
+                          class="member-page-control"
+                          id="memberBookingMax"
+                          type="number"
+                          name="bookingMax"
+                          aria-label="訂房次數最高值"
+                          placeholder="placeholder"
+                        />
+                      </div>
+                    </div>
+                    <div class="member-page-field-row member-page-range-row">
+                      <label class="member-page-field-label" for="memberStayMin">入住次數</label>
+                      <div class="member-page-number-range">
+                        <input
+                          class="member-page-control"
+                          id="memberStayMin"
+                          type="number"
+                          name="stayMin"
+                          aria-label="入住次數最低值"
+                          placeholder="placeholder"
+                        />
+                        <span aria-hidden="true">~</span>
+                        <input
+                          class="member-page-control"
+                          id="memberStayMax"
+                          type="number"
+                          name="stayMax"
+                          aria-label="入住次數最高值"
+                          placeholder="placeholder"
+                        />
+                      </div>
+                    </div>
+                  </section>
+                </div>
+
+                <div class="member-page-query-actions">
+                  <button
+                    type="button"
+                    class="member-page-query-button member-page-clear-filter"
+                    data-member-clear-filter
+                  >
+                    清除
+                  </button>
+                  <button type="submit" class="member-page-query-button member-page-submit-filter">
+                    查詢
+                  </button>
+                </div>
+              </form>
+
+              <section class="member-page-member-list" aria-label="會員清單">
+                <div class="member-page-status-tabs" role="group" aria-label="會員狀態">
+                  <button
+                    type="button"
+                    class="member-page-status-tab is-active"
+                    data-member-status="enabled"
+                    aria-pressed="true"
+                  >
+                    啟用<span data-member-status-count></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="member-page-status-tab"
+                    data-member-status="disabled"
+                    aria-pressed="false"
+                  >
+                    停用<span data-member-status-count></span>
+                  </button>
+                </div>
+
+                <div class="member-page-toolbar">
+                  <div class="member-page-toolbar-scroll" aria-label="鎖定狀態篩選">
+                    <div class="member-page-lock-filters" role="group" aria-label="鎖定狀態">
+                      <button
+                        type="button"
+                        class="member-page-filter-choice"
+                        data-member-lock-filter="all"
+                        aria-pressed="true"
+                      >
+                        <img src="./assets/icons/all-pages.svg" alt="" />
+                        全部
+                      </button>
+                      <button
+                        type="button"
+                        class="member-page-filter-choice"
+                        data-member-lock-filter="locked"
+                        aria-pressed="false"
+                      >
+                        <span class="member-page-filter-lock icon-mask icon-mask-lock" aria-hidden="true"></span>
+                        已鎖定
+                      </button>
+                      <button
+                        type="button"
+                        class="member-page-filter-choice"
+                        data-member-lock-filter="unlocked"
+                        aria-pressed="false"
+                      >
+                        <span class="member-page-filter-lock icon-mask icon-mask-unlock" aria-hidden="true"></span>
+                        未鎖定
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="member-page-toolbar-scroll" aria-label="清單顯示方式">
+                    <div class="member-page-display-controls" role="group" aria-label="顯示方式">
+                      <button
+                        type="button"
+                        class="member-page-display-button"
+                        data-member-display-toggle
+                        data-member-display="all"
+                        aria-pressed="true"
+                        aria-controls="memberTable memberPagination"
+                      >
+                        <img src="./assets/icons/all-pages.svg" alt="" data-member-display-icon />
+                        <span data-member-display-label>全部顯示</span>
+                      </button>
+                      <button
+                        type="button"
+                        class="member-page-display-button"
+                        data-member-download
+                      >
+                        <img src="./assets/icons/download.svg" alt="" />
+                        <span>下載</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="member-page-table-shell">
+                  <div
+                    class="member-page-table-scroll"
+                    role="region"
+                    aria-label="會員資料表格，可水平捲動"
+                    tabindex="0"
+                  >
+                    <table id="memberTable" class="member-page-table" aria-label="會員資料">
+                      <colgroup id="memberTableCols"></colgroup>
+                      <thead id="memberTableHead"></thead>
+                      <tbody id="memberTableBody"></tbody>
+                    </table>
+                  </div>
+
+                  <div id="memberBatchFooter" class="member-page-batch-footer" hidden>
+                    <span class="member-page-selected-label" data-member-selected-label>
+                      已選取 0 筆
+                    </span>
+                    <div class="member-page-batch-actions">
+                      <button
+                        type="button"
+                        class="member-page-batch-button member-page-batch-lock"
+                        data-member-batch-lock
+                        disabled
+                      >
+                        <img src="./assets/icons/lock.svg" alt="" />
+                        <span>鎖定</span>
+                        <span data-member-batch-count>0</span>
+                        <span>筆</span>
+                      </button>
+                      <button
+                        type="button"
+                        class="member-page-batch-button member-page-batch-unlock"
+                        data-member-batch-unlock
+                        disabled
+                      >
+                        <img src="./assets/icons/unlock.svg" alt="" />
+                        <span>解鎖</span>
+                        <span data-member-batch-count>0</span>
+                        <span>筆</span>
+                      </button>
+                      <button
+                        type="button"
+                        class="member-page-batch-clear"
+                        data-member-clear-selection
+                      >
+                        清除選取
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <nav id="memberPagination" class="member-page-pagination" aria-label="會員資料分頁" hidden>
+                  <button
+                    type="button"
+                    class="member-page-pagination-button"
+                    data-member-page="prev"
+                    aria-label="上一頁"
+                    disabled
+                  >
+                    <img src="./assets/icons/arrow-left.svg" alt="" />
+                  </button>
+                  <span class="member-page-pagination-label" data-member-page-label>1</span>
+                  <button
+                    type="button"
+                    class="member-page-pagination-button"
+                    data-member-page="next"
+                    aria-label="下一頁"
+                    disabled
+                  >
+                    <img src="./assets/icons/arrow-right.svg" alt="" />
+                  </button>
+                </nav>
+              </section>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="mobileSidebarBackdrop"
+      class="mobile-sidebar-backdrop md:hidden"
+      aria-hidden="true"
+    ></div>
+    <div data-partial="session-modals"></div>
+    <div data-partial="topbar-modals"></div>
+    <div data-partial="member-data-modal"></div>
+
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
+      import { createModalController } from "./js/modal-controller.js";
+      import { initMemberDataModal } from "./js/member-data-modal.js";
+      import { initMemberDataPage } from "./js/member-data.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
+
+      await loadPartials();
+      initPageShell();
+      initPageTabs();
+      const modalApi = createModalController();
+      initMemberDataModal(modalApi);
+      initMemberDataPage({ modalApi });
+      initTopbarModals();
+    </script>
+  </body>
+</html>

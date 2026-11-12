@@ -249,6 +249,16 @@
 | Color/Chart/purpleRed | `#FF0BD6` | 圖表紫紅色資料系列（折線圖） |
 | Color/Chart/green | `#34C759` | 圖表綠色資料系列（與 Accent/Green 同值，語意獨立） |
 
+### Libraries token outside the Color namespace
+
+> Source: Figma Libraries screenshot and node `2772:109611` JSON/SVG,
+> confirmed 2026-11-12. This path is outside the local Semantic export and is
+> recorded as a narrow source subset without inventing a Semantic variable ID.
+
+| Variable path | Hex value | Usage |
+|---|---|---|
+| Background/Danger/Default | `#EC221F` | Delete personal data button background, opaque 100%. Keep distinct from `Color/Surface/Status-Negative` (`#E12129`). |
+
 ---
 
 ## 間距 (Spacing)

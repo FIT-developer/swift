@@ -133,6 +133,10 @@
   --color-surface-status-positive: #2aca18;
   --color-surface-action-default:  #005fcc;
 
+  /* Figma Libraries path Background/Danger/Default, confirmed 2026-11-12.
+     This path is outside the local Semantic Color namespace. */
+  --background-danger-default: #ec221f;
+
   /* Color/Border */
   --color-border-default:        var(--color-neutral-100);
   --color-border-focus:          var(--color-neutral-300);

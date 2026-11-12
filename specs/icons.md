@@ -120,6 +120,7 @@
 | security | assets/icons/security.svg | 24x24 | 安全性/權限保護 | icons/security |
 | service | assets/icons/service.svg | 24×24 | 客服 | icons/service |
 | single-symbol-warning | assets/icons/single-symbol-warning.svg | 24x24 | 警告（單一符號，語意橙）見色彩語意表 | icons/single-symbol-warning |
+| sort-alt-2 | assets/icons/sort-alt-2.svg | 24x24 | 會員資料 table 欄位排序, source node 2772:110132, exported 2026-11-12 | icons/sort-alt-2 |
 | split-page | assets/icons/split-page.svg | 24x25 | 分頁 / 拆分頁面 | icons/split-page |
 | star | assets/icons/star.svg | 20x20 | 星號/收藏 | icons/star |
 | submit | assets/icons/submit.svg | 15×16 | 送出 ⚠️ fill #2178CF（藍色，建議改 currentColor） | icons/submit |

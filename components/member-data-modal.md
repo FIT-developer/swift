@@ -1,5 +1,27 @@
 # 會員資料 Modal
 
+## Current reuse (2026-11-12)
+
+- Shared markup: preview/partials/member-data-modal.html, including the member
+  modal and its change-contract-company child modal.
+- Consumers: room-booking.html, order-processing.html, member-data.html.
+- User explicitly requested the member-management name entry to reuse the same
+  expansion as the room-booking name row. Existing demo content and handlers
+  are retained; no new per-record backend binding is introduced.
+- The move preserves IDs, data-no-dismiss, all header/footer close controls,
+  the member clear/noop action, and the shared nested-modal controller.
+- Binding audit: data-data-exists-trigger and data-change-contract-company-trigger
+  document delegates; nation radio/address variants; gender/honorific radios;
+  member-status panels; booking title chips and filter tabs all retain
+  initMemberDataModal. Native details retains the booking-record accordion.
+- Member header close and footer modify close the parent; footer clear keeps it
+  open. Child header close, cancel, and confirm close only the child.
+- Runtime markup has data-no-dismiss on both modals, so backdrop and Escape do
+  not dismiss them. Close using the explicit header/footer controls.
+- Member-data parent follows the existing large-content modal RWD rule:
+  below 640px the outer modal fills the viewport. The 320px contract-company
+  child retains its existing centered sizing.
+
 Figma source：
 - Main modal（基本態）`Order condition` `1763:42341`，1140x1823，bg `#f6fafd`
 - Main modal（多分館態）`Order condition` `1790:66210`，1140x1823，bg `#f6fafd`（**0528 實作採用本態作為 default content**）
@@ -168,7 +190,8 @@ Modal (320x169, bg #ffffff, radius?)
 2. **內容 default**：採用「多分館態 #2」(`1790:66210`)，展示完整 chip 集合
 3. **會員身份 tabs**：default 選「合約」；選「一般」內容區空白；選「會員」（待 spec）
 4. **公司名稱 edit button**：click -> 開啟 sub modal `更換合約公司`，sub modal 不蓋掉 main modal
-5. **close**：close icon / outside click / Esc（依專案 modal 慣例）
+5. **close**: Header close icon / footer modify close the member modal.
+   Both parent and child have data-no-dismiss; backdrop / Escape keep them open.
 6. **footer 修改**：點擊 = 關閉 modal（preview 階段無 backend 串接；未來補 submit 邏輯後仍 close）
 7. **footer 清除**：點擊不關 modal；reset 欄位（preview 階段 noop，待 form binding）
 

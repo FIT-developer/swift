@@ -7,6 +7,156 @@
 
 ---
 
+## Session 181: 提交與推送會員資料頁及月曆展示調整 (2026-11-12)
+
+### 本輪改動與重要決定
+
+- 使用者明確要求 commit & push, 將 Session178 至 180 的讀取 contract,
+  會員資料頁實作, 驗收更正與交接紀錄一併納入.
+- 提交範圍包含新頁 HTML / domain CSS / state / demo / DOM modules,
+  共用會員資料 modal partial 與原房間預定 / 訂單處理掛載點,
+  navigation / page-tabs, sort-alt-2.svg, Libraries Danger token,
+  lint / smoke, 元件規格 / page spec / token 與 icon registry / progress.
+- 月曆維持 readonly 日期欄位與原稿 icon / layout, 不接原生 picker 或日期套件;
+  共用月曆程式與正式會員 API / 業務查詢仍由後端接線.
+- 本輪進入 commit/push flow, 實際 SHA 與遠端狀態以 git history 為準.
+
+### 驗證與後續
+
+- 提交前 git fetch origin 成功, main 與 origin/main ahead / behind 為 0 / 0.
+- 沿用 Session180 最新完整 Chrome smoke exit 0: 11 頁 / 154 項,
+  會員資料 15 項, 以及 375 / 768 / 1440 月曆展示截圖與操作驗證.
+  本輪只更新提交授權與交接 metadata, 未再修改產品行為.
+- 提交範圍經 staged diff 核對, 提交前執行四項 lint 與 whitespace check,
+  pre-commit hook 再次檢查; 推送後核對工作樹與 origin/main 一致.
+- tokens.md 已包含本次 Libraries 單筆來源; 無新增全域規則, start.md 不需修改.
+- 後續依使用者指定進行下一個畫面, 未定義的後端流程維持原確認範圍.
+
+## Session 180: 會員資料月曆保留 UI layout, 共用程式交後端 (2026-11-12)
+
+### 本輪改動與重要決定
+
+- 使用者回饋其餘內容大致核對一致, 月曆先不接日期程式,
+  後續由後端搬入既有共用月曆樣式與程式碼.
+- 先更新 member-data page spec, 再將兩個日期欄位改為 readonly text,
+  保留原稿 YYYY-MM-DD 展示, calendar.svg, 欄位與快捷控制的 layout.
+  移除 showPicker / input.click 的原生 picker handler 及不再使用的 indicator CSS.
+- 先前確認的快捷日期填值, 日期類型單選, 假資料查詢及清除示範保留.
+  其他 table 狀態與批次行為未變動; 不新增月曆彈層或日期套件.
+- 無新增 token, icon 或全域開發規則, tokens.md / start.md 不需新增內容.
+
+### 驗證與下一步
+
+- Chrome 375 / 768 / 1440 實測兩個日期欄位皆為 readonly text / 高 36px,
+  trusted click 兩個月曆圖示均未呼叫 picker, 日期與圖示排版保留.
+  快捷今日填入 ISO 日期, 清除回 2026-02-27 / 20 筆結果, 頁面水平溢出為 0.
+- 3 張 PNG 與 calendar-layout-probes.json 存於
+  specs/qa-screenshots/session-180/, 已核對 mobile / tablet / desktop.
+- JS syntax, fonts / conventions / tokens / partials lint 與 git diff --check exit 0,
+  token mirror 93 個 raw 值, manifest 11 頁 / 3 standalone.
+- 完整 browser smoke exit 0: 11 頁 / 154 項, 會員資料 15 項.
+  member-data.html 與 landing.html 的 localhost:8000 預覽皆 HTTP 200.
+- 本輪 self-tested, 下一步為本次月曆展示調整驗收;
+  正式月曆接線與共用樣式由後端處理.
+
+## Session 179: 會員資料主頁實作與共用會員資料彈窗接線 (2026-11-12)
+
+### 本輪改動與重要決定
+
+- 使用者明確授權開始實作, 並同意沿用既有管理頁的 shared shell / RWD /
+  demo 預設, 分頁, 排序與清除慣例. 查詢依容器可用寬度堆疊,
+  table 原生水平捲動; 頁殼採共用 12px padding / gap.
+- 名稱旁入口依使用者指定, 沿用房間預定王大頭先生旁按鈕的會員資料內容.
+  將會員資料與更換合約公司 HTML 抽為 member-data-modal.html,
+  掛回房間預定 / 訂單處理並用於會員資料新頁, 保留 IDs 與所有原有 bindings.
+- 新增會員資料原生 state / demo / DOM modules; demo 為 20 筆啟用,
+  2 筆停用, 啟用資料含 18 筆未鎖定 / 2 筆已鎖定, 便於測跨分頁全選.
+- 新增精確 sort-alt-2.svg 匯出及 registry; 單筆補同步 Libraries
+  Background/Danger/Default -> --background-danger-default, 不替換近似色.
+  Token mirror lint 納入 Background 路徑, 原有 Color 檢查保留.
+- 新增獨立 member-data.html 與 domain CSS, 接至 page-tabs / sidebar,
+  並登記 partial manifest 與 smoke. 不新增全域開發規則, start.md 維持原樣.
+- 使用者驗看中更正顯示控制: 全部顯示 / 分頁為同一顆交換按鈕的兩種狀態,
+  圖面是示意, 不得並排兩顆. 同步改為單一 DOM button, icon / 文案 /
+  aria-pressed 隨模式更新; 交換後仍保留跨頁選取.
+
+### 驗證與下一步
+
+- State module 暫存 Node 檢查涵蓋跨頁選取, 混合鎖定, 鎖定後保留勾選與重算,
+  查詢 / 篩選清除選取及 disabled mutation guard.
+- Token lint 93 個 raw token 一致, 並測正確映射 / 缺值 / 錯值 / alias 四個 fixture.
+- Fonts / conventions / tokens / partials lint 與 git diff --check exit 0;
+  partial manifest 11 頁 / 3 standalone. 新增 JS modules syntax 檢查通過.
+- Chrome 完整 smoke 最後串行執行 exit 0: 11 頁 / 154 項, 會員資料 15 項.
+  覆蓋單顆顯示交換按鈕, enabled / locked 獨立狀態, disabled guards,
+  跨頁選取與三態 checkbox, 混合鎖定重算, 查詢 / 篩選及共用 modal.
+- 曾出現歷史 Session175 同樣的專案內容 switch / photo close 兩項間歇失敗.
+  保留原檢查, 依相同前置操作作獨立量測: baseline 與 disabled track 皆為
+  rgba(60, 60, 67, 0.3), checked 為 rgb(52, 199, 89), 未重現.
+  最後全站串行檢查通過原有 23 項專案內容測試; 未修改該頁產品或測試邏輯.
+- 360 / 375 / 600 / 768 / 900 / 1024 / 1200 / 1440 寬度頁面水平溢出皆為 0.
+  量測 table 1974 寬, header 40 / row 110 高, 字體 16px, 日期按鈕 36 高 / 12px.
+  375 / 768 / 1440 核對一般, 批次五態, 鎖定後保留選取, table 右側,
+  footer 操作及父子 modal; 36 張 PNG 與量測 JSON 存於
+  specs/qa-screenshots/session-179/.
+- 實際 Chrome 操作驗證日期 picker, 今日 / 本週 / 本月 / 今年,
+  帳號建立日查詢 1 筆與清除回 20 筆, keyboard focus-visible,
+  刪除確認 cancel / accept, 分頁 5 筆時 CSV 仍輸出全部搜尋結果 20 筆.
+- 搬移 modal 的每顆 header / footer 按鈕逐一檢查; 子層關閉後父層保持開啟,
+  body scroll 保持鎖定. 父層小於 640px 沿用共用滿版規則,
+  子層仍置中 320px. 修正 spec 舊 outside / Escape 關閉文字以符合 data-no-dismiss.
+- 獨立 review 後補強 disabled 箭頭的 delegated click guard, switch keyboard
+  focus ring, 狀態篩選 role=group / aria-pressed; 不使用未實作 keyboard 的 tablist.
+- member-data.html 與 landing.html 的 localhost:8000 預覽均 HTTP 200.
+  本輪 self-tested, 待使用者驗收. 下一步先收使用者對本頁的回饋.
+- 正式後端會員讀寫 / 刪除與未定義業務查詢仍待串接;
+  名稱入口依指定複用既有 demo modal, 尚未綁定各列真實會員資料.
+
+## Session 178: 會員資料主頁與五張 table 狀態讀取及交互確認 (2026-11-12)
+
+### 本輪改動與重要決定
+
+- 新增 specs/pages/member-data.md, 保存主頁 2754:110881 與五張 table
+  2772:110126 / 2770:106042 / 2770:106609 / 2772:108749 / 2772:109157
+  的來源, 尺寸, children checklist, 桌面結構, 視覺與已確認交互.
+  狀態為 reading-in-progress / partial-confirmed, 尚未開始產品實作.
+- 日期類型按鈕預設全部不選, 單選; 查詢生日展示值改為 1 月 1 日,
+  使用者明確要求這一處直接採口述更正, 不重讀.日期 / 查詢 / 清除 / 統計
+  之後可用假資料做基本操作; 消費額與訂房金額的業務對應交給後端.
+- 啟用 / 停用操作互換, 依即時資料分類與統計, 同其他管理頁.
+  已鎖定會員的啟用 / 停用及刪除個資操作都 disabled, 含 Lucy 的啟用態.
+- 批次模式加入 checkbox, 將逐列 toggle 換成狀態圖示;
+  名稱旁入口, 啟用 / 停用與刪除個資全部 disabled.
+  排序, 查詢, 篩選與分頁仍可操作.
+- 全選跨分頁並包含所有搜尋結果; 換頁 / 排序保留勾選,
+  重新查詢 / 切換篩選清空勾選, 維持批次模式.
+- 底部鎖定 / 解鎖只改變已選項目的鎖定狀態, 操作後保留勾選及批次模式,
+  兩個 N 依選取集合目前的未鎖定 / 已鎖定數即時更新.
+  使用者否決操作後清空勾選的建議, 不得沿用該建議.
+- 清除選取只取消勾選; 結束批次取消勾選並回一般模式.
+  刪除個資未設計專用彈窗, 後續採 Yes / No 詢問, 正式刪除由後端實作.
+- 會員資料頁浮動 AI 客服 icon 2754:110382 已棄用, 使用者要求不施作.
+- Libraries 截圖確認刪除個資綁定 Background/Danger/Default;
+  當前節點與 SVG 的渲染值為 #EC221F / 100%, 本地 token 尚缺.
+  不需為單筆整批重匯, 不改成近似 #E12129, 實作前補同步這筆來源.
+
+### 驗證與下一步
+
+- 主頁讀取 JSON / PNG, table 五態另核對完整 PNG / SVG;
+  主頁內嵌表與獨立一般表結構, 文字, styles 相同,
+  後者補足主頁被裁切的右側欄位視覺.
+- 已核對部分選取的表頭橫線, 全選藍底, 15 欄整列反灰,
+  操作灰底及 0 / 2 / 3 / 20 筆展示下的鎖定 / 解鎖計數.
+  全選 20 筆的範圍超過畫面 6 筆, 不將展示總數誤判為矛盾.
+- 本輪只保存已確認讀取 contract 與交接, 沒有修改 HTML / CSS / JS,
+  不將文件檢查當作產品 self-test. tokens.md / start.md 未修改.
+- 文件檢查: conventions lint 與 whitespace diff exit 0;
+  新增內容 ASCII 標點檢查通過, 6 個來源的 id / 名稱 / 尺寸與讀取資料一致,
+  本地 Markdown 連結均可解析. 未執行產品 browser smoke.
+- 下一步依使用者指定繼續讀取會員資料頁其他畫面.
+  名稱旁入口目的, mobile / tablet, 查詢細節, 排序 / 分頁 / 下載及
+  未定義狀態保留待續; 實作前須做舊規格 / HTML 差異 checkpoint.
+
 ## Session 177: 數量價格表日期區間端點 hover 底色修正 (2026-10-28)
 
 ### 本輪改動與原因

@@ -10,6 +10,10 @@ export function initMemberDataModal(modalApi) {
       "[data-data-exists-trigger]",
     );
     if (dataExistsTrigger) {
+      if (
+        dataExistsTrigger.disabled ||
+        dataExistsTrigger.getAttribute("aria-disabled") === "true"
+      ) return;
       e.preventDefault();
       openModal("modalMemberDataBackdrop", dataExistsTrigger);
       return;

@@ -785,6 +785,7 @@
   #modalRoomTypePhotoGalleryBackdrop,
   #modalQuantityGroupBackdrop,
   #modalQuantityInventoryBackdrop,
+  #modalMemberDataBackdrop,
   #modalQuantityPriceDetailBackdrop {
     align-items: stretch;
     justify-content: stretch;
@@ -806,6 +807,7 @@
   #modalRoomTypePhotoGalleryBackdrop .modal-box,
   #modalQuantityGroupBackdrop .modal-box,
   #modalQuantityInventoryBackdrop .modal-box,
+  #modalMemberDataBackdrop .modal-box,
   #modalQuantityPriceDetailBackdrop .modal-box {
     width: 100%;
     max-width: 100%;

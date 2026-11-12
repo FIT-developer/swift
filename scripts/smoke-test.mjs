@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Browser smoke test - 驗證三頁在真實瀏覽器中「載得起來、基本互動活著」
+// Browser smoke test - 驗證 app pages 在真實瀏覽器中載入並具備基本互動
 //
 // 涵蓋（規範來源 start.md 產出驗證 + specs/page-architecture.md）:
 //   - 三頁載入 console 無 error（含 partial fetch 失敗、JS exception）
@@ -209,7 +209,7 @@ window.__smoke = {
 true;
 `;
 
-// --- 三頁的 ready 條件與檢查項 ---
+// --- app pages 的 ready 條件與檢查項 ---
 // expr 回傳 true = pass；回傳字串 = fail 原因
 const SESSION_MODAL_CHECKS = [
   {
@@ -261,7 +261,8 @@ const APP_CSS_LOADED_CHECK = {
         "purchase-addon.css",
         "project-content.css",
         "project-content-wizard.css",
-        "quantity-price-table.css"
+        "quantity-price-table.css",
+        "member-data.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -297,6 +298,677 @@ const APP_CSS_LOADED_CHECK = {
     })()
   `,
 };
+
+const MEMBER_DATA_CHECKS = [
+  {
+    name: "member-data defaults, sort asset, locked actions, and retired AI float",
+    expr: `
+      (function () {
+        var q = function (selector) { return document.querySelector(selector); };
+        var table = document.getElementById("memberTable");
+        var body = document.getElementById("memberTableBody");
+        if (!table || !body) return "member table elements missing";
+        if (table.classList.contains("is-batch")) return "batch mode should start off";
+        if (body.querySelectorAll("tr[data-member-row]").length !== 20)
+          return "default enabled row count: " + body.querySelectorAll("tr[data-member-row]").length;
+
+        function statusCount(status) {
+          var button = q('[data-member-status="' + status + '"]');
+          var value = button && button.querySelector("[data-member-status-count]");
+          var match = value && value.textContent.match(/\\d+/);
+          return match ? Number(match[0]) : NaN;
+        }
+        if (statusCount("enabled") !== 20 || statusCount("disabled") !== 2)
+          return "initial status counts: " + statusCount("enabled") + "/" + statusCount("disabled");
+
+        var displayToggles = document.querySelectorAll("[data-member-display-toggle]");
+        if (displayToggles.length !== 1) return "display exchange control count: " + displayToggles.length;
+        var displayToggle = displayToggles[0];
+        if (displayToggle.hidden || displayToggle.getClientRects().length === 0)
+          return "the single display exchange control should be visible";
+        var displayIcon = displayToggle.querySelector("[data-member-display-icon]");
+        var displayLabel = displayToggle.querySelector("[data-member-display-label]");
+        if (displayToggle.dataset.memberDisplay !== "all" || displayToggle.getAttribute("aria-pressed") !== "true")
+          return "display exchange control should start in all mode";
+        if (document.querySelector(
+          '[data-member-display="all"]:not([data-member-display-toggle]), ' +
+          '[data-member-display="paged"]:not([data-member-display-toggle])'
+        ))
+          return "legacy separate display controls should not be present";
+        if (!displayIcon || !displayIcon.src.endsWith("all-pages.svg") ||
+            !displayLabel || !displayLabel.textContent.includes("全部顯示") ||
+            !displayLabel.textContent.includes("20"))
+          return "initial all-mode display icon/label mismatch";
+
+        var sortButton = q('[data-member-sort="name"]');
+        var sortIcon = sortButton && sortButton.querySelector('img[src$="sort-alt-2.svg"]');
+        if (!sortIcon || !sortIcon.complete || sortIcon.naturalWidth < 1)
+          return "initial sort-alt-2.svg asset missing or unloaded";
+
+        var lockedSwitch = q('input[data-member-row-lock="member-007"]');
+        var lockedAction = q('button[data-member-row-enable="member-007"]');
+        var lockedDelete = q('button[data-member-row-delete="member-007"]');
+        var dataArrow = q('[data-data-exists-trigger][data-member-record="member-007"]');
+        if (!lockedSwitch || !lockedSwitch.checked) return "member-007 should start locked";
+        if (!lockedAction || !lockedAction.disabled) return "locked enable/disable action should be disabled";
+        if (!lockedDelete || !lockedDelete.disabled) return "locked personal-delete action should be disabled";
+        if (!dataArrow || dataArrow.disabled) return "locked member data arrow should remain enabled";
+
+        var beforeCounts = statusCount("enabled") + "/" + statusCount("disabled");
+        lockedAction.click();
+        lockedDelete.click();
+        if (beforeCounts !== statusCount("enabled") + "/" + statusCount("disabled"))
+          return "disabled locked-member actions changed member status";
+
+        var explicitFloatMarkers = document.querySelectorAll(
+          "#floatIconsAi, [data-float-icons-ai], [data-ai-float], .float-icons-ai"
+        );
+        if (explicitFloatMarkers.length) return "retired AI floating control is present";
+        var labeledControls = Array.from(document.querySelectorAll("button, a, [role=button], img"));
+        var floatingAi = labeledControls.find(function (node) {
+          var description = [
+            node.getAttribute("aria-label"),
+            node.getAttribute("alt"),
+            node.getAttribute("title"),
+            node.getAttribute("src"),
+            node.textContent,
+          ].filter(Boolean).join(" ");
+          if (!/(^|[^A-Za-z])ai([^A-Za-z]|$)|bot/i.test(description)) return false;
+          for (var ancestor = node; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
+            if (getComputedStyle(ancestor).position === "fixed") return true;
+          }
+          return false;
+        });
+        if (floatingAi) return "fixed AI control is present: " + floatingAi.tagName;
+        return true;
+      })()
+    `,
+  },
+  {
+    name: "row status and lock switches update independently",
+    expr: `
+      (async function () {
+        var q = function (selector) { return document.querySelector(selector); };
+        var settle = function () { return new Promise(function (resolve) { requestAnimationFrame(resolve); }); };
+        function statusCount(status) {
+          var button = q('[data-member-status="' + status + '"]');
+          var value = button && button.querySelector("[data-member-status-count]");
+          var match = value && value.textContent.match(/\\d+/);
+          return match ? Number(match[0]) : NaN;
+        }
+        function hasVisibleRow(id) {
+          var input = q('input[data-member-row-lock="' + id + '"]');
+          var row = input && input.closest("tr");
+          return !!row && !row.hidden && getComputedStyle(row).display !== "none";
+        }
+        function activateLockFilter(mode) {
+          var control = q('[data-member-lock-filter="' + mode + '"]');
+          if (!control) return false;
+          control.click();
+          return true;
+        }
+
+        if (statusCount("enabled") !== 20 || statusCount("disabled") !== 2)
+          return "status totals before row changes are incorrect";
+        var enableButton = q('button[data-member-row-enable="member-001"]');
+        if (!enableButton || enableButton.disabled) return "unlocked member-001 action should be enabled";
+        enableButton.click();
+        await settle();
+        if (statusCount("enabled") !== 19 || statusCount("disabled") !== 3)
+          return "disabling member-001 did not update totals";
+        if (hasVisibleRow("member-001")) return "disabled member-001 remained in enabled results";
+
+        var disabledTab = q('[data-member-status="disabled"]');
+        if (!disabledTab) return "disabled status tab missing";
+        disabledTab.click();
+        await settle();
+        if (!hasVisibleRow("member-001")) return "disabled member-001 missing from disabled results";
+        enableButton = q('button[data-member-row-enable="member-001"]');
+        if (!enableButton || enableButton.disabled) return "unlocked member-001 could not be re-enabled";
+        enableButton.click();
+        await settle();
+        if (statusCount("enabled") !== 20 || statusCount("disabled") !== 2)
+          return "re-enabling member-001 did not restore totals";
+
+        var enabledTab = q('[data-member-status="enabled"]');
+        if (!enabledTab) return "enabled status tab missing";
+        enabledTab.click();
+        await settle();
+        var lockSwitch = q('input[data-member-row-lock="member-001"]');
+        if (!lockSwitch || lockSwitch.checked) return "member-001 should start this check unlocked";
+        lockSwitch.click();
+        await settle();
+        lockSwitch = q('input[data-member-row-lock="member-001"]');
+        if (!lockSwitch || !lockSwitch.checked) return "member-001 lock switch did not turn on";
+        if (statusCount("enabled") !== 20 || statusCount("disabled") !== 2)
+          return "locking member-001 changed enabled status totals";
+
+        if (!activateLockFilter("locked")) return "locked filter missing";
+        await settle();
+        if (!hasVisibleRow("member-001")) return "locked filter omitted member-001";
+        if (!activateLockFilter("unlocked")) return "unlocked filter missing";
+        await settle();
+        if (hasVisibleRow("member-001")) return "unlocked filter retained locked member-001";
+        if (!activateLockFilter("all")) return "all lock filter missing";
+        await settle();
+        lockSwitch = q('input[data-member-row-lock="member-001"]');
+        if (!lockSwitch || !lockSwitch.checked) return "member-001 missing before restoring lock state";
+        lockSwitch.click();
+        await settle();
+        lockSwitch = q('input[data-member-row-lock="member-001"]');
+        if (!lockSwitch || lockSwitch.checked) return "member-001 lock switch did not turn off";
+        return true;
+      })()
+    `,
+  },
+  {
+    name: "mixed batch selection, disabled row controls, and retained lock counts",
+    expr: `
+      (async function () {
+        var q = function (selector) { return document.querySelector(selector); };
+        var settle = function () { return new Promise(function (resolve) { requestAnimationFrame(resolve); }); };
+        var table = document.getElementById("memberTable");
+        async function resetView() {
+          if (table.classList.contains("is-batch")) {
+            q("[data-member-clear-selection]").click();
+            q("[data-member-batch-toggle]").click();
+          }
+          q("[data-member-clear-filter]").click();
+          q('[data-member-status="enabled"]').click();
+          q('[data-member-lock-filter="all"]').click();
+          var displayToggle = q("[data-member-display-toggle]");
+          if (displayToggle && displayToggle.dataset.memberDisplay !== "all") displayToggle.click();
+          await settle();
+        }
+        await resetView();
+        function batchCount(action) {
+          var button = q('[data-member-batch-' + action + ']');
+          var value = button && button.querySelector("[data-member-batch-count]");
+          return value ? Number(value.textContent.trim()) : NaN;
+        }
+        function selectedCount() {
+          var label = q("[data-member-selected-label]");
+          var match = label && label.textContent.match(/\\d+/);
+          return match ? Number(match[0]) : NaN;
+        }
+        function select(id) {
+          var input = q('input[data-member-select-row="' + id + '"]');
+          if (!input) return false;
+          input.click();
+          return true;
+        }
+        function appearance(element) {
+          var style = getComputedStyle(element);
+          return [style.backgroundColor, style.backgroundImage, style.color, style.opacity, style.filter].join("|");
+        }
+
+        var normalEnable = q('button[data-member-row-enable="member-001"]');
+        var normalDelete = q('button[data-member-row-delete="member-001"]');
+        if (!normalEnable || !normalDelete) return "member-001 row actions missing";
+        var normalEnableAppearance = appearance(normalEnable);
+        var normalDeleteAppearance = appearance(normalDelete);
+        q("[data-member-batch-toggle]").click();
+        await settle();
+        if (!table.classList.contains("is-batch")) return "batch mode did not start";
+        if (q('input[data-member-row-lock="member-001"]')) return "row lock switch remained in batch mode";
+
+        var batchEnable = q('button[data-member-row-enable="member-001"]');
+        var batchDelete = q('button[data-member-row-delete="member-001"]');
+        var batchArrow = q('[data-data-exists-trigger][data-member-record="member-001"]');
+        if (!batchEnable || !batchEnable.disabled || !batchDelete || !batchDelete.disabled || !batchArrow || !batchArrow.disabled)
+          return "batch row actions are not disabled";
+        if (appearance(batchEnable) === normalEnableAppearance ||
+            appearance(batchDelete) === normalDeleteAppearance)
+          return "batch disabled row actions did not switch to their gray appearance";
+        var memberModal = document.getElementById("modalMemberDataBackdrop");
+        var arrowImage = batchArrow.querySelector("img");
+        if (!arrowImage || !memberModal) return "batch data-arrow target missing";
+        arrowImage.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+        await settle();
+        if (memberModal.classList.contains("open") || document.body.style.overflow === "hidden")
+          return "bubbling click on disabled batch arrow opened member modal";
+
+        if (!select("member-001") || !select("member-002") || !select("member-007"))
+          return "mixed batch checkboxes missing";
+        await settle();
+        var header = q("input[data-member-select-all]");
+        if (!header || !header.indeterminate || header.checked)
+          return "partial selection did not set the header mixed state";
+        if (selectedCount() !== 3 || batchCount("lock") !== 2 || batchCount("unlock") !== 1)
+          return "mixed selection counts should be 3 selected, 2 lock, 1 unlock";
+
+        q("[data-member-batch-lock]").click();
+        await settle();
+        if (selectedCount() !== 3 || batchCount("lock") !== 0 || batchCount("unlock") !== 3)
+          return "batch lock did not retain selection and recalculate counts";
+        if (!table.classList.contains("is-batch")) return "batch lock exited batch mode";
+        q("[data-member-batch-unlock]").click();
+        await settle();
+        if (selectedCount() !== 3 || batchCount("lock") !== 3 || batchCount("unlock") !== 0)
+          return "batch unlock did not retain selection and recalculate counts";
+
+        q("[data-member-clear-selection]").click();
+        await settle();
+        header = q("input[data-member-select-all]");
+        if (selectedCount() !== 0 || !header || header.checked || header.indeterminate)
+          return "clear selection did not clear row/header state";
+        if (!table.classList.contains("is-batch")) return "clear selection exited batch mode";
+        if (!select("member-001")) return "row checkbox missing after clear";
+        q("[data-member-batch-toggle]").click();
+        await settle();
+        if (table.classList.contains("is-batch")) return "end batch did not exit batch mode";
+        if (!document.getElementById("memberBatchFooter").hidden)
+          return "batch footer remained visible after exit";
+        if (q("input[data-member-select-row]")) return "row selection inputs remained after batch exit";
+        if (q('button[data-member-row-enable="member-001"]').disabled)
+          return "unlocked row action remained disabled after batch exit";
+        var restoredMember007Lock = q('input[data-member-row-lock="member-007"]');
+        if (!restoredMember007Lock) return "member-007 lock switch missing after batch exit";
+        if (!restoredMember007Lock.checked) {
+          restoredMember007Lock.click();
+          await settle();
+        }
+        if (!q('input[data-member-row-lock="member-007"]').checked)
+          return "member-007 fixture lock state was not restored";
+        return true;
+      })()
+    `,
+  },
+  {
+    name: "query, status, and lock filters clear selection but retain batch mode",
+    expr: `
+      (async function () {
+        var q = function (selector) { return document.querySelector(selector); };
+        var settle = function () { return new Promise(function (resolve) { requestAnimationFrame(resolve); }); };
+        var table = document.getElementById("memberTable");
+        var body = document.getElementById("memberTableBody");
+        async function resetView() {
+          if (table.classList.contains("is-batch")) {
+            q("[data-member-clear-selection]").click();
+            q("[data-member-batch-toggle]").click();
+          }
+          q("[data-member-clear-filter]").click();
+          q('[data-member-status="enabled"]').click();
+          q('[data-member-lock-filter="all"]').click();
+          var displayToggle = q("[data-member-display-toggle]");
+          if (displayToggle && displayToggle.dataset.memberDisplay !== "all") displayToggle.click();
+          await settle();
+        }
+        await resetView();
+        function rows() { return body.querySelectorAll("tr[data-member-row]"); }
+        function selectedCount() {
+          var label = q("[data-member-selected-label]");
+          var match = label && label.textContent.match(/\\d+/);
+          return match ? Number(match[0]) : NaN;
+        }
+        function selectFirst() {
+          var input = q('input[data-member-select-row="member-001"]');
+          if (!input) return false;
+          input.click();
+          return true;
+        }
+        function query(value) {
+          var input = q('#memberFilterForm [name="name"]');
+          var form = document.getElementById("memberFilterForm");
+          if (!input || !form) return false;
+          input.value = value;
+          form.requestSubmit();
+          return true;
+        }
+
+        if (!table.classList.contains("is-batch")) {
+          q("[data-member-batch-toggle]").click();
+          await settle();
+        }
+        if (!selectFirst()) return "member-001 checkbox missing before query filter";
+        if (!query("AlongNa")) return "member query form missing";
+        await settle();
+        if (rows().length !== 1 || !q('[data-member-row="member-001"]'))
+          return "name query did not return member-001";
+        if (selectedCount() !== 0 || !table.classList.contains("is-batch"))
+          return "query filter should clear selection and retain batch mode";
+
+        var clearFilter = q("[data-member-clear-filter]");
+        if (!clearFilter) return "clear filter button missing";
+        clearFilter.click();
+        await settle();
+        if (rows().length !== 20) return "clear filter did not restore enabled results";
+        if (!selectFirst()) return "member-001 checkbox missing before status filter";
+        q('[data-member-status="disabled"]').click();
+        await settle();
+        if (selectedCount() !== 0 || !table.classList.contains("is-batch"))
+          return "status filter should clear selection and retain batch mode";
+        if (rows().length !== 2) return "disabled status results should contain two records";
+
+        q('[data-member-status="enabled"]').click();
+        await settle();
+        if (rows().length !== 20 || !selectFirst()) return "enabled results did not restore before lock filter";
+        q('[data-member-lock-filter="locked"]').click();
+        await settle();
+        if (selectedCount() !== 0 || !table.classList.contains("is-batch"))
+          return "lock filter should clear selection and retain batch mode";
+        if (rows().length !== 2) return "enabled locked results should contain two records";
+
+        q('[data-member-lock-filter="all"]').click();
+        await settle();
+        if (rows().length !== 20 || !selectFirst()) return "all lock results did not restore before empty query";
+        if (!query("member-does-not-exist")) return "empty-result query could not be submitted";
+        await settle();
+        var header = q("input[data-member-select-all]");
+        if (rows().length !== 0 || selectedCount() !== 0 || !table.classList.contains("is-batch"))
+          return "empty query result is not stable in batch mode";
+        if (!header || !header.disabled) return "select-all should be disabled for an empty result";
+
+        clearFilter.click();
+        await settle();
+        if (rows().length !== 20 || !table.classList.contains("is-batch"))
+          return "empty query clear did not restore usable batch results";
+        q("[data-member-batch-toggle]").click();
+        await settle();
+        if (table.classList.contains("is-batch")) return "batch mode did not exit after filter checks";
+        return true;
+      })()
+    `,
+  },
+  {
+    name: "paged selection spans all enabled results and survives page/sort changes",
+    expr: `
+      (async function () {
+        var q = function (selector) { return document.querySelector(selector); };
+        var settle = function () { return new Promise(function (resolve) { requestAnimationFrame(resolve); }); };
+        var table = document.getElementById("memberTable");
+        var body = document.getElementById("memberTableBody");
+        async function resetView() {
+          if (table.classList.contains("is-batch")) {
+            q("[data-member-clear-selection]").click();
+            q("[data-member-batch-toggle]").click();
+          }
+          q("[data-member-clear-filter]").click();
+          q('[data-member-status="enabled"]').click();
+          q('[data-member-lock-filter="all"]').click();
+          var displayToggle = q("[data-member-display-toggle]");
+          if (displayToggle && displayToggle.dataset.memberDisplay !== "all") displayToggle.click();
+          await settle();
+        }
+        await resetView();
+        function rows() { return body.querySelectorAll("tr[data-member-row]"); }
+        function selectedCount() {
+          var label = q("[data-member-selected-label]");
+          var match = label && label.textContent.match(/\\d+/);
+          return match ? Number(match[0]) : NaN;
+        }
+        function batchCount(action) {
+          var button = q('[data-member-batch-' + action + ']');
+          var value = button && button.querySelector("[data-member-batch-count]");
+          return value ? Number(value.textContent.trim()) : NaN;
+        }
+        async function findSelected(id) {
+          for (var page = 0; page < 5; page += 1) {
+            var input = q('input[data-member-select-row="' + id + '"]');
+            if (input) return input.checked;
+            var next = q('#memberPagination [data-member-page="next"]');
+            if (!next || next.disabled) return false;
+            next.click();
+            await settle();
+          }
+          return false;
+        }
+
+        var displayToggle = q("[data-member-display-toggle]");
+        if (!displayToggle) return "display exchange control missing";
+        if (document.querySelectorAll("[data-member-display-toggle]").length !== 1)
+          return "display exchange control should be unique";
+        if (displayToggle.dataset.memberDisplay !== "all" || displayToggle.getAttribute("aria-pressed") !== "true")
+          return "display exchange control should start in all mode";
+        if (displayToggle.querySelector(
+          '[data-member-display="all"]:not([data-member-display-toggle]), ' +
+          '[data-member-display="paged"]:not([data-member-display-toggle])'
+        ))
+          return "display toggle should use one current-mode control";
+        displayToggle.click();
+        await settle();
+        displayToggle = q("[data-member-display-toggle]");
+        var displayIcon = displayToggle && displayToggle.querySelector("[data-member-display-icon]");
+        var displayLabel = displayToggle && displayToggle.querySelector("[data-member-display-label]");
+        if (!displayToggle || displayToggle.dataset.memberDisplay !== "paged" ||
+            displayToggle.getAttribute("aria-pressed") !== "false")
+          return "display exchange did not switch to paged mode";
+        if (displayToggle.hidden || displayToggle.getClientRects().length === 0)
+          return "the single display exchange control should remain visible";
+        if (!displayIcon || !displayIcon.src.endsWith("split-page.svg") ||
+            !displayLabel || !displayLabel.textContent.includes("分頁") ||
+            !displayLabel.textContent.includes("20"))
+          return "paged-mode display icon/label mismatch";
+        if (rows().length !== 5) return "paged display should show five rows";
+        if (document.getElementById("memberPagination").hidden)
+          return "pagination should be visible in paged mode";
+        if (q("#memberPagination [data-member-page-label]").textContent.trim() !== "1")
+          return "paged mode should reset to page one";
+        var firstPageId = q("#memberTableBody tr[data-member-row]").dataset.memberRow;
+        var pageLabel = q("#memberPagination [data-member-page-label]");
+        var firstLabel = pageLabel && pageLabel.textContent.trim();
+        var next = q('#memberPagination [data-member-page="next"]');
+        if (!next || next.disabled) return "next-page control should be enabled";
+        next.click();
+        await settle();
+        if (rows().length !== 5) return "second page should show five rows";
+        if (!pageLabel || pageLabel.textContent.trim() === firstLabel)
+          return "pagination label did not advance";
+        var secondPageId = q("#memberTableBody tr[data-member-row]").dataset.memberRow;
+        if (secondPageId === firstPageId) return "pagination did not change the visible rows";
+
+        q("[data-member-batch-toggle]").click();
+        await settle();
+        var visibleSelection = q("#memberTableBody input[data-member-select-row]");
+        if (!visibleSelection) return "second-page row selection input missing";
+        var retainedId = visibleSelection.dataset.memberSelectRow;
+        visibleSelection.click();
+        await settle();
+        if (selectedCount() !== 1) return "second-page selection was not recorded";
+
+        var sortButton = q('[data-member-sort="name"]');
+        if (!sortButton) return "name sort control missing";
+        sortButton.click();
+        await settle();
+        var sortedNameButton = q('[data-member-sort="name"]');
+        if (!sortedNameButton || sortedNameButton.closest("th").getAttribute("aria-sort") !== "ascending")
+          return "first name sort should be ascending";
+        if (selectedCount() !== 1 || !await findSelected(retainedId))
+          return "sort or pagination lost the selected record ID";
+
+        displayToggle = q("[data-member-display-toggle]");
+        displayToggle.click();
+        await settle();
+        displayToggle = q("[data-member-display-toggle]");
+        displayIcon = displayToggle && displayToggle.querySelector("[data-member-display-icon]");
+        displayLabel = displayToggle && displayToggle.querySelector("[data-member-display-label]");
+        if (!displayToggle || displayToggle.dataset.memberDisplay !== "all" ||
+            displayToggle.getAttribute("aria-pressed") !== "true")
+          return "display exchange did not return to all mode";
+        if (!displayIcon || !displayIcon.src.endsWith("all-pages.svg") ||
+            !displayLabel || !displayLabel.textContent.includes("全部顯示") ||
+            !displayLabel.textContent.includes("20"))
+          return "all-mode display icon/label mismatch after exchange";
+        if (rows().length !== 20 || !document.getElementById("memberPagination").hidden)
+          return "all mode should show 20 rows and hide pagination";
+        var exchangedSelection = q('input[data-member-select-row="' + retainedId + '"]');
+        if (selectedCount() !== 1 || !exchangedSelection || !exchangedSelection.checked)
+          return "display exchange to all mode lost the selected record";
+
+        displayToggle.click();
+        await settle();
+        displayToggle = q("[data-member-display-toggle]");
+        if (!displayToggle || displayToggle.dataset.memberDisplay !== "paged" ||
+            displayToggle.getAttribute("aria-pressed") !== "false")
+          return "display exchange did not switch back to paged mode";
+        if (rows().length !== 5 || document.getElementById("memberPagination").hidden ||
+            q("#memberPagination [data-member-page-label]").textContent.trim() !== "1")
+          return "exchange back to paged mode should show five rows on page one";
+        if (selectedCount() !== 1 || !await findSelected(retainedId))
+          return "display exchange back to paged mode lost the selected record ID";
+
+        q("[data-member-clear-selection]").click();
+        await settle();
+        var header = q("input[data-member-select-all]");
+        if (!header || header.checked || header.indeterminate) return "header should be clear before global select";
+        header.click();
+        await settle();
+        header = q("input[data-member-select-all]");
+        if (rows().length !== 5 || !header || !header.checked || selectedCount() !== 20)
+          return "select-all should cover all 20 enabled results while five are visible";
+        if (batchCount("lock") !== 18 || batchCount("unlock") !== 2)
+          return "all-result lock counts should be 18/2";
+
+        q("[data-member-clear-selection]").click();
+        await settle();
+        q("[data-member-batch-toggle]").click();
+        await settle();
+        displayToggle = q("[data-member-display-toggle]");
+        if (displayToggle.dataset.memberDisplay !== "all") displayToggle.click();
+        await settle();
+        if (rows().length !== 20) return "display-all did not restore all enabled rows";
+        return true;
+      })()
+    `,
+  },
+  {
+    name: "member data and nested contract modals preserve body lock on each close path",
+    expr: `
+      (async function () {
+        var q = function (selector) { return document.querySelector(selector); };
+        var settle = function () { return new Promise(function (resolve) { requestAnimationFrame(resolve); }); };
+        var table = document.getElementById("memberTable");
+        async function resetView() {
+          if (table.classList.contains("is-batch")) {
+            q("[data-member-clear-selection]").click();
+            q("[data-member-batch-toggle]").click();
+          }
+          q("[data-member-clear-filter]").click();
+          q('[data-member-status="enabled"]').click();
+          q('[data-member-lock-filter="all"]').click();
+          var displayToggle = q("[data-member-display-toggle]");
+          if (displayToggle && displayToggle.dataset.memberDisplay !== "all") displayToggle.click();
+          await settle();
+        }
+        await resetView();
+        var trigger = q('[data-data-exists-trigger][data-member-record="member-007"]');
+        var parent = document.getElementById("modalMemberDataBackdrop");
+        var child = document.getElementById("modalChangeContractCompanyBackdrop");
+        if (!trigger || !parent || !child) return "member/contract modal elements missing";
+        if (trigger.disabled) return "member-007 data arrow should be enabled";
+        trigger.click();
+        await settle();
+        if (!parent.classList.contains("open") || document.body.style.overflow !== "hidden")
+          return "member data modal did not open with body lock";
+
+        var contractTrigger = parent.querySelector("[data-change-contract-company-trigger]");
+        var childCloseButtons = Array.from(child.querySelectorAll(
+          '.modal-close-btn[data-modal="modalChangeContractCompanyBackdrop"]'
+        ));
+        if (!contractTrigger || childCloseButtons.length !== 3)
+          return "contract trigger/header/footer close controls missing";
+        for (var index = 0; index < childCloseButtons.length; index += 1) {
+          contractTrigger.click();
+          await settle();
+          if (!parent.classList.contains("open") || !child.classList.contains("open"))
+            return "nested contract modal did not open";
+          if (document.body.style.overflow !== "hidden")
+            return "nested modal did not retain body lock";
+          var parentZ = Number.parseInt(getComputedStyle(parent).zIndex, 10) || 0;
+          var childZ = Number.parseInt(getComputedStyle(child).zIndex, 10) || 0;
+          if (childZ <= parentZ) return "nested modal z-index did not rise above parent";
+          childCloseButtons[index].click();
+          await settle();
+          if (child.classList.contains("open")) return "contract close control did not close child modal";
+          if (!parent.classList.contains("open") || document.body.style.overflow !== "hidden")
+            return "closing child modal should retain parent and body lock";
+        }
+
+        var parentCloseButtons = Array.from(parent.querySelectorAll(
+          '.modal-close-btn[data-modal="modalMemberDataBackdrop"]'
+        ));
+        if (parentCloseButtons.length !== 2) return "member modal header/footer close controls missing";
+        parentCloseButtons[0].click();
+        await settle();
+        if (parent.classList.contains("open") || document.body.style.overflow === "hidden")
+          return "member modal header close did not release body lock";
+
+        trigger = q('[data-data-exists-trigger][data-member-record="member-007"]');
+        trigger.click();
+        await settle();
+        contractTrigger = parent.querySelector("[data-change-contract-company-trigger]");
+        contractTrigger.click();
+        await settle();
+        var footerCancel = childCloseButtons.find(function (button) {
+          return button.textContent.trim() === "取消";
+        });
+        if (!footerCancel) return "contract footer cancel action missing";
+        footerCancel.click();
+        await settle();
+        if (!parent.classList.contains("open") || child.classList.contains("open") ||
+            document.body.style.overflow !== "hidden")
+          return "contract footer close should retain parent body lock";
+        var parentModify = parentCloseButtons.find(function (button) {
+          return button.textContent.trim() === "修改";
+        });
+        if (!parentModify) return "member modal footer action missing";
+        parentModify.click();
+        await settle();
+        if (parent.classList.contains("open") || document.body.style.overflow === "hidden")
+          return "member modal footer close did not release body lock";
+        return true;
+      })()
+    `,
+  },
+  {
+    name: "member table keeps horizontal scrolling local at 375px",
+    viewport: { width: 375, height: 812, mobile: true },
+    expr: `
+      (function () {
+        var table = document.getElementById("memberTable");
+        var scroller = table && table.closest(".member-page-table-scroll");
+        if (!table || !scroller) return "member table scroller missing";
+        if (scroller.scrollWidth <= scroller.clientWidth)
+          return "wide table should scroll inside its local region";
+        if (document.documentElement.scrollWidth > window.innerWidth)
+          return "page-level horizontal overflow: " + document.documentElement.scrollWidth;
+        return true;
+      })()
+    `,
+  },
+  {
+    name: "member table keeps horizontal scrolling local at 768px",
+    viewport: { width: 768, height: 1024 },
+    expr: `
+      (function () {
+        var table = document.getElementById("memberTable");
+        var scroller = table && table.closest(".member-page-table-scroll");
+        if (!table || !scroller) return "member table scroller missing";
+        if (scroller.scrollWidth <= scroller.clientWidth)
+          return "wide table should scroll inside its local region";
+        if (document.documentElement.scrollWidth > window.innerWidth)
+          return "page-level horizontal overflow: " + document.documentElement.scrollWidth;
+        return true;
+      })()
+    `,
+  },
+  {
+    name: "member table keeps horizontal scrolling local at 1440px",
+    viewport: { width: 1440, height: 1000 },
+    expr: `
+      (function () {
+        var table = document.getElementById("memberTable");
+        var scroller = table && table.closest(".member-page-table-scroll");
+        if (!table || !scroller) return "member table scroller missing";
+        if (scroller.scrollWidth <= scroller.clientWidth)
+          return "wide table should scroll inside its local region";
+        if (document.documentElement.scrollWidth > window.innerWidth)
+          return "page-level horizontal overflow: " + document.documentElement.scrollWidth;
+        return true;
+      })()
+    `,
+  },
+];
 
 const PAGES = [
   {
@@ -888,6 +1560,24 @@ const PAGES = [
           })()
         `,
       },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
+  {
+    file: "member-data.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalLogoutBackdrop") &&
+      !!document.getElementById("memberTableBody") &&
+      !!document.getElementById("modalMemberDataBackdrop") &&
+      !!document.getElementById("modalChangeContractCompanyBackdrop") &&
+      document.querySelectorAll("#memberTableBody tr[data-member-row]").length === 20
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      ...MEMBER_DATA_CHECKS,
       ...SHELL_CHECKS,
       ...SESSION_MODAL_CHECKS,
     ],
