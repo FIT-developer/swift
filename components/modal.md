@@ -42,6 +42,14 @@
 
 ---
 
+## 簡訊文本新增 / 修改 / 查看
+
+- Current full source `2797:111443`, 800 x 988, read / confirmed 2026-11-13.
+- 詳見 [sms-text-modal.md](sms-text-modal.md), 與既有訂單簡訊發送 modal 為不同用途.
+- 新增 / 修改一律 full 版, 查看沿用房型頁的全 disabled + 單顆關閉 footer.
+
+---
+
 ## 全站 Backdrop（遮罩）規格
 
 > **全站統一**：所有 Modal 共用同一 backdrop 設定，不因 Modal 內容不同而異。

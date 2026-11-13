@@ -19,6 +19,7 @@ var TAB_PAGES = {
   "project-content.html": "專案內容",
   "quantity-price-table.html": "數量價格表",
   "member-data.html": "會員資料",
+  "sms-text.html": "簡訊文本與發送",
 };
 
 function readTabs() {

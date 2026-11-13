@@ -173,6 +173,13 @@ closure）；原 `state=POS - list` / `state=POS - pattern` 兩個 variant 已�
 ### Customers Service
 - Email: `service@bbnet.gmail.com`（僅此一列，見 customers-service.md）
 
+### SMS Management Submenu (Current Implementation)
+
+- `簡訊管理` 子選單依序為 `簡訊文本與發送` 與 `排程發送`.
+- 2026-11-13 使用者指定將 `簡訊文本與發送設定` 更名為 `簡訊文本與發送`.
+- `簡訊文本與發送` 連結至 `preview/sms-text.html`,
+  對應 body[data-page] 與 page tabs 名稱一致; `排程發送` 維持 inactive.
+
 ### File Download
 - 教育訓練手冊 (2018-09-06)
 - 套件 (1.0.13)

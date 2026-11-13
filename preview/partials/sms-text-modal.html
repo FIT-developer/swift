@@ -1,0 +1,166 @@
+<div
+  id="modalSmsTextBackdrop"
+  class="modal-backdrop sms-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="smsTextModalTitle"
+>
+  <form id="smsTextForm" class="modal-box sms-modal-box">
+    <header class="sms-modal-header">
+      <div class="sms-modal-heading">
+        <h2 id="smsTextModalTitle" class="sms-modal-title">新增 / 修改</h2>
+        <p class="sms-modal-subtitle">總部 / 僅適用分館</p>
+      </div>
+      <button
+        type="button"
+        class="sms-modal-close modal-close-btn"
+        data-modal="modalSmsTextBackdrop"
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" aria-hidden="true" />
+      </button>
+    </header>
+
+    <div class="sms-modal-body overflow-y-auto">
+      <div class="sms-fields-container">
+        <div class="sms-fields-grid">
+          <div class="sms-field">
+            <div class="sms-field-copy">
+              <label class="sms-field-label" for="smsTextCategory">類別</label>
+            </div>
+            <div class="sms-select-control">
+              <select id="smsTextCategory" class="sms-control" name="category">
+                <option value="全部">全部</option>
+              </select>
+              <span class="icon-mask sms-select-chevron" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="sms-field sms-title-field">
+            <div class="sms-field-copy">
+              <label class="sms-field-label" for="smsTextTitle">文本標題</label>
+              <span id="smsTextTitleHint" class="sms-field-hint">非簡訊內容</span>
+            </div>
+            <input
+              id="smsTextTitle"
+              class="sms-control"
+              name="title"
+              type="text"
+              placeholder="placeholder"
+              aria-describedby="smsTextTitleHint"
+            />
+          </div>
+
+          <div class="sms-field">
+            <div class="sms-field-copy">
+              <label class="sms-field-label" for="smsTextTemplate">範本</label>
+            </div>
+            <div class="sms-select-control">
+              <select id="smsTextTemplate" class="sms-control" name="template">
+                <option value="sample">sample</option>
+              </select>
+              <span class="icon-mask sms-select-chevron" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="sms-counter" aria-label="扣除通數 1，已使用 52 字元">
+            <div class="sms-counter-line">
+              <span>扣除通數</span>
+              <span class="sms-counter-value">1</span>
+            </div>
+            <div class="sms-counter-support">
+              <span>已使用</span>
+              <span class="sms-counter-used">52</span>
+              <span>字元</span>
+            </div>
+          </div>
+
+          <div class="sms-field sms-rank-field">
+            <div class="sms-field-copy">
+              <label class="sms-field-label" for="smsTextRank">排序</label>
+            </div>
+            <input
+              id="smsTextRank"
+              class="sms-control"
+              name="rank"
+              type="text"
+              value="1"
+              disabled
+            />
+          </div>
+
+          <div class="sms-field">
+            <div class="sms-field-copy">
+              <label class="sms-field-label" for="smsTextCondition">條件</label>
+            </div>
+            <div class="sms-select-control">
+              <select id="smsTextCondition" class="sms-control" name="condition">
+                <option value="n 預訂單">n 預訂單</option>
+              </select>
+              <span class="icon-mask sms-select-chevron" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <fieldset class="sms-payments" aria-label="付款方式">
+        <button type="button" class="sms-payment-chip is-selected" data-sms-payment="轉帳" aria-pressed="true">轉帳</button>
+        <button type="button" class="sms-payment-chip is-selected" data-sms-payment="傳真刷卡" aria-pressed="true">傳真刷卡</button>
+        <button type="button" class="sms-payment-chip is-selected" data-sms-payment="票券" aria-pressed="true">票券</button>
+        <button type="button" class="sms-payment-chip is-selected" data-sms-payment="前台自付" aria-pressed="true">前台自付</button>
+        <button type="button" class="sms-payment-chip" data-sms-payment="信用交易" aria-pressed="false">信用交易</button>
+        <button type="button" class="sms-payment-chip" data-sms-payment="支票" aria-pressed="false">支票</button>
+        <button type="button" class="sms-payment-chip is-selected" data-sms-payment="訂金" aria-pressed="true">訂金</button>
+      </fieldset>
+
+      <div class="sms-message-field">
+        <label class="sms-section-label" for="smsTextContent">簡訊內容</label>
+        <textarea id="smsTextContent" class="sms-control sms-message-content" name="content">我是簡訊內容</textarea>
+      </div>
+
+      <details class="sms-preview" open>
+        <summary class="sms-preview-summary">
+          <span>簡訊預覽</span>
+          <span class="icon-mask sms-preview-chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="sms-preview-content">我是簡訊內容（完整預覽）</div>
+      </details>
+
+      <section class="sms-phrase-section" aria-labelledby="smsPhraseTitle">
+        <h3 id="smsPhraseTitle" class="sms-section-label">組合發送語塊</h3>
+        <p class="sms-phrase-hint">點選文字按鈕，系統將自動套用與單位相關的訂單條件</p>
+        <div class="sms-phrase-panel">
+          <div class="sms-phrase-list">
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="姓名">姓名</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="入住日">入住日</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="單位">單位</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="繳款帳號">繳款帳號</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="應付訂金">應付訂金</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="繳款期限">繳款期限</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="訂單總金額">訂單總金額</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="入住日（帶上星期幾）">入住日（帶上星期幾）</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="生日">生日</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="入住夜數">入住夜數</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="訂單編號">訂單編號</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="銀行">銀行</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="已付金額">已付金額</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="繳款期限僅日期">繳款期限僅日期</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="訂單取消日">訂單取消日</button>
+            <button type="button" class="sms-phrase-chip" data-sms-phrase="訂房內容">訂房內容</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="sms-modal-footer">
+      <button type="button" class="sms-footer-button sms-clear-button" data-sms-modal-clear>清除</button>
+      <button type="button" class="sms-footer-button sms-save-button" data-sms-modal-save>儲存</button>
+      <button
+        type="button"
+        class="sms-footer-button sms-close-button modal-close-btn"
+        data-modal="modalSmsTextBackdrop"
+        hidden
+      >關閉</button>
+    </footer>
+  </form>
+</div>

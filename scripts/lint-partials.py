@@ -28,6 +28,18 @@ PARTIALS = PREVIEW / 'partials'
 # 新頁面上線時必須在此登記 partials 與 module import 順序；
 # 說明文件在 specs/page-architecture.md「Partial dependency manifest」段。
 MANIFEST = {
+    'sms-text.html': {
+        'partials': ['aside', 'topbar', 'session-modals', 'topbar-modals', 'sms-text-modal'],
+        'modules': [
+            './js/partials.js',
+            './js/page-shell.js',
+            './js/page-tabs.js',
+            './js/modal-controller.js',
+            './js/topbar-modals.js',
+            './js/sms-text.js',
+            './js/sms-text-modal.js',
+        ],
+    },
     'landing.html': {
         'partials': ['aside', 'topbar', 'topbar-modals', 'session-modals'],
         'modules': [

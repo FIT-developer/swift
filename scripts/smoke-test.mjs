@@ -262,7 +262,9 @@ const APP_CSS_LOADED_CHECK = {
         "project-content.css",
         "project-content-wizard.css",
         "quantity-price-table.css",
-        "member-data.css"
+        "member-data.css",
+        "sms-text.css",
+        "sms-text-modal.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -971,6 +973,140 @@ const MEMBER_DATA_CHECKS = [
 ];
 
 const PAGES = [
+  {
+    file: "sms-text.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalSmsTextBackdrop") &&
+      document.querySelectorAll("[data-sms-card-id]").length === 2
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "SMS lifecycle moves cards and updates live counts",
+        expr: `(() => {
+          const status = (value) => document.querySelector('[data-sms-status="' + value + '"]');
+          const visible = () => [...document.querySelectorAll('[data-sms-card-id]')].map(n => n.dataset.smsCardId);
+          const initial = visible();
+          if (initial.length !== 2) return 'initial enabled subset: ' + initial;
+          const disable = document.querySelector('[data-sms-action="disable"]');
+          if (!disable) return 'enabled disable button missing';
+          const id = disable.dataset.smsId;
+          disable.click();
+          if (visible().includes(id)) return 'disabled card stayed in enabled subset';
+          if (!status('enabled').textContent.includes('1') || !status('disabled').textContent.includes('3'))
+            return 'live counts did not update after disable';
+          status('disabled').click();
+          const restore = [...document.querySelectorAll('[data-sms-action="enable"]')].find(n => n.dataset.smsId === id);
+          if (!restore) return 'disabled card absent from disabled subset';
+          restore.click();
+          status('enabled').click();
+          if (!visible().includes(id) || !status('enabled').textContent.includes('2')) return 'restore failed';
+          return true;
+        })()`,
+      },
+      {
+        name: "SMS usage filtering is independent of enabled lifecycle",
+        expr: `(() => {
+          const usage = value => document.querySelector('[data-sms-usage="' + value + '"]');
+          const input = document.querySelector('[data-sms-usage-toggle]');
+          if (!input || !input.checked) return 'initial usage toggle missing';
+          const card = input.closest('[data-sms-card-id]');
+          const id = card.dataset.smsCardId;
+          const before = document.querySelector('[data-sms-status="enabled"]').textContent;
+          input.click();
+          if ([...document.querySelectorAll('[data-sms-card-id]')].some(n => n.dataset.smsCardId === id))
+            return 'non-used card stayed in used filter';
+          if (document.querySelector('[data-sms-status="enabled"]').textContent !== before)
+            return 'usage toggle changed lifecycle count';
+          usage('false').click();
+          const off = [...document.querySelectorAll('[data-sms-card-id]')].find(n => n.dataset.smsCardId === id)?.querySelector('[data-sms-usage-toggle]');
+          if (!off || off.checked) return 'non-used subset does not reflect toggle';
+          off.click();
+          usage('true').click();
+          return true;
+        })()`,
+      },
+      {
+        name: "SMS full form, readonly rank, clear and save close",
+        viewport: { width: 375, height: 1000, mobile: true },
+        expr: `(() => {
+          document.querySelector('[data-sms-action="new"]').click();
+          const m = document.getElementById('modalSmsTextBackdrop');
+          if (!m.classList.contains('open')) return 'new did not open';
+          for (const name of ['title','category','template','condition','content','rank'])
+            if (!m.querySelector('[name="' + name + '"]')) return 'missing full field ' + name;
+          if (!m.querySelector('[name="rank"]').disabled) return 'rank editable';
+          if (m.querySelectorAll('[data-sms-payment]').length !== 7 || m.querySelectorAll('[data-sms-phrase]').length !== 16)
+            return 'payment/phrase count mismatch';
+          m.querySelector('[name="title"]').value = 'draft';
+          m.querySelector('[name="content"]').value = 'draft-content';
+          m.querySelector('[data-sms-modal-clear]').click();
+          if (m.querySelector('[name="title"]').value !== '' || m.querySelector('[name="content"]').value !== '我是簡訊內容')
+            return 'clear did not restore demo defaults';
+          m.querySelector('.modal-close-btn').click();
+          if (m.classList.contains('open')) return 'header close failed';
+          document.querySelector('[data-sms-action="edit"]').click();
+          const title = m.querySelector('[name="title"]');
+          const original = title.value;
+          title.value = 'SMS smoke saved';
+          m.querySelector('[data-sms-modal-save]').click();
+          if (m.classList.contains('open')) return 'save did not close';
+          if (!document.getElementById('smsTextCardList').textContent.includes('SMS smoke saved')) return 'save not reflected in list';
+          document.querySelector('[data-sms-action="edit"]').click();
+          m.querySelector('[name="title"]').value = original;
+          m.querySelector('[data-sms-modal-save]').click();
+          return document.documentElement.scrollWidth === document.documentElement.clientWidth || 'mobile page overflow';
+        })()`,
+      },
+      {
+        name: "SMS disabled cards retain usage control and view form stays disabled",
+        expr: `(() => {
+          document.querySelector('[data-sms-status="disabled"]').click();
+          document.querySelector('[data-sms-usage="false"]').click();
+          let view = document.querySelector('[data-sms-action="view"]');
+          if (!view) return 'disabled view missing';
+          const id = view.dataset.smsId;
+          const counts = () => [...document.querySelectorAll('[data-sms-status]')].map(n => n.textContent.trim()).join('|');
+          const before = counts();
+          const toggle = view.closest('[data-sms-card-id]').querySelector('[data-sms-usage-toggle]');
+          if (!toggle || toggle.disabled || toggle.checked) return 'disabled card usage should be operable and initially false';
+          toggle.click();
+          document.querySelector('[data-sms-usage="true"]').click();
+          const used = [...document.querySelectorAll('[data-sms-usage-toggle]')].find(n => n.dataset.smsId === id);
+          if (!used || used.disabled || !used.checked) return 'disabled card could not switch usage false to true';
+          used.click();
+          document.querySelector('[data-sms-usage="false"]').click();
+          const unused = [...document.querySelectorAll('[data-sms-usage-toggle]')].find(n => n.dataset.smsId === id);
+          if (!unused || unused.disabled || unused.checked) return 'disabled card could not switch usage true to false';
+          if (counts() !== before) return 'disabled card usage changed lifecycle counts';
+          view = [...document.querySelectorAll('[data-sms-action="view"]')].find(n => n.dataset.smsId === id);
+          view.click();
+          const m = document.getElementById('modalSmsTextBackdrop');
+          if (!m.classList.contains('open')) return 'view did not open';
+          const editable = [...m.querySelectorAll('input,select,textarea,[data-sms-payment],[data-sms-phrase]')].filter(n => !n.disabled);
+          if (editable.length) return 'view has editable controls: ' + editable.length;
+          if (!m.querySelector('[data-sms-modal-save]').hidden || !m.querySelector('[data-sms-modal-clear]').hidden)
+            return 'view exposes clear/save';
+          const close = [...m.querySelectorAll('.modal-close-btn')].find(n => n.textContent.trim() === '關閉');
+          if (!close) return 'view footer close missing';
+          close.click();
+          if (m.classList.contains('open')) return 'view footer close failed';
+          document.querySelector('[data-sms-status="enabled"]').click();
+          document.querySelector('[data-sms-usage="true"]').click();
+          return true;
+        })()`,
+      },
+      {
+        name: "SMS mouse drag from number and title reorders at target center",
+        viewport: { width: 1440, height: 1000 },
+        smsCardPointer: true,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
   {
     file: "landing.html",
     readyExpr: `
@@ -3670,6 +3806,34 @@ async function testQuantityInventoryPointer(cdp, sessionId) {
   }
 }
 
+async function testSmsCardPointer(cdp, sessionId) {
+  const ev = (expression) => evaluate(cdp, sessionId, expression);
+  const ids = () => ev("[...document.querySelectorAll('[data-sms-card-id]')].map(n => n.dataset.smsCardId)");
+  for (const start of ['[data-sms-sort-handle]', '.sms-text-card-title']) {
+    const before = await ids();
+    if (before.length !== 2) return 'drag regression requires the two enabled demo cards';
+    const points = await ev(`(() => {
+      const cards = [...document.querySelectorAll('[data-sms-card-id]')];
+      cards[0].scrollIntoView({block:'nearest'});
+      const source = cards[0].querySelector(${JSON.stringify(start)}).getBoundingClientRect();
+      const target = cards[1].getBoundingClientRect();
+      return {from:{x:source.left+source.width/2,y:source.top+source.height/2},to:{x:target.left+target.width/2,y:target.top+target.height/2}};
+    })()`);
+    const { from, to } = points;
+    await cdp.send('Input.dispatchMouseEvent', {type:'mousePressed',x:from.x,y:from.y,button:'left',buttons:1,clickCount:1}, sessionId);
+    for (let step = 1; step <= 12; step += 1) {
+      await cdp.send('Input.dispatchMouseEvent', {type:'mouseMoved',x:from.x+(to.x-from.x)*step/12,y:from.y+(to.y-from.y)*step/12,button:'left',buttons:1}, sessionId);
+    }
+    await cdp.send('Input.dispatchMouseEvent', {type:'mouseReleased',x:to.x,y:to.y,button:'left',buttons:0,clickCount:1}, sessionId);
+    const after = await ids();
+    if (after.join('|') !== before.slice().reverse().join('|')) return start + ' center drop did not reorder';
+    const saved = await ev("JSON.parse(localStorage.getItem('swift.sms-text.order.v1') || '[]')");
+    const visibleSaved = saved.filter(id => after.includes(id));
+    if (visibleSaved.join('|') !== after.join('|')) return start + ' drop did not immediately save visible order';
+  }
+  return true;
+}
+
 async function testPage(cdp, baseUrl, page, consoleErrors) {
   const failures = [];
   const { targetId } = await cdp.send("Target.createTarget", { url: "about:blank" });
@@ -3715,7 +3879,9 @@ async function testPage(cdp, baseUrl, page, consoleErrors) {
           sessionId,
         );
       }
-      const result = check.pointer
+      const result = check.smsCardPointer
+        ? await testSmsCardPointer(cdp, sessionId)
+        : check.pointer
         ? await testProjectPointer(cdp, sessionId, check.pointer)
         : check.quantityInventoryPointer
           ? await testQuantityInventoryPointer(cdp, sessionId)
