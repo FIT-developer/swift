@@ -1,0 +1,158 @@
+<div
+  id="modalScheduledSendBackdrop"
+  class="modal-backdrop schedule-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="scheduledSendModalTitle"
+>
+  <form id="scheduledSendModalForm" class="modal-box schedule-modal-box" novalidate>
+    <header class="schedule-modal-header">
+      <div class="schedule-modal-heading">
+        <h2 id="scheduledSendModalTitle" class="schedule-modal-title">新增 / 修改</h2>
+        <p class="schedule-modal-subtitle">總部 / 僅適用分館</p>
+      </div>
+      <button
+        type="button"
+        class="schedule-modal-close modal-close-btn"
+        data-modal="modalScheduledSendBackdrop"
+        data-schedule-modal-close
+        aria-label="關閉"
+      >
+        <img src="./assets/icons/close.svg" alt="" aria-hidden="true" />
+      </button>
+    </header>
+
+    <div class="schedule-modal-body overflow-y-auto">
+      <div class="schedule-fields-container">
+        <div class="schedule-fields-grid">
+          <div class="schedule-field">
+            <div class="schedule-field-copy">
+              <label class="schedule-field-label" for="scheduledSendCategory">類別</label>
+            </div>
+            <div class="schedule-select-control">
+              <select id="scheduledSendCategory" class="schedule-control" name="category">
+                <option value="全部">全部</option>
+              </select>
+              <span class="icon-mask schedule-select-chevron" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="schedule-field schedule-title-field">
+            <div class="schedule-field-copy">
+              <label class="schedule-field-label" for="scheduledSendTitle">文本標題</label>
+              <span id="scheduledSendTitleHint" class="schedule-field-hint">非簡訊內容</span>
+            </div>
+            <input
+              id="scheduledSendTitle"
+              class="schedule-control"
+              name="title"
+              type="text"
+              placeholder="placeholder"
+              aria-describedby="scheduledSendTitleHint"
+            />
+          </div>
+        </div>
+
+        <div class="schedule-date-field">
+          <div class="schedule-field-copy">
+            <span class="schedule-field-label">日期</span>
+            <span id="scheduledSendDateHint" class="schedule-field-hint" data-schedule-date-hint>入住日前</span>
+          </div>
+          <div class="schedule-date-inputs">
+            <label class="schedule-date-unit">
+              <span class="schedule-visually-hidden">日期 - 日</span>
+              <input
+                class="schedule-control"
+                name="days"
+                type="text"
+                inputmode="numeric"
+                aria-describedby="scheduledSendDateHint"
+                placeholder="placeholder"
+              />
+              <span aria-hidden="true">日</span>
+            </label>
+            <label class="schedule-date-unit">
+              <span class="schedule-visually-hidden">日期 - 時</span>
+              <input
+                class="schedule-control"
+                name="hour"
+                type="text"
+                inputmode="numeric"
+                aria-describedby="scheduledSendDateHint"
+                placeholder="placeholder"
+              />
+              <span aria-hidden="true">時</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="schedule-count-row">
+        <div class="schedule-counter" aria-label="扣除通數 1，已使用 52 字元">
+          <div class="schedule-counter-line">
+            <span>扣除通數</span>
+            <span class="schedule-counter-value">1</span>
+          </div>
+          <div class="schedule-counter-support">
+            <span>已使用</span>
+            <span class="schedule-counter-used">52</span>
+            <span>字元</span>
+          </div>
+        </div>
+        <div class="schedule-example-slot">
+          <button type="button" class="schedule-example-button" data-schedule-example>範例</button>
+        </div>
+      </div>
+
+      <div class="schedule-message-field">
+        <label class="schedule-section-label" for="scheduledSendContent">簡訊內容</label>
+        <textarea id="scheduledSendContent" class="schedule-control schedule-message-content" name="content">我是簡訊內容</textarea>
+      </div>
+
+      <details class="schedule-preview" data-schedule-preview open>
+        <summary class="schedule-preview-summary">
+          <span>簡訊預覽</span>
+          <span class="icon-mask schedule-preview-chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="schedule-preview-content" data-schedule-preview-content>我是簡訊內容（完整預覽）</div>
+      </details>
+
+      <section class="schedule-phrase-section" aria-labelledby="scheduledSendPhraseTitle">
+        <h3 id="scheduledSendPhraseTitle" class="schedule-section-label">組合發送語塊</h3>
+        <p class="schedule-phrase-hint">點選文字按鈕，系統將自動套用與單位相關的訂單條件</p>
+        <div class="schedule-phrase-panel">
+          <div class="schedule-phrase-list">
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="姓名">姓名</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="入住日">入住日</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="單位">單位</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="繳款帳號">繳款帳號</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="應付訂金">應付訂金</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="繳款期限">繳款期限</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="訂單總金額">訂單總金額</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="入住日（帶上星期幾）">入住日（帶上星期幾）</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="生日">生日</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="入住夜數">入住夜數</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="訂單編號">訂單編號</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="銀行">銀行</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="已付金額">已付金額</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="繳款期限僅日期">繳款期限僅日期</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="訂單取消日">訂單取消日</button>
+            <button type="button" class="schedule-phrase-chip" data-schedule-phrase="訂房內容">訂房內容</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="schedule-modal-footer">
+      <button type="button" class="schedule-footer-button schedule-clear-button" data-schedule-modal-clear>清除</button>
+      <button type="button" class="schedule-footer-button schedule-save-button" data-schedule-modal-save>儲存</button>
+      <button
+        type="button"
+        class="schedule-footer-button schedule-close-button modal-close-btn"
+        data-modal="modalScheduledSendBackdrop"
+        data-schedule-modal-close
+        hidden
+      >關閉</button>
+    </footer>
+  </form>
+</div>

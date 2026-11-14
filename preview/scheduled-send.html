@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 排程發送</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body data-page="排程發送">
+    <div
+      id="rootWrap"
+      class="flex flex-col gap-3 min-h-screen max-w-[1440px] mx-auto md:p-3"
+    >
+      <div class="flex items-center justify-between px-3 pt-3 md:hidden">
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
+        <button
+          id="mobileMenuBtn"
+          class="p-1 rounded-md cursor-pointer opacity-70 hover:opacity-100"
+          aria-label="開啟選單"
+        >
+          <img src="./assets/icons/folder.svg" class="w-6 h-5" alt="選單" />
+        </button>
+      </div>
+
+      <div id="bodyArea" class="flex flex-col md:flex-row gap-3 flex-1 min-w-0">
+        <div data-partial="aside"></div>
+
+        <div id="mainColumn" class="flex-1 flex flex-col min-w-0 gap-3">
+          <div data-partial="topbar"></div>
+
+          <main class="flex-1 flex flex-col min-w-0 w-full">
+            <section class="scheduled-send-content" aria-label="排程發送">
+              <h1 class="scheduled-send-page-title">排程發送</h1>
+              <div class="scheduled-send-summary-row">
+                <div class="scheduled-send-summary-copy">
+                  <p class="scheduled-send-count-line">
+                    剩餘通數：<span class="scheduled-send-count-value">0</span>
+                  </p>
+                  <p class="scheduled-send-scope-copy">
+                    <span class="scheduled-send-scope-headquarters">總部</span>所有分館適用。
+                    <span class="scheduled-send-scope-branch">分館</span>只適用該分館。
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  class="scheduled-send-add-button"
+                  data-schedule-action="new"
+                >
+                  <img src="./assets/icons/outline-plus.svg" alt="" />
+                  <span>新增</span>
+                </button>
+              </div>
+
+              <div class="scheduled-send-category-row">
+                <label for="scheduledSendCategoryFilter">類別</label>
+                <div class="scheduled-send-select-wrap">
+                  <select id="scheduledSendCategoryFilter" aria-label="類別">
+                    <option value="全部">全部</option>
+                  </select>
+                  <img src="./assets/icons/down.svg" alt="" aria-hidden="true" />
+                </div>
+              </div>
+
+              <div class="scheduled-send-filter-row">
+                <div class="scheduled-send-status-filters" role="group" aria-label="啟用狀態">
+                  <button
+                    type="button"
+                    class="member-data-filter-tab is-active scheduled-send-status-filter"
+                    data-schedule-status="enabled"
+                    aria-pressed="true"
+                  >
+                    啟用<span class="scheduled-send-filter-count" id="scheduledSendEnabledCount">（0）</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="member-data-filter-tab scheduled-send-status-filter"
+                    data-schedule-status="disabled"
+                    aria-pressed="false"
+                  >
+                    停用<span class="scheduled-send-filter-count" id="scheduledSendDisabledCount">（0）</span>
+                  </button>
+                </div>
+                <div class="scheduled-send-usage-filters" role="group" aria-label="使用狀態">
+                  <button
+                    type="button"
+                    class="scheduled-send-usage-filter is-active"
+                    data-schedule-usage="true"
+                    aria-pressed="true"
+                  >
+                    使用
+                  </button>
+                  <button
+                    type="button"
+                    class="scheduled-send-usage-filter"
+                    data-schedule-usage="false"
+                    aria-pressed="false"
+                  >
+                    不使用
+                  </button>
+                </div>
+              </div>
+
+              <p class="scheduled-send-sort-hint">
+                <img src="./assets/icons/dots-line.svg" alt="" aria-hidden="true" />
+                <span>拖曳卡片更新排序</span>
+              </p>
+
+              <div id="scheduledSendCardList" class="scheduled-send-card-list" aria-live="polite"></div>
+              <p
+                class="scheduled-send-sort-announcement sr-only"
+                aria-live="assertive"
+                id="scheduledSendSortAnnouncement"
+              ></p>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="mobileSidebarBackdrop"
+      class="mobile-sidebar-backdrop md:hidden"
+      aria-hidden="true"
+    ></div>
+
+    <div data-partial="session-modals"></div>
+    <div data-partial="topbar-modals"></div>
+    <div data-partial="scheduled-send-modal"></div>
+
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
+      import { createModalController } from "./js/modal-controller.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
+      import { initScheduledSend } from "./js/scheduled-send.js";
+      import { initScheduledSendModal } from "./js/scheduled-send-modal.js";
+
+      await loadPartials();
+      initPageShell();
+      initPageTabs();
+      const modalController = createModalController();
+      initTopbarModals();
+
+      const scheduledSend = initScheduledSend();
+      const scheduledSendModal = initScheduledSendModal({
+        openModal: modalController.openModal,
+        closeModal: modalController.closeModal,
+        getCard: scheduledSend.getCard,
+        onSave: scheduledSend.saveCard,
+      });
+      scheduledSend.setModalHandler(scheduledSendModal.open);
+    </script>
+  </body>
+</html>

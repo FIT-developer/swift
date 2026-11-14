@@ -8,6 +8,112 @@
 
 ---
 
+## Session 190: 提交與推送排程發送頁 (2026-11-14)
+
+### 本輪改動與重要決定
+
+- 使用者明確授權 commit & push, 將 Session188 / 189 的完整讀取紀錄,
+  current page / modal contract, 獨立排程頁與新增 / 修改 / 查看 modal 一併提交.
+- 提交範圍包含 HTML / partial, page / state / modal modules, 兩個 domain CSS,
+  namespace 共用排序與 SMS wrapper, sidebar / page-tabs / app.css,
+  partial manifest / browser smoke 及 progress. 本輪對應新檔全部納入.
+- 範例保留後端接線, 卡片資訊唯讀, modal 提交既定五個表單欄位;
+  usage 與 lifecycle 狀態獨立, 排序放開即存. 不增加實際發送排程邏輯.
+- Figma 原始 JSON / PNG / SVG 與 QA 截圖 / probes 依既有 ignore 規則
+  保留本機, 讀取來源 / 已確認規則 / 驗證結論保存於版本化 specs.
+- 本輪進入 commit/push flow, 實際 SHA 與遠端狀態以 git history 為準.
+
+### 驗證與後續
+
+- git fetch origin 成功, main 與 origin/main ahead / behind 為 0 / 0.
+- 沿用 Session189 最終完整 Chrome smoke exit 0: 13 頁 / 179 項,
+  排程頁 14 項, 另 9 組 root interaction probes 與 18 組版面核對通過.
+  本輪僅更新交接紀錄, 未變更產品行為.
+- 提交前核對全部 tracked / untracked 檔案, 執行四項 lint,
+  JS syntax 與 whitespace checks; commit hook 再次檢查.
+- 推送後核對工作樹及 HEAD / origin/main 一致, 不遺留本次來源檔案.
+- 無新增 token / icon / 全域規則, tokens.md / start.md 不需修改.
+
+## Session 189: 排程發送頁與 modal 實作 (2026-11-13)
+
+### 本輪改動與重要決定
+
+- 使用者確認範例按鈕日後由後端提供內容並置入 textarea,
+  本輪保留按鈕, 不自行填入範例文字或增加彈窗.
+- 使用者確認卡片當中的資訊是唯讀結果, 修改集中在 modal
+  新增 / 修改的表單內容. 不在卡片增加可編輯日期控制.
+- 依使用者先前的讀完且釐清後直接實作授權, 先寫 current page /
+  modal contract 與舊頁差異 checkpoint, 再建立獨立排程頁.
+- 現行來源仍是 Session188 讀取的主頁 `2803:111821` 與 modal
+  `2803:112567`; source PNG / SVG 在 session-188, 本輪 QA 在 session-189.
+- 沿用已確認的 SMS lifecycle / usage 獨立狀態, 個別 toggle 存在,
+  disabled lifecycle 可操作 usage, 即時排序 / clear / save / view 操作模式.
+  共用排序抽成 namespace 可設定 module, SMS 保留原 API / selector / storage key.
+- 對照實際 SMS module 與元件 spec, 語塊 / 預覽仍是後端插值前的
+  示意邊界; 不發明語塊模板語法或將生日祝賀的入住日示例自行改字.
+- 卡片四組資料保留各自 event / anchor / direction / permission metadata,
+  modal 僅提交 title / category / days / hour / content.
+  新增不推定 event label; 不計算實際發送時間 / 時區 / 通數.
+
+### 驗證與下一步
+
+- 2026-11-14 收尾驗證: 四項 lint / 五個相關 JS module 與 smoke syntax /
+  git diff --check 均 exit 0. Token mirror 仍 93, manifest 13 頁 / 3 standalone.
+- 完整 Chrome browser smoke exit 0: 13 頁 / 179 項, 排程頁 14 項,
+  包含 lifecycle / usage 獨立狀態, 無 toggle 卡片篩選, 權限提示,
+  new / edit / view / clear / save / discard, 範例 no-op, preview 開合,
+  SMS 既有 11 項以及兩頁編號 / 標題的真實 mouse 中央落點拖曳.
+- Root 額外 9 組 interaction probes 通過: keyboard preview / cancel /
+  commit, reload order, touch body scroll, touch cancel / handle reorder,
+  keyboard 排序中第一次真實 edit click, 新增資料回寫卡片.
+- 375 / 768 / 1440 共 18 組列表 / modal state 核對,
+  24 張 PNG 與 layout / interaction JSON 在 session-189.
+  所有卡片內容唯讀, 日期欄等寬且與類別 input 左緣對齊,
+  頁面 / modal 無水平溢出, console error 0.
+- 視覺複核補正卡片資訊 strip 的 16px block gap / 8px icon gap /
+  4px 單側框線內距; 權限提示依來源是 summary 下方的 22px sibling,
+  獨立 147px textarea, 不套用一般操作列 36px 高度或填滿底部空隙.
+- Independent review 發現 full-width modal 的 body 捲軸會讓內容寬度
+  跌破原 775px query, 造成桌面首列提前轉單欄. 於 1440 x 800
+  重現 6px gutter 後, 改查詢外層 modal 的穩定寬度;
+  新增永久 smoke case 驗證捲動 body 仍維持雙欄.
+- 瀏覽器 skill 的 in-app 執行工具未提供, 沿用專案原生 Chrome CDP
+  驗證; 未宣稱使用 in-app Browser. Figma JSON / PNG / SVG 讀取來源
+  另保留於本機忽略的 session-188.
+- 本輪 self-tested, 待使用者驗收. Preview server 8000 可連線,
+  直接頁面 http://localhost:8000/scheduled-send.html.
+- 無新增 token / icon / 全域規則, tokens.md / start.md 不需修改.
+
+## Session 188: 排程發送完整讀取與待確認行為 (2026-11-13)
+
+### 本輪讀取
+
+- 使用者要求 figma-go 讀取排程發送, 資訊足夠便直接實作;
+  遇到影響行為的問題則先停止並詢問.
+- 完整讀取 current selection: 主頁 `2803:111821`
+  排程發送 1113 v1.1 (1440 x 1160), modal `2803:112567`
+  (800 x 926), 包含所有子節點, 並核對 PNG / SVG.
+- 主頁呈現四張卡片: 入住提醒 / 入住感謝 / 生日祝賀 / 催款通知;
+  包含事件日前後 / 日時資訊, 總部無調整權限提示,
+  個別卡片有無使用 toggle, 查看 / 啟動與修改 / 停用兩組狀態.
+- Modal 包含類別 / 文本標題, 日期的日 / 時欄位,
+  範例按鈕, 簡訊內容 / 預覽 / 語塊, 清除 / 儲存.
+  沒有簡訊文本 modal 的範本 / 條件 / 付款方式 / 排序欄.
+- 讀取既有 SMS page / modal / state / sort 與 shell integration,
+  將可沿用的操作模式和新的排程行為分開辨識.
+  不將使用 toggle 與啟用 / 停用連動, 也不依卡片類別推定 toggle 存在.
+- 原始 PNG / SVG 存於本機忽略的 qa-screenshots/session-188;
+  本輪未修改產品檔案或建立尚未確認的排程 spec.
+
+### 待確認與下一步
+
+- 範例按鈕 `I2803:112567;73:678;2803:112906` 與 modal
+  的 prototype reactions 均為空, 圖稿沒有定義點擊後的內容或動作.
+- 日期欄位需要確認日 / 時的意義, 以及入住日前 / 退房日後等
+  事件基準是否由類別帶入且不可修改. 不自行推定時數差或當天鐘點.
+- 依使用者本輪指示先停在讀取階段; 待以上兩項釐清後,
+  補 current page / modal contract, 再實作及驗證.
+
 ## Session 187: 提交與推送簡訊文本與發送頁 (2026-11-13)
 
 ### 本輪改動與重要決定

@@ -264,7 +264,9 @@ const APP_CSS_LOADED_CHECK = {
         "quantity-price-table.css",
         "member-data.css",
         "sms-text.css",
-        "sms-text-modal.css"
+        "sms-text-modal.css",
+        "scheduled-send.css",
+        "scheduled-send-modal.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -1102,6 +1104,314 @@ const PAGES = [
         name: "SMS mouse drag from number and title reorders at target center",
         viewport: { width: 1440, height: 1000 },
         smsCardPointer: true,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
+  {
+    file: "scheduled-send.html",
+    readyExpr: `
+      !document.querySelector("[data-partial]") &&
+      !!document.getElementById("sidebar") &&
+      !!document.getElementById("modalScheduledSendBackdrop") &&
+      !!document.getElementById("scheduledSendCardList") &&
+      !!document.getElementById("scheduledSendEnabledCount") &&
+      !!document.getElementById("scheduledSendDisabledCount")
+    `,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "schedule desktop columns survive a scrollable modal body",
+        viewport: { width: 1440, height: 800 },
+        expr: `(() => {
+          document.querySelector('[data-schedule-action="new"]').click();
+          const modal = document.getElementById('modalScheduledSendBackdrop');
+          const body = modal.querySelector('.schedule-modal-body');
+          const columns = getComputedStyle(modal.querySelector('.schedule-fields-grid')).gridTemplateColumns.split(' ').filter(Boolean);
+          const result = body.scrollHeight > body.clientHeight && columns.length === 2;
+          modal.querySelector('.modal-close-btn').click();
+          return result || 'desktop body scrollbar collapsed the first row';
+        })()`,
+      },
+      {
+        name: "schedule defaults, permission notice, and readonly result strip",
+        expr: `(() => {
+          const q = selector => document.querySelector(selector);
+          const list = document.getElementById('scheduledSendCardList');
+          const visible = [...list.querySelectorAll('[data-schedule-card-id]')];
+          const count = id => Number(document.getElementById(id).textContent.match(/\\d+/)?.[0]);
+          if (count('scheduledSendEnabledCount') !== 2 || count('scheduledSendDisabledCount') !== 2)
+            return 'initial lifecycle counts should be 2/2';
+          const status = q('button[data-schedule-status="enabled"]');
+          const used = q('button[data-schedule-usage="true"]');
+          if (!status || !used) return 'lifecycle or usage filter missing';
+          if (visible.length !== 1 || visible[0].dataset.scheduleCardId !== 'schedule-001')
+            return 'initial enabled/used results should contain only schedule-001';
+          const locked = visible[0];
+          const notice = locked.querySelector('[data-schedule-permission-notice]');
+          const result = locked.querySelector('.scheduled-send-result-strip');
+          if (!notice || !notice.textContent.includes('當館無調整權限，請由總部調整'))
+            return 'schedule-001 permission notice missing';
+          if (!result || !result.textContent.includes('入住日') || !result.textContent.includes('前') ||
+              !result.textContent.includes('2') || !result.textContent.includes('15'))
+            return 'schedule-001 readonly result strip mismatch';
+          if (locked.querySelector('[data-schedule-action], [data-schedule-usage-toggle]'))
+            return 'permission-locked card exposes lifecycle or usage controls';
+          if (document.documentElement.scrollWidth > document.documentElement.clientWidth)
+            return 'page has horizontal overflow';
+          return true;
+        })()`,
+      },
+      {
+        name: "schedule lifecycle changes update 2/2 counts and restore fixture",
+        expr: `(() => {
+          const q = selector => document.querySelector(selector);
+          const count = id => Number(document.getElementById(id).textContent.match(/\\d+/)?.[0]);
+          const card = id => q('#scheduledSendCardList [data-schedule-card-id="' + id + '"]');
+          const enabledTab = q('button[data-schedule-status="enabled"]');
+          const disabledTab = q('button[data-schedule-status="disabled"]');
+          if (!enabledTab || !disabledTab) return 'lifecycle filter buttons missing';
+          disabledTab.click();
+          let target = card('schedule-002');
+          if (!target) return 'disabled used schedule-002 missing';
+          const enable = target.querySelector('[data-schedule-action="enable"]');
+          if (!enable) return 'disabled schedule-002 has no enable action';
+          enable.click();
+          if (count('scheduledSendEnabledCount') !== 3 || count('scheduledSendDisabledCount') !== 1)
+            return 'enabling schedule-002 did not update counts to 3/1';
+          if (card('schedule-002')) return 'enabled record remained in disabled results';
+          enabledTab.click();
+          target = card('schedule-002');
+          const disable = target && target.querySelector('[data-schedule-action="disable"]');
+          if (!disable) return 'enabled schedule-002 has no disable action';
+          disable.click();
+          if (count('scheduledSendEnabledCount') !== 2 || count('scheduledSendDisabledCount') !== 2)
+            return 'disabling schedule-002 did not restore counts to 2/2';
+          if (card('schedule-002')) return 'disabled record remained in enabled results';
+          return true;
+        })()`,
+      },
+      {
+        name: "schedule usage filters retain no-toggle cards and work on disabled records",
+        expr: `(() => {
+          const q = selector => document.querySelector(selector);
+          const card = id => q('#scheduledSendCardList [data-schedule-card-id="' + id + '"]');
+          const enabledTab = q('button[data-schedule-status="enabled"]');
+          const disabledTab = q('button[data-schedule-status="disabled"]');
+          const usage = value => q('button[data-schedule-usage="' + value + '"]');
+          const counts = () => [
+            document.getElementById('scheduledSendEnabledCount').textContent.trim(),
+            document.getElementById('scheduledSendDisabledCount').textContent.trim(),
+          ].join('|');
+          const before = counts();
+          if (!enabledTab || !disabledTab || !usage('true') || !usage('false'))
+            return 'schedule status or usage filters missing';
+
+          enabledTab.click();
+          usage('false').click();
+          if (!card('schedule-001') || card('schedule-001').querySelector('[data-schedule-usage-toggle]'))
+            return 'no-toggle schedule-001 should remain visible in the unused filter';
+          const enabledUnused = card('schedule-004');
+          const enabledToggle = enabledUnused && enabledUnused.querySelector('[data-schedule-usage-toggle]');
+          if (!enabledToggle || enabledToggle.checked) return 'schedule-004 should be unused and toggleable';
+
+          disabledTab.click();
+          if (!card('schedule-003') || card('schedule-003').querySelector('[data-schedule-usage-toggle]'))
+            return 'no-toggle schedule-003 should remain visible in the unused filter';
+          usage('true').click();
+          if (!card('schedule-003') || card('schedule-003').querySelector('[data-schedule-usage-toggle]'))
+            return 'no-toggle schedule-003 should remain visible in the used filter';
+          let disabledUsed = card('schedule-002');
+          let disabledToggle = disabledUsed && disabledUsed.querySelector('[data-schedule-usage-toggle]');
+          if (!disabledToggle || disabledToggle.disabled || !disabledToggle.checked)
+            return 'disabled schedule-002 usage toggle should be enabled and checked';
+          disabledToggle.click();
+          if (card('schedule-002')) return 'switching disabled schedule-002 off did not remove it from used results';
+          if (counts() !== before) return 'usage toggle changed lifecycle counts';
+
+          usage('false').click();
+          disabledUsed = card('schedule-002');
+          disabledToggle = disabledUsed && disabledUsed.querySelector('[data-schedule-usage-toggle]');
+          if (!disabledToggle || disabledToggle.disabled || disabledToggle.checked)
+            return 'disabled schedule-002 did not retain its off toggle';
+          disabledToggle.click();
+          if (card('schedule-002')) return 'switching disabled schedule-002 on did not remove it from unused results';
+          usage('true').click();
+          if (!card('schedule-002') || !card('schedule-002').querySelector('[data-schedule-usage-toggle]').checked)
+            return 'disabled schedule-002 usage state did not restore';
+          if (counts() !== before) return 'restoring usage changed lifecycle counts';
+          enabledTab.click();
+          if (!usage('true').classList.contains('is-active'))
+            return 'usage fixture did not restore to used filter';
+          return true;
+        })()`,
+      },
+      {
+        name: "schedule new modal clear, example no-op, discard, and preview disclosure",
+        viewport: { width: 375, height: 1000, mobile: true },
+        expr: `(() => {
+          const modal = document.getElementById('modalScheduledSendBackdrop');
+          const field = name => modal.querySelector('[name="' + name + '"]');
+          const setValue = (input, value) => {
+            input.value = value;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+          };
+          const openNew = document.querySelector('[data-schedule-action="new"]');
+          if (!openNew) return 'new schedule action missing';
+          openNew.click();
+          if (!modal.classList.contains('open')) return 'new schedule modal did not open';
+          const form = document.getElementById('scheduledSendModalForm');
+          if (!form || !modal.contains(form)) return 'scheduled send form missing';
+          for (const name of ['title', 'category', 'days', 'hour', 'content'])
+            if (!field(name)) return 'missing modal field: ' + name;
+          if (field('category').value !== '全部' || field('title').value !== '' ||
+              field('days').value !== '' || field('hour').value !== '' || field('content').value !== '我是簡訊內容')
+            return 'new modal defaults mismatch';
+          const hint = modal.querySelector('[data-schedule-date-hint]');
+          if (!hint || !hint.textContent.includes('入住日') || !hint.textContent.includes('前'))
+            return 'new modal date hint mismatch';
+          const phrases = modal.querySelectorAll('[data-schedule-phrase]');
+          if (phrases.length !== 16) return 'schedule phrase count: ' + phrases.length;
+          const example = modal.querySelector('[data-schedule-example]');
+          const clear = modal.querySelector('[data-schedule-modal-clear]');
+          const save = modal.querySelector('[data-schedule-modal-save]');
+          const preview = modal.querySelector('details[data-schedule-preview]');
+          if (!example || !clear || !save || !preview || !preview.open)
+            return 'new modal example, actions, or open preview missing';
+          if (!preview.textContent.includes('完整預覽')) return 'static complete-preview placeholder missing';
+          const summary = preview.querySelector('summary');
+          if (!summary) return 'preview disclosure summary missing';
+          summary.click();
+          if (preview.open) return 'preview disclosure did not collapse';
+          summary.click();
+          if (!preview.open) return 'preview disclosure did not reopen';
+
+          setValue(field('title'), 'draft title');
+          setValue(field('days'), '9');
+          setValue(field('hour'), '11');
+          setValue(field('content'), 'draft content');
+          const beforeExample = field('content').value;
+          example.click();
+          if (field('content').value !== beforeExample) return 'example button changed content without backend data';
+          clear.click();
+          if (field('title').value !== '' || field('days').value !== '' || field('hour').value !== '' ||
+              field('content').value !== '我是簡訊內容')
+            return 'clear did not reset new-form draft defaults';
+          setValue(field('title'), 'discarded title');
+          const close = modal.querySelector('[data-schedule-modal-close]');
+          if (!close) return 'modal close control missing';
+          close.click();
+          if (modal.classList.contains('open')) return 'new modal close did not discard draft';
+          openNew.click();
+          if (!modal.classList.contains('open') || field('title').value !== '' || field('content').value !== '我是簡訊內容')
+            return 'reopening new modal retained discarded draft';
+          modal.querySelector('[data-schedule-modal-close]').click();
+          if (document.documentElement.scrollWidth > document.documentElement.clientWidth)
+            return 'mobile page has horizontal overflow';
+          return true;
+        })()`,
+      },
+      {
+        name: "schedule edit saves fields to card and clear/close discard unsaved changes",
+        expr: `(() => {
+          const q = selector => document.querySelector(selector);
+          const modal = document.getElementById('modalScheduledSendBackdrop');
+          const field = name => modal.querySelector('[name="' + name + '"]');
+          const setValue = (input, value) => {
+            input.value = value;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+          };
+          q('button[data-schedule-status="enabled"]').click();
+          q('button[data-schedule-usage="false"]').click();
+          const card = () => q('#scheduledSendCardList [data-schedule-card-id="schedule-004"]');
+          const record = card();
+          const edit = record && record.querySelector('[data-schedule-action="edit"]');
+          if (!edit) return 'editable schedule-004 missing';
+          edit.click();
+          if (!modal.classList.contains('open')) return 'edit schedule modal did not open';
+          if (field('days').value !== '0' || field('hour').value !== '0' || field('content').value !== '我是簡訊內容')
+            return 'edit modal did not load card values';
+          const hint = modal.querySelector('[data-schedule-date-hint]');
+          if (!hint || !hint.textContent.includes('入住日') || !hint.textContent.includes('前'))
+            return 'edit modal date hint does not reflect record metadata';
+
+          setValue(field('title'), 'Smoke schedule title');
+          setValue(field('days'), '17');
+          setValue(field('hour'), '13');
+          setValue(field('content'), 'Smoke schedule body');
+          modal.querySelector('[data-schedule-modal-save]').click();
+          if (modal.classList.contains('open')) return 'save did not close edit modal';
+          let savedCard = card();
+          const result = savedCard && savedCard.querySelector('.scheduled-send-result-strip');
+          const body = savedCard && savedCard.querySelector('textarea');
+          if (!savedCard || !savedCard.textContent.includes('Smoke schedule title') ||
+              !result || !result.textContent.includes('17') || !result.textContent.includes('13') ||
+              !body || body.value !== 'Smoke schedule body')
+            return 'saved title/day/hour/content were not reflected on schedule-004';
+
+          savedCard.querySelector('[data-schedule-action="edit"]').click();
+          if (field('title').value !== 'Smoke schedule title' || field('days').value !== '17' ||
+              field('hour').value !== '13' || field('content').value !== 'Smoke schedule body')
+            return 'reopened edit form did not retain saved card values';
+          setValue(field('title'), 'discarded edit');
+          const close = modal.querySelector('[data-schedule-modal-close]');
+          close.click();
+          if (modal.classList.contains('open')) return 'edit close did not close modal';
+          card().querySelector('[data-schedule-action="edit"]').click();
+          if (field('title').value !== 'Smoke schedule title') return 'closing edit persisted an unsaved title';
+          setValue(field('title'), 'clear draft');
+          modal.querySelector('[data-schedule-modal-clear]').click();
+          if (field('title').value !== '' || field('days').value !== '' || field('hour').value !== '' ||
+              field('content').value !== '我是簡訊內容')
+            return 'clear did not reset edit-form draft';
+          modal.querySelector('[data-schedule-modal-close]').click();
+          card().querySelector('[data-schedule-action="edit"]').click();
+          if (field('title').value !== 'Smoke schedule title' || field('days').value !== '17' ||
+              field('hour').value !== '13' || field('content').value !== 'Smoke schedule body')
+            return 'clearing edit draft changed saved card data';
+          modal.querySelector('[data-schedule-modal-close]').click();
+          return true;
+        })()`,
+      },
+      {
+        name: "schedule view modal disables fields and retains close control",
+        viewport: { width: 375, height: 1000, mobile: true },
+        expr: `(() => {
+          const q = selector => document.querySelector(selector);
+          const modal = document.getElementById('modalScheduledSendBackdrop');
+          q('button[data-schedule-status="disabled"]').click();
+          q('button[data-schedule-usage="true"]').click();
+          const card = q('#scheduledSendCardList [data-schedule-card-id="schedule-002"]');
+          const view = card && card.querySelector('[data-schedule-action="view"]');
+          if (!view) return 'disabled schedule-002 view action missing';
+          view.click();
+          if (!modal.classList.contains('open')) return 'view modal did not open';
+          for (const name of ['title', 'category', 'days', 'hour', 'content']) {
+            const input = modal.querySelector('[name="' + name + '"]');
+            if (!input || !input.disabled) return 'view field is editable: ' + name;
+          }
+          if ([...modal.querySelectorAll('[data-schedule-phrase], [data-schedule-example]')].some(node => !node.disabled))
+            return 'view phrase or example control is enabled';
+          const clear = modal.querySelector('[data-schedule-modal-clear]');
+          const save = modal.querySelector('[data-schedule-modal-save]');
+          if (!clear || !clear.hidden || !save || !save.hidden) return 'view exposes clear or save';
+          const closes = [...modal.querySelectorAll('[data-schedule-modal-close]')];
+          const footerClose = closes[closes.length - 1];
+          if (!footerClose || !footerClose.textContent.includes('關閉')) return 'view footer close action missing';
+          footerClose.click();
+          if (modal.classList.contains('open')) return 'view footer close failed';
+          q('button[data-schedule-status="enabled"]').click();
+          q('button[data-schedule-usage="true"]').click();
+          if (document.documentElement.scrollWidth > document.documentElement.clientWidth)
+            return 'mobile view has horizontal overflow';
+          return true;
+        })()`,
+      },
+      {
+        name: "schedule mouse drag from number and title saves target-center order",
+        viewport: { width: 1440, height: 1000 },
+        scheduleCardPointer: true,
       },
       ...SHELL_CHECKS,
       ...SESSION_MODAL_CHECKS,
@@ -3806,19 +4116,24 @@ async function testQuantityInventoryPointer(cdp, sessionId) {
   }
 }
 
-async function testSmsCardPointer(cdp, sessionId) {
+async function testCardPointer(cdp, sessionId, config) {
   const ev = (expression) => evaluate(cdp, sessionId, expression);
-  const ids = () => ev("[...document.querySelectorAll('[data-sms-card-id]')].map(n => n.dataset.smsCardId)");
-  for (const start of ['[data-sms-sort-handle]', '.sms-text-card-title']) {
+  const selector = JSON.stringify(config.cardSelector);
+  const datasetKey = JSON.stringify(config.cardDatasetKey);
+  const ids = () => ev(`Array.from(document.querySelectorAll(${selector})).map(n => n.dataset[${datasetKey}])`);
+  for (const start of config.startSelectors) {
     const before = await ids();
-    if (before.length !== 2) return 'drag regression requires the two enabled demo cards';
+    if (before.length !== 2) return 'drag regression requires exactly two visible demo cards';
     const points = await ev(`(() => {
-      const cards = [...document.querySelectorAll('[data-sms-card-id]')];
+      const cards = [...document.querySelectorAll(${selector})];
       cards[0].scrollIntoView({block:'nearest'});
-      const source = cards[0].querySelector(${JSON.stringify(start)}).getBoundingClientRect();
+      const handle = cards[0].querySelector(${JSON.stringify(start)});
+      if (!handle) return null;
+      const source = handle.getBoundingClientRect();
       const target = cards[1].getBoundingClientRect();
       return {from:{x:source.left+source.width/2,y:source.top+source.height/2},to:{x:target.left+target.width/2,y:target.top+target.height/2}};
     })()`);
+    if (!points) return start + ' drag source selector missing';
     const { from, to } = points;
     await cdp.send('Input.dispatchMouseEvent', {type:'mousePressed',x:from.x,y:from.y,button:'left',buttons:1,clickCount:1}, sessionId);
     for (let step = 1; step <= 12; step += 1) {
@@ -3827,11 +4142,44 @@ async function testSmsCardPointer(cdp, sessionId) {
     await cdp.send('Input.dispatchMouseEvent', {type:'mouseReleased',x:to.x,y:to.y,button:'left',buttons:0,clickCount:1}, sessionId);
     const after = await ids();
     if (after.join('|') !== before.slice().reverse().join('|')) return start + ' center drop did not reorder';
-    const saved = await ev("JSON.parse(localStorage.getItem('swift.sms-text.order.v1') || '[]')");
+    const saved = await ev(`JSON.parse(localStorage.getItem(${JSON.stringify(config.storageKey)}) || '[]')`);
     const visibleSaved = saved.filter(id => after.includes(id));
     if (visibleSaved.join('|') !== after.join('|')) return start + ' drop did not immediately save visible order';
+    if (config.announcementSelector) {
+      const announcement = await ev(`document.querySelector(${JSON.stringify(config.announcementSelector)})?.textContent.trim() || ''`);
+      if (!announcement.includes('卡片排序已更新')) return start + ' drop did not announce the saved order';
+    }
   }
   return true;
+}
+
+async function testSmsCardPointer(cdp, sessionId) {
+  return testCardPointer(cdp, sessionId, {
+    cardSelector: '[data-sms-card-id]',
+    cardDatasetKey: 'smsCardId',
+    startSelectors: ['[data-sms-sort-handle]', '.sms-text-card-title'],
+    storageKey: 'swift.sms-text.order.v1',
+  });
+}
+
+async function testScheduledSendCardPointer(cdp, sessionId) {
+  const ev = (expression) => evaluate(cdp, sessionId, expression);
+  await ev(`(() => {
+    document.querySelector('button[data-schedule-status="enabled"]').click();
+    document.querySelector('button[data-schedule-usage="false"]').click();
+    return true;
+  })()`);
+  try {
+    return await testCardPointer(cdp, sessionId, {
+      cardSelector: '[data-schedule-card-id]',
+      cardDatasetKey: 'scheduleCardId',
+      startSelectors: ['[data-schedule-sort-handle]', '.scheduled-send-card-title'],
+      storageKey: 'swift.scheduled-send.order.v1',
+      announcementSelector: '#scheduledSendSortAnnouncement',
+    });
+  } finally {
+    await ev(`document.querySelector('button[data-schedule-usage="true"]').click()`).catch(() => {});
+  }
 }
 
 async function testPage(cdp, baseUrl, page, consoleErrors) {
@@ -3881,6 +4229,8 @@ async function testPage(cdp, baseUrl, page, consoleErrors) {
       }
       const result = check.smsCardPointer
         ? await testSmsCardPointer(cdp, sessionId)
+        : check.scheduleCardPointer
+        ? await testScheduledSendCardPointer(cdp, sessionId)
         : check.pointer
         ? await testProjectPointer(cdp, sessionId, check.pointer)
         : check.quantityInventoryPointer

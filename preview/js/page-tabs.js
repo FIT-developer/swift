@@ -20,6 +20,7 @@ var TAB_PAGES = {
   "quantity-price-table.html": "數量價格表",
   "member-data.html": "會員資料",
   "sms-text.html": "簡訊文本與發送",
+  "scheduled-send.html": "排程發送",
 };
 
 function readTabs() {
