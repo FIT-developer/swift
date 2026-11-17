@@ -266,7 +266,8 @@ const APP_CSS_LOADED_CHECK = {
         "sms-text.css",
         "sms-text-modal.css",
         "scheduled-send.css",
-        "scheduled-send-modal.css"
+        "scheduled-send-modal.css",
+        "housing-statistics.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -975,6 +976,169 @@ const MEMBER_DATA_CHECKS = [
 ];
 
 const PAGES = [
+  {
+    file: "housing-statistics.html",
+    readyExpr: `!document.querySelector('[data-partial]') &&
+      document.querySelector('.hs-content')?.dataset.hsReady === 'true' &&
+      document.querySelectorAll('#hsCurrentYearTable tbody tr').length === 35`,
+    checks: [
+      APP_CSS_LOADED_CHECK,
+      {
+        name: "housing report preserves both annual column and row structures",
+        expr: `(() => {
+          const current = document.getElementById('hsCurrentYearTable');
+          const previous = document.getElementById('hsPreviousYearTable');
+          if (current.tHead.rows[0].cells.length !== 19 || previous.tHead.rows[0].cells.length !== 9)
+            return 'annual columns differ';
+          if (current.tBodies.length !== 5 || [...current.tBodies].some(b => b.rows.length !== 7))
+            return 'current lead-time groups differ';
+          if ([...current.tBodies].some(b => b.rows[0].cells[0].rowSpan !== 7 || b.rows[0].cells[1].rowSpan !== 7))
+            return 'lead-time merged cells differ';
+          if (previous.tBodies[0].rows.length !== 6 || previous.tBodies[0].rows[5].cells[0].textContent !== '合計')
+            return 'previous total missing';
+          const headings = [...current.tHead.rows[0].cells].map(c => c.textContent);
+          if (headings.includes('累計金額') || !previous.tHead.textContent.includes('累計金額'))
+            return 'unconfirmed cumulative amount column';
+          const style = getComputedStyle(current.tHead.rows[0].cells[0]);
+          if (style.fontSize !== '16px' || style.fontWeight !== '400' || style.backgroundColor !== 'rgb(255, 255, 255)')
+            return 'table header style differs';
+          return !!document.querySelector('a[href="housing-statistics.html"].sub-item-selected');
+        })()`,
+      },
+      {
+        name: "housing comparison toggles only previous table and NoShow stays independent",
+        expr: `(() => {
+          const form = document.getElementById('housingStatisticsFilter');
+          form.reset();
+          const current = document.getElementById('hsCurrentYearTable');
+          const original = current.outerHTML;
+          const comparison = form.elements.comparePrevious;
+          const noshow = form.elements.noShow;
+          const previous = document.getElementById('hsPreviousYearRegion');
+          if (!previous.hidden || !form.elements.comparisonScope.disabled) return 'comparison default differs';
+          comparison.click();
+          if (previous.hidden || form.elements.comparisonScope.disabled || noshow.checked) return 'comparison did not open independently';
+          noshow.click();
+          if (previous.hidden || current.outerHTML !== original) return 'NoShow changed table';
+          comparison.click();
+          if (!previous.hidden || !noshow.checked || current.outerHTML !== original) return 'comparison touched left report or NoShow';
+          form.reset();
+          return true;
+        })()`,
+      },
+      {
+        name: "housing query snapshots drafts and reset restores Taipei defaults",
+        expr: `(() => {
+          const root = document.querySelector('.hs-content');
+          const form = document.getElementById('housingStatisticsFilter');
+          form.reset();
+          const today = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+          if (form.elements.dateStart.value !== today || form.elements.dateEnd.value !== today) return 'today defaults differ';
+          let event = null;
+          const listener = e => event = e.detail;
+          root.addEventListener('housing-statistics:query', listener);
+          form.elements.dateStart.value = '2025-01-01';
+          form.elements.dateEnd.value = '2025-01-31';
+          form.elements.noShow.click();
+          if (event !== null) return 'draft changes submitted early';
+          const before = document.getElementById('hsCurrentYearTable').outerHTML;
+          form.querySelector('[type="submit"]').click();
+          root.removeEventListener('housing-statistics:query', listener);
+          if (!event || event.dateStart !== '2025-01-01' || event.dateEnd !== '2025-01-31' || !event.noShow)
+            return 'query snapshot missing draft values';
+          if (document.getElementById('hsCurrentYearTable').outerHTML !== before) return 'query recalculated mock report';
+          form.elements.comparePrevious.click();
+          form.reset();
+          if (form.elements.dateStart.value !== today || form.elements.dateEnd.value !== today || form.elements.noShow.checked || form.elements.comparePrevious.checked)
+            return 'clear did not restore confirmed defaults';
+          return [...form.querySelectorAll('select')].every(s => s.value === 'all') && document.getElementById('hsPreviousYearRegion').hidden;
+        })()`,
+      },
+      {
+        name: "housing quick periods navigate actual date ranges and reset offsets",
+        expr: `(() => {
+          const form = document.getElementById('housingStatisticsFilter');
+          const period = (key, step) => form.querySelector('[data-hs-period="'+key+'"] [data-hs-period-step="'+step+'"]').click();
+          const start = () => form.elements.dateStart.value;
+          const end = () => form.elements.dateEnd.value;
+          form.reset();
+          const today = start();
+          period('today', 1);
+          if (new Date(start()+'T12:00:00Z') - new Date(today+'T12:00:00Z') !== 86400000 || start() !== end()) return 'daily step differs';
+          period('week', 0);
+          if (new Date(start()+'T12:00:00Z').getUTCDay() !== 1 || new Date(end()+'T12:00:00Z') - new Date(start()+'T12:00:00Z') !== 6*86400000)
+            return 'Monday week differs';
+          period('month', 0);
+          if (!start().endsWith('-01') || new Date(end()+'T12:00:00Z').getUTCMonth() !== new Date(start()+'T12:00:00Z').getUTCMonth()) return 'month boundaries differ';
+          period('year', 0);
+          if (!start().endsWith('-01-01') || !end().endsWith('-12-31')) return 'year boundaries differ';
+          period('today', 1);
+          form.reset();
+          period('today', 1);
+          if (new Date(start()+'T12:00:00Z') - new Date(today+'T12:00:00Z') !== 86400000) return 'reset left stale offsets';
+          form.reset();
+          return true;
+        })()`,
+      },
+      {
+        name: "housing download remains a backend UI hook without changing the report",
+        expr: `(() => {
+          const root = document.querySelector('.hs-content');
+          const before = document.querySelector('.hs-table-shell').outerHTML;
+          let calls = 0;
+          root.addEventListener('housing-statistics:download', () => calls++, {once:true});
+          document.querySelector('[data-hs-download]').click();
+          return calls === 1 && before === document.querySelector('.hs-table-shell').outerHTML && !document.querySelector('a[download]');
+        })()`,
+      },
+      {
+        name: "housing rich help retains corrected source copy and responsive bounds",
+        viewport: { width: 375, height: 667, mobile: true },
+        expr: `(async () => {
+          const button = document.getElementById('hsHelpButton');
+          const panel = document.getElementById('hsHelpPopover');
+          button.click();
+          await new Promise(r => setTimeout(r, 30));
+          const rect = panel.getBoundingClientRect();
+          const labels = [...panel.querySelectorAll('.hs-help-label')];
+          const result = panel.matches(':popover-open') && button.getAttribute('aria-expanded') === 'true' &&
+            labels.length === 7 && labels.filter(n => n.textContent === '間數').length === 1 &&
+            panel.textContent.includes('hotelnabe') && panel.textContent.includes('siteminder') &&
+            rect.left >= 12 && rect.right <= document.documentElement.clientWidth - 12 && rect.top >= 12 && rect.bottom <= 655;
+          button.click();
+          return result;
+        })()`,
+      },
+      ...[768, 1023, 1024, 1440].map(width => ({
+        name: 'housing annual arrangement and overflow at '+width+'px',
+        viewport: { width, height: 900 },
+        expr: `(() => {
+          const form = document.getElementById('housingStatisticsFilter');
+          form.reset(); form.elements.comparePrevious.click();
+          const a = document.getElementById('hsCurrentYearRegion').getBoundingClientRect();
+          const b = document.getElementById('hsPreviousYearRegion').getBoundingClientRect();
+          const expectedRow = matchMedia('(min-width: 1024px)').matches;
+          const layout = getComputedStyle(document.querySelector('.hs-tables-layout')).flexDirection;
+          const valid = expectedRow ? layout === 'row' && Math.abs(a.top-b.top)<1 && b.left>a.left : layout === 'column' && b.top>a.bottom;
+          const group = document.querySelector('.hs-comparison-row').getBoundingClientRect();
+          const toggle = document.querySelector('.hs-comparison-row > .hs-switch').getBoundingClientRect();
+          const select = document.querySelector('.hs-comparison-row > .hs-select-wrap').getBoundingClientRect();
+          const controlsValid = expectedRow
+            ? select.left > toggle.right && Math.abs(select.top + select.height/2 - toggle.top - toggle.height/2) < 1
+            : select.top >= toggle.bottom + 11 && Math.abs(select.width - group.width) < 1 && toggle.width === 64 && toggle.height === 28;
+          form.reset();
+          return valid && controlsValid && document.documentElement.scrollWidth <= document.documentElement.clientWidth;
+        })()`,
+      })),
+      {
+        name: "housing help trusted click/outside/Escape and native calendar triggers",
+        viewport: { width: 375, height: 900, mobile: true },
+        housingControls: true,
+      },
+      ...SHELL_CHECKS,
+      ...SESSION_MODAL_CHECKS,
+    ],
+  },
   {
     file: "sms-text.html",
     readyExpr: `
@@ -4182,6 +4346,59 @@ async function testScheduledSendCardPointer(cdp, sessionId) {
   }
 }
 
+async function testHousingControls(cdp, sessionId) {
+  const ev = expression => evaluate(cdp, sessionId, expression);
+  async function point(x, y) {
+    await cdp.send("Input.dispatchMouseEvent", {type:"mousePressed",button:"left",clickCount:1,x,y}, sessionId);
+    await cdp.send("Input.dispatchMouseEvent", {type:"mouseReleased",button:"left",clickCount:1,x,y}, sessionId);
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+  async function click(selector) {
+    const deadline = Date.now() + 1500;
+    while (Date.now() < deadline) {
+      const rect = await ev(`(() => {
+        const n = document.querySelector(${JSON.stringify(selector)});
+        n.scrollIntoView({block:'center',inline:'nearest'});
+        const r=n.getBoundingClientRect(), x=r.x+r.width/2, y=r.y+r.height/2;
+        return {x,y,ready:n.contains(document.elementFromPoint(x,y))};
+      })()`);
+      if (rect.ready) {
+        await point(rect.x, rect.y);
+        return;
+      }
+      await new Promise(resolve => setTimeout(resolve, 40));
+    }
+    throw new Error("control remained covered: " + selector);
+  }
+  async function escape() {
+    await cdp.send("Input.dispatchKeyEvent", {type:"keyDown",key:"Escape",code:"Escape",windowsVirtualKeyCode:27}, sessionId);
+    await cdp.send("Input.dispatchKeyEvent", {type:"keyUp",key:"Escape",code:"Escape",windowsVirtualKeyCode:27}, sessionId);
+  }
+  await click("#hsHelpButton");
+  if (!await ev("document.getElementById('hsHelpPopover').matches(':popover-open')")) return "trusted help click did not open";
+  await point(2, 2);
+  if (await ev("document.getElementById('hsHelpPopover').matches(':popover-open')")) return "outside click did not close";
+  await click("#hsHelpButton");
+  await escape();
+  if (await ev("document.getElementById('hsHelpPopover').matches(':popover-open')")) return "Escape did not close";
+  for (const name of ["dateStart", "dateEnd"]) {
+    await ev(`(() => {
+      const input=document.getElementById('housingStatisticsFilter').elements.namedItem('${name}');
+      window.__housingPickerCalled=false;
+      input.__originalShowPicker=input.showPicker;
+      input.showPicker=function(){window.__housingPickerCalled=true;return this.__originalShowPicker();};
+    })()`);
+    await click(`[data-hs-calendar="${name}"]`);
+    if (!await ev("window.__housingPickerCalled")) return name + " custom calendar button did not invoke native picker";
+    await escape();
+    await ev(`(() => {
+      const input=document.getElementById('housingStatisticsFilter').elements.namedItem('${name}');
+      delete input.showPicker;delete input.__originalShowPicker;
+    })()`);
+  }
+  return true;
+}
+
 async function testPage(cdp, baseUrl, page, consoleErrors) {
   const failures = [];
   const { targetId } = await cdp.send("Target.createTarget", { url: "about:blank" });
@@ -4227,7 +4444,9 @@ async function testPage(cdp, baseUrl, page, consoleErrors) {
           sessionId,
         );
       }
-      const result = check.smsCardPointer
+      const result = check.housingControls
+        ? await testHousingControls(cdp, sessionId)
+        : check.smsCardPointer
         ? await testSmsCardPointer(cdp, sessionId)
         : check.scheduleCardPointer
         ? await testScheduledSendCardPointer(cdp, sessionId)
@@ -4327,7 +4546,7 @@ async function main() {
       await exited;
     }
     server.kill();
-    rmSync(userDataDir, { recursive: true, force: true, maxRetries: 3 });
+    rmSync(userDataDir, { recursive: true, force: true, maxRetries: 8, retryDelay: 200 });
   }
 
   if (failed) {

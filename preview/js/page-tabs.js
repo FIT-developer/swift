@@ -21,6 +21,7 @@ var TAB_PAGES = {
   "member-data.html": "會員資料",
   "sms-text.html": "簡訊文本與發送",
   "scheduled-send.html": "排程發送",
+  "housing-statistics.html": "住房統計表",
 };
 
 function readTabs() {

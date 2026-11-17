@@ -5,8 +5,309 @@
 > （歷史決策可能已被推翻，一律以本檔最新 session 為準）。
 > 本檔超過 ~25 個 session 時，將最舊的 10 個搬進 archive。
 > Session127 至 166 見 [歷史封存](progress-archive-s127-s166.md).
+> Session167 至 176 見 [歷史封存](progress-archive-s167-s176.md).
 
 ---
+
+## Session 194: 提交與推送住房統計頁 (2026-11-17)
+
+### 本輪改動與重要決定
+
+- 使用者明確授權 commit & push, 將 Session191 至 193 的讀取紀錄,
+  current page / table / help contracts, 住房統計獨立頁與 responsive
+  comparison controls 修正一併提交.
+- 範圍包含 HTML / help partial / domain CSS, page / table renderer /
+  全部 mock data / 共用日期 modules, 導航 / page-tabs / CSS imports,
+  partial manifest / browser smoke, progress 與 Session167 至 176 封存.
+  對應新檔全部納入, 不將待實作或歷史紀錄當成排除規格的理由.
+- 去年同期只控制 2025 表格; <1024px comparison selection 獨佔下一列
+  全寬, toggle 保留 64 x 28 原尺寸與 label 後位置. NoShow / 正式資料 /
+  統計計算 / 下載仍保留後端接線, 不增加前端商業邏輯.
+- 原始 Figma JSON / PNG / SVG 與 QA probes / 截圖依既有 ignore 規則
+  保留本機 session-191 至 193; 來源 ids / 確認規則 / 完整假資料與
+  驗證結論保存於版本化規格及實作中.
+- 本輪進入 commit/push flow, 實際 SHA 與遠端狀態以 git history 為準.
+
+### 驗證與後續
+
+- git fetch origin 成功, main 與 origin/main ahead / behind 為 0 / 0.
+- 沿用 Session193 最後完整 Chrome smoke exit 0: 14 頁 / 196 項,
+  住房統計 17 項, 並有最後 14 組 on / off responsive controls 核對通過.
+  Session192 額外 60 組來源 / layout / native scroll probes 通過.
+- 本輪只更新交接與規格 metadata, 未變更產品行為; 提交前核對全部
+  tracked / untracked 檔案與封存完整性, 執行四項 lint / JS syntax /
+  whitespace checks, 並核對 staged 清單.
+- 推送後核對工作樹及 HEAD / origin/main, 不遺留本次應提交來源檔案.
+- 無新增 token / icon / 全域規則, tokens.md / start.md 不需修改.
+
+## Session 193: 去年同期控制項在手機與平板上下排列 (2026-11-17)
+
+### 本輪改動與確認事項
+
+- 使用者指出平板含以下的去年同期選單太窄, 要求與 toggle 上下排列;
+  隨後補充 toggle 維持原本大小, 只有 selection 可 width 100%.
+- 先更新 housing-statistics page contract, 再於 <1024px 將 comparison
+  select 放到 grid 的完整下一列. Label / switch 留在第一列,
+  switch 保持原本 64 x 28 及 label 後的位置, 不拉寬或改為右對齊.
+- 沿用原本 grid 欄寬與 Spacing/12 gap; >=1024px 保持原本並排.
+  未更動 table 配置、toggle 邏輯、資料或其他表單欄位.
+- 現有 smoke viewport cases 補上手機 / 平板 select 全寬、與 switch
+  上下位置及 switch 64 x 28 的 regression checks, 不增加新的測試依賴.
+
+### 驗證與下一步
+
+- 360 / 375 / 768 / 900 / 1023 / 1024 / 1440 各核對 off / on,
+  共 14 組通過. Switch 全部為 64 x 28; 375px select 為 311px,
+  768px select 為 422px, 並驗證較長範例文字的可用顯示寬度.
+- Page 無水平溢出, enabled / disabled selection 狀態符合原 contract,
+  console error 0. JSON 與八張手機 / 平板 / 桌面截圖在 session-193.
+- 四項 lint / smoke syntax / git diff --check exit 0.
+  最後完整 browser smoke exit 0: 14 頁 / 196 項, 住房統計 17 項.
+- 本輪 self-tested, 待使用者驗收. Preview 8000 可連線,
+  http://localhost:8000/housing-statistics.html.
+  無新增 token / icon / 全域規則, tokens.md / start.md 不需修改.
+
+## Session 192: 住房統計規格確認與獨立頁實作 (2026-11-17)
+
+### 本輪改動與確認事項
+
+- 使用者回覆八項 checkpoint 後明確授權開始實作.
+  去年同期 toggle 只切換右側 2025 表的出現與隱藏, 不改左側 2026 表的
+  欄位 / 數值 / 前期差異 / 成長率; NoShow 業務邏輯與下載交後端.
+- 日期預設及清除為 Asia/Taipei 今天至今天, 各選單全部, 兩開關關閉;
+  按查詢才提交 draft filters, 不計算或刷新假資料.
+- 表格各自欄位與分組依圖保留. 說明由 info + 說明按鈕開啟.
+  使用者自行刪除重複間數列後, live reread `2836:109151` 為 745 x 404,
+  已核對當前 JSON / PNG, 以此取代先前 442px 高的文案來源.
+- 使用者另確認 RWD: <1024px 兩年度 table 上下排列, >=1024px 左右並排;
+  表內仍可橫向捲動, 不是把欄位轉成直式卡片.
+- 寫入 current page contract 與 table / help components, 記錄 current
+  node ids / read date / confirmed defaults / 舊規格差異 checkpoint.
+  第一批主頁 + on-state variant + 修正說明 + 同來源展開 table 合併使用.
+- 新增 housing-statistics.html / domain CSS / page module / table renderer /
+  完整 Figma 假資料 module / help partial. Aside 啟用住房統計真實連結,
+  page-tabs 使用 Figma 住房統計表文字, 登記 partial manifest 與 CSS smoke.
+- Native date inputs 保留鍵盤與 picker, 日曆圖示確實呼叫原生 picker;
+  以 DOM 文字鏡像 ISO 值, 避免瀏覽器 locale 將閉合欄位改成斜線格式.
+  今日 / 週 / 月 / 年區間的日期運算從 member-data 原樣抽成
+  date-periods.js, 兩頁共用, 原會員頁其他行為不變.
+- Query / download emit 本頁 CustomEvent 作後端接線邊界;
+  不增加下載檔案、NoShow 篩選、真實統計、成功訊息或新 modal.
+  只有全部的選單不自行增加未定義選項.
+- 查詢區沿用 member-data container-query 模式, 本頁短欄位以 300px
+  流動欄組需求反推 980 / 640px content thresholds, 兼顧 1440px scrollbar.
+  不在同一元素疊加衝突的 Tailwind padding / grid class.
+- 表格使用單一外框; 桌面共用橫捲, 小螢幕各自橫捲. 用 Figma source
+  geometry 保留 1469 / 701px 表寬、38px 表頭、46px 明細列與合併分組.
+  Inside stroke / border box 的內距差以現有 spacing token 減 border 校正.
+- 說明使用 native auto popover, click / outside / Escape, 無 backdrop;
+  保留深底 / 黃標題 / 左箭頭與修正後完整文案, 內容過高時內部捲動.
+  17 個頁內 icon 以現有 SVG mask + Text/800 控色, 無新增 icon 或 token.
+
+### 驗證與交接
+
+- 本輪 self-tested, 待使用者驗收. 來源資料在 session-191, 本輪 live help 與
+  viewport / state 截圖及 source probes 存於 session-192.
+- 初次完整 smoke 的其他 13 頁通過; 住房頁新增 17 項檢查.
+  Trusted click 曾命中切換 viewport 後仍在滑出的 sidebar,
+  現改為確認目標未被覆蓋後再點擊, isolated 17 項 assertions 通過.
+- 短版 isolated run 曾於 Chrome profile teardown 出現 ENOTEMPTY,
+  已為自有暫存 profile 增加 bounded retry, 不改應用程式行為.
+- 最後完整 Chrome smoke exit 0: 14 頁 / 196 項, 住房統計 17 項;
+  包含 readonly mock report, switch 獨立狀態, query snapshot / clear,
+  日期快速控制, help 原文 / viewport bounds, 原生 picker trusted click,
+  說明 click / outside / Escape 與跨 1024px table 排列.
+- Root 額外 60 / 60 probes 通過: 35 筆今年明細的 595 個 detail cells /
+  去年 54 cells / 28 個欄名及修正後全部說明文案均與原始 Figma JSON
+  逐格相同; 四種 switch 組合不改今年 DOM; 色彩與 16px / 400 字重核對.
+- 360 / 375 / 768 / 900 / 1023 / 1024 / 1280 / 1440 及側欄收折無頁面
+  水平溢出; 1469 x 1648 主表、38px 表頭、46px 明細列均符合來源.
+  手機 touch 橫捲今年表時, 去年 scrollLeft 保持 0; 去年表 keyboard
+  ArrowRight 可捲. 360 x 480 說明內部可捲且不超出 viewport.
+- 最終截圖涵蓋六尺寸 default / comparison, 三尺寸說明,
+  375 / 1440 雙 switch on, 桌面橫捲到去年表, tablet / desktop 側欄收折,
+  及窄矮視窗說明捲動. 日期顯示 YYYY-MM-DD, 快速控制箭頭依 Figma
+  為 24px 既有 SVG mask, 並非舊 member-data 的 16px 圖示尺寸.
+- 四項 lint / 六個相關 JS module 與 smoke syntax / git diff --check
+  exit 0; token mirror 仍 93, manifest 14 頁 / 3 standalone. Browser error 0.
+- 依 progress 超過約 25 筆時的規則, 將 Session167 至 176 的 10 筆原文
+  搬至 progress-archive-s167-s176.md, 搬移內容 SHA-256 核對一致;
+  progress 保留最近 16 筆, archive audit JSON 在 session-192.
+- 未新增 token / 全域規則, tokens.md / start.md 不需修改.
+  使用 sites skill 的 local-only repo / preview 流程與原生 Chrome CDP,
+  沒有建立 hosted Site. Preview server 8000 保持可連線,
+  直接頁面 http://localhost:8000/housing-statistics.html.
+  本輪待使用者驗收, 不自行 commit / push.
+
+## Session 191: 住房統計桌面 frame 批次讀取 (2026-11-17)
+
+### 本輪讀取與來源
+
+- 使用者要求 figma-go 批次讀完最後一頁住房統計後再集中詢問;
+  原則上所有統計數據均為假資料, 後續由後端套用.
+- git fetch origin 成功, main 與 origin/main ahead / behind 為 0 / 0.
+- 本輪工具清單未直接提供 figma-mcp-go, 透過本機既有 server 的
+  stdio follower 進行 read-only 工具呼叫; 未變更 Figma 或產品檔案.
+- 目前 Figma file swift / page components `1:2`, selection 僅有
+  `2830:113734` 住房統計表 - 1117 v1.1, 1440 x 2182.
+  完整逐節點 iterate 1808 個唯一節點, 並讀取去重 component definitions /
+  properties / hidden overrides, 不是僅讀 root summary.
+- Children checklist: wrapper `2830:112931` 1400 x 2158,
+  shell `2830:112932` 1400 x 2134, menu `2830:113735` 240 x 895.48,
+  body `2830:112934` 1140 x 2134, topbar `2830:112935` 1140 x 36,
+  filter `2830:112940` 1140 x 320, results `2830:113026` 2210 x 1730.
+- Filter 為三欄, 每欄 340px / 欄距 40px / padding 20 / radius 12;
+  日期起訖示例皆 2026-02-27, 四組今日 / 本週 / 本月 / 今年 stepper,
+  說明按鈕, 訂房來源 / 國籍 / 分類一 / 分類二皆為全部,
+  去年同期與 NoShow 皆 closure, 去年選單為 disabled / 全部,
+  底部清除 / 查詢. 上述是 shown state, 尚未確認為產品 defaults.
+- 下載 `2834:107968` 96 x 42, table `2835:111475` JSON bounds
+  2210 x 1672; 今年 group `2835:111476` 1469 x 1648, 含 19 欄 /
+  當日至提前四日 5 組, 每組星期日至六 7 列; 去年 group
+  `2835:112205` 701 x 772, 含 9 欄 / 5 組 / 合計列, 沒有星期欄.
+- 本輪核對可見 PNG / SVG: 表格白底表頭, 16px Regular, 水平線而無
+  垂直格線, 下降為 Color/Chart/green, 上升為
+  Color/Surface/Status-Negative, 0 為 Color/Text/800.
+  篩選底色 Neutral/75, 外框 Neutral/200; 本輪未新增 token.
+- DatePicker 的 Title show 為 false, JSON 仍有訂房間數隱藏文字;
+  topbar 也有 hidden icon / badge overrides, 不可照完整 JSON 全部呈現.
+- 原始 JSON / PNG / SVG, 逐節點 inventory, component state inventory,
+  待確認 read-report.json 皆保存於本機忽略的 qa-screenshots/session-191.
+  未建立尚未確認的 page / component spec 或實作.
+- 讀取 inventory 核對 1808 個 id 均唯一; 本輪僅修改交接文件,
+  conventions lint 與 git diff --check exit 0, 未執行 UI smoke.
+
+### 讀取限制與待確認事項
+
+- 匯出 API 回報 table width 2210, 實際 PNG / SVG 寬僅 1140;
+  今年 group 實際 PNG 寬 1124, 去年 group / 金額 / 入住人數個別匯出
+  皆為 1 x 1 空圖. JSON 結構與文字已讀, 裁切外的視覺尚無可驗證來源;
+  不因 JSON 有節點就判定它在當前狀態可見.
+- 全頁 search_nodes 回報 Unknown node type; 不宣稱已枚舉未選取的
+  sibling frames. 目前 selection 沒有 mobile / tablet 或說明彈窗來源.
+- Page / filter / 說明 / 下載 / 兩個 toggle / disabled select 的
+  prototype reactions 均為空, 不自行發明互動或資料計算規則.
+- 待集中確認: 去年同期開關控制哪些表與比較欄, 選單選項;
+  NoShow 為納入或僅顯示; 日期 defaults / 清除 reset;
+  說明內容與呈現 / 下載格式及前後端分工; mobile / tablet 佈局及固定欄.
+- 表格差異待確認: 今年沒有累計金額, 去年有; 去年有合計,
+  今年沒有. 數值不做真實統計一致性要求, 但欄位結構不自行補齊.
+- 舊規格差異 checkpoint: shell / 既有元件互動可列沿用候選;
+  白底表頭 / regular 字重與共用 table 範例不同, DatePicker 舊 spec
+  為間數計數器, 不可作為本頁來源. 確認後須記錄本頁 override / variant.
+- 本輪依使用者要求及 start.md 的 figma-go checkpoint 停在 Read,
+  等集中確認後再寫 spec; 不推定本輪已授權實作.
+
+### 後續批次 02: 開關開啟的篩選狀態
+
+- 使用者要求繼續讀其他 selection, 稍後才一起問; 原本六項問題先保留,
+  不將新的 figma-go 解讀為進入 spec 或實作的授權.
+- 本批 selection 為 `2835:114457` shirnk-model-1, 1140 x 320,
+  共 148 個唯一節點. 完整讀取 JSON / component definitions / hidden
+  overrides 並核對 PNG / SVG; 原始資料以 batch-02 前綴保存在 session-191,
+  未覆寫第一批來源. batch-02-read-report.json 為未確認的讀取筆記.
+- Children checklist: 日期與說明 `2835:114458` Frame 651, 340 x 218;
+  四組選單 `2835:114473` Frame 650, 340 x 204;
+  開關與去年選單 `2835:114491` Frame 635, 340 x 84;
+  操作列 `2835:114501` Frame 653, 1100 x 62.
+- 三欄 / 340px 欄寬 / 40px 欄距 / padding 20 / radius 12 與第一批相同.
+  篩選底色 Neutral/75, border Neutral/200 / 1px, 字體 16px Regular;
+  沒有新增 gradient 或 token.
+- 本批差異: 去年同期 `2835:114495` 與 NoShow `2835:114500` 皆為
+  type=open, PNG 確認綠色 track / knob 在右, 色值對應 Accent/Green.
+  去年選單 `2836:109097` 為 state=Default, 白底 / Text/800 / 全部,
+  與第一批 disabled 灰底不同. 查詢按鈕寬 56, 第一批為 50, 文字皆相同.
+- 四個 stepper 的 Title show 仍為 false, 訂房間數為隱藏 title;
+  原本日期與四組全部選單文字未變. 本批沒有 table, 不推定兩開關
+  分別控制哪些欄位或資料, 也不把兩者同時 open 當成狀態連動.
+- Root / 說明 / 兩個 toggle / 去年選單的 reactions 均為空.
+  本批只是補充 on-state 視覺, 不取代第一批主頁, 不推定 default.
+- 只更新交接與本機讀取資料, 疑點繼續累積, 等使用者提供其餘 frames
+  並表示讀完後再集中詢問. 無 page / component spec 或產品實作改動.
+
+### 後續批次 03: 說明 Tooltips 內容
+
+- 本批 selection 為 `2836:109151` Tooltips, instance of `194:2195`,
+  state=left, frame 745 x 442, 共 56 個唯一節點.
+  PNG / SVG 實際寬為 753, 多出左側箭頭 8px; height 442.
+- 完整讀取 selection / component definition 與 rendered PNG / SVG,
+  來源使用 batch-03 前綴保存於 session-191, 無覆寫前兩批.
+  去重 context 的 master Slot 仍是 sm (12) 佔位內容, 真實 rich text
+  以完整 selection 與 PNG 為準, 不可誤套 master placeholder.
+- Children checklist: Slot `I2836:109151;1907:71849` 721 x 426;
+  箭頭 `I2836:109151;194:2197` 9.53 x 8.25, x=-8 / y=14.76.
+  Slot 內 Frame 672 `I2836:109151;1907:71849;2836:109113`
+  包含 10 個順序區塊: 篩選條件標題 / 訂房來源 / 欄位顯示依據標題 /
+  筆數 / 間數 / 間數 / 金額 / 百分比 / 住房率 / RevPAR.
+- 訂房來源完整原文已保存, 包含實體 / 網路 / 官網訂房系統 / 官網 /
+  公共渠道 / 自設渠道及相關舉例; 不改寫來源名稱或文案.
+- 欄位說明: 筆數為當日住房之訂單量; 兩列間數皆為當日住房之房間數;
+  金額為當日個別房價總和; 百分比為該數據占全部日期之比例;
+  住房率為預訂單占開放房間數量之比率; RevPAR 為客房收入除以
+  可售客房總數, 或住房率乘平均房價. 此為 Figma 說明文案,
+  不據此增加真實計算或將 glossary 項目自行加入 table.
+- PNG / SVG 核對深底與箭頭為 Neutral/700, radius 6,
+  padding 8 / 12, 區塊 gap 8; 兩標題為 SubItem/Selected /
+  20px SemiBold, 內文與 label 為 Text/50 / 16px Regular / line box 22.
+  Label 四側描邊 Neutral/100, padding 4 / 8, 與內文 gap 6.
+  SVG 沒有 gradient; 未新增 token 或 icon.
+- 讀過 parent components/tooltips.md; 舊 dark sm 範例為 12px /
+  Neutral/100 / 垂直 padding 2, 不可覆蓋本批富文字 instance.
+  確認後應以本頁 variant 記錄差異, 不修改其他 tooltip 的共用 baseline.
+- Root reactions 為空, 前兩批說明按鈕也無 prototype link.
+  現已補到說明文案與視覺, 原待確認項目不再要求使用者提供全部內容;
+  觸發 / 關閉 / 小螢幕行為仍待確認. 重複間數列與 glossary 較廣的
+  指標範圍先原樣保存, 不刪除或改字.
+- 本輪僅保存讀取資料與交接, 疑點持續累積, 不在這批詢問或實作.
+  56 個 id 唯一, conventions lint 與 git diff --check exit 0.
+
+### 後續批次 04: 同來源展開表格與集中 checkpoint
+
+- 使用者表示這是最後一個 frame, 用來補足第一張展開內容且為相同來源,
+  讀完即可集中提問; 不需再要求使用者提供其餘 selection.
+- 本批 root `2835:112966` Table desktop, 2210 x 1672,
+  完整 iterate 1490 個唯一節點, 並核對完整 PNG / SVG 實際尺寸.
+  本批實際圖片不再受第一張 1140px 內容區裁切, 金額 / 入住人數 /
+  去年表格均有可視來源, 第一批的右側視覺讀取限制在此解除.
+- Children checklist: 今年 `2835:112967` Frame 117, 1469 x 1648,
+  x=16 / y=12, 19 欄 / 5 組提前天數 / 各 7 個星期列;
+  去年 `2835:113696` Frame 675, 701 x 772, x=1493 / y=12,
+  9 欄 / 5 組提前天數 / 合計. Group gap 8, table padding 12 / 16,
+  radius 12; 年份與提前天數欄分別寬 61 / 120, 星期寬 56,
+  數值 / 差異 / 成長率欄依來源分別為 56 或 88 / 88 / 72.
+- 今年欄位順序: 年份 / 提前幾天訂房 / 星期 / 筆數 / 前期差異 /
+  成長率 / 累計筆數 / 前期差異 / 成長率 / 間數 / 前期差異 / 成長率 /
+  累計間數 / 前期差異 / 成長率 / 金額 / 前期差異 / 成長率 / 入住人數.
+- 去年欄位順序: 年份 / 提前幾天訂房 / 筆數 / 累計筆數 / 間數 /
+  累計間數 / 金額 / 累計金額 / 入住人數. 五組之後有合計列.
+  今年沒有累計金額與合計, 去年沒有星期, 這些是欄位與結構差異,
+  不是需要對假資料做算術一致性要求; 仍列入 checkpoint, 不自行補欄.
+- 白底 / Neutral/200 外框 1px / Neutral/800 水平格線 / 無垂直格線,
+  16px Regular 表頭與內文, 下跌 Chart/green / 上升 Status-Negative /
+  zero Text/800 均與先前可見範圍一致. SVG 無 gradient.
+- 與第一批 `2835:111475` 遞迴比對全部文字 / name / type / styles /
+  bounds / children; 排除 node ids 與 root 畫布座標後, 結構 / 欄位 /
+  文字 / 樣式一致. 唯一 150 筆差異皆為趨勢文字 measured bounds
+  寬 23 變 28, 置中 x 32.5 變 30, cell bounds 與其他屬性均相同.
+  視為使用者已確認的相同來源補充, 不當成另一個產品狀態或新版本.
+- Root reactions 為空. 原始結果 / 完整 PNG / SVG / 全節點 inventory /
+  crosscheck / 未確認 contract 存於本機 session-191 的 batch-04 系列,
+  read-report.json 已合併四批來源、解除的限制與八組集中問題.
+- 四批來源關係: 第一張為主頁, 第二張補開關 on / select Default,
+  第三張補說明 Tooltips 內容, 第四張補第一張被裁切的表格視覺.
+  均不把 Figma shown state 推定為產品 defaults; 無產品 spec 或實作改動.
+- 差異 checkpoint: 共用 shell / 導航 / 元件互動列沿用候選;
+  本頁白底 Regular 表頭 / 深色格線, 以及說明的 20px 標題 / 16px 內文 /
+  padding 8, 應依本輪 Figma contract 覆蓋舊 generic 範例.
+- 集中待確認: 去年同期開關控制右表及比較欄 / 選單選項與作用;
+  NoShow 納入或僅顯示; 日期 defaults / clear reset / query 更新時機;
+  兩年表格的不同欄位與分組是否依圖保留; 說明重複間數列處理;
+  說明是否點擊開關及外側 / Escape 關閉; 下載保留後端或假資料匯出格式;
+  mobile / tablet 篩選區排列與收合, table 橫捲與固定表頭 / 欄位.
+- 使用者已定義數值為假資料、正式數據與計算留後端,
+  不再詢問公式或要求範例累計 / 合計數字相符.
+- 本輪僅保存讀取與交接; 1490 個 id 唯一,
+  conventions lint / git diff --check exit 0, 未執行 UI smoke.
 
 ## Session 190: 提交與推送排程發送頁 (2026-11-14)
 
@@ -560,296 +861,3 @@
 - 本輪 self-tested; 使用者後續明確要求 commit & push, 將 CSS 修正、page spec
   與本筆交接一併提交。本輪進入 commit/push flow, 實際 SHA 與遠端狀態以
   git history 為準。尚未在實機 iPhone Safari 驗證, 不將 Chrome QA 視為實機驗證。
-
-## Session 176: 提交與推送數量價格表新版及驗收修正 (2026-10-28)
-
-### 本輪改動與重要決定
-
-- 使用者明確要求commit & push, 將Session171至175的數量價格表實作、
-  最新contract與驗收修正一併納入, 不只提交最後的mobile滿版調整。
-- 提交範圍共10個檔案: 頁面HTML、modal partial、domain CSS /JS、共用modal CSS、
-  smoke、document-multiple-02.svg、icons registry、page spec與progress。
-- 同步page spec的提交授權狀態; 最新Session175不再保留本輪禁止提交的過期敘述。
-  更早session仍保留當時的凍結紀錄, 目前狀態以本筆交接為準。
-- 本輪進入commit/push flow, 實際SHA與遠端狀態以git history為準。
-
-### 驗證與後續
-
-- 提交前git fetch origin成功, main與origin/main的ahead /behind為0 /0。
-- 沿用Session175完整smoke通過10頁 /139項及多尺寸 /多狀態截圖證據;
-  本輪只更新交接與授權metadata, 沒有再改產品行為。
-- staging後執行fonts /conventions /tokens /partials lint與diff check,
-  由pre-commit hook再次檢查; push後核對工作樹及HEAD與origin/main一致。
-- 不新增token或開發規則, tokens.md與start.md無需改動。
-- 展示資料、真實預設、篩選連動與儲存API仍由後端實作, 本次不擴充該範圍。
-
-## Session 175: 數量價格表套用共用mobile滿版modal規則 (2026-10-28)
-
-### 本輪改動
-
-- 使用者要求確認既有小尺寸modal滿版規則, 若成立直接套用。
-- components/modal.md的共用RWD段落已寫mobile滿版, modals.css既有
-  fullscreen群組斷點為max-width639px; 本頁三個modal漏登記於該群組。
-- 先補page spec, 再把群組編輯 /新增庫存 /細部編輯三個backdrop與modal-box
-  加入原共用selector。沒有新增另一套斷點或覆寫全站modal規則。
-- <640px無外側留白 /圓角 /外框, 寬高填滿使用100dvh的backdrop;
-  ID層級規則亦覆蓋群組option2 /3的837px高度。>=640px保留原寬高限制。
-- 更新既有庫存mobile smoke的舊留白寬度expectation, 增補群組三態 /
-  detail與nested滿版幾何及關閉後父層scroll lock檢查。
-
-### 驗證與下一步
-
-- Chrome實測360x640 /375x812 /639x812的三類modal皆x=0 /y=0,
-  寬高等於viewport, radius與外框為0; 沒有page-level水平溢出。
-- 640 /768 /1440實測保留置中, 群組寬514px, 庫存分別616 /744 /1140px。
-  群組option1自然高度與option2 /3的837px參考高度在>=640px維持。
-- 360窄高情境三種Set儲存按鈕皆可經body垂直scroll捲達;
-  庫存各尺寸皆可在local水平scroller捲到最右總房數。
-  子modal關閉後父層仍開啟且body鎖定, 父層關閉後解鎖。
-- 12張PNG存於specs/qa-screenshots/session-175/, 含mobile三態 /長內容底部 /
-  detail /nested /庫存左右, 以及tablet /desktop代表圖; 已視覺核對。
-- fonts /conventions /tokens /partials lint與diff whitespace exit0,
-  token mirror92個raw值一致, partial manifest10頁 /3 standalone。
-- 完整smoke首輪本頁20項通過, 專案內容頁switch與photo close兩項失敗;
-  停止並行截圖後重跑完整測試通過10頁 /139項, 本頁20項,
-  該兩項未重現; 未改動專案內容頁或其測試。
-- quantity-price-table.html與landing.html的localhost:8000預覽皆HTTP200。
-- 本輪沿用既有共用規範與tokens /icons /字級 /文案, start.md與tokens.md無新增變動。
-- 本輪self-tested; 使用者後續已要求commit & push, 納入Session176提交範圍。
-
-## Session 174: 依使用者設計稿更正移除option 1重複頻道 (2026-10-28)
-
-### 本輪改動
-
-- 使用者更正Session173判斷: 原Figma稿本身有重複頻道, 並非實作漏掉中間組。
-  使用者會修改Figma, 明確要求移除一組重複頻道, 不需等待plugin重連。
-- Option 1只保留ABC /XYZ與一組頻道1 /2, 共兩組清單;
-  option 2 /3仍各三組, 保留各自全選雙向同步與重置 /清除行為。
-- Option 1 modal高度隨內容伸縮, 移除重複清單後不留原795px空白;
-  option 2 /3仍採837px參考高度與原viewport限制。
-- 同步current spec並移除待重讀缺口, 修正既有smoke的option 1組數與內容期待。
-
-### 驗證與下一步
-
-- JS語法、fonts /conventions /tokens /partials lint與diff check exit0。
-- 完整smoke通過10頁 /138項, 數量價格表19項; option 1既有檢查已改為兩組,
-  仍驗證全選只作用自己內容、個別勾選同步、清除與重新開啟的重置行為。
-- 375 /768 /1440實測均只有ABC /XYZ與一組頻道1 /2, 儲存按鈕位於可視範圍,
-  無page-level水平溢出。Modal自然高度為mobile681px、tablet /desktop675px。
-- 截圖位於specs/qa-screenshots/session-174/, 已視覺核對兩組內容與縮短後高度。
-- 不新增token /全域規則, tokens.md /start.md無變動。
-- 前述設計稿更正是本輪權威, Session173保留當時等待釐清的歷史紀錄。
-- 本輪self-tested /pending user review; 數量價格表尚待使用者整體驗收, 不提交。
-
-## Session 173: option 1重複頻道與中間清單待核對 (2026-10-28)
-
-### 本輪處理
-
-- 使用者指出option 1只應有一組頻道, 中間那組內容被漏掉。
-- 核對GROUP_OPTIONS、page spec與smoke, 三者都保留重複的頻道1 /2;
-  先前保存的2741:102808 PNG /JSON亦呈現重複內容, 不能由舊資料推測正確中間組。
-- 已修正spec: 頻道僅一組, 中間組標記待重讀, 舊讀取結果不作為該組current source。
-- 當前get_node /get_metadata皆回報plugin not connected, 沒有工具可代替使用者
-  重新啟動Figma plugin連線。未改動實作或憑猜測替換 /刪除中間清單。
-
-### 下一步與未解問題
-
-- 重新連接figma-mcp-go並選取正確option 1 frame, 從當前selection讀取中間組。
-- 釐清中間組的文字 /結構後, 一起更正spec、GROUP_OPTIONS與對應smoke expectation,
-  確認只一組頻道、中間組完整且全選同步維持各自獨立, 再跑必要QA。
-- 過去smoke通過不代表本次更正已覆蓋; 不得沿用重複頻道assertion當驗收依據。
-- 本輪僅更新spec /交接, 未變更token /全域規則, 未提交。
-
-## Session 172: 數量價格表房型篩選欄位左緣對齊 (2026-10-28)
-
-### 本輪改動
-
-- 使用者驗收指出房型label亦需固定寬, 堆疊時右側欄位需與平台 /專案切齊。
-- 房型沿用既有qp-filter-field--wide-label, 三組label皆64px +gap12,
-  不新增CSS /token; 各select相對欄位左緣偏移統一76px。
-- 同步quantity-price-table spec, 以本次驗收更正覆蓋Figma原32px房型label。
-- 本輪為單一HTML class修正, 不新增鏡射實作的測試; 使用既有smoke與實際
-  375 /768 /1440量測 /截圖確認對齊與頁面無水平溢出。
-
-### 驗證與下一步
-
-- Chrome實測三組label皆64px, select相對欄位偏移皆76px;
-  375時三個select左緣皆x=101, 768時皆x=361,
-  1440橫排亦保持相同label寬與gap, 各尺寸無page-level水平溢出。
-- 已檢視375 /768 /1440截圖, 存於specs/qa-screenshots/session-172/。
-- node scripts/smoke-test.mjs exit0: 10頁 /138項, 本頁19項;
-  fonts /conventions /tokens /partials lint與git diff whitespace exit0。
-- 沿用既有tokens /icons /全域規則, tokens.md /start.md無新增變動。
-- Session171尚待使用者整體驗收, 本次修正一併保留;
-  本輪self-tested /pending user review, 不提交。
-
-## Session 171: 數量價格表 1028 v1.1 contract 與改版實作 (2026-10-28)
-
-### 本輪改動與確認
-
-- 逐張讀取並對照新版主頁2741:102458、群組編輯三態2741:102808 /
-  2742:103754 /2742:104942、庫存modal2742:105152的JSON與PNG。
-- 使用者更正最初選到的2590:124601是舊稿, 不作為本輪新版來源。
-- 重新整理specs/pages/quantity-price-table.md為current contract,
-  退役舊群組accordion與12個月庫存規格, 明列沿用 / 覆蓋範圍。
-- 主頁新增平台; 後端提供選項 / 真實預設 / 連動; 清除有預設回預設, 無則空白。
-- 群組預設option1, 三種Set切換; To調整數量。
-  最新指定重置為0、日期空白、星期與下方三組清單全不選;
-  清除保留當前Set, 切換Set重置其他內容, 各組全選獨立雙向同步, 儲存後關閉。
-- Standard Rate名稱格以新版Neutral/75淺藍底為準;
-  細部群組入口串接option1子modal, 沿用既有疊層與scroll lock。
-- 補查沿用detail source2590:125176的PNG /JSON; 群組icon實際為
-  document-multiple-02, 已從當前Figma匯出SVG並登記icons.md, 不使用近似圖形。
-- 庫存改14個月(2026-08至2027-09)、三房型、5+9年份span;
-  超出原12月表頭淡橘底。任一房型當月不可用則批次disabled,
-  可用房型仍能個別勾選; disabled涵蓋checkbox與整格範圍。
-- 小尺寸庫存表在modal內水平scroll, 完整保留欄位, 不產生頁面溢出。
-  資料範圍 / 開放狀態 / 實際儲存套用由後端提供, 預覽照Figma示意。
-
-### 驗證與下一步
-
-- Read-only audit確認現有HTML /JS /CSS原為舊版, 舊smoke亦保留過期預設。
-- 本輪已修改quantity-price-table.html /專屬modal partial /domain CSS /JS,
-  依序替換主頁、群組 /detail與庫存, 保留共用controller與已確認的14天表格功能。
-- 補正無單量chip為當前Figma紅底白字 /Radius24 /16px,
-  保留先前使用者確認的完整14天框線與合併格綠底。
-- Smoke已替換過期預設與12個月檢查, 新增狀態轉換 /全選同步 /disabled /
-  nested modal /預設還原或清空 /局部水平scroll等contract-specific檢查。
-  首跑暴露測試日期排序與舊selector假設, 已由測試端修正後重跑。
-- 沿用既有tokens, 沒有使用者要求同步Figma Variables, 不做全量同步。
-- fonts /conventions /tokens /partials lint與diff whitespace均exit0;
-  tokens strict mirror92個raw值一致, partial manifest10頁 /3 standalone。
-- Chrome完整smoke exit0: 10頁 /138項, 數量價格表19項。
-  涵蓋完整14天表格與inline、雙月曆、篩選預設 /無預設兩分支、三態切換重置 /
-  清除保留Set /各組全選、儲存關閉 /nested鎖定、14月年份 /示意資料 /
-  disabled範圍 /可用月同步、真實pointer點cell空白區與右側總房數可達性。
-- 實作19張PNG於specs/qa-screenshots/session-171/, 另保留6張sourcePNG。
-  主頁 /三種群組reset /nested涵蓋375 /768 /1440, 庫存涵蓋1440、
-  768(含捲到右側)與375左右scroll。Mobile庫存截圖為真實viewport375x812,
-  768截圖為768x1024; 避免full-page擷取把viewport外內容混入modal驗收圖。
-- Mobile backdrop為375x812且與viewport一致; tablet page scrollWidth768,
-  modal x=12..756, 表格只在local scroller溢出, 右側總房數可捲達。
-  Root已視覺核對代表圖, 原生水平scrollbar保留。
-- Astra獨立review未發現剩餘JS行為缺口; 無單量chip、庫存名稱置中與badge
-  padding等視覺發現均已依當前PNG /JSON修正並核對。
-- 日期選取互動沿用; 配合新版排版補上fixed popover定位與clientWidth夾取,
-  未導入新日期UI或專案內容四月曆。
-- 既有tokens與全域工作規則未新增 /修改, tokens.md /start.md無需變更。
-- Preview localhost:8000的landing.html與quantity-price-table.html均HTTP200。
-  本輪self-tested /pending user review, 驗收前不提交; 實際資料與API留給後端。
-
-## Session 170: 提交紀錄與規格一併保存, 補入數量價格表 contract (2026-10-22)
-
-### 使用者要求與本輪改動
-
-- 使用者要求把本次紀錄與相關檔案一起包含並推送, 不再留下本機孤兒規格。
-- `start.md` 已補入提交範圍核對、紀錄與對應 spec / contract 一起保存,
-  以及 push 後檢查工作樹與遠端同步的必要步驟。
-- 等待開工、待實作或不同任務不得作為排除已要求保存之規格的理由;
-  保存規格不代表授權實作, UI 實作驗收要求維持既有規則。
-- 本批一併納入 Session 162 的 `specs/pages/quantity-price-table.md`
-  current contract, 補正 Session 169 只推送交接卻漏下對應規格的情況。
-- Session 169 保留當時提交範圍的歷史紀錄, 其排除理由不作為後續流程依據。
-  本輪不修改數量價格表 preview 實作, 後續仍依明確開工指示處理。
-
-### 回溯核對與驗證
-
-- 本輪開始時工作樹唯一改動為數量價格表 spec, 沒有其他遺留檔案。
-  Session 162 的交接已在 `0680973` 隨 progress.md 提交, 對應 spec 尚未納入;
-  本批將該 spec、start.md 與本次交接一起進入 commit/push flow。
-- 相關流程以 start.md 為單一權威, AGENTS.md 保持入口引用, 不複製規則。
-- 可用 Git status / staged diff 核對檔案清單; 檔案歸屬與使用者保存 / 排除指示
-  需 review, 不新增無法準確判定語意範圍的 lint。
-- 本輪僅修改規則與規格紀錄, 無 token 或 UI 實作改動, tokens.md 不需同步。
-- 提交前執行 repo pre-commit 的 fonts / conventions / tokens / partials lint
-  與 staged diff whitespace check; 推送後核對工作樹與 origin/main。
-- 實際 SHA 與遠端狀態以 git history 與本輪推送後檢查為準。
-
-## Session 169: 專案內容改版與驗收修正 commit/push 交接 (2026-10-22)
-
-### 使用者驗收與提交範圍
-
-- 使用者確認「可以了 commit & push」, 本批進入 commit/push flow,
-  實際 SHA 與遠端狀態以 git history 為準。
-- 提交 Session 163 至 168 的專案內容住宿卡片 / GHA modal / 三步驟 modal /
-  日期定義排序與順位 icons / 狀態 tab 統計 / UI 對齊修正。
-- 一併提交產品設定只保留 ota、專案內容、數量價格表的 menu 整理,
-  以及四頁圖片 modal 的共用 mouse/touch 排序、取消保存與關閉修正。
-- 相關 Figma 資產、tokens 24px 字級、component/page specs、partial manifest
-  與 regression checks 均隨本批提交。
-- `specs/pages/quantity-price-table.md` 是原有獨立待實作 contract,
-  不屬於本批驗收, 排除本次 staging, 保留本機工作樹供該任務後續處理。
-
-### 驗證與交接
-
-- 最後程式變更後 `node scripts/smoke-test.mjs` 10 頁 exit 0,
-  專案 23 項; 狀態統計、mobile 對齊、mouse/touch 排序與 modal 行為均涵蓋。
-- 375 / 768 / 1440 視覺 QA 與 Figma 核對紀錄見 Session 163 至 168,
-  截圖位於對應 session 的 `specs/qa-screenshots/` 子目錄。
-- fonts / conventions / partials / tokens lint、untracked 新檔 conventions
-  與 `git diff --check` 均通過, commit 時再執行 repo pre-commit hook。
-- 上一輪確認 landing / project-content preview HTTP 200。
-- 本批新增字級 token 已同步 `specs/assets/tokens.md` 與 base CSS;
-  共用互動 pattern 已同步 `specs/html-conventions.md`, 未新增全域開發規則,
-  `start.md` 維持原內容。
-- 範本套用、日期定義授權、成人/孩童權限與真實 API 維持後端邊界。
-- 後續數量價格表實作須另依使用者開工指示進行, 不從本批驗收推論授權。
-
-## Session 168: 價格頁手機間數值與 input 左緣對齊 (2026-10-22)
-
-### 本輪改動
-
-- 使用者指出 Step 3 的間數 / 28 間應對齊上下 input, 要求核對。
-- 再讀 Figma `2724:118363` JSON / PNG, 間數群組
-  `I2724:118363;73:678;2724:118261` 為 64px label + 12px gap,
-  值起點 x=76 與專案 input 外框起點一致。
-- 實測 1440 / 768 原本已對齊; 375 的 summary label 仍為 64px,
-  上下 `.pcw-field` 已切為 76px, 造成 28 間左偏 12px。
-- 僅修正小於 640px 的 `.pcw-price-summary` label 欄寬為 76px,
-  與既有欄位規則一致。桌面、平板排版與資料維持既有行為。
-- 同步 `specs/pages/project-content.md` 與既有 smoke alignment assertions。
-
-### 驗證與下一步
-
-- Chrome 實測: 1440 的專案 input / 間數值左緣同為 x=429,
-  768 同為 x=101; 375 修正前 100 / 88, 修正後專案 / 間數值 /
-  計價 / 天數皆為 x=100。無水平溢出。
-- Source、before / aligned 三個尺寸截圖在 `specs/qa-screenshots/session-168/`。
-- `node scripts/smoke-test.mjs`: 10 頁 exit 0, 專案 23 項,
-  包含 desktop / responsive 間數與 input 邊界對齊檢查。
-- fonts / conventions / partials / tokens lint、untracked wizard CSS conventions
-  與 `git diff --check` exit 0; preview landing / project-content HTTP 200。
-- 沿用既有欄寬與 spacing tokens, 無新增 token 或全域開發規則,
-  `tokens.md` / `start.md` 不需改動。
-- self-tested / pending user review, 未 commit/push; 其餘未提交工作保留。
-
-## Session 167: Step 1 含餐欄位與 info icon 分離 (2026-10-22)
-
-### 本輪改動與來源
-
-- 使用者指出第一頁含餐欄位的 info icon 應獨立放在欄位右側, 不可嵌入欄位。
-- 重新讀取 Figma Step 1 `2582:114936` JSON 與 PNG,
-  含餐列 `I2582:115072;73:678;2582:114967` 為 378x36:
-  label 64px / gap 12px / Select 266x36 / gap 12px / info 24x24。
-  Select sample 是 YES, 本輪保留既有下拉欄位, 只修正組合排版。
-- info icon node `I2582:115072;73:678;2582:114970` 是欄位 sibling,
-  其 x=354、y=6; source PNG 同時確認 info 在框外, tooltip 是浮動說明。
-- `project-content-wizard.css` 移除按鈕 absolute/right 與欄位額外 40px padding,
-  改為 flex 欄位 + 12px gap + 不縮放的 24px info button; icon 本身亦為 24px。
-  tooltip 的 hover / focus 機制保留。
-- 同步 `specs/pages/project-content.md` 與 smoke contract checks。
-
-### 驗證與下一步
-
-- Chrome 1440 / 768 / 375 測量 icon 24x24, 與欄位間距皆為 12px、垂直置中,
-  欄位隨可用空間縮放, modal body 無水平溢出。
-- Focus 可顯示 tooltip, 說明框維持於 viewport 內。
-- Source 與實作 default / tooltip 截圖在 `specs/qa-screenshots/session-167/`。
-- `node scripts/smoke-test.mjs`: 10 頁 exit 0, 專案內容 23 項,
-  追加 desktop 與 responsive 欄位 / info 間距與尺寸檢查。
-- fonts / conventions / partials / tokens lint、untracked wizard CSS conventions
-  與 `git diff --check` exit 0。沿用既有 spacing / icon / 字級 tokens,
-  無新增 token 或全域規則, `tokens.md` / `start.md` 不需改動。
-- 狀態 self-tested / pending user review, 未 commit/push; 其他未提交工作保留。
-- 驗收入口 `http://localhost:8000/project-content.html`,
-  `http://localhost:8000/landing.html`。

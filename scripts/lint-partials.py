@@ -28,6 +28,17 @@ PARTIALS = PREVIEW / 'partials'
 # 新頁面上線時必須在此登記 partials 與 module import 順序；
 # 說明文件在 specs/page-architecture.md「Partial dependency manifest」段。
 MANIFEST = {
+    'housing-statistics.html': {
+        'partials': ['aside', 'topbar', 'session-modals', 'topbar-modals', 'housing-statistics-help'],
+        'modules': [
+            './js/partials.js',
+            './js/page-shell.js',
+            './js/page-tabs.js',
+            './js/modal-controller.js',
+            './js/topbar-modals.js',
+            './js/housing-statistics.js',
+        ],
+    },
     'scheduled-send.html': {
         'partials': ['aside', 'topbar', 'session-modals', 'topbar-modals', 'scheduled-send-modal'],
         'modules': [

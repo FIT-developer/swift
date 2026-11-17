@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 住房統計表</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body data-page="住房統計">
+    <div id="rootWrap" class="flex min-h-screen max-w-[1440px] flex-col gap-3 mx-auto hs-page-shell">
+      <div class="flex items-center justify-between md:hidden">
+        <a href="./landing.html" aria-label="回今日總覽">
+          <img src="./assets/icons/logo.svg" class="h-6" alt="Swift" />
+        </a>
+        <button id="mobileMenuBtn" type="button" class="cursor-pointer rounded-md p-1 opacity-70 hover:opacity-100" aria-label="開啟選單">
+          <img src="./assets/icons/folder.svg" class="h-5 w-6" alt="" />
+        </button>
+      </div>
+      <div id="bodyArea" class="flex flex-1 min-w-0 flex-col gap-3 md:flex-row">
+        <div data-partial="aside"></div>
+        <div id="mainColumn" class="flex flex-1 min-w-0 flex-col gap-3">
+          <div data-partial="topbar"></div>
+          <main class="flex flex-1 min-w-0 flex-col w-full">
+            <section class="hs-content" aria-label="住房統計表">
+              <h1 class="sr-only">住房統計表</h1>
+              <form id="housingStatisticsFilter" class="hs-query-panel" aria-label="住房統計查詢條件">
+                <div class="hs-filter-grid">
+                  <div class="hs-date-column">
+                    <div class="hs-date-block">
+                      <div class="hs-date-row">
+                        <div class="hs-date-field">
+                          <label for="hsDateStart" class="sr-only">開始日期</label>
+                          <input id="hsDateStart" class="hs-control" type="date" name="dateStart" />
+                          <span class="hs-date-value" data-hs-date-value="dateStart" aria-hidden="true"></span>
+                          <button type="button" class="hs-calendar-button" data-hs-calendar="dateStart" aria-label="開啟開始日期選擇器">
+                            <span class="hs-icon hs-icon-calendar" aria-hidden="true"></span>
+                          </button>
+                        </div>
+                        <div class="hs-date-field">
+                          <label for="hsDateEnd" class="sr-only">結束日期</label>
+                          <input id="hsDateEnd" class="hs-control" type="date" name="dateEnd" />
+                          <span class="hs-date-value" data-hs-date-value="dateEnd" aria-hidden="true"></span>
+                          <button type="button" class="hs-calendar-button" data-hs-calendar="dateEnd" aria-label="開啟結束日期選擇器">
+                            <span class="hs-icon hs-icon-calendar" aria-hidden="true"></span>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="hs-periods" aria-label="日期快速控制">
+                        <div class="hs-period" data-hs-period="today">
+                          <button type="button" data-hs-period-step="-1" aria-label="前一天"><span class="hs-icon hs-icon-left" aria-hidden="true"></span></button>
+                          <button type="button" data-hs-period-step="0">今日</button>
+                          <button type="button" data-hs-period-step="1" aria-label="後一天"><span class="hs-icon hs-icon-right" aria-hidden="true"></span></button>
+                        </div>
+                        <div class="hs-period" data-hs-period="week">
+                          <button type="button" data-hs-period-step="-1" aria-label="上一週"><span class="hs-icon hs-icon-left" aria-hidden="true"></span></button>
+                          <button type="button" data-hs-period-step="0">本週</button>
+                          <button type="button" data-hs-period-step="1" aria-label="下一週"><span class="hs-icon hs-icon-right" aria-hidden="true"></span></button>
+                        </div>
+                        <div class="hs-period" data-hs-period="month">
+                          <button type="button" data-hs-period-step="-1" aria-label="上一個月"><span class="hs-icon hs-icon-left" aria-hidden="true"></span></button>
+                          <button type="button" data-hs-period-step="0">本月</button>
+                          <button type="button" data-hs-period-step="1" aria-label="下一個月"><span class="hs-icon hs-icon-right" aria-hidden="true"></span></button>
+                        </div>
+                        <div class="hs-period" data-hs-period="year">
+                          <button type="button" data-hs-period-step="-1" aria-label="上一年"><span class="hs-icon hs-icon-left" aria-hidden="true"></span></button>
+                          <button type="button" data-hs-period-step="0">今年</button>
+                          <button type="button" data-hs-period-step="1" aria-label="下一年"><span class="hs-icon hs-icon-right" aria-hidden="true"></span></button>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" id="hsHelpButton" class="hs-pill-button" popovertarget="hsHelpPopover" aria-controls="hsHelpPopover" aria-expanded="false" aria-haspopup="dialog">
+                      <span class="hs-icon hs-icon-info" aria-hidden="true"></span><span>說明</span>
+                    </button>
+                  </div>
+                  <div class="hs-filter-column">
+                    <div class="hs-field-row">
+                      <label for="hsBookingSource">訂房來源</label>
+                      <div class="hs-select-wrap"><select id="hsBookingSource" class="hs-control" name="bookingSource"><option value="all">全部</option></select><span class="hs-icon hs-icon-down" aria-hidden="true"></span></div>
+                    </div>
+                    <div class="hs-field-row">
+                      <label for="hsNationality">國籍</label>
+                      <div class="hs-select-wrap"><select id="hsNationality" class="hs-control" name="nationality"><option value="all">全部</option></select><span class="hs-icon hs-icon-down" aria-hidden="true"></span></div>
+                    </div>
+                    <div class="hs-field-row">
+                      <label for="hsCategoryOne">分類一</label>
+                      <div class="hs-select-wrap"><select id="hsCategoryOne" class="hs-control" name="categoryOne"><option value="all">全部</option></select><span class="hs-icon hs-icon-down" aria-hidden="true"></span></div>
+                    </div>
+                    <div class="hs-field-row">
+                      <label for="hsCategoryTwo">分類二</label>
+                      <div class="hs-select-wrap"><select id="hsCategoryTwo" class="hs-control" name="categoryTwo"><option value="all">全部</option></select><span class="hs-icon hs-icon-down" aria-hidden="true"></span></div>
+                    </div>
+                  </div>
+                  <div class="hs-filter-column">
+                    <div class="hs-comparison-row">
+                      <label for="hsComparePrevious">去年同期</label>
+                      <span class="member-data-switch hs-switch">
+                        <input type="checkbox" role="switch" id="hsComparePrevious" name="comparePrevious" aria-controls="hsPreviousYearRegion" />
+                        <span class="member-data-switch-track"></span><span class="member-data-switch-knob"></span>
+                      </span>
+                      <div class="hs-select-wrap"><select class="hs-control" name="comparisonScope" aria-label="去年同期範圍" disabled><option value="all">全部</option></select><span class="hs-icon hs-icon-down" aria-hidden="true"></span></div>
+                    </div>
+                    <div class="hs-noshow-row">
+                      <label for="hsNoShow">NoShow</label>
+                      <span class="member-data-switch hs-switch">
+                        <input type="checkbox" role="switch" id="hsNoShow" name="noShow" />
+                        <span class="member-data-switch-track"></span><span class="member-data-switch-knob"></span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="hs-query-actions">
+                  <button type="reset" class="hs-clear-button">清除</button>
+                  <button type="submit" class="hs-query-button">查詢</button>
+                </div>
+              </form>
+              <div class="hs-results">
+                <button type="button" class="hs-pill-button" data-hs-download><span class="hs-icon hs-icon-download" aria-hidden="true"></span><span>下載</span></button>
+                <div id="hsTablesMount"></div>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div id="mobileSidebarBackdrop" class="mobile-sidebar-backdrop md:hidden" aria-hidden="true"></div>
+    <div data-partial="session-modals"></div>
+    <div data-partial="topbar-modals"></div>
+    <div data-partial="housing-statistics-help"></div>
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initPageShell } from "./js/page-shell.js";
+      import { initPageTabs } from "./js/page-tabs.js";
+      import { createModalController } from "./js/modal-controller.js";
+      import { initTopbarModals } from "./js/topbar-modals.js";
+      import { initHousingStatistics } from "./js/housing-statistics.js";
+
+      await loadPartials();
+      initPageShell();
+      initPageTabs();
+      createModalController();
+      initTopbarModals();
+      initHousingStatistics();
+    </script>
+  </body>
+</html>
