@@ -9,6 +9,436 @@
 
 ---
 
+## Session 199: 提交與推送四個登入狀態頁 (2026-11-18)
+
+### 本輪改動與重要決定
+
+- 使用者明確回覆可以 commit & push, 驗收 Session195 至 198 的
+  login1 至 login4 四個獨立頁與後續政策 / Google hover,
+  一併保存讀取紀錄、已確認 contract、tokens 與後端交付說明.
+- 提交範圍為四個 HTML、共用 login-form partial / login.js /
+  login.css、原始插圖 asset、app.css import / base token 和 effects,
+  component / page specs、partial manifest / browser smoke 與 progress.
+  不排除未曾提交的前幾輪讀取和確認紀錄, 不遺留孤兒規格.
+- 固定高度 scroll、1024px 單雙欄切換、兩區預設收合、email-only
+  客服、login3 Google 與 hover 均依已確認規格保存. 四頁只作
+  backend 狀態示意; 真實 auth / Cloudflare / OAuth 接線仍交後端.
+- 原始 Figma JSON / PNG / SVG、QA helper / 圖片與本機 variables
+  export 依現有 ignore 規則保留本機; 對應 node ids、confirmed
+  rules、strict color / effect 與完整交付對照已保存於版控來源.
+- 本輪進入 commit/push flow, 實際 SHA 與遠端狀態以 git history 為準.
+
+### 驗證與後續
+
+- git fetch origin 成功, 提交前 main 與 origin/main ahead / behind
+  為 0 / 0. 逐項核對所有 tracked / untracked 檔案均屬登入工作.
+- 四項 lint / login.js 與 smoke syntax / whitespace checks exit 0;
+  color mirror 94, partial manifest 18 頁 / 3 standalone.
+- 沿用最後 Chrome smoke 18 頁 / 252 項, 36 組 viewport / state /
+  keyboard / scroll probes, 24 組 tightened responsive assertions,
+  33 組 pointer hover / leave 與 1 組日營收參考核對通過的結果.
+  本輪只改驗收與交接 metadata, 未變更產品行為.
+- Page spec 改為使用者驗收且授權提交的 current 狀態. Tokens.md
+  已包含 LoginBackground 與兩個 effect, 無新增全域規則,
+  start.md 不需修改. 較早 session 保留當時的歷史狀態.
+- Staging 後核對 16 個預期檔案與 staged lint; 推送後核對
+  git status 與 HEAD / origin/main, final 回報實際 commit SHA.
+
+## Session 198: Login 政策與 Google 登入 hover (2026-11-18)
+
+### 本輪改動與確認來源
+
+- 使用者要求資安政策與 Google auth 加入 hover, 指定參考營業資訊
+  日營收按鈕. 核對 landing.html 今日營收卡片的日營收 button,
+  components/input.md attached-link hover 與既有 branch chip pattern.
+- 共用 login-form partial 的資安政策 / 隱私條款及 Google 按鈕
+  沿用 hover:bg-text-default / hover:text-text-inverse /
+  transition-colors / duration-150: 深底 Text/800, 淺字 Text/100,
+  Neutral/200 邊框與原尺寸保留. 四頁政策、前三頁 Google 一起生效.
+- 政策 icon 的 mask-image 在 hover 改為既有 attached-link-moved.svg,
+  以 currentColor 套 Text/100; 使用移動態 asset, 不只是原圖變色.
+  Google 品牌 SVG / 四色保留, 不做濾鏡或換圖.
+- 先更新 components/login.md 與 specs/pages/login.md 的確認規則,
+  再改 partial / scoped CSS. 沒有修改 JS 接線或 disclosure / RWD /
+  固定高度行為, 無新 token / icon / 全域規則, start.md 不需修改.
+
+### 驗證與後續
+
+- 四項 lint / git diff --check 通過, color mirror 94,
+  partial manifest 18 頁 / 3 standalone; 最後完整 Chrome smoke
+  18 頁 / 252 項通過, exit 0.
+- 真實 pointer 在 360 / 768 / 1440 三尺寸核對四頁兩個政策按鈕與
+  前三頁 Google, 共 33 組 hover / leave + 1 個日營收參考,
+  34 / 34 cases 通過, runtime errors 0. 色彩 / 0.15s transition /
+  移動態 mask / Google 品牌原圖 / 還原狀態正確, 邊框 / 按鈕尺寸 /
+  卡片高度不變, 無水平溢出. 保存 22 張 hover PNG 與 JSON.
+- 測試收尾發現子程序 pipe 保持引用, 以 active resource types 確認後
+  釋放當輪殘留 pipe, 兩個 passing runner 皆正常 exit 0;
+  smoke finally 同時補上 child stdout / stderr destroy, 不改測試斷言.
+- QA artifacts 保存於本機 specs/qa-screenshots/session-198/.
+  本輪 self-tested, 待使用者驗收; preview 8000 保持可連線.
+  本輪屬已授權的單一視覺 pattern 小修, 採 Light Task 流程.
+
+## Session 197: Login contract 確認與四個獨立頁實作 (2026-11-18)
+
+### Current confirmed contract
+
+- 使用者回答最後三項 checkpoint: or / contact us 分別控制 Google /
+  客服, 預設都收合; 四頁客服僅 email; login3 也提供 Google,
+  原稿未顯示是收合示意. 配合先前確認的固定高度 scroll / 1024px
+  RWD / 背板 50%, 本輪進入 spec-first 實作, 不重複索取確認.
+- components/login.md 與 specs/pages/login.md 保存 current source /
+  user overrides / defaults / 差異 checkpoint / 後端四頁交付表與事件契約.
+  四頁依序為一般帳密、帳密錯誤、Cloudflare 失敗、email 驗證碼.
+- Reset 後 live reread 仍見舊 hidden 客服 reference 與 failure Google
+  child 缺漏; 明確以使用者上述確認覆蓋, 採既有 simple email /
+  Google source, 不再當成未解衝突或還原舊 QR / 電話資料.
+- Desktop 固定 545 / 529, 單欄依 mobile page instance 751px,
+  短 viewport 以可用高度扣上下各 16px 約束; 表單內原生 scroll.
+  >=1024px 846px 雙欄 410 / 436; <1024px 隱藏右圖,
+  表單 max410 置中、窄螢幕左右 12px, 兩區預設收合且獨立.
+
+### 本輪改動
+
+- 新增四個 HTML、login-form partial 與 login.css; CSS 匯入 app.css,
+  沿用既有 Tailwind config / base.css, 不引入內頁 aside / topbar.
+- 右側原圖由 Figma Vector `2838:123272` 匯出 2x PNG 至
+  preview/assets/images/login-illustration.png. Logo / Google / eye /
+  check / failure / attached-link / email / up icons 與 Cloudflare 圖片沿用既有庫.
+- Base 增加兩個 Figma shadow effect 變數並同步 tokens.md;
+  LoginBackground 仍為 strict token, alpha 1 + 背板 fill opacity 50%.
+- 套用 frontend-design、Sites local-only 流程與 astra-orchestrator;
+  Luna explorer 交回既有 partial / manifest / smoke 整合路徑,
+  同一 Luna worker 交回 login.js / manifest / smoke checks.
+  Root 負責 HTML / partial / CSS / assets / specs 及整合驗證,
+  Astra reviewer 獨立 review; 所需 agents 均已回覆.
+- Browser skill 已讀, 兩次工具發現均無 node_repl js;
+  此環境改用 repo 既有 native Chrome CDP / smoke 流程做 QA,
+  不假稱使用 in-app Browser. 本輪不建立 hosted Site.
+- JS 僅提供 clear / password eye, 原生 details 獨立收合, 以及
+  login:submit / google / policy / refresh 接線事件. Inactive fieldsets
+  隱藏並 disabled, FormData 僅含當頁 active inputs; 無 auth API /
+  OAuth / Cloudflare 請求、資料保存、倒數或自動跳轉.
+- Spec pages/login.md 明列四個獨立頁對應四種狀態與後端接線事項,
+  包含需以 HTTP 提供 shared partial / modules, Cloudflare 套既有模組.
+
+### 驗證結果
+
+- 四項 lint / JS 與 smoke syntax / git diff --check exit 0;
+  token mirror 94, partial manifest 18 頁 / 3 standalone.
+- 最後完整 Chrome smoke exit 0: 18 頁 / 252 項, 新登入頁 56 項,
+  原有 14 頁均通過 app.css 新 import 與既有頁面行為檢查.
+- 額外 36 / 36 Chrome QA cases 通過: 四頁各測 360x780 / 375x812 /
+  410x783 / 768x1024 / 1023x900 / 1024x900 / 1440x900 /
+  360x480 / 1440x480. 預設兩區收合, 1024 切換, 410 max width /
+  12px gutter, 545 / 529 或短視窗約束高度, 50% 背板 / 圖檔載入,
+  default error / challenge / active fields 均核對.
+- Trusted pointer / Enter / Space 各自開關, Tab 到最後 email,
+  End 與 touch / mouse 內捲到末端均通過. 展開後高度不變,
+  無頁面或表單水平溢出, email 可達, 事件 payload / clear / eye /
+  focus 正確, runtime errors 0. Source copy / assets / duplicate IDs /
+  token / font-size / min-width 另做靜態核對.
+- 24 張 default / expanded 手機 / 平板 / 桌面 / 短視窗 PNG 與
+  login-qa-results.json、可重現 QA helper 保存於本機 session-197.
+  首次 keyboard harness 未帶 Enter text event, 已修正並全量重跑;
+  該失敗不是產品 bug, 最後 36 cases 全通過.
+- Independent review 無產品 findings. Worker 修正 smoke 初版反向
+  斷言, 加強 preventDefault / password payload / clientWidth checks,
+  全站最後一輪通過. Root 另加 OTP hint 的 aria-describedby;
+  最後將 gutter assertion 也收斂至 clientWidth, 直接重跑現行
+  responsive smoke expressions 24 / 24 頁面 / 寬度 cases 通過,
+  結果另存 login-responsive-smoke-results.json, 產品行為無改動.
+- Preview 8000 持續運行, landing 與四個 login URL HTTP 200.
+  本輪 self-tested, 待使用者驗收; 無新增全域規則,
+  tokens.md 已同步新 effect / LoginBackground, start.md 不需修改.
+
+### 下一步
+
+- 使用者透過 http://localhost:8000/login1.html 至 login4.html 驗收;
+  後端交付對照見 specs/pages/login.md. 依回饋修正,
+  收到明確 commit / push 指示才進入提交流程.
+
+## Session 196: Login variants 讀取與固定高度 / RWD 確認 (2026-11-18)
+
+### 使用者已確認的 current 規則
+
+- 延續 Session195 的 login1 至 login4 四個獨立頁與後端交付說明;
+  Cloudflare 只示意, 不串真實資料. 登入頁背板統一使用
+  Color/Surface/LoginBackground / fill opacity 50%, 不列為頁面差異.
+- 使用者回答固定高度: 卡片不可隨內容展開而長高, 超出部分用 scroll.
+  Desktop login1 / login2 / login3 沿用 545px, login4 沿用 529px.
+  固定高度內原先被裁切的內容須能捲動到達, 不以改長卡片處理.
+- 使用者確認 RWD: >=1024px 左右雙欄; <1024px 單欄隱藏右圖.
+  單欄表單最大寬 410px 並置中, 窄螢幕扣除左右各 12px 後填滿.
+  此確認取代 Session195 的 breakpoint 未定義紀錄與 pending 提案.
+- 使用者提供 Login In variants, 要求先 figma-go 讀取.
+  本輪仍在 Read / spec checkpoint, 未授權跳過未定義互動直接實作.
+
+### Current Figma source / children checklist
+
+- swift / components `1:2`, selection `222:10421` Login In,
+  COMPONENT_SET 450 x 2458. 2026-11-18 live read.
+- 四個直接 children:
+  1. `222:10420` state=success, COMPONENT 410 x 545;
+  2. `287:18363` state=mobile, COMPONENT 410 x 739;
+  3. `236:11311` state=message, COMPONENT 410 x 529;
+  4. `230:11272` state=failure, COMPONENT 410 x 545.
+- Python 遍歷 422 個唯一節點, 四 variant 各 128 / 91 / 66 / 136
+  個節點, 逐一核對 PNG / SVG, 再與 Session195 的四頁 / mobile
+  instance cross-check, 沒有漏讀. Component set 紫色 #9747FF stroke /
+  radius 5 / padding 20 是 Figma 編輯器容器, 不屬於登入 UI.
+- UI 維持表單 padding / 主要 gap 12, input / button Radius/6 /
+  Neutral/200 border, 字級 24 / 20 / 16 / 12, Text/800,
+  錯誤文字 Status-Negative, 白底. 共用 token / icon 沿用現有來源,
+  尺寸與 layout 由本輪 page / variant contract 決定.
+- Master success 本次顯示帳密錯誤, 但 login1 的 Show warning=false
+  仍是其頁面 shown state; 不用 master 的展示狀態覆蓋 page instance.
+  Mobile 顯示 Google / email, message 僅 email, failure 沒有 Google
+  按鈕; 各 shown state 仍不自動視為開啟後的產品 defaults.
+- 讀取 or / contact us 共八個列與八個 arrow 的 reactions, 16 筆
+  均空; component set 的 dev annotations 也為空. 此組四 variants
+  定義登入狀態 / mobile 結構, 未明確定義兩區開關點擊與初始狀態.
+
+### 舊 spec / current Figma 差異 checkpoint 與未解事項
+
+- 沿用: strict tokens、既有 logo / Google / eye / email / up / down /
+  attached-link icons, 密碼眼睛完整 toggle 慣例, 四頁後端示意範圍.
+- 以本次 Figma 覆蓋: 登入頁內容、20px input / button 文字、固定高度
+  與 1024px responsive 結構, 不沿用內頁 aside / topbar shell.
+- 衝突待使用者確認: success 的 Customers service `230:10889` 與
+  failure 的 `230:11296` 仍引用退役的 `51:185` state=show, 定義
+  含 QR code / 電話 / 傳真 / 區域客服, 高 395. 兩個 instance
+  單獨匯出的 PNG 為透明, 不把原始舊節點當成目前可見內容;
+  另讀取舊 definition 的 PNG 作 reference, 不提升為 current UI.
+  Mobile / message 引用 `2056:71019` state=simple, 只顯示 email,
+  與現行 components/customers-service.md 的 email-only 方向一致.
+  不自行恢復舊客服資料或靜默替換衝突 instance.
+- 互動待確認: or 是否只控制 Google、contact us 是否只控制客服,
+  各頁初始展開 / 收合狀態, 以及 failure 頁是否也提供 Google.
+  四 variants 沒有獨立 open / closed states, prototype 亦未定義.
+- 原始 source JSON / 四 variant PNG / SVG / customer PNG /
+  reactions JSON 保存在本機 session-195 的 login-variants-current-source,
+  login-variant-*-source 與 login-variant-current-reactions 檔案;
+  沿用同一登入工作批次目錄, 本輪沒有產品實作或全域規則變更.
+
+### 驗證與下一步
+
+- 本輪只更新交接, 執行 conventions lint / git diff --check.
+  Token 與 CSS 沿用 Session195 的匯入及驗證結果, start.md 不需修改.
+- 等使用者確認上述實際缺口後, 收斂 components/login.md /
+  specs/pages/login.md current contract 與四頁交付對照, 再進入實作.
+  不重問使用者已確認的固定高度 scroll 與 1024px RWD.
+
+## Session 195: 登入頁桌面讀取與 LoginBackground variables 匯入 (2026-11-18)
+
+### 本輪讀取與確認事項
+
+- 使用者指定最外層登入頁交付 login1.html 至 login4.html 四個獨立頁,
+  分別表示四種狀態; 交付說明須清楚列出對應關係給後端.
+  Cloudflare 沿用後端現有模組, 此處只做示意, 不串真實資料.
+- 本輪起始 git fetch origin 成功, main 與 origin/main ahead / behind
+  為 0 / 0; 最新 commit 為 f7f417d. Figma swift / display `1:3`,
+  selection `2838:123267` Login in page - default, 1246 x 900.
+- 讀取四個桌面 section: `2838:123267` default, `300:19721`
+  logining and validated failure, `300:19723` validated failure,
+  `300:19724` verified message. 均為 1246 x 900;
+  主卡片前三頁 846 x 545, 驗證碼頁 846 x 529, 左右欄 410 / 436.
+  預備對應一般帳密 / 帳密錯誤 / Cloudflare 失敗 / email 驗證碼.
+- 補讀同頁 `2838:123400` 410 x 783 手機稿, 以及 `239:11538`
+  768 x 1001 / `239:11981` 375 x 449 reference. Python 逐一遍歷
+  七個 root 的 767 個節點, 核對 children checklist 與 PNG / SVG;
+  來源原始資料保存於本機 specs/qa-screenshots/session-195/.
+- 桌面下方 Google / 客服內容部分被固定高度裁切, 手機稿有顯示;
+  讀取四個 form 與六個分隔列的 prototype reactions 均為空.
+  舊稿 QR code / 電話等客服資訊與現行 email-only spec 不符,
+  不將這些內容提升為 current source.
+- 使用者表示稍後提供 variants 與手機版; Google / contact us 的
+  顯示、展開預設、互動與 RWD 仍待讀取. 先前提出的 <1024px
+  隱藏右圖只是 checkpoint 提案, 尚未確認, 不作為實作規則.
+
+### Variables 匯入
+
+- 使用者明確要求比對後匯入新的 variables, 並表示會自行將
+  LoginBackground 配色套用到 Figma background panel.
+- 新 export 與本機匯出比較為 134 -> 135 個 variables,
+  只新增 `Color/Surface/LoginBackground`, `#B6FA91`, alpha 1,
+  VariableID:2839:123657, ALL_SCOPES. 原有 134 筆的 type / value /
+  aliases / metadata 均相同, 無刪除或修改.
+- 原始 export 匯入忽略版控的 specs/assets/figma-variables.json,
+  tokens.md 與 base.css 新增 strict mirror
+  `--color-surface-loginbackground`; 不拆寫 camel-case 為另一個 alias.
+- 新 token 的 alpha 1 與舊背板讀到的 50% fill opacity 分開記錄;
+  等使用者更新 Figma 後重讀 panel 的 binding / opacity 與畫面,
+  不以舊圖推定新 panel 透明度, 不自行修改 Figma.
+- 本輪只匯入 token 與保存交接, 登入 page/component spec 及四頁
+  實作仍待後續 Figma variants / mobile 讀取和 spec checkpoint.
+  無新增全域開發規則, start.md 不需修改.
+
+### Background panel 重讀
+
+- 使用者表示已調整透明度為 50%, 要求 figma-go 重讀.
+  目前 selection 仍為 default `2838:123267`, 1246 x 900;
+  children 為 Rectangle 9 `2838:123268` 846 x 545 與
+  Frame 59 `2838:123269` 846 x 545, 結構未變.
+- 當前背板 JSON fill 為 #B6FA91, SVG 的 path / ancestor group
+  均無 opacity / fill-opacity; PNG 亦顯示全不透明綠色背板.
+  Live VariableID:2839:123657 的 mode 17:0 alpha 仍為 1.
+- 此次實際讀到的 50% 出現在 Cloudflare 成功勾選 Vector
+  `I2838:123270;220:10336;228:10639;218:10390`, fill #2ACA18,
+  paint opacity 0.5, SVG fill-opacity="0.5"; PNG 顯示勾選底色變淡.
+  不把這次勾選 icon 的變更當成背景板透明度確認.
+- 重讀 JSON / PNG / SVG 存於本機 session-195 的
+  login-background-reread 與 login1-reread-source 檔案.
+  此次 Token 與產品 code 沿用前輪匯入結果, 等待使用者調整目標.
+- 使用者再次修正後重讀同一 selection: 背板 `2838:123268` JSON
+  fill #B6FA9180, SVG fill #B6FA91 / fill-opacity="0.5", PNG
+  核對呈現半透明淡綠. Token 的 live alpha 仍為 1, 50% 設在
+  背板 fill, 不修改全域 token alpha. tokens.md 使用說明改為此現況.
+  後續使用者確認登入頁背板統一 50%, 手動調整中的數值不列為頁面差異.
+- 此次 Cloudflare 成功勾選 Vector 仍為 #2ACA18 / fill opacity 0.5,
+  JSON / SVG / PNG 一致, 保留為當前觀察, 不自行還原.
+  新來源檔名為 login-background-corrected 與 login1-corrected-source;
+  共用 CSS 與產品 code 無新增變更.
+
+### Login2 帳密錯誤頁 current selection 重讀
+
+- 本次 figma-go selection 為 `300:19721` Login in page - logining
+  and validated failure, SECTION 1246 x 900. Children checklist:
+  1. `283:16865` Rectangle 9, RECTANGLE 846 x 545;
+  2. `283:16863` Frame 56, FRAME 846 x 545, 內含
+  `283:16993` Login In INSTANCE 410 x 545 與 `232:10733`
+  Frame 24 FRAME 436 x 545. Python 遍歷 133 個唯一節點.
+- 與 default 共用 mainComponent `222:10420` state=success,
+  但 Show warning=true; 標題後顯示 16px Regular / Status-Negative
+  的「登入資訊錯誤，請重新輸入」. 其後仍為帳號 xiaomi999 / 密碼
+  ******** / IP 與政策 / Cloudflare 成功 / 清除與登入.
+  輸入框與按鈕仍為 Radius/6、Neutral/200 邊框與 20px 文字,
+  標題 24px / 600; 外卡片 Radius/12, 主要 gap / padding 12.
+- 相對 default, 錯誤訊息增加 22px 文字與 12px gap,
+  帳號 y=135 / 密碼 y=216 / Cloudflare y=337 / 按鈕組 y=470.
+  Show Google sign in / Show Customers service 均 true,
+  但 or y=545 / Google y=584 / contact us y=644 / 客服 y=683,
+  超出表單 545px clipping; SVG clipPath 與 PNG 均核對,
+  不把裁切結果當成 hidden defaults 或收合互動的定義.
+- 使用者確認背板 #B6FA91 / fill opacity 50% 為統一規格,
+  手動調整中的數值不列為頁面差異. Cloudflare 勾選為
+  #2ACA18 / fill opacity 50%.
+- Current JSON / PNG / SVG 為本機 session-195 的
+  login2-current-source 檔案. Google / 客服 variants 與 mobile
+  仍等後續 selection, 不提前寫登入 contract 或開始實作.
+
+### Login3 Cloudflare 失敗頁 current selection 重讀
+
+- 本次 figma-go selection 為 `300:19723` Login in page - validated
+  failure, SECTION 1246 x 900. Children checklist:
+  1. `293:18746` Rectangle 9, RECTANGLE 846 x 545;
+  2. `293:18747` Frame 56, FRAME 846 x 545, 內含
+  `293:18748` Login In INSTANCE 410 x 545 與 `293:18749`
+  Frame 24 FRAME 436 x 545. Python 遍歷 141 個唯一節點.
+- Login In mainComponent `230:11272` state=failure; 上方帳號 / 密碼 /
+  IP / 政策列沿用同樣位置與樣式, 未顯示帳密錯誤紅字.
+  Show warning 雖為 true, 當前 failure 結構與 PNG 都沒有該訊息,
+  不因 property 名稱自行新增帳密錯誤文字.
+- Cloudflare `I293:18748;230:11280` 高 77, 左側 71px slot 為
+  紅色失敗圖示, 實際向量 53.25px; Status-Negative,
+  文字「失敗 | 版本過舊」與有底線的「重新整理」皆 16px Regular.
+  右側 Cloudflare 圖片 200 x 77. 依使用者原要求只作示意,
+  不自行接服務、驗證規則或重新整理後的結果.
+- 下方清除 / 登入兩顆等寬按鈕, 各 177 x 39, 20px 文字,
+  Radius/6、Neutral/200 邊框; 按鈕組 y=392, or 分隔列 y=467,
+  contact us 分隔列 y=506, 各 27px 高, 截圖中皆為向上箭頭.
+  客服區 y=545 開始, 超出固定 545px 表單裁切範圍.
+  原始結構另有 y=952 的 contact us 列, 不提升為可見頁面內容.
+- Show Google sign in / Show Customers service 皆 true, 但當前
+  failure 結構沒有 Google 按鈕且客服被裁切; 顯示與展開互動
+  仍等後續 variants, 不從 Boolean 或箭頭方向推定 defaults.
+  Cloudflare direction-left icon override visible=false, 不實作該圖示.
+- 背板 #B6FA91 / fill opacity 50% 經 JSON / SVG / PNG 核對,
+  依使用者澄清套用統一規格, 不再列作各頁差異.
+  Current JSON / PNG / SVG 存於本機 session-195 的
+  login3-current-source 檔案; 此輪產品實作無變更.
+
+### Login4 email 驗證碼頁 current selection 重讀
+
+- 本次 figma-go selection 為 `300:19724` Login in page - verified
+  message, SECTION 1246 x 900. Children checklist:
+  1. `299:19488` Rectangle 9, RECTANGLE 846 x 545;
+  2. `299:19489` Frame 56, FRAME 846 x 529, 內含
+  `299:19490` Login In INSTANCE 410 x 529 與 `299:19491`
+  Frame 24 FRAME 436 x 529. Python 遍歷 71 個唯一節點.
+- Login In mainComponent `236:11311`, state=message. 內容依序為
+  Logo / 旅宿 e 管家, 驗證碼與同列右側提示
+  「驗證碼發送至 email，逾時無效」, 輸入框, IP / 政策,
+  Cloudflare 成功, 清除 / 登入, contact us, email 卡片.
+  不含帳號 / 密碼欄、or 列或 Google 登入按鈕.
+- 驗證碼 label 16px, 說明 12px, 輸入示意值仍為 xiaomi999、20px;
+  輸入框高 39 / Radius/6 / Neutral/200 border, 白底.
+  不從示意值推定驗證碼格式、長度、逾時秒數或重新寄送行為.
+  標題 24px / 600, 主文 Text/800; 主要 padding / gap 12.
+- IP / 政策列 y=182, Cloudflare y=222 高 121, 按鈕組 y=355
+  高 63, contact us y=430 高 27, email 卡片 y=469 高 48;
+  卡片僅 icons/email 與 service@bbnet.gmail.com, Radius/8 /
+  Neutral/200 邊框. 客服標題列 override visible=false,
+  PNG 不見客服標題, 不實作隱藏標題.
+- Show warning / Google / Customers service 均 true, 仍依實際
+  current structure / visibility 核對可見內容, 不從屬性臆造額外內容.
+  Contact us 箭頭向下且 email 可見, 展開規則待 variants 核對.
+  背板 50% 依已確認統一規格; Cloudflare 成功勾選於本頁為
+  Status-Positive / 100%, 僅作 widget 示意來源記錄.
+- Current JSON / PNG / SVG 存於本機 session-195 的
+  login4-current-source 檔案. 四個桌面 selection 已逐一重讀;
+  variants / mobile 仍待後續 selection, 此輪產品實作無變更.
+
+### Mobile 帳密錯誤稿 current selection 重讀
+
+- 使用者接著指定讀 mobile. 本次 selection 為 `2838:123400`
+  Login in page ( mobile / logging and validated failure ),
+  SECTION 410 x 783. Children checklist:
+  1. `287:17474` Rectangle 9, RECTANGLE 422.49 x 545, x=-6 / y=119;
+  2. `287:18489` Login In, INSTANCE 386 x 751, x=12 / y=16.
+  Python 遍歷 93 個唯一節點, JSON / SVG / PNG 交叉核對.
+- Current mainComponent `287:18363` state=mobile, component 本體
+  410 x 739; 此頁 instance 為 386 x 751. Show warning / Google /
+  Customers service 均 true, 顯示帳密錯誤、Cloudflare 成功、Google
+  登入與 email 卡片. 這些是 shown state, 尚未確認為各頁 defaults.
+- 手機單欄不含右側插圖, 外底色 Color/Neutral/75, 白色表單直角;
+  外側左右 12 / 上下 16, 表單內 padding 12, 主要 gap 12,
+  可用內容寬 362. 410px 是參考稿寬度, 不得寫為固定 viewport /
+  fixed min-width. Desktop 保留雙欄, 實際切換 breakpoint 未標示,
+  留待最後 spec checkpoint, 不自動採用先前 <1024px 提案.
+- 標題 24px / 600, 錯誤訊息 16px / 400 / Status-Negative,
+  錯誤在標題 group 內; Label 16px, 輸入文字 20px, IP / 政策 12px.
+  輸入框高 39 / Radius/6 / Neutral/200 邊框 / 6px 與 12px 內距.
+  帳號 xiaomi999、密碼 ********、IP 41.221.312.333 為示意內容.
+- IP 與資安政策 / 隱私條款在同一列, 政策 pill 各 96 x 28 /
+  Radius/56. Cloudflare 高 121, 左右 padding 16, 圖片 200 x 77,
+  成功文字 24px. 依使用者範圍仍只示意 widget.
+- 清除 / 登入並排等寬, 各 165 x 39, gap 8, 按鈕組 padding 12;
+  or 列高 27, Google pill 362 x 48 / Radius/56,
+  contact us 列高 27, email 卡片 362 x 48 / Radius/8.
+  Google / email 都完整可見, 兩列箭頭向下; 客服標題 visible=false.
+  不從箭頭方向推定收合規則, 等後續 variants.
+- 背板使用 LoginBackground / 50%, 與使用者統一規格一致.
+  背板略超出 section 邊界只是裝飾 geometry, 不應讓產品頁面產生
+  水平捲動; 流動縮放細節留在 current contract 確認.
+- 相較桌面, 採單欄、白底直角表單、完整 Google / email,
+  不沿用 desktop 545px 固定表單高度造成的裁切.
+  舊 768 / 375 reference 不取代本次 current 手機 selection.
+- Current JSON / PNG / SVG 存於本機 session-195 的
+  login-mobile-current-source.json 與 login-mobile-current-1-source
+  檔案. 此輪只讀圖與更新交接, 登入 page/component spec 與實作
+  仍等 variants 讀取及最終 spec checkpoint.
+
+### 驗證與下一步
+
+- 新 export 與附件 bytes / SHA-256 相同; 全部 135 個 variables 的
+  color / alias / spacing / radius 與 CSS mirror 逐項一致.
+- 四項 lint / git diff --check exit 0; token mirror 94 筆 raw hex
+  一致, partial manifest 14 頁 / 3 standalone. 完整 Chrome smoke
+  exit 0, 14 頁 / 196 項通過. 無頁面使用新 token, 此輪沒有 UI 變更.
+- 下一步依使用者提供的 selection 讀取 variants 與手機版,
+  再整理完整 current contract / 差異 checkpoint 與交付狀態說明.
+
 ## Session 194: 提交與推送住房統計頁 (2026-11-17)
 
 ### 本輪改動與重要決定

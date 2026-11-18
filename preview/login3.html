@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 驗證失敗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body class="login-page" data-login-page="login3" data-login-state="cloudflare-error">
+    <main class="login-stage">
+      <div id="loginRoot" class="login-card-wrap">
+        <div class="login-backdrop" aria-hidden="true"></div>
+        <div class="login-card">
+          <div data-partial="login-form"></div>
+          <div class="login-illustration-panel" aria-hidden="true">
+            <img class="login-illustration" src="./assets/images/login-illustration.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </main>
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initLogin } from "./js/login.js";
+
+      await loadPartials();
+      initLogin();
+    </script>
+  </body>
+</html>

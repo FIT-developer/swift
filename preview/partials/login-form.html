@@ -1,0 +1,102 @@
+<div id="loginScroll" class="login-form-scroll" role="region" aria-labelledby="loginTitle" tabindex="0">
+  <form id="loginForm" class="login-form" novalidate>
+    <header class="login-brand">
+      <img class="login-logo" src="./assets/icons/logo.svg" alt="" aria-hidden="true" />
+      <h1 id="loginTitle">旅宿 e 管家</h1>
+      <p class="login-warning" data-login-error role="alert">登入資訊錯誤，請重新輸入</p>
+    </header>
+
+    <fieldset class="login-fieldset" data-login-credentials>
+      <div class="login-field">
+        <label for="loginAccount">帳號</label>
+        <input id="loginAccount" name="account" type="text" value="xiaomi999" autocomplete="username" />
+      </div>
+      <div class="login-field">
+        <label for="loginPassword">密碼</label>
+        <div class="login-password-wrap">
+          <input id="loginPassword" name="password" type="password" value="********" autocomplete="current-password" />
+          <button class="login-eye" type="button" data-login-eye aria-pressed="false">
+            <img src="./assets/icons/eye-close.svg" data-login-eye-icon alt="" aria-hidden="true" />
+            <span class="login-sr-only" data-login-eye-show>顯示密碼</span>
+            <span class="login-sr-only" data-login-eye-hide hidden>隱藏密碼</span>
+          </button>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="login-fieldset" data-login-verification>
+      <div class="login-field">
+        <div class="login-code-label">
+          <label for="loginCode">驗證碼</label>
+          <span id="loginCodeHint">驗證碼發送至 email，逾時無效</span>
+        </div>
+        <input id="loginCode" name="code" type="text" value="xiaomi999" autocomplete="one-time-code" aria-describedby="loginCodeHint" />
+      </div>
+    </fieldset>
+
+    <div class="login-meta">
+      <p class="login-ip">IP：41.221.312.333</p>
+      <button type="button" class="login-policy hover:bg-text-default hover:text-text-inverse transition-colors duration-150" data-login-policy="security">
+        <span>資安政策</span>
+        <span class="login-link-icon" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="login-policy hover:bg-text-default hover:text-text-inverse transition-colors duration-150" data-login-policy="privacy">
+        <span>隱私條款</span>
+        <span class="login-link-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <div class="login-cloudflare login-cloudflare-success" data-login-challenge="success">
+      <div class="login-cloudflare-status">
+        <img class="login-status-icon" src="./assets/icons/check-green.svg" alt="" aria-hidden="true" />
+        <span class="login-success-copy">成功</span>
+      </div>
+      <img class="login-cloudflare-logo" src="./assets/images/image4.png" alt="Cloudflare" />
+    </div>
+    <div class="login-cloudflare login-cloudflare-failure" data-login-challenge="failure">
+      <div class="login-cloudflare-status">
+        <img class="login-status-icon" src="./assets/icons/failure-red.svg" alt="" aria-hidden="true" />
+        <div class="login-challenge-copy">
+          <span>失敗 | 版本過舊</span>
+          <button type="button" data-login-refresh>重新整理</button>
+        </div>
+      </div>
+      <img class="login-cloudflare-logo" src="./assets/images/image4.png" alt="Cloudflare" />
+    </div>
+
+    <div class="login-actions">
+      <button type="button" class="login-button login-button-clear" data-login-clear>清除</button>
+      <button type="submit" class="login-button login-button-submit">登入</button>
+    </div>
+
+    <details id="loginGoogle" class="login-disclosure">
+      <summary>
+        <span class="login-divider" aria-hidden="true"></span>
+        <span>or</span>
+        <span class="login-divider" aria-hidden="true"></span>
+        <img class="login-disclosure-arrow" src="./assets/icons/up.svg" alt="" aria-hidden="true" />
+      </summary>
+      <div class="login-disclosure-content">
+        <button type="button" class="login-google hover:bg-text-default hover:text-text-inverse transition-colors duration-150" data-login-google>
+          <img src="./assets/icons/google.svg" alt="" aria-hidden="true" />
+          <span>Sign in with google</span>
+        </button>
+      </div>
+    </details>
+
+    <details id="loginContact" class="login-disclosure">
+      <summary>
+        <span class="login-divider" aria-hidden="true"></span>
+        <span>contact us</span>
+        <span class="login-divider" aria-hidden="true"></span>
+        <img class="login-disclosure-arrow" src="./assets/icons/up.svg" alt="" aria-hidden="true" />
+      </summary>
+      <div class="login-disclosure-content">
+        <a class="login-email" href="mailto:service@bbnet.gmail.com">
+          <img src="./assets/icons/email.svg" alt="" aria-hidden="true" />
+          <span>service@bbnet.gmail.com</span>
+        </a>
+      </div>
+    </details>
+  </form>
+</div>

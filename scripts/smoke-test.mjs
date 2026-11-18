@@ -267,7 +267,8 @@ const APP_CSS_LOADED_CHECK = {
         "sms-text-modal.css",
         "scheduled-send.css",
         "scheduled-send-modal.css",
-        "housing-statistics.css"
+        "housing-statistics.css",
+        "login.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -975,7 +976,329 @@ const MEMBER_DATA_CHECKS = [
   },
 ];
 
+const LOGIN_PAGE_CONFIGS = [
+  {file: "login1.html", page: "login1", state: "credentials", height: 545, google: true, verification: false, refresh: false},
+  {file: "login2.html", page: "login2", state: "credentials-error", height: 545, google: true, verification: false, refresh: false},
+  {file: "login3.html", page: "login3", state: "cloudflare-error", height: 545, google: true, verification: false, refresh: true},
+  {file: "login4.html", page: "login4", state: "verification", height: 529, google: false, verification: true, refresh: false},
+];
+
+function loginReadyExpr(config) {
+  return `!document.querySelector("[data-partial]") &&
+    document.body.dataset.loginPage === ${JSON.stringify(config.page)} &&
+    document.body.dataset.loginState === ${JSON.stringify(config.state)} &&
+    document.getElementById("loginRoot")?.dataset.loginReady === "true" &&
+    !!document.getElementById("loginScroll") &&
+    !!document.getElementById("loginForm")`;
+}
+
+function loginStateCheck(config) {
+  const activeIds = config.verification
+    ? ["loginCode"]
+    : ["loginAccount", "loginPassword"];
+  return {
+    name: "login initializes the confirmed state and active fields",
+    expr: `(function () {
+      var root = document.getElementById("loginRoot");
+      var form = document.getElementById("loginForm");
+      var credentials = root && root.querySelector("[data-login-credentials]");
+      var verification = root && root.querySelector("[data-login-verification]");
+      var active = ${JSON.stringify(activeIds)};
+      if (!root || !form || root.dataset.loginReady !== "true") return "login module not ready";
+      if (document.body.dataset.loginPage !== ${JSON.stringify(config.page)} ||
+          document.body.dataset.loginState !== ${JSON.stringify(config.state)})
+        return "body login state mismatch";
+      if (!credentials || !verification) return "login fieldset missing";
+      if (credentials.hidden !== ${config.verification} ||
+          verification.hidden !== ${!config.verification})
+        return "inactive fieldset visibility mismatch";
+      var controls = [
+        document.getElementById("loginAccount"),
+        document.getElementById("loginPassword"),
+        document.getElementById("loginCode"),
+      ];
+      if (controls.some(function (control) { return !control; })) return "login input missing";
+      for (var index = 0; index < controls.length; index += 1) {
+        var control = controls[index];
+        var shouldBeActive = active.indexOf(control.id) !== -1;
+        if (control.disabled !== !shouldBeActive) return control.id + " disabled state mismatch";
+      }
+      return true;
+    })()`,
+  };
+}
+
+function loginDisclosureCheck(config) {
+  return {
+    name: "login disclosures are independent and start closed",
+    expr: `(function () {
+      var google = document.getElementById("loginGoogle");
+      var contact = document.getElementById("loginContact");
+      if (!contact || contact.open) return "contact disclosure should start closed";
+      var contactSummary = contact.querySelector("summary");
+      if (!contactSummary) return "contact summary missing";
+      if (${config.google}) {
+        if (!google || google.hidden || !google.getClientRects().length || google.open)
+          return "Google disclosure should be visible and closed";
+        var googleSummary = google.querySelector("summary");
+        if (!googleSummary || !google.querySelector("[data-login-google]"))
+          return "Google disclosure content missing";
+        googleSummary.click();
+        if (!google.open || contact.open) return "Google opened non-independently";
+        googleSummary.click();
+        if (google.open) return "Google disclosure did not close";
+      } else if (google && !google.hidden && google.getClientRects().length) {
+        return "Google disclosure should be hidden for verification";
+      }
+      contactSummary.click();
+      if (!contact.open || (google && google.open)) return "contact opened non-independently";
+      contactSummary.click();
+      if (contact.open || (google && google.open)) return "contact disclosure did not close";
+      return true;
+    })()`,
+  };
+}
+
+function loginContactCheck() {
+  return {
+    name: "login contact support is email-only",
+    expr: `(function () {
+      var contact = document.getElementById("loginContact");
+      var email = contact && contact.querySelector('a[href^="mailto:"]');
+      if (!contact || !email) return "mailto contact missing";
+      if (!email.href.includes("service@bbnet.gmail.com")) return "contact email mismatch";
+      if (contact.querySelector('img[src*="service_line"], img[src*="phone"], img[src*="fax"]'))
+        return "legacy contact asset present";
+      return true;
+    })()`,
+  };
+}
+
+function loginEyeAndClearCheck(config) {
+  return {
+    name: "login eye and clear remain local",
+    expr: `(function () {
+      var root = document.getElementById("loginRoot");
+      var clear = root && root.querySelector("[data-login-clear]");
+      var active = document.getElementById(${JSON.stringify(
+        config.verification ? "loginCode" : "loginAccount",
+      )});
+      if (!clear || !active) return "clear or active input missing";
+      active.value = "smoke-value";
+      if (!${config.verification}) {
+        var password = document.getElementById("loginPassword");
+        var eye = root.querySelector("[data-login-eye]");
+        var icon = eye && eye.querySelector("[data-login-eye-icon]");
+        var show = eye && eye.querySelector("[data-login-eye-show]");
+        var hide = eye && eye.querySelector("[data-login-eye-hide]");
+        if (!password || !eye || !icon || !show || !hide) return "password eye markup missing";
+        password.value = "smoke-password";
+        if (password.type !== "password" || show.hidden || !hide.hidden)
+          return "password did not start masked";
+        eye.click();
+        if (password.type !== "text" || !/eye-open\\.svg$/.test(icon.src) || !show.hidden || hide.hidden)
+          return "password reveal failed";
+        eye.click();
+        if (password.type !== "password" || !/eye-close\\.svg$/.test(icon.src) || show.hidden || !hide.hidden)
+          return "password remask failed";
+      }
+      clear.click();
+      if (active.value !== "") return "clear did not empty active field";
+      if (document.activeElement !== active) return "clear did not focus first active field";
+      if (!${config.verification} && document.getElementById("loginPassword").type !== "password")
+        return "clear did not remask password";
+      return true;
+    })()`,
+  };
+}
+
+function loginEventsCheck(config) {
+  const activeField = config.verification ? "code" : "account";
+  const inactiveFields = config.verification ? ["account", "password"] : ["code"];
+  return {
+    name: "login emits integration events without navigation or API calls",
+    expr: `(function () {
+      var root = document.getElementById("loginRoot");
+      var form = document.getElementById("loginForm");
+      if (!root || !form) return "login form missing";
+      var names = ["login:submit", "login:policy"];
+      if (${config.google}) names.push("login:google");
+      if (${config.refresh}) names.push("login:refresh");
+      var events = [];
+      var listener = function (event) { events.push({name: event.type, detail: event.detail}); };
+      names.forEach(function (name) { form.addEventListener(name, listener); });
+      var originalFetch = window.fetch;
+      var fetchCalls = 0;
+      window.fetch = function () {
+        fetchCalls += 1;
+        throw new Error("login smoke intercepted fetch");
+      };
+      var beforeUrl = location.href;
+      try {
+        var account = document.getElementById("loginAccount");
+        var password = document.getElementById("loginPassword");
+        var code = document.getElementById("loginCode");
+        if (!account || !password || !code) return "event input missing";
+        account.value = "event-account";
+        password.value = "event-password";
+        code.value = "event-code";
+        var submitEvent = new Event("submit", {bubbles: true, cancelable: true});
+        if (form.dispatchEvent(submitEvent) || !submitEvent.defaultPrevented)
+          return "submit did not prevent default";
+        if (${config.google}) {
+          var googleButton = document.querySelector("#loginGoogle [data-login-google]");
+          if (!googleButton) return "Google event button missing";
+          googleButton.click();
+        }
+        var policy = root.querySelector('[data-login-policy="security"]');
+        if (!policy) return "security policy button missing";
+        policy.click();
+        if (${config.refresh}) {
+          var refresh = root.querySelector("[data-login-refresh]");
+          if (!refresh) return "refresh button missing";
+          refresh.click();
+        }
+      } finally {
+        window.fetch = originalFetch;
+        names.forEach(function (name) { form.removeEventListener(name, listener); });
+      }
+      if (location.href !== beforeUrl) return "login action navigated";
+      if (fetchCalls !== 0) return "login action called fetch";
+      names.forEach(function (name) {
+        if (events.filter(function (event) { return event.name === name; }).length !== 1)
+          throw new Error(name + " event count mismatch");
+      });
+      var submit = events.find(function (event) { return event.name === "login:submit"; });
+      if (!submit || submit.detail.page !== ${JSON.stringify(config.page)} ||
+          submit.detail.state !== ${JSON.stringify(config.state)})
+        return "submit detail page/state mismatch";
+      if (submit.detail.fields[${JSON.stringify(activeField)}] !==
+          ${JSON.stringify(config.verification ? "event-code" : "event-account")} ||
+          (${!config.verification} && submit.detail.fields.password !== "event-password") ||
+          ${JSON.stringify(inactiveFields)}.some(function (name) {
+            return Object.prototype.hasOwnProperty.call(submit.detail.fields, name);
+          }))
+        return "submit active fields mismatch";
+      var policyEvent = events.find(function (event) { return event.name === "login:policy"; });
+      if (!policyEvent || policyEvent.detail.policy !== "security") return "policy detail mismatch";
+      if (${config.google}) {
+        var googleEvent = events.find(function (event) { return event.name === "login:google"; });
+        if (!googleEvent || googleEvent.detail.page !== ${JSON.stringify(config.page)})
+          return "Google detail mismatch";
+      }
+      if (${config.refresh}) {
+        var refreshEvent = events.find(function (event) { return event.name === "login:refresh"; });
+        if (!refreshEvent || refreshEvent.detail.state !== ${JSON.stringify(config.state)})
+          return "refresh detail mismatch";
+      }
+      return true;
+    })()`,
+  };
+}
+
+function loginFixedHeightCheck(config) {
+  return {
+    name: "login fixed height survives disclosure expansion",
+    viewport: {width: 1440, height: 900},
+    expr: `(function () {
+      var card = document.querySelector(".login-card");
+      var scroll = document.getElementById("loginScroll");
+      var google = document.getElementById("loginGoogle");
+      var contact = document.getElementById("loginContact");
+      if (!card || !scroll || !contact) return "login card or scroller missing";
+      var initial = card.getBoundingClientRect().height;
+      if (Math.abs(initial - ${config.height}) > 1) return "card height: " + initial;
+      if (!["auto", "scroll"].includes(getComputedStyle(scroll).overflowY))
+        return "login scroller is not vertically scrollable";
+      var details = [];
+      if (${config.google} && google) details.push(google);
+      details.push(contact);
+      details.forEach(function (detail) {
+        var summary = detail.querySelector("summary");
+        if (!summary) throw new Error("disclosure summary missing");
+        summary.click();
+        if (Math.abs(card.getBoundingClientRect().height - initial) > 1)
+          throw new Error("card grew after disclosure expansion");
+      });
+      scroll.scrollTop = scroll.scrollHeight;
+      if (Math.abs(card.getBoundingClientRect().height - initial) > 1)
+        return "card changed height while scrolling";
+      details.reverse().forEach(function (detail) {
+        var summary = detail.querySelector("summary");
+        if (detail.open) summary.click();
+      });
+      return document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1 ? true : "desktop horizontal overflow";
+    })()`,
+  };
+}
+
+function loginResponsiveCheck(config, width) {
+  const desktop = width >= 1024;
+  return {
+    name: "login responsive boundary at " + width + "px",
+    viewport: {width: width, height: 900, mobile: !desktop},
+    expr: `(function () {
+      var card = document.querySelector(".login-card");
+      var illustration = document.querySelector(".login-illustration-panel");
+      if (!card || !illustration) return "login responsive selector missing";
+      var cardRect = card.getBoundingClientRect();
+      var illustrationVisible = illustration.getClientRects().length > 0 &&
+        getComputedStyle(illustration).display !== "none";
+      if (illustrationVisible !== ${desktop}) return "illustration visibility mismatch";
+      if (${desktop}) {
+        if (Math.abs(cardRect.width - 846) > 1) return "desktop card width: " + cardRect.width;
+        if (Math.abs(cardRect.height - ${config.height}) > 1) return "desktop card height: " + cardRect.height;
+      } else {
+        if (cardRect.width > 410.5) return "mobile card exceeds 410px: " + cardRect.width;
+        if (cardRect.left < 11.5 || cardRect.right > document.documentElement.clientWidth - 11.5)
+          return "mobile card misses 12px gutters";
+        if (cardRect.height > 751.5) return "mobile card exceeds 751px: " + cardRect.height;
+        if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1 || document.body.scrollWidth > document.documentElement.clientWidth + 1)
+          return "mobile horizontal overflow";
+      }
+      return true;
+    })()`,
+  };
+}
+
+function loginShortViewportCheck() {
+  return {
+    name: "login short viewport constrains the single-column panel",
+    viewport: {width: 360, height: 500, mobile: true},
+    expr: `(function () {
+      var card = document.querySelector(".login-card");
+      if (!card) return "login card missing";
+      if (card.getBoundingClientRect().height > innerHeight - 31)
+        return "short viewport panel is too tall";
+      return document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1 ? true : "short viewport horizontal overflow";
+    })()`,
+  };
+}
+
+function loginChecks(config) {
+  return [
+    APP_CSS_LOADED_CHECK,
+    loginStateCheck(config),
+    loginDisclosureCheck(config),
+    loginContactCheck(),
+    loginEyeAndClearCheck(config),
+    loginEventsCheck(config),
+    loginFixedHeightCheck(config),
+    ...[360, 375, 768, 1023, 1024, 1440].map(function (width) {
+      return loginResponsiveCheck(config, width);
+    }),
+    loginShortViewportCheck(),
+  ];
+}
+
 const PAGES = [
+  ...LOGIN_PAGE_CONFIGS.map(function (config) {
+    return {
+      file: config.file,
+      readyExpr: loginReadyExpr(config),
+      checks: loginChecks(config),
+    };
+  }),
   {
     file: "housing-statistics.html",
     readyExpr: `!document.querySelector('[data-partial]') &&
@@ -4544,8 +4867,12 @@ async function main() {
       const exited = new Promise((r) => chrome.on("exit", r));
       chrome.kill();
       await exited;
+      chrome.stdout?.destroy();
+      chrome.stderr?.destroy();
     }
     server.kill();
+    server.stdout?.destroy();
+    server.stderr?.destroy();
     rmSync(userDataDir, { recursive: true, force: true, maxRetries: 8, retryDelay: 200 });
   }
 

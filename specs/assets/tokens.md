@@ -3,8 +3,9 @@
 > 來源：Figma Variables（Collection: **Semantic**, Mode: **Mode 1**）  
 > 本地匯出參考：`specs/assets/figma-variables.json`（不進版控，內容需如實轉換到本檔）
 > Local Styles 全部為空，所有 token 皆來自 Variables。  
-> 上次同步：2026-08-11（新增 Color/Surface/Status-Negative-light；本地
-> `figma-variables.json` 同步為使用者貼上的 Figma Variables export）
+> 上次同步: 2026-11-18, 使用者提供的 Figma Variables export.
+> 新增 Color/Surface/LoginBackground; 原有 134 個 variables 的值與 metadata 相同.
+> `figma-variables.json` 已同步為本次使用者提供的原始 export.
 
 ## Token 使用規則（Strict Mirror）
 
@@ -102,6 +103,7 @@
 | Color/Surface/Status-Negative | `#E12129` | 錯誤/危險狀態 | `red-600` |
 | Color/Surface/Status-Negative-light | `#F8A4A8` | 危險/停用類按鈕外框或淡色提示 | `red-300` |
 | Color/Surface/Status-Positive | `#2ACA18` | 成功狀態 | `green-500` |
+| Color/Surface/LoginBackground | `#B6FA91` | 登入頁 background panel; token alpha 1, 背板 fill opacity 統一 50%, 2026-11-18 使用者確認並經 JSON / SVG / PNG 核對 | `--color-surface-loginbackground` |
 
 ---
 
@@ -359,6 +361,8 @@
 | Switch knob shadow | `--effect-switch-knob-shadow` | iOS switch knob elevation |
 | Bottom sheet shadow | `--effect-bottom-sheet-shadow` | mobile offcanvas / bottom sheet elevation |
 | Dropdown shadow | `--effect-dropdown-shadow` | desktop dropdown elevation |
+| Login card shadow | `--effect-login-card-shadow` | Figma `2838:123269`, offset 0/4, blur 4, black 25% |
+| Login background panel shadow | `--effect-login-panel-shadow` | Figma `2838:123268`, offset 0/4, blur 2, black 25%; panel fill opacity 50% |
 | Scrollbar thumb | `--color-border-disabled` | 使用既有 neutral token alias，不新增 scrollbar color token |
 
 ---

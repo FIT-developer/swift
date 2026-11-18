@@ -252,6 +252,34 @@ MANIFEST = {
             './js/topbar-modals.js',
         ],
     },
+    'login1.html': {
+        'partials': ['login-form'],
+        'modules': [
+            './js/partials.js',
+            './js/login.js',
+        ],
+    },
+    'login2.html': {
+        'partials': ['login-form'],
+        'modules': [
+            './js/partials.js',
+            './js/login.js',
+        ],
+    },
+    'login3.html': {
+        'partials': ['login-form'],
+        'modules': [
+            './js/partials.js',
+            './js/login.js',
+        ],
+    },
+    'login4.html': {
+        'partials': ['login-form'],
+        'modules': [
+            './js/partials.js',
+            './js/login.js',
+        ],
+    },
 }
 
 # 舊單元件 preview（無 partial 架構），僅豁免不檢查；

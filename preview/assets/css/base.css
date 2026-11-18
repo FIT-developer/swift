@@ -10,7 +10,7 @@
 
 :root {
   /* 1. STRICT FIGMA MIRROR
-     specs/assets/figma-variables.json - synced 2026-08-11 */
+     specs/assets/figma-variables.json - synced 2026-11-18 */
 
   /* Color/Neutral - full grayscale ramp */
   --color-neutral-0:   #ffffff;
@@ -131,6 +131,7 @@
   --color-surface-status-negative: #e12129;
   --color-surface-status-negative-light: #f8a4a8;
   --color-surface-status-positive: #2aca18;
+  --color-surface-loginbackground: #b6fa91;
   --color-surface-action-default:  #005fcc;
 
   /* Figma Libraries path Background/Danger/Default, confirmed 2026-11-12.
@@ -231,6 +232,8 @@
   --effect-switch-knob-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   --effect-bottom-sheet-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
   --effect-dropdown-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --effect-login-card-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  --effect-login-panel-shadow: 0 4px 2px rgba(0, 0, 0, 0.25);
 }
 
 /* Browser / document baseline */
