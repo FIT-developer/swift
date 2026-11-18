@@ -654,14 +654,19 @@ function renderPagination(kind, count) {
   var current = tableState[kind].page;
   var prevDisabled = current <= 1;
   var nextDisabled = current >= pages;
+  var paginationLabel = kind === "product" ? "產品設定分頁" : "類別設定分頁";
   root.innerHTML =
-    '<div class="pa-pagination">' +
+    '<nav class="table-pagination pa-pagination" data-table-pagination="' +
+    kind +
+    '" aria-label="' +
+    paginationLabel +
+    '">' +
     paginationNavButton(kind, current - 1, "prev", prevDisabled) +
-    '<span class="pa-page-current" aria-current="page">' +
+    '<span class="table-pagination-current pa-page-current" aria-current="page">' +
     current +
     "</span>" +
     paginationNavButton(kind, current + 1, "next", nextDisabled) +
-    "</div>";
+    "</nav>";
   root.querySelectorAll("[data-pa-page-target]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       if (btn.disabled) return;
@@ -679,7 +684,7 @@ function paginationNavButton(kind, page, direction, disabled) {
   var label = direction === "prev" ? "上一頁" : "下一頁";
   var icon = direction === "prev" ? "left" : "right";
   return (
-    '<button type="button" class="pa-page-nav" data-pa-kind="' +
+    '<button type="button" class="table-pagination-nav pa-page-nav" data-pa-kind="' +
     kind +
     '" data-pa-page-target="' +
     page +

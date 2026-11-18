@@ -5,6 +5,19 @@
 
 ---
 
+## 表格底部分頁共用規範
+
+- 2026-11-18 使用者指定全站表格分頁統一參考加購商品.
+- 一律使用 [Pagination](../components/pagination.md) 的置中圓形三控制,
+  由 pagination.css 管理. 頁面 domain 不另寫分頁樣式或改為靠右 / 方形.
+- HTML/JS 的 pager root / nav / current 必須帶 table-pagination /
+  table-pagination-nav / table-pagination-current 共用 class.
+- 顯示全部時隱藏 pager; 每頁筆數、資料與切頁 state 由既有頁面管理.
+- 本輪回溯全部五處 table pagers, 含加購兩個table、會員主頁、
+  會員訂房紀錄與系統公告; lint-partials 同時檢查 class 與 CSS 歸屬.
+
+---
+
 ## 巢狀多欄佈局必須用 container query，不能用 viewport 斷點（Session 118 血淚教訓）
 
 **背景**：`lodging-info.html` 分館列 3 卡橫排原本用 Tailwind `md:flex-row`

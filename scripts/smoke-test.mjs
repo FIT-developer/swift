@@ -162,6 +162,41 @@ window.__smoke = {
     if (m.classList.contains("open")) return modalId + " ESC did not close";
     return true;
   },
+  paginationCheck: function (root) {
+    if (!root || !root.matches("nav.table-pagination")) return "shared pagination nav missing";
+    var children = Array.from(root.children);
+    var current = root.querySelector(".table-pagination-current");
+    var nav = root.querySelectorAll("button.table-pagination-nav");
+    if (children.length !== 3 || nav.length !== 2 || !current ||
+        current.getAttribute("aria-current") !== "page" || !/^\\d+$/.test(current.textContent.trim()))
+      return "pagination requires previous / current number / next";
+    var rect = root.getBoundingClientRect();
+    var footer = root.closest(".table-pagination-footer");
+    var frame = footer ? footer.getBoundingClientRect() : rect;
+    var middle = current.getBoundingClientRect();
+    if (getComputedStyle(root).justifyContent !== "center" ||
+        Math.abs(middle.left + middle.width / 2 - (frame.left + frame.width / 2)) > 1)
+      return "pagination is not centered independently of count";
+    if (rect.width === 0 || rect.height === 0) return "pagination is not visible";
+    for (var index = 0; index < children.length; index += 1) {
+      var child = children[index];
+      var style = getComputedStyle(child);
+      var bounds = child.getBoundingClientRect();
+      if (Math.abs(bounds.width - 36) > 0.5 || Math.abs(bounds.height - 36) > 0.5 ||
+          parseFloat(style.borderTopLeftRadius) < 18 || style.borderTopWidth !== "1px")
+        return "pagination control is not a bordered 36px circle";
+      if (style.color !== "rgb(69, 69, 69)") return "pagination text color drift";
+      if (style.backgroundColor !== (index === 1 ? "rgb(255, 255, 255)" : "rgb(211, 235, 253)"))
+        return "pagination background color drift";
+      if (index !== 1) {
+        var img = child.querySelector("img");
+        if (!img || !img.src.endsWith(index === 0 ? "/left.svg" : "/right.svg") ||
+            getComputedStyle(img).width !== "20px" || getComputedStyle(img).height !== "20px")
+          return "pagination arrow must use the shared 20px icon";
+      }
+    }
+    return true;
+  },
   accordionCheck: function () {
     var t = document.querySelector(".accordion-trigger");
     if (!t) return "no .accordion-trigger";
@@ -226,6 +261,17 @@ const SHELL_CHECKS = [
   { name: "aside accordion toggles", expr: "__smoke.accordionCheck()" },
   { name: "collapse-all collapses categories", expr: "__smoke.collapseAllCheck()" },
   { name: "mobile drawer opens and closes", expr: "__smoke.drawerCheck()" },
+  {
+    name: "product settings has only project and quantity-price entries",
+    expr: `(function () {
+      var trigger = Array.from(document.querySelectorAll(".accordion-trigger"))
+        .find(function (item) { return item.textContent.trim() === "產品設定"; });
+      if (!trigger || !trigger.nextElementSibling) return "product settings category missing";
+      var entries = Array.from(trigger.nextElementSibling.children);
+      return entries.map(function (item) { return item.textContent.trim(); }).join("|") ===
+        "專案內容|數量價格表" ? true : "product settings includes unexpected menu entry";
+    })()`,
+  },
 ];
 
 // app.css 是分域 CSS 檔（shell/dashboard/modals/room-booking/order-processing/system-basic 等）
@@ -269,7 +315,8 @@ const APP_CSS_LOADED_CHECK = {
         "scheduled-send-modal.css",
         "housing-statistics.css",
         "login.css",
-        "status.css"
+        "status.css",
+        "pagination.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -749,6 +796,8 @@ const MEMBER_DATA_CHECKS = [
         if (rows().length !== 5) return "paged display should show five rows";
         if (document.getElementById("memberPagination").hidden)
           return "pagination should be visible in paged mode";
+        var sharedPagination = __smoke.paginationCheck(document.getElementById("memberPagination"));
+        if (sharedPagination !== true) return sharedPagination;
         if (q("#memberPagination [data-member-page-label]").textContent.trim() !== "1")
           return "paged mode should reset to page one";
         var firstPageId = q("#memberTableBody tr[data-member-row]").dataset.memberRow;
@@ -2974,6 +3023,8 @@ const PAGES = [
             if (!/split-page\\.svg$/.test(icon.src)) return "paged icon: " + icon.src;
             if (rows.length !== 5) return "paged row count: " + rows.length;
             var pagination = document.querySelector("[data-pa-pagination='product']");
+            var sharedPagination = __smoke.paginationCheck(pagination.querySelector(".pa-pagination"));
+            if (sharedPagination !== true) return sharedPagination;
             var current = pagination.querySelector(".pa-page-current");
             var nav = pagination.querySelectorAll(".pa-page-nav");
             if (!current || current.textContent.trim() !== "1")
@@ -3696,7 +3747,7 @@ const PAGES = [
           if (cards[0].getBoundingClientRect().height !== cards[1].getBoundingClientRect().height) return 'same row unequal height';
           var product = Array.from(document.querySelectorAll('.accordion-trigger')).find(function(b){return b.textContent.includes('產品設定');});
           var labels = Array.from(product.nextElementSibling.children).map(function(n){return n.textContent.trim();});
-          if (labels.join('|') !== 'ota|專案內容|數量價格表') return 'product menu: ' + labels.join('|');
+          if (labels.join('|') !== '專案內容|數量價格表') return 'product menu: ' + labels.join('|');
           return true;
         })()`,
       },
@@ -5096,6 +5147,61 @@ async function testStatusPointer(cdp, sessionId) {
   return String(restored).replace(/\s+/g, "") === "rgba(0,0,0,0)"
     ? true
     : "hover background did not restore: " + restored;
+}
+
+// All table pager consumers share the purchase-addon geometry, including modals.
+for (const width of [320, 375, 768, 1440]) {
+  PAGES.find((page) => page.file === "member-data.html").checks.push({
+    name: "member and shared modal pagination matches purchase reference at " + width,
+    viewport: {width, height: 900, mobile: width < 768},
+    expr: `(function () {
+      var toggle = document.querySelector("[data-member-display-toggle]");
+      var wasAll = toggle.dataset.memberDisplay === "all";
+      if (wasAll) toggle.click();
+      var result = __smoke.paginationCheck(document.getElementById("memberPagination"));
+      if (wasAll) toggle.click();
+      if (result !== true) return "member main: " + result;
+      var specs = [
+        ["modalMemberDataBackdrop", "[data-data-exists-trigger]:not([disabled])"],
+        ["modalAdministerBackdrop", '[data-modal-open="modalAdministerBackdrop"]']
+      ];
+      for (var item of specs) {
+        var trigger = document.querySelector(item[1]);
+        var modal = document.getElementById(item[0]);
+        if (!trigger || !modal) return "modal pagination fixture missing: " + item[0];
+        trigger.click();
+        if (!modal.classList.contains("open")) return "modal did not open: " + item[0];
+        var details = modal.querySelector("details");
+        var wasOpen = details && details.open;
+        if (details) details.open = true;
+        result = __smoke.paginationCheck(modal.querySelector(".table-pagination"));
+        if (details) details.open = wasOpen;
+        modal.querySelector('.modal-close-btn[data-modal="' + item[0] + '"]').click();
+        if (result !== true) return item[0] + ": " + result;
+      }
+      return true;
+    })()`,
+  });
+  PAGES.find((page) => page.file === "purchase-addon.html").checks.push({
+    name: "both purchase table pagers share centered circles at " + width,
+    viewport: {width, height: 900, mobile: width < 768},
+    expr: `(function () {
+      for (var kind of ["product", "category"]) {
+        var button = document.querySelector('[data-pa-display-button="' + kind + '"]');
+        var wasAll = button.getAttribute("aria-pressed") === "true";
+        if (wasAll) button.click();
+        var root = document.querySelector('[data-pa-pagination="' + kind + '"] .pa-pagination');
+        var pane = root.closest(".tab-content");
+        var hidden = pane && pane.classList.contains("hidden");
+        if (hidden) pane.classList.remove("hidden");
+        var result = __smoke.paginationCheck(root);
+        if (hidden) pane.classList.add("hidden");
+        if (wasAll) button.click();
+        if (result !== true) return kind + ": " + result;
+      }
+      return true;
+    })()`,
+  });
 }
 
 async function testPage(cdp, baseUrl, page, consoleErrors) {

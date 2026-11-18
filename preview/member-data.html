@@ -631,25 +631,35 @@
                   </div>
                 </div>
 
-                <nav id="memberPagination" class="member-page-pagination" aria-label="會員資料分頁" hidden>
+                <nav
+                  id="memberPagination"
+                  class="table-pagination member-page-pagination"
+                  data-table-pagination="member"
+                  aria-label="會員資料分頁"
+                  hidden
+                >
                   <button
                     type="button"
-                    class="member-page-pagination-button"
+                    class="table-pagination-nav member-page-pagination-button"
                     data-member-page="prev"
                     aria-label="上一頁"
                     disabled
                   >
-                    <img src="./assets/icons/arrow-left.svg" alt="" />
+                    <img src="./assets/icons/left.svg" alt="" class="w-5 h-5" />
                   </button>
-                  <span class="member-page-pagination-label" data-member-page-label>1</span>
+                  <span
+                    class="table-pagination-current member-page-pagination-label"
+                    data-member-page-label
+                    aria-current="page"
+                  >1</span>
                   <button
                     type="button"
-                    class="member-page-pagination-button"
+                    class="table-pagination-nav member-page-pagination-button"
                     data-member-page="next"
                     aria-label="下一頁"
                     disabled
                   >
-                    <img src="./assets/icons/arrow-right.svg" alt="" />
+                    <img src="./assets/icons/right.svg" alt="" class="w-5 h-5" />
                   </button>
                 </nav>
               </section>

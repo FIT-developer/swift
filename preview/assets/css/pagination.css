@@ -1,0 +1,87 @@
+/* Shared table footer pagination. The page-specific data and event hooks stay
+   in each consumer; this file owns the common geometry and appearance. */
+
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+  padding-top: var(--spacing-12);
+}
+
+.table-pagination[hidden] {
+  display: none;
+}
+
+.table-pagination-nav,
+.table-pagination-current {
+  display: inline-flex;
+  width: var(--spacing-36);
+  height: var(--spacing-36);
+  flex: 0 0 var(--spacing-36);
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-36);
+  color: var(--color-text-800);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  background: var(--color-neutral-0);
+}
+
+.table-pagination-nav {
+  padding: 0;
+  background: var(--color-bootstrap-focus-background);
+  cursor: pointer;
+}
+
+.table-pagination-nav img {
+  width: var(--spacing-20);
+  height: var(--spacing-20);
+}
+
+.table-pagination-nav:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.table-pagination-nav:disabled img {
+  opacity: 0.45;
+}
+
+.table-pagination-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  min-width: 0;
+  container-type: inline-size;
+  row-gap: var(--spacing-8);
+}
+
+.table-pagination-count {
+  grid-column: 1;
+  min-width: 0;
+  color: var(--color-text-800);
+  font-size: var(--font-size-base);
+}
+
+.table-pagination-footer > .table-pagination {
+  grid-column: 2;
+}
+
+@container (max-width: 260px) {
+  .table-pagination-footer > .table-pagination-count,
+  .table-pagination-footer > .table-pagination {
+    grid-column: 1 / -1;
+  }
+
+  .table-pagination-footer > .table-pagination-count {
+    justify-self: start;
+  }
+
+  .table-pagination-footer > .table-pagination {
+    justify-self: center;
+  }
+}

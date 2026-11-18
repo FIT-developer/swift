@@ -1,125 +1,71 @@
-# Component Specification: `Pagination`
+# Pagination
 
-**Figma Node ID**: `98:974`（COMPONENT_SET）  
-**Type**: COMPONENT_SET  
-**最後同步**: 2026-04-13
+Status: current. User confirmed site-wide unification on 2026-11-18.
+The user accepted the implementation and authorized commit and push on 2026-11-18.
 
----
+## Source and precedence
 
-## 概述
+The user explicitly selected the existing purchase-addon page as the current
+reference: its product and category tables use centered circular pagination.
+This instruction supersedes the old Figma98:974 /98:973 connected rectangular
+pager, member main page right alignment and legacy modal pager examples.
+No Figma reread is required for this user-directed correction.
 
-`Pagination` 是分頁導覽元件，共 **1 個 variant**（`Property 1=Default`）。  
-固定寬度 320px，由左右箭頭 + 頁碼按鈕橫向排列組成。
+## Shared structure and styles
 
----
+- All table bottom pagers use nav.table-pagination with a descriptive aria-label.
+- Three controls only: previous button, current page span, next button. Current
+  page is a number with aria-current=page; do not list multiple page numbers.
+- Both buttons use .table-pagination-nav and native disabled at the first/last
+  page. The number uses .table-pagination-current.
+- Shared source of appearance: preview/assets/css/pagination.css, imported by
+  app.css. Page domains must not redefine pagination alignment or control styles.
+- The row is horizontally centered within its table/card/footer, gap Spacing/8,
+  padding-top Spacing/12. No right-aligned alternative.
+- Controls are36 x36 circles: Spacing/36 for dimensions, Radius/36 clamped to
+  half the dimensions by CSS; border1px Color/Neutral/200.
+- Previous/next: Color/Bootstrap/focus-background. Current page: Color/Neutral/0.
+  All text uses Color/Text/800, --font-size-base16px, weight400.
+- Icons are the existing left.svg /right.svg,20px via Spacing/20, empty alt;
+  native button aria-label gives the previous/next accessible name.
+- Disabled nav opacity0.45 and disabled icon opacity0.45 match the purchase-addon
+  reference. Keep native keyboard activation and global focus-visible styling.
+- A shared [hidden] rule removes all-mode pagers from layout and tab order.
+- Footers containing a record count use .table-pagination-footer and
+  .table-pagination-count. The pager stays centered independently of the count,
+  with fluid columns and no viewport overflow.
+- If a footer's own available width is260px or less, a container query puts the
+  count on its own row and keeps the pager centered below, with Spacing/8 row gap.
+  Query rules target descendants; the footer never queries its own styles.
 
-## Variants
+## Current consumers and audit
 
-| Variant 名稱 | Node ID | 尺寸 |
-|---|---|---|
-| `Property 1=Default` | `98:973` | 320×46px |
+| Consumer | Source | Previous divergence | Result |
+| --- | --- | --- | --- |
+| Purchase product table | purchase-addon.js | Reference implementation | Shared styles, same appearance and data hooks |
+| Purchase category table | purchase-addon.js | Reference implementation | Same shared styles |
+| Member main table | member-data.html /member-data.css | Right aligned34px rounded-square buttons and unframed number | Centered36px circles, left/right icons20px |
+| Member booking history | partials/member-data-modal.html | Right aligned connected seven-cell pager | Three circular controls, centered independently of record count |
+| System announcement | partials/topbar-modals.html | Right aligned connected seven-cell pager | Same shared footer and three controls |
 
----
+Top page tabs, project wizard previous/next steps and carousel controls represent
+other navigation functions; they are outside table pagination.
 
-## 結構
+## Behavior and backend boundary
 
-```
-[COMPONENT] Pagination (320×46px, padding-top 12px)
-├── icons/left  (34×34, x:0,   y:12)  ← 上一頁
-├── Input "1"   (50.4×34, x:34,   y:12)  ← 頁碼（白底）
-├── Input "2"   (50.4×34, x:84.4, y:12)  ← 頁碼（灰底 = 當前頁）
-├── Input "..."  (50.4×34, x:134.8,y:12)  ← 省略
-├── Input "4"   (50.4×34, x:185.2,y:12)  ← 頁碼
-├── Input "5"   (50.4×34, x:235.6,y:12)  ← 頁碼
-└── icons/right (34×34,   x:286,  y:12)  ← 下一頁
-```
+- Preserve existing all /paged toggles, page sizes, records, sorting/filtering,
+  selection preservation and first/last disabled logic on purchase/member pages.
+- Purchase table data-pa-page-target and member data-member-page hooks remain.
+  Legacy selector classes may remain as hooks, but have no independent CSS.
+- Announcement and member-history pagination remain illustrative static backend
+  surfaces, with current page2 and count61 retained. This visual unification
+  does not invent unavailable records, networking or a new pagination engine.
 
----
+## Verification and regression guard
 
-## 箭頭按鈕（icons/left / icons/right）
-
-| 屬性 | 值 | Token |
-|---|---|---|
-| 尺寸 | `34×34px` | — |
-| Background | `Color/Neutral/0` | `Color/Neutral/0` |
-| Border | `Color/Neutral/200` | `Color/Neutral/200` |
-| Corner radius | `mixed`（圓角僅部分邊） | — |
-| Icon fill | `Color/Icon/Default` | — |
-
----
-
-## 頁碼按鈕（Input instances）
-
-| 屬性 | 值 | Token |
-|---|---|---|
-| 尺寸 | `50.4×34px` | — |
-| Padding | top/bottom `6px`、left/right `12px` | — |
-| Border | `Color/Neutral/200` | `Color/Neutral/200` |
-| 文字對齊 | CENTER | — |
-| 文字字號 | `16px` Regular | — |
-| 文字色 | `Color/Neutral/800` | `Color/Neutral/800` |
-
-### 頁碼狀態
-
-| 狀態 | 背景 | Token |
-|---|---|---|
-| 一般頁碼 | `Color/Neutral/0` | `Color/Neutral/0` |
-| 當前頁（active） | `Color/Neutral/300` | `Color/Neutral/300` |
-| 省略符號 `...` | `Color/Neutral/0` | — |
-
----
-
-## 示例排列
-
-```
-[←]  [1]  [2★]  [...]  [4]  [5]  [→]
-```
-
-★ 當前頁（fill `Color/Neutral/300`）
-
----
-
-## 尺寸計算
-
-| 元素 | 寬度 | 累計 x |
-|---|---|---|
-| icons/left | 34px | x:0 |
-| 頁碼 ×5 | 50.4px × 5 = 252px | x:34 |
-| icons/right | 34px | x:286 |
-| 總計 | 34 + 252 + 34 = **320px** | — |
-
----
-
-## 使用情境
-
-| 元件 | 位置 |
-|---|---|
-| `Bulletin - vendor` | 頁尾右側，顯示共 61 筆 |
-| `Bulletin - Administer` | 頁尾右側，顯示共 61 筆 |
-
----
-
-## 實作
-
-```html
-<nav class="flex items-end pt-3">
-  <!-- 上一頁 -->
-  <button class="w-[34px] h-[34px] flex items-center justify-center bg-white border border-border-disabled rounded-l-md">
-    <img src="../assets/icons/left.svg" class="w-4 h-2.5">
-  </button>
-  <!-- 頁碼 -->
-  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-white border border-border-disabled">1</button>
-  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-[Color/Neutral/300] border border-border-disabled">2</button>
-  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-white border border-border-disabled">...</button>
-  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-white border border-border-disabled">4</button>
-  <button class="w-[50px] h-[34px] text-base text-center text-text-default bg-white border border-border-disabled">5</button>
-  <!-- 下一頁 -->
-  <button class="w-[34px] h-[34px] flex items-center justify-center bg-white border border-border-disabled rounded-r-md">
-    <img src="../assets/icons/right.svg" class="w-4 h-2.5">
-  </button>
-</nav>
-```
-
----
-
-*Generated from Figma component set · Updated 2026-04-13*
+- The partial lint audits all HTML/JS consumers for required shared pager classes,
+  and rejects per-domain pager CSS and deprecated connected-pager styles.
+- Browser checks compare computed centering, circle dimensions, colors, icons
+  and source behavior across320 /375 /768 /1440 widths.
+- All /paged toggles, first/last page boundaries, filtering, record selection,
+  shared modal loading and OTA menu removal are included in verification.

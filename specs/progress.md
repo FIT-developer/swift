@@ -10,6 +10,87 @@ Session177 至 186 見 [歷史封存](progress-archive-s177-s186.md).
 
 ---
 
+## Session 204: 提交與推送共用分頁及 OTA 選單移除 (2026-11-18)
+
+### 本輪改動與重要決定
+
+- 使用者明確回覆 commit & push, 驗收 Session203 的五處置中圓形分頁
+  與產品設定 OTA 選單移除, 本輪提交與推送至 main.
+- 提交包含共用 pagination.css、app.css import、三個domain舊分頁CSS移除、
+  加購商品render、會員主頁、兩個共用modal partial與aside.
+- 一併提交 pagination /menu /member-data-modal /bulletin-administer
+  components、三份頁面規格、html-conventions與start.md的lint登錄,
+  以及lint-partials /smoke regression檢查與本次完整交接紀錄.
+- 沒有新增或改動token, 沒有移除Dashboard的OTA通路統計.
+  原本靜態的modal分頁仍維持後端交付邊界.
+
+### 驗證與提交
+
+- 沿用最終產品版本的22 pages /313 checks Chrome smoke、
+  20 cases /117 dedicated checks及30張before /after截圖;
+  本輪僅補驗收 /提交紀錄, 未在測試後更動產品行為.
+- 提交前核對tracked /untracked與staged清單, 四項lint及diffcheck,
+  保留本機8000驗收服務. QA原始截圖依repo規則留在本機.
+- 本輪進入commit/push flow, 實際SHA與遠端同步狀態以git history及
+  推送後status /ahead-behind核對為準.
+
+## Session 203: 全站表格分頁統一與移除 OTA 選單 (2026-11-18)
+
+### 使用者指示與本輪改動
+
+- 使用者要求全部顯示 /分頁的底部控制統一參考加購商品:
+  左右置中、圓形設計, 不允許各頁自行定義; 同時刪除產品設定的ota選單.
+- 全域盤點五處table pagers:加購商品產品 /類別、會員資料主表、
+  會員彈窗訂房紀錄、旅宿e管家系統公告. Top page tabs、wizard步驟與
+  carousel為不同用途的控制, 不屬於table pagination.
+- 先以既有加購商品HTML/CSS及Chrome375 /1440截圖核對reference,
+  確認36px圓形、置中、gap8 /padding-top12、淡藍左右箭頭及白底頁碼.
+- 先重寫components/pagination.md current contract, 再建立共用
+  pagination.css並由app.css匯入. 五處都使用table-pagination /
+  table-pagination-nav /table-pagination-current, 保留既有data事件hooks.
+- 刪除purchase-addon.css /member-data.css /modals.css內的獨立分頁樣式,
+  會員主表不再靠右或用34px方角; 兩個舊彈窗不再列出相連的七格頁碼.
+  統一為上一頁 /當前頁 /下一頁, left.svg /right.svg皆20px.
+- 含筆數的footer採三欄grid, pager不受左側筆數影響而偏離中心;
+  footer可用寬度<=260時以container query把筆數與pager分兩行,
+  維持置中與8px行距. CSS只query子元素, 不對container本身套用自身query.
+- 保留每頁5筆、全部顯示、篩選、排序、選取與首末頁disabled狀態.
+  原本靜態的公告 /訂房紀錄仍保留當前頁2與共61筆示意, 真實切頁由後端接手,
+  不捏造新資料或API.
+- 共用aside刪除OTA入口, 產品設定只留專案內容 /數量價格表.
+  Dashboard統計的OTA通路資料不屬選單移除範圍, 保留原有內容.
+- 同步menu /pagination /member-data-modal /bulletin-administer components,
+  purchase-addon /member-data /project-content pages與html-conventions.
+  start.md的lint checklist登錄共用分頁契約; tokens沒有新增或改值.
+
+### 回溯 audit 與機器檢查
+
+- 全部五處已回溯套用共用class與CSS. lint-partials新增掃描所有HTML/JS:
+  舊hooks必須搭配共用class, pager必須為有aria-label的nav,
+  禁止在控制上加入自訂對齊 /尺寸 /色彩等utility,
+  並禁止頁面domain CSS重新定義pager或保留舊方形active樣式.
+- Regression probes確認缺共用class、justify-end與div冒充nav皆會被攔截.
+- Smoke新增共用computed-style檢查、五處跨四寬度的檢查,
+  以及各authenticated page的產品設定精確兩個選單項目檢查.
+
+### 驗證與交接
+
+- 四項lint /JS syntax /git diff --check exit0, token mirror96個raw hex一致,
+  partial manifest22 pages /3 standalone.
+- Root全站Chrome smoke:22 pages /313 checks pass.
+  Worker曾在同時編輯中的版本遇到project switch disabled與photo close兩個
+  assertions失敗, root於產品檔案固定後的完整run全部通過,
+  未改動project產品檔案或略過檢查, 不將首次失敗宣稱為已證明的舊問題.
+- 專用Chrome QA:五處x四寬度共20 cases,117 /117 checks pass,
+  320 /375 /768 /1440, 包含圓形幾何 /置中 /色彩 /無水平溢出 /筆數不重疊,
+  OTA選單移除、首末頁、原生Enter下一頁、實際pointer至最後頁與全部顯示還原.
+- QA保留4張before與26張after /last-page截圖, 以及測量JSON,
+  位於本機session-203; modal截圖等待全站200ms淡入結束才擷取.
+- Astra獨立review找到container query自我套用不生效, root將row-gap放回
+  base grid並移除無效self selector; 複核沒有剩餘可操作問題.
+- 本輪待使用者驗收, 沒有收到本輪commit/push指示.
+  本機8000預覽服務保留, 主要驗收頁為purchase-addon /member-data /landing.
+
 ## Session 202: 提交與推送四個 Status 狀態頁 (2026-11-18)
 
 ### 本輪改動與重要決定

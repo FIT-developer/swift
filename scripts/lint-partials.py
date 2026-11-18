@@ -345,6 +345,54 @@ def compose(html):
     return combined
 
 
+# Shared table pagination contract (components/pagination.md).
+# Legacy selectors may remain as behavior hooks, never as separate style owners.
+PAGINATION_CLASSES = {
+    'pa-pagination': 'table-pagination',
+    'pa-page-nav': 'table-pagination-nav',
+    'pa-page-current': 'table-pagination-current',
+    'member-page-pagination': 'table-pagination',
+    'member-page-pagination-button': 'table-pagination-nav',
+    'member-page-pagination-label': 'table-pagination-current',
+}
+
+
+def check_pagination_markup(path, source):
+    for match in re.finditer(r'<([a-z][\w-]*)\b[^>]*\bclass="([^"]*)"[^>]*>',
+                             source, flags=re.I | re.S):
+        tag, classes = match.group(1).lower(), set(match.group(2).split())
+        for legacy, shared in PAGINATION_CLASSES.items():
+            if legacy in classes and shared not in classes:
+                err(f'{path}: {legacy} must use shared {shared}')
+        if 'member-data-pagination-page--active' in classes:
+            err(f'{path}: retired rectangular pagination class')
+        if 'table-pagination' in classes:
+            if tag != 'nav' or not re.search(r'aria-label(?:ledby)?=', match.group()):
+                err(f'{path}: table-pagination must be an accessible nav')
+        if classes.intersection({'table-pagination', 'table-pagination-nav', 'table-pagination-current'}):
+            private_utilities = [name for name in classes if re.match(
+                r'^(?:[\w-]+:)*(?:justify-|items-|gap-|rounded|bg-|text-|border|w-|h-|min-w-|max-w-|p[trblxy]?-|flex(?:-|$)|grid(?:-|$))', name)]
+            if private_utilities:
+                err(f'{path}: pagination appearance must use shared CSS, not {private_utilities}')
+        if tag == 'nav' and re.search(r'aria-label="[^"]*分頁', match.group()):
+            if 'table-pagination' not in classes:
+                err(f'{path}: table pager must use table-pagination')
+
+
+for source_path in sorted(PREVIEW.rglob('*.html')) + sorted((PREVIEW / 'js').glob('*.js')):
+    check_pagination_markup(source_path.relative_to(ROOT), source_path.read_text(encoding='utf-8'))
+
+for source_path in sorted((PREVIEW / 'assets' / 'css').glob('*.css')):
+    css = re.sub(r'/\*.*?\*/', '', source_path.read_text(encoding='utf-8'), flags=re.S)
+    selectors = set(re.findall(r'\.([a-zA-Z][\w-]*)', css))
+    legacy = selectors.intersection(PAGINATION_CLASSES)
+    if legacy or 'member-data-pagination-page--active' in selectors:
+        err(f'{source_path.relative_to(ROOT)}: remove private pagination CSS; use pagination.css')
+    if source_path.name != 'pagination.css' and any(
+            name.startswith('table-pagination') for name in selectors):
+        err(f'{source_path.relative_to(ROOT)}: shared pagination styles belong only in pagination.css')
+
+
 # 1. 未登記頁面
 for f in sorted(PREVIEW.glob('*.html')):
     if f.name not in MANIFEST and f.name not in STANDALONE:

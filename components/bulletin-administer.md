@@ -167,7 +167,7 @@
 | 元素 | 規格 |
 |---|---|
 | 筆數 | `"共 61 筆"`，base 16px，`Color/Neutral/800` |
-| Pagination | 320×46px，與 vendor 相同結構 |
+| Pagination | 2026-11-18依使用者指示採全站共用置中圓形三控制, 見 [Pagination](pagination.md); 當前頁2, 真實切頁交後端 |
 
 ---
 

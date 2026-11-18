@@ -232,23 +232,22 @@
           </table>
         </div>
 
-        <!-- Pagination footer (Figma Frame 19 + Pagination INSTANCE 320x46) -->
-        <div class="mt-4 flex items-center justify-between text-base text-text-default flex-wrap gap-3">
-          <span>共 61 筆</span>
-          <!-- Pagination 7 cells: <- / 1 / 2(active) / ... / 4 / 5 / ->，merged 邊框 -->
-          <div class="input-group flex">
-            <button class="w-[34px] h-[34px] flex items-center justify-center bg-white">
-              <img src="./assets/icons/arrow-left.svg" alt="prev" class="w-4 h-4" />
+        <!-- Pagination footer -->
+        <div class="table-pagination-footer mt-4 text-base text-text-default">
+          <span class="table-pagination-count">共 61 筆</span>
+          <nav
+            class="table-pagination"
+            data-table-pagination="member-history"
+            aria-label="訂房記錄分頁"
+          >
+            <button type="button" class="table-pagination-nav" aria-label="上一頁">
+              <img src="./assets/icons/left.svg" alt="" class="w-5 h-5" />
             </button>
-            <button class="w-[50px] h-[34px] flex items-center justify-center bg-white text-text-default">1</button>
-            <button class="member-data-pagination-page--active w-[50px] h-[34px] flex items-center justify-center text-text-default">2</button>
-            <button class="w-[50px] h-[34px] flex items-center justify-center bg-white text-text-default">...</button>
-            <button class="w-[50px] h-[34px] flex items-center justify-center bg-white text-text-default">4</button>
-            <button class="w-[50px] h-[34px] flex items-center justify-center bg-white text-text-default">5</button>
-            <button class="w-[34px] h-[34px] flex items-center justify-center bg-white">
-              <img src="./assets/icons/arrow-right.svg" alt="next" class="w-4 h-4" />
+            <span class="table-pagination-current" aria-current="page">2</span>
+            <button type="button" class="table-pagination-nav" aria-label="下一頁">
+              <img src="./assets/icons/right.svg" alt="" class="w-5 h-5" />
             </button>
-          </div>
+          </nav>
         </div>
       </details>
     </div>

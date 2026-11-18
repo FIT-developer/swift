@@ -822,8 +822,7 @@ select.member-page-control {
   margin-top: var(--spacing-8);
 }
 
-.member-page-batch-footer[hidden],
-.member-page-pagination[hidden] {
+.member-page-batch-footer[hidden] {
   display: none;
 }
 
@@ -898,45 +897,6 @@ select.member-page-control {
   white-space: nowrap;
   cursor: pointer;
   background: var(--color-neutral-200);
-}
-
-.member-page-pagination {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--spacing-8);
-}
-
-.member-page-pagination-button {
-  display: inline-flex;
-  width: 34px;
-  height: 34px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-neutral-200);
-  border-radius: var(--radius-6);
-  background: var(--color-neutral-0);
-  cursor: pointer;
-}
-
-.member-page-pagination-button img {
-  width: var(--spacing-16);
-  height: var(--spacing-16);
-}
-
-.member-page-pagination-button:disabled {
-  background: var(--color-neutral-100);
-  color: var(--color-text-400);
-  cursor: not-allowed;
-}
-
-.member-page-pagination-label {
-  width: 34px;
-  flex: none;
-  color: var(--color-text-800);
-  font-size: var(--font-size-base);
-  text-align: center;
 }
 
 .member-page-visually-hidden {

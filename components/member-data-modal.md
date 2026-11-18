@@ -148,7 +148,9 @@ Order condition (1140x1823, bg #f6fafd, padding 20)
 
 ### Footer
 
-`共 61 筆 --- Pagination(1 2 ... 4 5)`
+筆數保留共61筆; 2026-11-18依使用者全站統一指示改用
+[Pagination](pagination.md) 的置中圓形上一頁 / 當前頁2 / 下一頁.
+不再列出多個頁碼或靠右的相連方形控制; 真實資料切頁仍交後端.
 
 ---
 

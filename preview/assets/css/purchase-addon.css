@@ -250,48 +250,6 @@
   background: var(--color-neutral-0);
 }
 
-.pa-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding-top: 12px;
-}
-
-.pa-page-nav,
-.pa-page-current {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--color-neutral-200);
-  border-radius: 999px;
-  color: var(--color-text-800);
-  background: var(--color-neutral-0);
-}
-
-.pa-page-nav {
-  background: var(--color-bootstrap-focus-background);
-  cursor: pointer;
-}
-
-.pa-page-nav:disabled {
-  color: var(--color-text-secondary);
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.pa-page-nav:disabled img {
-  opacity: 0.45;
-}
-
-.pa-page-current {
-  background: var(--color-neutral-0);
-  color: var(--color-text-800);
-  font-size: var(--font-size-base);
-}
-
 .pa-select-truncate {
   overflow: hidden;
   text-overflow: ellipsis;

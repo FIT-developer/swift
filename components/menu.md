@@ -162,8 +162,8 @@ closure）；原 `state=POS - list` / `state=POS - pattern` 兩個 variant 已�
   （aside partial 13 類別）
 
 ### Product Settings Submenu (Current Implementation)
-- The submenu contains `ota`, `專案內容`, and `數量價格表` in this order.
-- `ota` remains an inactive placeholder because no OTA destination page exists.
+- The submenu contains `專案內容` and `數量價格表` in this order.
+- The user removed the inactive OTA entry on 2026-11-18.
 - `專案內容` links to `preview/project-content.html` and `數量價格表` links to
   `preview/quantity-price-table.html`.
 - `preview/js/partials.js` matches a submenu item's exact visible text to the

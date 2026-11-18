@@ -385,11 +385,6 @@
   height: 22px;
 }
 
-/* -- member-data pagination active page bg: neutral-300 -- */
-.member-data-pagination-page--active {
-  background: var(--color-neutral-300);
-}
-
 /* -- 訂單編號 row-chip badges (加/網/企) - used in member-data 訂房記錄 table -- */
 .order-channel-chip {
   display: inline-flex;

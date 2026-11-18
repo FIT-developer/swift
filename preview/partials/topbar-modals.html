@@ -200,45 +200,19 @@
         <!-- /scrollable body -->
 
         <!-- Footer -->
-        <div
-          class="flex-shrink-0 px-3 py-3 flex items-center justify-between border-t border-border-disabled"
-        >
-          <span class="text-base text-text-default">共 61 筆</span>
-          <nav class="flex items-center">
-            <button
-              class="w-[34px] h-[34px] flex items-center justify-center bg-white border border-border-disabled rounded-l-md hover:bg-surface-default"
-            >
-              <img src="./assets/icons/left.svg" alt="left" class="w-4 h-3" />
+        <div class="table-pagination-footer flex-shrink-0 px-3 py-3 border-t border-border-disabled">
+          <span class="table-pagination-count">共 61 筆</span>
+          <nav
+            class="table-pagination"
+            data-table-pagination="announcement"
+            aria-label="系統公告分頁"
+          >
+            <button type="button" class="table-pagination-nav" aria-label="上一頁">
+              <img src="./assets/icons/left.svg" alt="" class="w-5 h-5" />
             </button>
-            <button
-              class="w-[50px] h-[34px] text-sm text-center text-text-default bg-white border-t border-b border-r border-border-disabled hover:bg-surface-default"
-            >
-              1
-            </button>
-            <button
-              class="w-[50px] h-[34px] text-sm text-center text-text-default bg-text-placeholder border-t border-b border-r border-border-disabled"
-            >
-              2
-            </button>
-            <button
-              class="w-[50px] h-[34px] text-sm text-center text-text-default bg-white border-t border-b border-r border-border-disabled hover:bg-surface-default"
-            >
-              ...
-            </button>
-            <button
-              class="w-[50px] h-[34px] text-sm text-center text-text-default bg-white border-t border-b border-r border-border-disabled hover:bg-surface-default"
-            >
-              4
-            </button>
-            <button
-              class="w-[50px] h-[34px] text-sm text-center text-text-default bg-white border-t border-b border-r border-border-disabled hover:bg-surface-default"
-            >
-              5
-            </button>
-            <button
-              class="w-[34px] h-[34px] flex items-center justify-center bg-white border border-border-disabled rounded-r-md hover:bg-surface-default"
-            >
-              <img src="./assets/icons/right.svg" alt="right" class="w-4 h-3" />
+            <span class="table-pagination-current" aria-current="page">2</span>
+            <button type="button" class="table-pagination-nav" aria-label="下一頁">
+              <img src="./assets/icons/right.svg" alt="" class="w-5 h-5" />
             </button>
           </nav>
         </div>
