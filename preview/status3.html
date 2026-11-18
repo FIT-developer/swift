@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 有些地方出錯了</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body class="status-page" data-status-page="status3" data-status-state="other-error">
+    <main class="status-stage">
+      <section id="statusRoot" class="status-composition status-composition--other-error" aria-labelledby="statusHeading">
+        <img class="status-artwork" src="./assets/images/status-other-error.png" alt="" aria-hidden="true" />
+        <h1 id="statusHeading" class="status-heading">有些地方出錯了&#8230;</h1>
+        <div data-partial="status-return"></div>
+      </section>
+    </main>
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initStatus } from "./js/status.js";
+
+      await loadPartials();
+      initStatus();
+    </script>
+  </body>
+</html>

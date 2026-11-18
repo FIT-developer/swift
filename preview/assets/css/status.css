@@ -1,0 +1,149 @@
+/* Geometry follows the original Figma assets; UI values use shared tokens. */
+.status-page {
+  margin: 0;
+  background: var(--color-neutral-0);
+  color: var(--color-text-800);
+}
+
+.status-page .status-stage {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: var(--spacing-12);
+}
+
+.status-page .status-composition {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: auto;
+  text-align: center;
+}
+
+.status-page .status-heading {
+  max-width: 100%;
+  margin: 0;
+  background: linear-gradient(
+    to right,
+    var(--color-surface-linger-start),
+    var(--color-surface-linger-end)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: var(--font-size-3xl);
+  font-weight: 600;
+  line-height: 1.375;
+}
+
+.status-page .status-support {
+  margin: var(--spacing-4) 0 0;
+  color: var(--color-text-800);
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  line-height: 1.375;
+}
+
+.status-page .status-artwork {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  flex: none;
+}
+
+.status-page .status-composition--not-found {
+  max-width: 622px;
+}
+
+.status-page .status-composition--not-found .status-artwork {
+  width: 360.55px;
+  aspect-ratio: 360.55 / 371.3;
+}
+
+.status-page .status-composition--ip-error {
+  max-width: 697px;
+  gap: var(--spacing-28);
+}
+
+/* The kite extends 55.8px right and 72.55px above its source layout slot.
+   Scale the complete overhang within a centered 340.8px envelope. */
+.status-page .status-ip-slot {
+  position: relative;
+  width: min(229.2px, calc(100% * 229.2 / 340.8));
+  aspect-ratio: 229.2 / 257.01;
+  flex: none;
+}
+
+.status-page .status-ip-slot .status-artwork {
+  position: absolute;
+  top: calc(-100% * 72.55 / 257.01);
+  left: 0;
+  width: calc(100% * 285 / 229.2);
+  max-width: none;
+  aspect-ratio: 285 / 330;
+}
+
+.status-page .status-composition--other-error {
+  max-width: 551px;
+  gap: var(--spacing-28);
+}
+
+.status-page .status-composition--other-error .status-artwork {
+  width: 338.41px;
+  aspect-ratio: 338.41 / 335.58;
+}
+
+.status-page .status-composition--maintenance {
+  max-width: 622px;
+  gap: var(--spacing-20);
+}
+
+.status-page .status-composition--maintenance .status-artwork {
+  width: 452.64px;
+  aspect-ratio: 452.64 / 337.27;
+}
+
+.status-page .status-return {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: var(--spacing-8);
+  color: var(--color-text-800);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+  isolation: isolate;
+}
+
+.status-page .status-return::before {
+  position: absolute;
+  inset: calc(-1 * var(--spacing-8));
+  z-index: -1;
+  border-radius: var(--radius-4);
+  background-color: transparent;
+  content: "";
+  transition: background-color 150ms ease;
+}
+
+.status-page .status-return:hover::before,
+.status-page .status-return:focus-visible::before {
+  background-color: var(--color-bootstrap-focus-background);
+}
+
+.status-page .status-return-icon {
+  display: block;
+  width: var(--spacing-24);
+  height: var(--spacing-24);
+  background-color: currentColor;
+  mask: url("../icons/return.svg") center / contain no-repeat;
+  -webkit-mask: url("../icons/return.svg") center / contain no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-page .status-return::before {
+    transition: none;
+  }
+}

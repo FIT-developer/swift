@@ -132,6 +132,9 @@
   --color-surface-status-negative-light: #f8a4a8;
   --color-surface-status-positive: #2aca18;
   --color-surface-loginbackground: #b6fa91;
+  /* Surface Variables supplied by user screenshot, 2026-11-18. */
+  --color-surface-linger-start: #d980ed;
+  --color-surface-linger-end: #376ae1;
   --color-surface-action-default:  #005fcc;
 
   /* Figma Libraries path Background/Danger/Default, confirmed 2026-11-12.
@@ -257,6 +260,7 @@
   --font-size-lg:   18px;  /* = text-lg */
   --font-size-xl:   20px;  /* = text-xl */
   --font-size-2xl:  24px;  /* Figma project/GHA card heading */
+  --font-size-3xl:  32px;  /* Figma status page heading */
 }
 
 body {

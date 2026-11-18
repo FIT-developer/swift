@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 拒絕非台灣 IP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body class="status-page" data-status-page="status2" data-status-state="ip-error">
+    <main class="status-stage">
+      <section id="statusRoot" class="status-composition status-composition--ip-error" aria-labelledby="statusHeading">
+        <div class="status-header">
+          <h1 id="statusHeading" class="status-heading">拒絕非台灣 IP</h1>
+          <p class="status-support">請聯繫系統商尋求協助</p>
+        </div>
+        <div class="status-ip-slot" aria-hidden="true">
+          <img class="status-artwork" src="./assets/images/status-ip-error.svg" alt="" />
+        </div>
+        <div data-partial="status-return"></div>
+      </section>
+    </main>
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initStatus } from "./js/status.js";
+
+      await loadPartials();
+      initStatus();
+    </script>
+  </body>
+</html>

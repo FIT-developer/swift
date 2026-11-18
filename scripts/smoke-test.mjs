@@ -268,7 +268,8 @@ const APP_CSS_LOADED_CHECK = {
         "scheduled-send.css",
         "scheduled-send-modal.css",
         "housing-statistics.css",
-        "login.css"
+        "login.css",
+        "status.css"
       ];
       var sheet = Array.from(document.styleSheets).find(function (s) {
         return s.href && s.href.indexOf("/assets/css/app.css") !== -1;
@@ -1291,12 +1292,339 @@ function loginChecks(config) {
   ];
 }
 
+const STATUS_PAGE_CONFIGS = [
+  {
+    file: "status1.html",
+    page: "status1",
+    state: "not-found",
+    heading: "網頁不存在",
+    support: null,
+    artwork: ["status-not-found.svg"],
+    order: ["heading", "artwork", "return"],
+    hasReturn: true,
+    artworkWidth: 360.55,
+  },
+  {
+    file: "status2.html",
+    page: "status2",
+    state: "ip-error",
+    heading: "拒絕非台灣 IP",
+    support: "請聯繫系統商尋求協助",
+    artwork: ["status-ip-error.svg"],
+    order: ["heading", "support", "artwork", "return"],
+    hasReturn: true,
+    artworkWidth: 285,
+  },
+  {
+    file: "status3.html",
+    page: "status3",
+    state: "other-error",
+    heading: "有些地方出錯了\u2026",
+    support: null,
+    artwork: ["status-other-error.png"],
+    order: ["artwork", "heading", "return"],
+    hasReturn: true,
+    artworkWidth: 338.41,
+  },
+  {
+    file: "status4.html",
+    page: "status4",
+    state: "maintenance",
+    heading: "網頁維護中",
+    support: null,
+    artwork: ["status-maintenance.svg"],
+    order: ["heading", "artwork"],
+    hasReturn: false,
+    artworkWidth: 452.64,
+  },
+];
+
+function statusReadyExpr(config) {
+  return `!document.querySelector("[data-partial]") &&
+    document.body.classList.contains("status-page") &&
+    document.body.dataset.statusPage === ${JSON.stringify(config.page)} &&
+    document.body.dataset.statusState === ${JSON.stringify(config.state)} &&
+    document.getElementById("statusRoot")?.dataset.statusReady === "true"`;
+}
+
+function statusContentCheck(config) {
+  const expectedOrder = JSON.stringify(config.order);
+  const expectedHeading = JSON.stringify(config.heading);
+  const expectedSupport = JSON.stringify(config.support);
+  const expectedStateClass = "status-composition--" + config.state;
+  return {
+    name: "status content, order, artwork, tokens, and unauthenticated shell",
+    expr: `(function () {
+      var body = document.body;
+      var root = document.getElementById("statusRoot");
+      var heading = document.querySelector(".status-heading");
+      var support = document.querySelector(".status-support");
+      var artworkNode = document.querySelector(".status-artwork");
+      var artwork = artworkNode && artworkNode.matches("img")
+        ? artworkNode
+        : artworkNode && artworkNode.querySelector("img");
+      var returnLink = document.querySelector("[data-status-return]");
+      var supportCount = document.querySelectorAll(".status-support").length;
+      var returnCount = document.querySelectorAll("[data-status-return]").length;
+      if (!body.classList.contains("status-page") ||
+          body.dataset.statusPage !== ${JSON.stringify(config.page)} ||
+          body.dataset.statusState !== ${JSON.stringify(config.state)})
+        return "body status identity mismatch";
+      if (!root || !root.matches("section#statusRoot.status-composition") ||
+          !root.classList.contains(${JSON.stringify(expectedStateClass)}) ||
+          root.dataset.statusReady !== "true")
+        return "status root state or ready marker mismatch";
+      if (!heading || heading.textContent.trim() !== ${expectedHeading})
+        return "heading mismatch: " + (heading && heading.textContent.trim());
+      if (${config.support !== null} &&
+          (!support || support.textContent.trim() !== ${expectedSupport}))
+        return "support copy mismatch";
+      if (!${config.support !== null} && supportCount !== 0)
+        return "unexpected support copy";
+      if (supportCount !== ${config.support === null ? 0 : 1})
+        return "support count mismatch: " + supportCount;
+      if (!artwork || !artwork.complete || artwork.naturalWidth < 1)
+        return "artwork image is not loaded";
+      if (!${JSON.stringify(config.artwork)}.some(function (asset) {
+        return artwork.currentSrc.endsWith(asset);
+      }))
+        return "artwork asset mismatch: " + artwork.currentSrc;
+      if (${config.state === "ip-error"} &&
+          (!artwork.closest(".status-ip-slot") ||
+           document.querySelectorAll(".status-ip-slot").length !== 1))
+        return "IP artwork slot mismatch";
+      if (${config.state !== "ip-error"} && document.querySelector(".status-ip-slot"))
+        return "unexpected IP artwork slot";
+      if (${config.hasReturn} &&
+          (!returnLink || !(returnLink instanceof HTMLAnchorElement) ||
+           returnLink.textContent.trim() !== "返回" ||
+           !returnLink.querySelector(".status-return-icon") ||
+           returnLink.getAttribute("href") !== "#"))
+        return "return anchor markup or placeholder mismatch";
+      if (!${config.hasReturn} && returnCount !== 0)
+        return "maintenance must not contain a return anchor";
+      var order = ${expectedOrder};
+      var nodes = {
+        heading: heading,
+        support: support,
+        artwork: artworkNode,
+        return: returnLink,
+      };
+      for (var index = 0; index < order.length - 1; index += 1) {
+        var before = nodes[order[index]];
+        var after = nodes[order[index + 1]];
+        if (!before || !after ||
+            !(before.compareDocumentPosition(after) & Node.DOCUMENT_POSITION_FOLLOWING))
+          return "content order mismatch: " + order.join(">");
+      }
+      var headingStyle = getComputedStyle(heading);
+      var rootStyle = getComputedStyle(document.documentElement);
+      var gradient = headingStyle.backgroundImage.replace(/\\s+/g, "").toLowerCase();
+      var lingerStart = rootStyle.getPropertyValue("--color-surface-linger-start").trim().toLowerCase();
+      var lingerEnd = rootStyle.getPropertyValue("--color-surface-linger-end").trim().toLowerCase();
+      if (lingerStart !== "#d980ed" || lingerEnd !== "#376ae1")
+        return "status gradient token values mismatch: " + lingerStart + "/" + lingerEnd;
+      if (!/rgb\\(217,128,237\\)/.test(gradient) || !/rgb\\(55,106,225\\)/.test(gradient))
+        return "status heading gradient does not use both linger colors: " + headingStyle.backgroundImage;
+      if (headingStyle.fontSize !== "32px" || headingStyle.fontWeight !== "600" ||
+          headingStyle.lineHeight !== "44px")
+        return "status heading typography mismatch";
+      if (document.body.dataset.page || document.querySelector(
+        "#sidebar, [data-partial=aside], [data-partial=topbar], #desktopTopRow, [data-modal-open], [id^=modal]"
+      ))
+        return "authenticated shell leaked into status page";
+      return true;
+    })()`,
+  };
+}
+
+function statusReturnCheck(config) {
+  if (!config.hasReturn) {
+    return {
+      name: "maintenance has no return interaction",
+      expr: `document.querySelectorAll("[data-status-return]").length === 0 ? true : "return anchor leaked"`,
+    };
+  }
+  return {
+    name: "status placeholder emits bubbling return event and honors real href",
+    expr: `(async function () {
+      var root = document.getElementById("statusRoot");
+      var link = document.querySelector("[data-status-return]");
+      if (!root || !link) return "return interaction elements missing";
+      try {
+        var module = await import("./js/status.js?status-smoke=" + Date.now());
+        if (typeof module.initStatus !== "function") return "initStatus export missing";
+        module.initStatus(root);
+      } catch (error) {
+        return "idempotent init import failed: " + error.message;
+      }
+      var received = [];
+      var listener = function (event) {
+        received.push({
+          bubbles: event.bubbles,
+          target: event.target === link,
+          page: event.detail && event.detail.page,
+          state: event.detail && event.detail.state,
+        });
+      };
+      var originalFetch = window.fetch;
+      var fetchCalls = 0;
+      var beforeHref = location.href;
+      var clickEvent = new MouseEvent("click", {bubbles: true, cancelable: true});
+      document.addEventListener("status:return", listener);
+      window.fetch = function () {
+        fetchCalls += 1;
+        throw new Error("status smoke intercepted fetch");
+      };
+      try {
+        var dispatchResult = link.dispatchEvent(clickEvent);
+        if (dispatchResult || !clickEvent.defaultPrevented)
+          return "placeholder click was not canceled";
+      } finally {
+        window.fetch = originalFetch;
+        document.removeEventListener("status:return", listener);
+      }
+      if (location.href !== beforeHref) return "placeholder click navigated";
+      if (fetchCalls !== 0) return "placeholder click called fetch";
+      if (received.length !== 1 || !received[0].bubbles || !received[0].target ||
+          received[0].page !== ${JSON.stringify(config.page)} ||
+          received[0].state !== ${JSON.stringify(config.state)})
+        return "status:return detail or bubbling mismatch: " + JSON.stringify(received);
+
+      var originalHref = link.getAttribute("href");
+      var realHref = "/backend/status-return";
+      var realEvents = 0;
+      var realListener = function () { realEvents += 1; };
+      var afterHandler = null;
+      var inspectAfterHandler = function (event) {
+        afterHandler = event.defaultPrevented;
+        event.preventDefault();
+      };
+      var realClick = new MouseEvent("click", {bubbles: true, cancelable: true});
+      var beforeRealHref = location.href;
+      link.setAttribute("href", realHref);
+      document.addEventListener("status:return", realListener);
+      window.addEventListener("click", inspectAfterHandler);
+      try {
+        link.dispatchEvent(realClick);
+      } finally {
+        window.removeEventListener("click", inspectAfterHandler);
+        document.removeEventListener("status:return", realListener);
+        link.setAttribute("href", originalHref);
+      }
+      if (afterHandler !== false)
+        return "real href handler canceled native navigation before smoke listener";
+      if (!realClick.defaultPrevented)
+        return "real href smoke listener did not cancel navigation";
+      if (location.href !== beforeRealHref) return "real href navigated during smoke";
+      if (realEvents !== 0) return "real href emitted placeholder status:return";
+      if (link.getAttribute("href") !== originalHref)
+        return "real href test did not restore backend placeholder";
+      return true;
+    })()`,
+  };
+}
+
+function statusResponsiveCheck(config, width) {
+  return {
+    name: "status responsive composition at " + width + "px",
+    viewport: {width: width, height: 900, mobile: width < 768},
+    expr: `(function () {
+      var stage = document.querySelector(".status-stage");
+      var root = document.getElementById("statusRoot");
+      var imageNode = document.querySelector(".status-artwork");
+      var image = imageNode && imageNode.matches("img")
+        ? imageNode
+        : imageNode && imageNode.querySelector("img");
+      if (!stage || !root || !image) return "status responsive selectors missing";
+      var stageRect = stage.getBoundingClientRect();
+      var rootRect = root.getBoundingClientRect();
+      var imageRect = image.getBoundingClientRect();
+      var clientWidth = document.documentElement.clientWidth;
+      if (document.documentElement.scrollWidth > clientWidth + 1 ||
+          document.body.scrollWidth > clientWidth + 1)
+        return "horizontal overflow: " + document.documentElement.scrollWidth + "/" + clientWidth;
+      if (rootRect.width > stageRect.width + 1)
+        return "composition exceeds stage width: " + rootRect.width + "/" + stageRect.width;
+      if (imageRect.left < -1 || imageRect.right > clientWidth + 1)
+        return "artwork exceeds viewport: " + imageRect.left + "/" + imageRect.right;
+      if (${config.artworkWidth} < imageRect.width - 1)
+        return "artwork exceeds source width: " + imageRect.width;
+      if (Math.abs(rootRect.left + rootRect.width / 2 - (stageRect.left + stageRect.width / 2)) > 1)
+        return "composition is not horizontally centered";
+      if (rootRect.height <= stageRect.height - 24 + 1 &&
+          Math.abs(rootRect.top + rootRect.height / 2 - (stageRect.top + stageRect.height / 2)) > 1)
+        return "composition is not vertically centered when it fits";
+      return true;
+    })()`,
+  };
+}
+
+function statusShortViewportCheck(config) {
+  return {
+    name: "status short viewport keeps content reachable",
+    viewport: {width: 360, height: 320, mobile: true},
+    expr: `(function () {
+      var root = document.getElementById("statusRoot");
+      var heading = document.querySelector(".status-heading");
+      var imageNode = document.querySelector(".status-artwork");
+      var image = imageNode && imageNode.matches("img")
+        ? imageNode
+        : imageNode && imageNode.querySelector("img");
+      var returnLink = document.querySelector("[data-status-return]");
+      var pageHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+      if (!root || !heading || !image) return "status short viewport selectors missing";
+      if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1 ||
+          document.body.scrollWidth > document.documentElement.clientWidth + 1)
+        return "short viewport horizontal overflow";
+      var headingRect = heading.getBoundingClientRect();
+      var imageRect = image.getBoundingClientRect();
+      if (headingRect.top < -1 || headingRect.bottom > pageHeight + 1 ||
+          imageRect.top < -1 || imageRect.bottom > pageHeight + 1)
+        return "short viewport content is outside document scroll range";
+      if (${config.hasReturn}) {
+        if (!returnLink) return "short viewport return anchor missing";
+        var returnRect = returnLink.getBoundingClientRect();
+        if (returnRect.top < -1 || returnRect.bottom > pageHeight + 1)
+          return "short viewport return is unreachable";
+      }
+      return true;
+    })()`,
+  };
+}
+
+function statusChecks(config) {
+  return [
+    APP_CSS_LOADED_CHECK,
+    statusContentCheck(config),
+    statusReturnCheck(config),
+    ...[320, 360, 375, 768, 1440].map(function (width) {
+      return statusResponsiveCheck(config, width);
+    }),
+    statusShortViewportCheck(config),
+    ...(config.hasReturn
+      ? [{
+          name: "status return uses trusted pointer hover color",
+          viewport: {width: 1440, height: 900, mobile: false},
+          statusPointer: true,
+        }]
+      : []),
+  ];
+}
+
 const PAGES = [
   ...LOGIN_PAGE_CONFIGS.map(function (config) {
     return {
       file: config.file,
       readyExpr: loginReadyExpr(config),
       checks: loginChecks(config),
+    };
+  }),
+  ...STATUS_PAGE_CONFIGS.map(function (config) {
+    return {
+      file: config.file,
+      readyExpr: statusReadyExpr(config),
+      checks: statusChecks(config),
     };
   }),
   {
@@ -4722,6 +5050,54 @@ async function testHousingControls(cdp, sessionId) {
   return true;
 }
 
+async function testStatusPointer(cdp, sessionId) {
+  const ev = (expression) => evaluate(cdp, sessionId, expression);
+  const point = await ev(`(() => {
+    const link = document.querySelector("[data-status-return]");
+    if (!link) return null;
+    const rect = link.getBoundingClientRect();
+    return {x: rect.left + rect.width / 2, y: rect.top + rect.height / 2};
+  })()`);
+  if (!point) return "status return anchor missing";
+  await cdp.send("Input.dispatchMouseEvent", {
+    type: "mouseMoved",
+    x: point.x,
+    y: point.y,
+  }, sessionId);
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const hovered = await ev(`(() => {
+    const link = document.querySelector("[data-status-return]");
+    const icon = link && link.querySelector(".status-return-icon");
+    const before = link && getComputedStyle(link, "::before");
+    return {
+      hovered: !!link && link.matches(":hover"),
+      background: before && before.backgroundColor,
+      color: link && getComputedStyle(link).color,
+      iconColor: icon && getComputedStyle(icon).backgroundColor,
+    };
+  })()`);
+  const normalized = String(hovered.background || "").replace(/\s+/g, "");
+  if (!hovered.hovered) return "native pointer did not hover return anchor";
+  if (normalized !== "rgb(211,235,253)")
+    return "hover background is not Bootstrap light blue: " + hovered.background;
+  if (hovered.color !== "rgb(69, 69, 69)" || hovered.iconColor !== "rgb(69, 69, 69)")
+    return "hover changed return text/icon color";
+  await cdp.send("Input.dispatchMouseEvent", {
+    type: "mouseMoved",
+    x: 1,
+    y: 1,
+  }, sessionId);
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const restored = await ev(`(() => {
+    const link = document.querySelector("[data-status-return]");
+    const before = link && getComputedStyle(link, "::before");
+    return before && before.backgroundColor;
+  })()`);
+  return String(restored).replace(/\s+/g, "") === "rgba(0,0,0,0)"
+    ? true
+    : "hover background did not restore: " + restored;
+}
+
 async function testPage(cdp, baseUrl, page, consoleErrors) {
   const failures = [];
   const { targetId } = await cdp.send("Target.createTarget", { url: "about:blank" });
@@ -4779,6 +5155,8 @@ async function testPage(cdp, baseUrl, page, consoleErrors) {
           ? await testQuantityInventoryPointer(cdp, sessionId)
         : check.photoTouch
           ? await testPhotoTouch(cdp, sessionId, check.photoTouch)
+        : check.statusPointer
+          ? await testStatusPointer(cdp, sessionId)
           : await evaluate(cdp, sessionId, check.expr);
       if (result !== true) failures.push(check.name + ": " + result);
     } catch (err) {

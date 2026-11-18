@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swift - 網頁維護中</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./js/tailwind-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="./assets/css/base.css" rel="stylesheet" />
+    <link href="./assets/css/app.css" rel="stylesheet" />
+  </head>
+  <body class="status-page" data-status-page="status4" data-status-state="maintenance">
+    <main class="status-stage">
+      <section id="statusRoot" class="status-composition status-composition--maintenance" aria-labelledby="statusHeading">
+        <h1 id="statusHeading" class="status-heading">網頁維護中</h1>
+        <img class="status-artwork" src="./assets/images/status-maintenance.svg" alt="" aria-hidden="true" />
+      </section>
+    </main>
+    <script type="module">
+      import { loadPartials } from "./js/partials.js";
+      import { initStatus } from "./js/status.js";
+
+      await loadPartials();
+      initStatus();
+    </script>
+  </body>
+</html>

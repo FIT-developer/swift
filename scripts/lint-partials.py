@@ -280,6 +280,34 @@ MANIFEST = {
             './js/login.js',
         ],
     },
+    'status1.html': {
+        'partials': ['status-return'],
+        'modules': [
+            './js/partials.js',
+            './js/status.js',
+        ],
+    },
+    'status2.html': {
+        'partials': ['status-return'],
+        'modules': [
+            './js/partials.js',
+            './js/status.js',
+        ],
+    },
+    'status3.html': {
+        'partials': ['status-return'],
+        'modules': [
+            './js/partials.js',
+            './js/status.js',
+        ],
+    },
+    'status4.html': {
+        'partials': [],
+        'modules': [
+            './js/partials.js',
+            './js/status.js',
+        ],
+    },
 }
 
 # 舊單元件 preview（無 partial 架構），僅豁免不檢查；

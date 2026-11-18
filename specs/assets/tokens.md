@@ -6,6 +6,9 @@
 > 上次同步: 2026-11-18, 使用者提供的 Figma Variables export.
 > 新增 Color/Surface/LoginBackground; 原有 134 個 variables 的值與 metadata 相同.
 > `figma-variables.json` 已同步為本次使用者提供的原始 export.
+> 2026-11-18 增量: 使用者提供 Surface 截圖, 新增 Linger-start / Linger-End.
+> 依使用者指示直接登錄以下兩個 token, 不重新讀取 Figma.
+> 原始 JSON export 保留原樣, 不偽造截圖未提供的 variableId / metadata.
 
 ## Token 使用規則（Strict Mirror）
 
@@ -104,6 +107,8 @@
 | Color/Surface/Status-Negative-light | `#F8A4A8` | 危險/停用類按鈕外框或淡色提示 | `red-300` |
 | Color/Surface/Status-Positive | `#2ACA18` | 成功狀態 | `green-500` |
 | Color/Surface/LoginBackground | `#B6FA91` | 登入頁 background panel; token alpha 1, 背板 fill opacity 統一 50%, 2026-11-18 使用者確認並經 JSON / SVG / PNG 核對 | `--color-surface-loginbackground` |
+| Color/Surface/Linger-start | `#D980ED` | Status 標題水平漸層起點; 2026-11-18 使用者提供 Figma Variables 截圖, 保留原始命名 | `--color-surface-linger-start` |
+| Color/Surface/Linger-End | `#376AE1` | Status 標題水平漸層終點; 同次截圖增量來源, 保留 End 大小寫 | `--color-surface-linger-end` |
 
 ---
 
@@ -345,6 +350,7 @@
 | `--font-size-lg`   | `18px` | `text-lg`   | 強調 body |
 | `--font-size-xl`   | `20px` | `text-xl`   | Section 標題 |
 | `--font-size-2xl` | `24px` | `text-2xl` | 專案/GHA card 標題, Figma 2724:116123 / 2724:117275 (2026-10-22) |
+| `--font-size-3xl` | `32px` | - | Status 標題, Figma 328:15233 / 328:15234 / 328:15235 / 351:20754, 使用者確認 2026-11-18 |
 
 ---
 
