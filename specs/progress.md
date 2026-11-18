@@ -10,6 +10,59 @@ Session177 至 186 見 [歷史封存](progress-archive-s177-s186.md).
 
 ---
 
+## Session 206: 提交與推送後端交付 README (2026-11-18)
+
+### 本輪改動與驗收
+
+- 使用者確認保留「富文本」用詞, 並明確授權 commit & push.
+- 提交根目錄readme.md與完整Session205交接, 包含五部分內容:
+  架構及13筆頁面對照、民宿資料的多語系 /編輯器示意、
+  Login四狀態、Status四狀態、住房統計圖由後端依現有資料套用.
+- 保留14條公司PHP對應路徑與共用來源連結, 不加入對話性上傳描述.
+- 本輪僅更新驗收與提交紀錄, README用詞及產品檔案沒有再改動,
+  tokens與start.md開發規則不變.
+
+### 驗證與提交
+
+- README五部分、13筆頁面 /14條PHP對照、八個Login /Status入口,
+  以及74個本機相對連結與目錄anchors已在Session205核對.
+- 提交前核對tracked /untracked及staged清單, 由pre-commit執行必要lint.
+  純文件改動不重跑瀏覽器UI測試.
+- 本輪進入commit/push flow, 實際SHA與同步狀態以git history及
+  推送後status /ahead-behind核對為準.
+
+## Session 205: 後端交付 README 與住房統計整合說明 (2026-11-18)
+
+### 本輪改動
+
+- 使用者要求新增根目錄readme.md, 供後端工程師參考. 保留全部13筆
+  中文頁名 /HTML檔名 /公司PHP路徑對照, 不自行推定公司檔案位置.
+- 文件共五個部分:架構與來源資料夾 /複雜功能與共用示意 /
+  Login四種狀態 /Status四種狀態 /住房統計表下方動態統計圖.
+- 附HTTP預覽指令、來源檔案相對連結、PHP套版的partial與module順序,
+  並註明PHP同名info_index.php需以唯一頁面識別或完整路徑處理頁籤.
+- 多語系與文案編輯以民宿資料為代表頁, 依目前實際程式核對:
+  SunEditor為textarea佔位, 工具列disabled, 翻譯未串接,
+  編輯草稿與儲存僅在記憶體, 多語系狀態頁籤共用示例內容.
+- Luna read-only核對發現須知與聲明的demo僅儲存當前分類各語言,
+  與元件規格的跨四分類儲存範圍不同; README明列此整合邊界,
+  沒有把示例宣稱為正式跨分類交易, 本輪未更動既有UI行為.
+- Login /Status列出每個獨立檔案、狀態與簡易描述,
+  並補共用來源、後端選頁及事件 /返回連結整合方式.
+- 使用者追加第五部分:住房統計表下方動態統計圖由後端依現有資料套用.
+  README明列目前只提供查詢UI與示例表格、下方動態圖尚未渲染,
+  後端需依正式資料與口徑整合表格 /圖表 /比較 /下載.
+- 未加入使用者提到的未來上傳GitHub等對話性描述.
+
+### 驗證與交接
+
+- 本輪僅新增readme.md與更新progress, 不更動產品、tokens或開發規則.
+- 檢查13筆公司路徑、四筆Login /四筆Status、五個主要部分,
+  以及本機相對檔案連結、Markdown anchor、ASCII規範與diff空白.
+- 驗證通過:13筆頁面對照含14條PHP路徑, 八個Login /Status檔案,
+  74個本機相對連結與目錄anchors均有效, conventions /diffcheck exit0.
+- 尚未收到本輪commit/push指示; README供使用者審閱.
+
 ## Session 204: 提交與推送共用分頁及 OTA 選單移除 (2026-11-18)
 
 ### 本輪改動與重要決定
